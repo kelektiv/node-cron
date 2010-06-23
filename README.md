@@ -1,7 +1,10 @@
+A NodeJS fork of [jamespadolsey's](http://github.com/jamespadolsey) [cron.js](http://github.com/jamespadolsey/cron.js).
+
 Usage:
 
-    new CronJob('* * * * * *', function(){
-        console.log('You will see this message every second');
+    var cron = require('cron'), sys = require('sys');
+    new cron.CronJob('* * * * * *', function(){
+        sys.puts('You will see this message every second');
     });
     
 Available Cron patterns:
@@ -14,6 +17,7 @@ Available Cron patterns:
 
 Another example:
 
+    var cron = require('cron'), sys = require('sys');
     new CronJob('00 30 11 * * 2-6', function(){
         // Runs every weekday (Monday through Friday)
         // at 11:30:00 AM. It does not run on Saturday
