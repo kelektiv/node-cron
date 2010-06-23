@@ -23,3 +23,11 @@ Another example:
         // at 11:30:00 AM. It does not run on Saturday
         // or Sunday.
     });
+
+Install:
+
+    make install
+
+Uninstall:
+
+    make uninstall
