@@ -31,3 +31,7 @@ Install:
 Uninstall:
 
     make uninstall
+
+License:
+
+This is under a dual license, MIT and GPL. However, the author of cron.js hasn't specified which version of the GPL, once I know I'll update this project and the packaging files.
