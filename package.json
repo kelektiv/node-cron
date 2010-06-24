@@ -1,12 +1,13 @@
 {
     "name": "cron",
     "description": "CronJob's for your node",
-    "version": "0.1",
+    "version": "0.1.0",
     "author": "James Padolsey (http://github.com/jamespadolsey)",
     "contributors": [
        {
            "name": "Nick Campbell",
 	   "web": "http://github.com/ncb000gt"
+       }
     ],
     "bugs" :
     { "mail" : "",
@@ -29,5 +30,5 @@
            "type": "GPL",
            "url": "http://www.gnu.org/copyleft/gpl.html" 
        }
-   ],
+   ]
 }
