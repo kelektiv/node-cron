@@ -24,6 +24,16 @@ Another example:
         // or Sunday.
     });
 
+How to check if a cron pattern is valid:
+
+		try {
+			new cron.CronTime('invalid cron pattern', function() {
+				sys.puts('this should not be printed');
+			})
+		} catch(ex) {
+			sys.puts("cron pattern not valid");
+		}
+
 Install:
 
     make install

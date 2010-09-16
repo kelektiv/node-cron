@@ -12,3 +12,12 @@ new cron.CronJob('*/5 * * * * *', function(){
 new cron.CronJob('10-20 * * * * *', function(){
     sys.puts('You will see this message from seconds ten through twenty');
 });
+
+// How to check if a cron pattern is valid
+try {
+	new cron.CronTime('invalid cron pattern', function() {
+		sys.puts('this should not be printed');
+	})
+} catch(ex) {
+	sys.puts("cron pattern not valid: ", ex.message);
+}

@@ -165,3 +165,4 @@ CronJob.prototype = {
 };
 
 exports.CronJob = CronJob;
+exports.CronTime = CronTime;
