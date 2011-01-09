@@ -15,7 +15,7 @@ function CronTime(time) {
   this.source = time;
 
   this.map = ['second', 'minute', 'hour', 'dayOfMonth', 'month', 'dayOfWeek'];
-  this.constraints = [[0,59],[0,59],[0,23],[1,31],[0,11],[0,6]];
+  this.constraints = [[0,59],[0,59],[0,23],[1,31],[0,11],[1,7]];
   this.aliases = {
     jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11,
     sun:0,mon:1,tue:2,wed:3,thu:4,fri:5,sat:6
@@ -79,11 +79,13 @@ CronTime.prototype = {
                       // Positive integer lower than constraints[1]
                       upper = upper ? Math.min(high, ~~Math.abs(upper)) : lower;
 
-                      diff = step + upper - lower;
+                      // Count from the lower barrier to the upper
+                      pointer = lower;
 
-                      while ((diff-=step) > -1) {
-                        typeObj[diff + lower] = true;
-                      }
+                      do {
+                          typeObj[pointer] = true
+                          pointer += step;
+                      } while(pointer <= upper);
 
                     });
 
@@ -150,7 +152,7 @@ CronJob.prototype = {
     now.hour = date.getHours();
     now.dayOfMonth = date.getDate();
     now.month = date.getMonth();
-    now.dayOfWeek = date.getDay();
+    now.dayOfWeek = date.getDay() + 1;
 
     for (i in now) {
       if (!(now[i] in cronTime[i])) {
