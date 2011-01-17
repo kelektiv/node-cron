@@ -1,4 +1,4 @@
-var cron = require('cron'),
+var cron = require('./src/cron'),
 sys = require('sys');
 
 new cron.CronJob('00 * * * * *', function(){
