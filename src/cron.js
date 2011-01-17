@@ -71,7 +71,7 @@ CronTime.prototype = {
 
       field.replace(rangePattern, function($0, lower, upper, step) {
 
-                      step = step || 1;
+                      step = parseInt(step) || 1;
 
                       // Positive integer higher than constraints[0]
                       lower = Math.max(low, ~~Math.abs(lower));
