@@ -36,7 +36,7 @@ CronTime.prototype = {
   _parse: function() {
 
     var aliases = this.aliases,
-    source = this.source.replace(/[a-z][a-z][a-z]/ig, function(alias){
+    source = this.source.replace(/[a-z]{3}/ig, function(alias){
 
       alias = alias.toLowerCase();
 
