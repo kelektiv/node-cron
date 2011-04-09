@@ -40,13 +40,8 @@ How to check if a cron pattern is valid:
 
 Install
 ==========
-
-    make install
-
-Uninstall
-==========
-
-    make uninstall
+    From source: `sudo npm install`
+    From npm: `sudo npm install cron`
 
 Contributors (via git-count)
 ===========
