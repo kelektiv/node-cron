@@ -46,12 +46,12 @@ Install
 Contributors (via git-count)
 ===========
 
-Nick Campbell
-Finn Herpich
-James Padolsey
-cliftonc
-Finn
-neyric
+* Nick Campbell
+* Finn Herpich
+* James Padolsey
+* cliftonc
+* Finn
+* neyric
 
 License
 ==========
