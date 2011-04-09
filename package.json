@@ -3,14 +3,7 @@
     "description": "CronJob's for your node",
     "version": "0.1.2",
     "author": "James Padolsey (http://github.com/jamespadolsey)",
-    "contributors": [
-        {
-            "name": "Nick Campbell",
-            "web": "http://github.com/ncb000gt"
-        }
-    ],
     "bugs" : {
-        "mail" : "",
         "web" : "http://github.com/ncb000gt/node-cron/issues"
     },
     "repository": {
@@ -38,6 +31,7 @@
         }
     ],
     "contributors": [
+        "Nick Campbell <nicholas.j.campbell@gmail.com> (http://github.com/ncb000gt)",
         "Finn Herpich <> (http://github.com/ErrorProne)",
         "Clifton Cunningham <> (http://github.com/cliftonc)",
         "Eric Abouaf <> (http://github.com/neyric)"
