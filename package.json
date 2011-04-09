@@ -1,27 +1,33 @@
 {
     "name": "cron",
-        "description": "CronJob's for your node",
-        "version": "0.1.1",
-        "author": "James Padolsey (http://github.com/jamespadolsey)",
-        "contributors": [
+    "description": "CronJob's for your node",
+    "version": "0.1.2",
+    "author": "James Padolsey (http://github.com/jamespadolsey)",
+    "contributors": [
         {
             "name": "Nick Campbell",
             "web": "http://github.com/ncb000gt"
         }
     ],
-        "bugs" :
-        { "mail" : "",
-            "web" : "http://github.com/ncb000gt/node-cron/issues"
-        },
-        "repository": {
-            "type": "git",
-            "url": "http://github.com/ncb000gt/node-cron.git"
-        },
-        "engine": [
-            "node >=0.1.90"
-            ],
-        "main": "src/cron",
-        "licenses": [
+    "bugs" : {
+        "mail" : "",
+        "web" : "http://github.com/ncb000gt/node-cron/issues"
+    },
+    "repository": {
+        "type": "git",
+        "url": "http://github.com/ncb000gt/node-cron.git"
+    },
+    "engine": [
+        "node >=0.1.90"
+    ],
+    "main": "lib/cron",
+    "scripts": {
+        "test": "nodeunit tests/*"
+    },
+    "dependencies": {
+        "nodeunit": "=0.5.1"
+    },
+    "licenses": [
         {
             "type": "MIT",
             "url": "http://www.opensource.org/licenses/mit-license.php" 
@@ -30,5 +36,10 @@
             "type": "GPL",
             "url": "http://www.gnu.org/copyleft/gpl.html" 
         }
+    ],
+    "contributors": [
+        "Finn Herpich <> (http://github.com/ErrorProne)",
+        "Clifton Cunningham <> (http://github.com/cliftonc)",
+        "Eric Abouaf <> (http://github.com/neyric)"
     ]
 }
