@@ -13,6 +13,10 @@ new cron.CronJob('10-20 * * * * *', function(){
     sys.puts(new Date() + ' You will see this message from seconds ten through twenty ');
 });
 
+new cron.CronJob('*/2 * * * jan-dec sun-sat', function(){
+  sys.puts(new Date() + ' You will see this message every two seconds, and validates that the aliases work.');
+});
+
 // How to check if a cron pattern is valid
 try {
 	new cron.CronTime('invalid cron pattern', function() {

@@ -36,20 +36,20 @@ CronTime.prototype = {
   _parse: function() {
 
     var aliases = this.aliases,
-    source = this.source.replace(/[a-z]/i, function(alias){
+    source = this.source.replace(/[a-z][a-z][a-z]/ig, function(alias){
 
-				   alias = alias.toLowerCase();
+      alias = alias.toLowerCase();
 
-				   if (alias in aliases) {
-				     return aliases[alias];
-				   }
+      if (alias in aliases) {
+        return aliases[alias];
+      }
 
-				   throw new Error('Unknown alias: ' + alias);
+      throw new Error('Unknown alias: ' + alias);
 
-				 }),
-    split = this.source.replace(/^\s\s*|\s\s*$/g, '').split(/\s+/),
+    }),
+    split = source.replace(/^\s\s*|\s\s*$/g, '').split(/\s+/),
     cur, len = 6;
-
+    
     while (len--) {
       cur = split[len] || '*';
       this._parseField(cur, this.map[len], this.constraints[len]);
