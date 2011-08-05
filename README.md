@@ -43,7 +43,7 @@ Install
     From source: `sudo npm install`
     From npm: `sudo npm install cron`
 
-Contributors (via git-count)
+Contributors
 ===========
 
 * Nick Campbell
@@ -52,6 +52,7 @@ Contributors (via git-count)
 * cliftonc
 * Finn
 * neyric
+* humanchimp
 
 License
 ==========
