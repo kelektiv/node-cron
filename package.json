@@ -1,7 +1,7 @@
 {
     "name": "cron",
     "description": "CronJob's for your node",
-    "version": "0.1.2",
+    "version": "0.1.3",
     "author": "James Padolsey (http://github.com/jamespadolsey)",
     "bugs" : {
         "web" : "http://github.com/ncb000gt/node-cron/issues"
@@ -18,7 +18,7 @@
         "test": "nodeunit tests/*"
     },
     "dependencies": {
-        "nodeunit": "=0.5.1"
+        "nodeunit": "=0.5.2"
     },
     "licenses": [
         {
@@ -33,7 +33,8 @@
     "contributors": [
         "Nick Campbell <nicholas.j.campbell@gmail.com> (http://github.com/ncb000gt)",
         "Finn Herpich <> (http://github.com/ErrorProne)",
-        "Clifton Cunningham <> (http://github.com/cliftonc)",
-        "Eric Abouaf <> (http://github.com/neyric)"
+        "Clifton Cunningham <clifton.cunningham@gmail.com> (http://github.com/cliftonc)",
+        "Eric Abouaf <eric.abouaf@gmail.com> (http://github.com/neyric)",
+        "humanchimp <> (http://github.com/humanchimp)"
     ]
 }
