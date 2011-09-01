@@ -10,15 +10,12 @@
         "type": "git",
         "url": "http://github.com/ncb000gt/node-cron.git"
     },
-    "engine": [
-        "node >=0.1.90"
-    ],
     "main": "lib/cron",
     "scripts": {
-        "test": "nodeunit tests/*"
+        "test": "make test"
     },
-    "dependencies": {
-        "nodeunit": "=0.5.2"
+    "devDependencies": {
+        "nodeunit": ">=0.5.4"
     },
     "licenses": [
         {
