@@ -1,7 +1,7 @@
 {
     "name": "cron2",
     "description": "CronJob's for your node",
-    "version": "0.1.4",
+    "version": "0.1.5",
     "author": "James Padolsey (http://github.com/jamespadolsey)",
     "bugs" : {
         "web" : "http://github.com/ncb000gt/node-cron/issues"
