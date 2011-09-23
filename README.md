@@ -3,11 +3,12 @@ A NodeJS fork of [jamespadolsey's](http://github.com/jamespadolsey) [cron.js](ht
 Usage:
 ==========
 
-    var cron = require('cron'), sys = require('sys');
-    new cron.CronJob('* * * * * *', function(){
+    var cronJob = require('cron2'), sys = require('sys');
+    cronJob('* * * * * *', function(){
         sys.puts('You will see this message every second');
     });
     
+
 Available Cron patterns:
 ==========
 
@@ -20,8 +21,8 @@ Available Cron patterns:
 Another example
 ==========
 
-    var cron = require('cron'), sys = require('sys');
-    new CronJob('00 30 11 * * 2-6', function(){
+    var cronJob = require('cron2'), sys = require('sys');
+   cronJob('00 30 11 * * 2-6', function(){
         // Runs every weekday (Monday through Friday)
         // at 11:30:00 AM. It does not run on Saturday
         // or Sunday.
@@ -31,7 +32,7 @@ How to check if a cron pattern is valid:
 ==========
 
 		try {
-			new cron.CronTime('invalid cron pattern', function() {
+			cronJob('invalid cron pattern', function() {
 				sys.puts('this should not be printed');
 			})
 		} catch(ex) {
