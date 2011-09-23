@@ -3,7 +3,7 @@ A NodeJS fork of [jamespadolsey's](http://github.com/jamespadolsey) [cron.js](ht
 Usage:
 ==========
 
-    var cronJob = require('cron2'), sys = require('sys');
+    var cronJob = require('cron'), sys = require('sys');
     cronJob('* * * * * *', function(){
         sys.puts('You will see this message every second');
     });

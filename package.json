@@ -1,7 +1,7 @@
 {
     "name": "cron",
     "description": "CronJob's for your node",
-    "version": "0.1.4",
+    "version": "1.0.0",
     "author": "James Padolsey (http://github.com/jamespadolsey)",
     "bugs" : {
         "web" : "http://github.com/ncb000gt/node-cron/issues"
@@ -21,10 +21,6 @@
         {
             "type": "MIT",
             "url": "http://www.opensource.org/licenses/mit-license.php" 
-        },
-        {
-            "type": "GPL",
-            "url": "http://www.gnu.org/copyleft/gpl.html" 
         }
     ],
     "contributors": [
@@ -32,6 +28,7 @@
         "Finn Herpich <> (http://github.com/ErrorProne)",
         "Clifton Cunningham <clifton.cunningham@gmail.com> (http://github.com/cliftonc)",
         "Eric Abouaf <eric.abouaf@gmail.com> (http://github.com/neyric)",
-        "humanchimp <> (http://github.com/humanchimp)"
+        "humanchimp <> (http://github.com/humanchimp)",
+        "Craig Condon <> (http://github.com/spiceapps)"
     ]
 }
