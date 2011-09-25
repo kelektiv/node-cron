@@ -1,34 +1,34 @@
 {
-    "name": "cron",
-    "description": "CronJob's for your node",
-    "version": "1.0.0",
-    "author": "James Padolsey (http://github.com/jamespadolsey)",
-    "bugs" : {
-        "web" : "http://github.com/ncb000gt/node-cron/issues"
-    },
-    "repository": {
-        "type": "git",
-        "url": "http://github.com/ncb000gt/node-cron.git"
-    },
-    "main": "lib/cron",
-    "scripts": {
-        "test": "make test"
-    },
-    "devDependencies": {
-        "nodeunit": ">=0.5.4"
-    },
-    "licenses": [
-        {
-            "type": "MIT",
-            "url": "http://www.opensource.org/licenses/mit-license.php" 
-        }
-    ],
-    "contributors": [
-        "Nick Campbell <nicholas.j.campbell@gmail.com> (http://github.com/ncb000gt)",
-        "Finn Herpich <> (http://github.com/ErrorProne)",
-        "Clifton Cunningham <clifton.cunningham@gmail.com> (http://github.com/cliftonc)",
-        "Eric Abouaf <eric.abouaf@gmail.com> (http://github.com/neyric)",
-        "humanchimp <> (http://github.com/humanchimp)",
-        "Craig Condon <> (http://github.com/spiceapps)"
-    ]
+  "name": "cron",
+  "description": "CronJob's for your node",
+  "version": "1.0.0",
+  "author": "Nick Campbell <nicholas.j.campbell@gmail.com> (http://github.com/ncb000gt)",
+  "bugs" : {
+    "web" : "http://github.com/ncb000gt/node-cron/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/ncb000gt/node-cron.git"
+  },
+  "main": "lib/cron",
+  "scripts": {
+    "test": "make test"
+  },
+  "devDependencies": {
+    "nodeunit": ">=0.5.4"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://www.opensource.org/licenses/mit-license.php" 
+    }
+  ],
+  "contributors": [
+    "James Padolsey <> (http://github.com/jamespadolsey)",
+    "Finn Herpich <fh@three-heads.de> (http://github.com/ErrorProne)",
+    "Clifton Cunningham <clifton.cunningham@gmail.com> (http://github.com/cliftonc)",
+    "Eric Abouaf <eric.abouaf@gmail.com> (http://github.com/neyric)",
+    "humanchimp <morphcham@gmail.com> (http://github.com/humanchimp)",
+    "Craig Condon <craig@spiceapps.com> (http://github.com/spiceapps)"
+  ]
 }
