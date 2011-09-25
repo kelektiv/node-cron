@@ -54,12 +54,12 @@ Install
 Contributors
 ===========
 
-* Nick Campbell
-* Finn Herpich
-* James Padolsey
-* cliftonc
-* neyric
-* humanchimp
+* [James Padolsey][jamespadolsey]
+* [Craig Condon][spiceapps]
+* [Finn Herpich][errorprone]
+* [cliftonc][cliftonc]
+* [neyric][neyric]
+* [humanchimp][humanchimp]
 
 License
 ==========
