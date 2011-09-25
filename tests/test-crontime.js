@@ -113,7 +113,12 @@ module.exports = testCase({
                 new cron.CronTime('* * * * j *');
             });
             assert.done();
+        },
+        'test Date': function(assert) {
+          assert.expect(1);
+          var d = new Date();
+          var ct = new cron.CronTime(d);
+          assert.equals(ct.source.getTime(), d.getTime());
+          assert.done();
         }
-
-
 });
