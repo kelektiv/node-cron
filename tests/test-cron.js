@@ -9,7 +9,7 @@ module.exports = testCase({
             });
             setTimeout(function() {
                 assert.done();
-            }, 2000);
+            }, 1250);
         },
         'test second with oncomplete (* * * * * *)': function(assert) {
             assert.expect(1);
@@ -20,7 +20,7 @@ module.exports = testCase({
             });
             setTimeout(function() {
                 assert.done();
-            }, 2000);
+            }, 1250);
         },
         'test every second for 5 seconds (* * * * * *)': function(assert) {
             assert.expect(5);
@@ -29,7 +29,7 @@ module.exports = testCase({
             });
             setTimeout(function() {
                 assert.done();
-            }, 6000);
+            }, 5250);
         },
         'test every second for 5 seconds with oncomplete (* * * * * *)': function(assert) {
             assert.expect(5);
@@ -40,7 +40,7 @@ module.exports = testCase({
             });
             setTimeout(function() {
                 assert.done();
-            }, 6000);
+            }, 5250);
         },
         'test every 1 second for 5 seconds (*/1 * * * * *)': function(assert) {
             assert.expect(5);
@@ -49,7 +49,7 @@ module.exports = testCase({
             });
             setTimeout(function() {
                 assert.done();
-            }, 6000);
+            }, 5250);
         },
         'test every 1 second for 5 seconds with oncomplete (*/1 * * * * *)': function(assert) {
             assert.expect(5);
@@ -60,7 +60,7 @@ module.exports = testCase({
             });
             setTimeout(function() {
                 assert.done();
-            }, 6000);
+            }, 5250);
         },
         'test every second for a range ([start]-[end] * * * * *)': function(assert) {
             assert.expect(5);
@@ -72,7 +72,7 @@ module.exports = testCase({
             });
             setTimeout(function() {
                 assert.done();
-            }, 7000);
+            }, 6250);
         },
         'test every second for a range with oncomplete ([start]-[end] * * * * *)': function(assert) {
             assert.expect(5);
@@ -86,6 +86,6 @@ module.exports = testCase({
             });
             setTimeout(function() {
                 assert.done();
-            }, 7000);
+            }, 6250);
         }
 });
