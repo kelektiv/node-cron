@@ -10,7 +10,7 @@ Additionally, this library goes beyond the basic cron syntax and allows you to s
 Usage:
 ==========
 
-    var cronJob = require('cron');
+    var cronJob = require('cron').CronJob;
     cronJob('* * * * * *', function(){
         console.log('You will see this message every second');
     });
@@ -28,7 +28,7 @@ Available Cron patterns:
 Another example
 ==========
 
-    var cronJob = require('cron');
+    var cronJob = require('cron').CronJob;
    cronJob('00 30 11 * * 2-6', function(){
         // Runs every weekday (Monday through Friday)
         // at 11:30:00 AM. It does not run on Saturday
