@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "author": "Nick Campbell <nicholas.j.campbell@gmail.com> (http://github.com/ncb000gt)",
   "bugs" : {
-    "web" : "http://github.com/ncb000gt/node-cron/issues"
+    "url" : "http://github.com/ncb000gt/node-cron/issues"
   },
   "repository": {
     "type": "git",
