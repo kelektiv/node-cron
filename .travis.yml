@@ -4,4 +4,5 @@ node_js:
   - 0.6
 notifications:
   email:
+    - nicholas.j.campbell@gmail.com
     on_success: never
