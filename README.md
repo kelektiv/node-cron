@@ -3,7 +3,7 @@ node-cron
 
 Originally this projet was a NodeJS fork of [James Padolsey's][jamespadolsey] [cron.js](http://github.com/jamespadolsey/cron.js).
 
-After [Craig Condon][spiceapps] made some updates and changes to the code base this has evolved to something that has a bit of both. The cron syntax parsing is mostly James' while using timeout instead of interval is Craig's.
+After [Craig Condon][crcn] made some updates and changes to the code base this has evolved to something that has a bit of both. The cron syntax parsing is mostly James' while using timeout instead of interval is Craig's.
 
 Additionally, this library goes beyond the basic cron syntax and allows you to supply a Date object. This will be used as the trigger for your callback. Cron syntax is still an acceptable CronTime format.
 
@@ -55,7 +55,7 @@ Contributors
 ===========
 
 * [James Padolsey][jamespadolsey]
-* [Craig Condon][spiceapps]
+* [Craig Condon][crcn]
 * [Finn Herpich][errorprone]
 * [cliftonc][cliftonc]
 * [neyric][neyric]
@@ -68,7 +68,7 @@ MIT
 
 
 [jamespadolsey]:http://github.com/jamespadolsey
-[spiceapps]:http://github.com/spiceapps
+[crcn]:http://github.com/crcn
 [cliftonc]:http://github.com/cliftonc
 [neyric]:http://github.com/neyric
 [humanchimp]:http://github.com/humanchimp
