@@ -1,6 +1,8 @@
 node-cron
 =========
 
+[![Build Status](https://secure.travis-ci.org/ncb000gt/node-cron.png)](http://travis-ci.org/#!/ncb000gt/node-cron) 
+
 Originally this projet was a NodeJS fork of [James Padolsey's][jamespadolsey] [cron.js](http://github.com/jamespadolsey/cron.js).
 
 After [Craig Condon][crcn] made some updates and changes to the code base this has evolved to something that has a bit of both. The cron syntax parsing is mostly James' while using timeout instead of interval is Craig's.
