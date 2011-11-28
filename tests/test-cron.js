@@ -95,5 +95,20 @@ module.exports = testCase({
       c.stop();
       assert.done();
     }, 6250);
+  },
+  'test start/stop': function(assert) {
+    assert.expect(1);
+    var c = new cron.CronJob('* * * * * *', function() {
+      assert.ok(true);
+      this.stop();
+    });
+    c.stop();
+    setTimeout(function() {
+      c.start();
+    }, 1000);
+    setTimeout(function() {
+      assert.done();
+    }, 3250);
+    
   }
 });
