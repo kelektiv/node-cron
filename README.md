@@ -31,7 +31,7 @@ Another example
 ==========
 
     var cronJob = require('cron').CronJob;
-   cronJob('00 30 11 * * 2-6', function(){
+    cronJob('00 30 11 * * 2-6', function(){
         // Runs every weekday (Monday through Friday)
         // at 11:30:00 AM. It does not run on Saturday
         // or Sunday.
