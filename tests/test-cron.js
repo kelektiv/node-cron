@@ -113,5 +113,36 @@ module.exports = testCase({
         assert.done();
       }, 6250);
     }
-  }
+  },
+  'test second (* * * * * *) object constructor': function(assert) {
+    assert.expect(1);
+    var c = new cron.CronJob({
+      cronTime: '* * * * * *',
+      onTick: function() {
+        assert.ok(true);
+      },
+      start: true
+    });
+    setTimeout(function() {
+      c.stop();
+      assert.done();
+    }, 1250);
+  },
+  'test second with oncomplete (* * * * * *) object constructor': function(assert) {
+    assert.expect(1);
+    var c = new cron.CronJob({
+      cronTime: '* * * * * *',
+      onTick: function(done) {
+        done();
+      },
+      onComplete: function () {
+        assert.ok(true);
+      },
+      start: true
+    });
+    setTimeout(function() {
+      c.stop();
+      assert.done();
+    }, 1250);
+  },
 });
