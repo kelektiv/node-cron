@@ -72,7 +72,7 @@ module.exports = testCase({
     assert.expect(5);
     var prepDate = new Date();
     if ((54 - prepDate.getSeconds()) <= 0) {
-      setTimeout(testRange, (60 - prepDate.getSeconds()) + 1);
+      setTimeout(testRange, (60000 - (prepDate.getSeconds()*1000)) + 1000);
     } else {
       testRange();
     }
@@ -94,7 +94,7 @@ module.exports = testCase({
     assert.expect(5);
     var prepDate = new Date();
     if ((54 - prepDate.getSeconds()) <= 0) {
-      setTimeout(testRange, (60 - prepDate.getSeconds()) + 1);
+      setTimeout(testRange, (60000 - (prepDate.getSeconds()*1000)) + 1000);
     } else {
       testRange();
     }
