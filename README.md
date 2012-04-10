@@ -76,6 +76,7 @@ API
 Parameter Based
 
 `CronJob`
+
   * `constructor(cronTime, onTick, onComplete, start)` - Of note, the first parameter here can be a JSON object that has the below names and associated types (see examples above).
     * `cronTime` - [REQUIRED] - The time to fire off your job. This can be in the form of cron syntax or a JS [Date](https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Date) object.
     * `onTick` - [REQUIRED] - The function to fire at the specified time.
@@ -85,6 +86,7 @@ Parameter Based
   * `stop` - Stops your job.
 
 `CronTime`
+
   * `constructor(time)`
     * `time` - [REQUIRED] - The time to fire off your job. This can be in the form of cron syntax or a JS [Date](https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Date) object.
 
