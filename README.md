@@ -15,7 +15,7 @@ Usage:
     var cronJob = require('cron').CronJob;
     cronJob('* * * * * *', function(){
         console.log('You will see this message every second');
-    });
+    }, null, true);
     
 
 Available Cron patterns:
@@ -31,11 +31,28 @@ Another example
 ==========
 
     var cronJob = require('cron').CronJob;
-    cronJob('00 30 11 * * 2-6', function(){
+    var job = cronJob('00 30 11 * * 2-6', function(){
         // Runs every weekday (Monday through Friday)
         // at 11:30:00 AM. It does not run on Saturday
         // or Sunday.
     });
+    job.start();
+
+For good measure
+==========
+
+    var cronJob = require('cron').CronJob;
+    var job = cronJob({
+      cronTime: '00 30 11 * * 2-6',
+      onTick: function() {
+        // Runs every weekday (Monday through Friday)
+        // at 11:30:00 AM. It does not run on Saturday
+        // or Sunday.
+      },
+      start: true
+    });
+    job.start();
+
 
 How to check if a cron pattern is valid:
 ==========
@@ -50,8 +67,26 @@ How to check if a cron pattern is valid:
 
 Install
 ==========
-    From source: `sudo npm install`
-    From npm: `sudo npm install cron`
+    From source: `npm install`
+    From npm: `npm install cron`
+
+API
+==========
+
+Parameter Based
+
+`CronJob`
+    * `constructor(cronTime, onTick, onComplete, start)` - Of note, the first parameter here can be a JSON object that has the below names and associated types (see examples above).
+      * `cronTime` - [REQUIRED] - The time to fire off your job. This can be in the form of cron syntax or a JS [Date](https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Date) object.
+      * `onTick` - [REQUIRED] - The function to fire at the specified time.
+      * `onComplete` - [OPTIONAL] - A function that will fire when the job is complete, when it is stopped.
+      * `start` - [OPTIONAL] - Specifies whether to start the job after just before exiting the constructor.
+    * `start` - Runs your job.
+    * `stop` - Stops your job.
+
+`CronTime`
+    * `constructor(time)`
+      * `time` - [REQUIRED] - The time to fire off your job. This can be in the form of cron syntax or a JS [Date](https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Date) object.
 
 Contributors
 ===========
