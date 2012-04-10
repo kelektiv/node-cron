@@ -13,7 +13,7 @@ Usage:
 ==========
 
     var cronJob = require('cron').CronJob;
-    cronJob('* * * * * *', function(){
+    new cronJob('* * * * * *', function(){
         console.log('You will see this message every second');
     }, null, true);
     
@@ -31,7 +31,7 @@ Another example
 ==========
 
     var cronJob = require('cron').CronJob;
-    var job = cronJob('00 30 11 * * 2-6', function(){
+    var job = new cronJob('00 30 11 * * 2-6', function(){
         // Runs every weekday (Monday through Friday)
         // at 11:30:00 AM. It does not run on Saturday
         // or Sunday.
@@ -42,7 +42,7 @@ For good measure
 ==========
 
     var cronJob = require('cron').CronJob;
-    var job = cronJob({
+    var job = new cronJob({
       cronTime: '00 30 11 * * 2-6',
       onTick: function() {
         // Runs every weekday (Monday through Friday)
@@ -58,7 +58,7 @@ How to check if a cron pattern is valid:
 ==========
 
 		try {
-			cronJob('invalid cron pattern', function() {
+			new cronJob('invalid cron pattern', function() {
 				console.log('this should not be printed');
 			})
 		} catch(ex) {
