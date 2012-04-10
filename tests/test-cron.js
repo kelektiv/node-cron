@@ -69,23 +69,23 @@ module.exports = testCase({
     }, 5250);
   },
   'test every second for a range ([start]-[end] * * * * *)': function(assert) {
-    assert.expect(5);
+    assert.expect(2);
     var d = new Date();
     var s = d.getSeconds()+2;
-    var e = s + 4; //end value is inclusive
+    var e = s + 1; //end value is inclusive
     var c = new cron.CronJob(s + '-' + e +' * * * * *', function() {
       assert.ok(true);
     });
     setTimeout(function() {
       c.stop();
       assert.done();
-    }, 6250);
+    }, 3250);
   },
   'test every second for a range with oncomplete ([start]-[end] * * * * *)': function(assert) {
-    assert.expect(5);
+    assert.expect(2);
     var d = new Date();
     var s = d.getSeconds()+2;
-    var e = s + 4; //end value is inclusive
+    var e = s + 1; //end value is inclusive
     var c = new cron.CronJob(s + '-' + e +' * * * * *', function(done) {
       done();
     }, function() {
@@ -94,6 +94,6 @@ module.exports = testCase({
     setTimeout(function() {
       c.stop();
       assert.done();
-    }, 6250);
+    }, 3250);
   }
 });
