@@ -145,4 +145,18 @@ module.exports = testCase({
       assert.done();
     }, 1250);
   },
+  'test start/stop': function(assert) {
+    assert.expect(1);
+    var c = new cron.CronJob('* * * * * *', function() {
+      assert.ok(true);
+      this.stop();
+    });
+    setTimeout(function() {
+      c.start();
+    }, 1000);
+    setTimeout(function() {
+      assert.done();
+    }, 3250);
+    
+  }
 });

@@ -1,7 +1,9 @@
 node-cron
 =========
 
-Originally this projet was a NodeJS fork of [James Padolsey's][jamespadolsey] [cron.js](http://github.com/jamespadolsey/cron.js).
+[![Build Status](https://secure.travis-ci.org/ncb000gt/node-cron.png)](http://travis-ci.org/#!/ncb000gt/node-cron) 
+
+Originally this project was a NodeJS fork of [James Padolsey's][jamespadolsey] [cron.js](http://github.com/padolsey/cron.js).
 
 After [Craig Condon][crcn] made some updates and changes to the code base this has evolved to something that has a bit of both. The cron syntax parsing is mostly James' while using timeout instead of interval is Craig's.
 
@@ -29,7 +31,7 @@ Another example
 ==========
 
     var cronJob = require('cron').CronJob;
-   cronJob('00 30 11 * * 2-6', function(){
+    cronJob('00 30 11 * * 2-6', function(){
         // Runs every weekday (Monday through Friday)
         // at 11:30:00 AM. It does not run on Saturday
         // or Sunday.
@@ -67,7 +69,7 @@ License
 MIT
 
 
-[jamespadolsey]:http://github.com/jamespadolsey
+[jamespadolsey]:http://github.com/padolsey
 [crcn]:http://github.com/crcn
 [cliftonc]:http://github.com/cliftonc
 [neyric]:http://github.com/neyric
