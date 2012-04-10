@@ -6,7 +6,7 @@ module.exports = testCase({
     assert.expect(1);
     var c = new cron.CronJob('* * * * * *', function() {
       assert.ok(true);
-    });
+    }, null, true);
     setTimeout(function() {
       c.stop();
       assert.done();
@@ -18,7 +18,7 @@ module.exports = testCase({
       done();
     }, function () {
       assert.ok(true);
-    });
+    }, true);
     setTimeout(function() {
       c.stop();
       assert.done();
@@ -28,7 +28,7 @@ module.exports = testCase({
     assert.expect(5);
     var c = new cron.CronJob('* * * * * *', function() {
       assert.ok(true);
-    });
+    }, null, true);
     setTimeout(function() {
       c.stop();
       assert.done();
@@ -40,7 +40,7 @@ module.exports = testCase({
       done();
     }, function() {
       assert.ok(true);
-    });
+    }, true);
     setTimeout(function() {
       c.stop();
       assert.done();
@@ -50,7 +50,7 @@ module.exports = testCase({
     assert.expect(5);
     var c = new cron.CronJob('*/1 * * * * *', function() {
       assert.ok(true);
-    });
+    }, null, true);
     setTimeout(function() {
       assert.done();
       c.stop();
@@ -62,38 +62,56 @@ module.exports = testCase({
       done();
     }, function() {
       assert.ok(true);
-    });
+    }, true);
     setTimeout(function() {
       c.stop();
       assert.done();
     }, 5250);
   },
   'test every second for a range ([start]-[end] * * * * *)': function(assert) {
-    assert.expect(2);
-    var d = new Date();
-    var s = d.getSeconds()+2;
-    var e = s + 1; //end value is inclusive
-    var c = new cron.CronJob(s + '-' + e +' * * * * *', function() {
-      assert.ok(true);
-    });
-    setTimeout(function() {
-      c.stop();
-      assert.done();
-    }, 3250);
+    assert.expect(5);
+    var prepDate = new Date();
+    if ((54 - prepDate.getSeconds()) <= 0) {
+      setTimeout(testRange, (60 - prepDate.getSeconds()) + 1);
+    } else {
+      testRange();
+    }
+
+    function testRange() {
+      var d = new Date();
+      var s = d.getSeconds()+2;
+      var e = s + 6; //end value is inclusive
+      var c = new cron.CronJob(s + '-' + e +' * * * * *', function() {
+        assert.ok(true);
+      }, null, true);
+      setTimeout(function() {
+        c.stop();
+        assert.done();
+      }, 6250);
+    }
   },
   'test every second for a range with oncomplete ([start]-[end] * * * * *)': function(assert) {
-    assert.expect(2);
-    var d = new Date();
-    var s = d.getSeconds()+2;
-    var e = s + 1; //end value is inclusive
-    var c = new cron.CronJob(s + '-' + e +' * * * * *', function(done) {
-      done();
-    }, function() {
-      assert.ok(true);
-    });
-    setTimeout(function() {
-      c.stop();
-      assert.done();
-    }, 3250);
+    assert.expect(5);
+    var prepDate = new Date();
+    if ((54 - prepDate.getSeconds()) <= 0) {
+      setTimeout(testRange, (60 - prepDate.getSeconds()) + 1);
+    } else {
+      testRange();
+    }
+
+    function testRange() {
+      var d = new Date();
+      var s = d.getSeconds()+2;
+      var e = s + 6; //end value is inclusive
+      var c = new cron.CronJob(s + '-' + e +' * * * * *', function() {
+        assert.ok(true);
+      }, function() {
+        assert.ok(true);
+      }, true);
+      setTimeout(function() {
+        c.stop();
+        assert.done();
+      }, 6250);
+    }
   }
 });
