@@ -120,5 +120,11 @@ module.exports = testCase({
           var ct = new cron.CronTime(d);
           assert.equals(ct.source.getTime(), d.getTime());
           assert.done();
+        },
+        'test incorrect roll-over bug': function(assert) {
+          assert.expect(1);
+          var ct = new cron.CronTime('0 0 17 * * *');
+          assert.ok(ct.sendAt() - new Date() < 24*60*60*1000);
+          assert.done();
         }
 });
