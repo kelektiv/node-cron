@@ -15,7 +15,7 @@ Usage:
     var cronJob = require('cron').CronJob;
     new cronJob('* * * * * *', function(){
         console.log('You will see this message every second');
-    }, null, true);
+    }, null, true, "America/Los_Angeles");
     
 
 Available Cron patterns:
@@ -35,8 +35,12 @@ Another example
         // Runs every weekday (Monday through Friday)
         // at 11:30:00 AM. It does not run on Saturday
         // or Sunday.
-    });
-    job.start();
+      }, function () {
+        // This function is executed when the job stops
+      }, 
+      true /* Start the job right now */,
+      timeZone /* Time zone of this job. */
+    );
 
 For good measure
 ==========
@@ -49,7 +53,8 @@ For good measure
         // at 11:30:00 AM. It does not run on Saturday
         // or Sunday.
       },
-      start: true
+      start: false,
+      timeZone: "America/Los_Angeles"
     });
     job.start();
 
@@ -93,6 +98,7 @@ Parameter Based
 Contributors
 ===========
 
+* [Romain Beauxis][toots]
 * [James Padolsey][jamespadolsey]
 * [Craig Condon][crcn]
 * [Finn Herpich][errorprone]
@@ -106,6 +112,7 @@ License
 MIT
 
 
+[toots]:http://github.com/toots
 [jamespadolsey]:http://github.com/padolsey
 [crcn]:http://github.com/crcn
 [cliftonc]:http://github.com/cliftonc

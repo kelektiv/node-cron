@@ -14,6 +14,9 @@
   "scripts": {
     "test": "make test"
   },
+  "dependencies": {
+    "time" : "0.8.0"
+  },
   "devDependencies": {
     "nodeunit": ">=0.5.4"
   },
@@ -24,6 +27,7 @@
     }
   ],
   "contributors": [
+    "Romain Beauxis <toots@rastageeks.org> (https://github.com/toots)",
     "James Padolsey <> (http://github.com/jamespadolsey)",
     "Finn Herpich <fh@three-heads.de> (http://github.com/ErrorProne)",
     "Clifton Cunningham <clifton.cunningham@gmail.com> (http://github.com/cliftonc)",
