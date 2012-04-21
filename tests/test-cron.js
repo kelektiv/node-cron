@@ -204,4 +204,72 @@ module.exports = testCase({
       }, 2250);
     }
   },
+  'test a job with a string and a given time zone': function (assert) {
+    assert.expect(2);
+
+    var time = require("time");
+    var zone = "America/Chicago";
+
+    // New Orleans time
+    var d = new time.Date();
+    d.setTimezone(zone);
+
+    // Current time
+    t = new time.Date();
+
+    // If current time is New Orleans time, switch to Los Angeles..
+    if (t.getHours() === d.getHours()) {
+      zone = "America/Los_Angeles";
+      d.setTimezone(zone);
+    }
+    assert.ok(d.getHours() !== t.getHours());
+
+    var seconds = d.getSeconds() + 1;
+    var c = new cron.CronJob(seconds + ' ' + d.getMinutes() + ' ' + d.getHours() +  ' * * *', function(){
+      assert.ok(true);
+    }, undefined, true, zone);
+
+    setTimeout(function() {
+      c.stop();
+      assert.done();
+    }, 1250);
+  },
+  'test a job with a date and a given time zone': function (assert) {
+    assert.expect(2);
+
+    var time = require("time");
+    var zone = "America/Chicago";
+
+    // New Orleans time
+    var d = new time.Date();
+    d.setTimezone(zone);
+
+    // Current time
+    t = new time.Date();
+
+    // If current time is New Orleans time, switch to Los Angeles..
+    if (t.getHours() === d.getHours()) {
+      zone = "America/Los_Angeles";
+      d.setTimezone(zone);
+    }
+    assert.ok(d.getHours() !== t.getHours());
+
+    if ((58 - t.getSeconds()) <= 0) {
+      setTimeout(testRun, (60000 - (t.getSeconds()*1000)) + 1000);
+    } else {
+      testRun();
+    }
+
+    function testRun() {
+      var s = d.getSeconds()+1;
+      d.setSeconds(s);
+      var c = new cron.CronJob(d, function() {
+        assert.ok(true);
+      }, null, true, zone);
+      setTimeout(function() {
+        c.stop();
+        assert.done();
+      }, 2250);
+    }
+  }
 });
