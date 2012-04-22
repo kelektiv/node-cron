@@ -205,7 +205,7 @@ module.exports = testCase({
     }
   },
   'test a job with a string and a given time zone': function (assert) {
-    assert.expect(2);
+    assert.expect(3);
 
     var time = require("time");
     var zone = "America/Chicago";
@@ -216,13 +216,15 @@ module.exports = testCase({
 
     // Current time
     t = new time.Date();
+    t.setTimezone("America/New_York");
 
     // If current time is New Orleans time, switch to Los Angeles..
     if (t.getHours() === d.getHours()) {
       zone = "America/Los_Angeles";
       d.setTimezone(zone);
     }
-    assert.ok(d.getHours() !== t.getHours());
+    assert.notEqual(d.getHours(), t.getHours());
+    assert.notEqual(d.getTimezone(), t.getTimezone());
 
     var seconds = d.getSeconds() + 1;
     var c = new cron.CronJob(seconds + ' ' + d.getMinutes() + ' ' + d.getHours() +  ' * * *', function(){
@@ -246,13 +248,14 @@ module.exports = testCase({
 
     // Current time
     t = new time.Date();
+    t.setTimezone("America/New_York");
 
     // If current time is New Orleans time, switch to Los Angeles..
     if (t.getHours() === d.getHours()) {
       zone = "America/Los_Angeles";
       d.setTimezone(zone);
     }
-    assert.ok(d.getHours() !== t.getHours());
+    assert.notEqual(d.getHours(), t.getHours());
 
     if ((58 - t.getSeconds()) <= 0) {
       setTimeout(testRun, (60000 - (t.getSeconds()*1000)) + 1000);
