@@ -121,10 +121,17 @@ module.exports = testCase({
           assert.equals(ct.source.getTime(), d.getTime());
           assert.done();
         },
-        'test incorrect roll-over bug': function(assert) {
-          assert.expect(1);
+        'test day roll-over': function(assert) {
+          var numHours = 24;
+          assert.expect(numHours * 2);
           var ct = new cron.CronTime('0 0 17 * * *');
-          assert.ok(ct.sendAt() - new Date() < 24*60*60*1000);
+          
+          for (var hr = 0; hr < numHours; hr++) {
+            var start = new Date(2012, 3, 16, hr, 30, 30);
+            var next = ct._getNextDateFrom(start);
+            assert.ok(next - start < 24*60*60*1000);
+            assert.ok(next > start);
+          }
           assert.done();
         }
 });
