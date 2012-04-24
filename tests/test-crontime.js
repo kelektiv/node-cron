@@ -127,7 +127,7 @@ module.exports = testCase({
           var ct = new cron.CronTime('0 0 17 * * *');
           
           for (var hr = 0; hr < numHours; hr++) {
-            var start = new Date(2012, 3, 16, hr, 30, 30);
+            var start = new time.Date(2012, 3, 16, hr, 30, 30);
             var next = ct._getNextDateFrom(start);
             assert.ok(next - start < 24*60*60*1000);
             assert.ok(next > start);
