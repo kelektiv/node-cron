@@ -14,11 +14,9 @@
   "scripts": {
     "test": "make test"
   },
-  "dependencies": {
-    "time" : "0.8.0"
-  },
   "devDependencies": {
-    "nodeunit": ">=0.5.4"
+    "nodeunit": ">=0.5.4",
+    "time" : "0.8.0"
   },
   "licenses": [
     {
@@ -33,6 +31,7 @@
     "Clifton Cunningham <clifton.cunningham@gmail.com> (http://github.com/cliftonc)",
     "Eric Abouaf <eric.abouaf@gmail.com> (http://github.com/neyric)",
     "humanchimp <morphcham@gmail.com> (http://github.com/humanchimp)",
-    "Craig Condon <craig@spiceapps.com> (http://github.com/spiceapps)"
+    "Craig Condon <craig@spiceapps.com> (http://github.com/spiceapps)",
+    "Dan Bear <daniel@hulu.com> (http://github.com/danhbear)"
   ]
 }

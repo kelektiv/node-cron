@@ -105,6 +105,7 @@ Contributors
 * [cliftonc][cliftonc]
 * [neyric][neyric]
 * [humanchimp][humanchimp]
+* [danhbear][danhbear]
 
 License
 ==========
@@ -119,3 +120,4 @@ MIT
 [neyric]:http://github.com/neyric
 [humanchimp]:http://github.com/humanchimp
 [errorprone]:http://github.com/ErrorProne
+[danhbear]:http://github.com/danhbear
