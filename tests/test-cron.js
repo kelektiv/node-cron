@@ -211,23 +211,28 @@ module.exports = testCase({
     var zone = "America/Chicago";
 
     // New Orleans time
-    var d = new time.Date();
-    d.setTimezone(zone);
+    var t = new time.Date();
+    t.setTimezone(zone);
 
     // Current time
-    t = new time.Date();
-    t.setTimezone("America/New_York");
+    d = new Date();
 
     // If current time is New Orleans time, switch to Los Angeles..
     if (t.getHours() === d.getHours()) {
       zone = "America/Los_Angeles";
-      d.setTimezone(zone);
+      t.setTimezone(zone);
     }
     assert.notEqual(d.getHours(), t.getHours());
-    assert.notEqual(d.getTimezone(), t.getTimezone());
+    assert.ok(!(Date instanceof time.Date));
 
-    var seconds = d.getSeconds() + 1;
-    var c = new cron.CronJob(seconds + ' ' + d.getMinutes() + ' ' + d.getHours() +  ' * * *', function(){
+    // If t = 59s12m then t.setSeconds(60)
+    // becones 00s13m so we're fine just doing
+    // this and no testRun callback.
+    t.setSeconds(t.getSeconds()+1);
+    // Run a job designed to be executed at a given 
+    // time in `zone`, making sure that it is a different
+    // hour than local time.
+    var c = new cron.CronJob(t.getSeconds() + ' ' + t.getMinutes() + ' ' + t.getHours() +  ' * * *', function(){
       assert.ok(true);
     }, undefined, true, zone);
 
@@ -237,42 +242,33 @@ module.exports = testCase({
     }, 1250);
   },
   'test a job with a date and a given time zone': function (assert) {
-    assert.expect(2);
+    assert.expect(3);
 
     var time = require("time");
     var zone = "America/Chicago";
 
     // New Orleans time
-    var d = new time.Date();
-    d.setTimezone(zone);
+    var t = new time.Date();
+    t.setTimezone(zone);
 
     // Current time
-    t = new time.Date();
-    t.setTimezone("America/New_York");
+    d = new Date();
 
     // If current time is New Orleans time, switch to Los Angeles..
     if (t.getHours() === d.getHours()) {
       zone = "America/Los_Angeles";
-      d.setTimezone(zone);
+      t.setTimezone(zone);
     }
     assert.notEqual(d.getHours(), t.getHours());
+    assert.ok(!(Date instanceof time.Date));
 
-    if ((58 - t.getSeconds()) <= 0) {
-      setTimeout(testRun, (60000 - (t.getSeconds()*1000)) + 1000);
-    } else {
-      testRun();
-    }
-
-    function testRun() {
-      var s = d.getSeconds()+1;
-      d.setSeconds(s);
-      var c = new cron.CronJob(d, function() {
-        assert.ok(true);
-      }, null, true, zone);
-      setTimeout(function() {
-        c.stop();
-        assert.done();
-      }, 2250);
-    }
+    t.setSeconds(t.getSeconds()+1);
+    var c = new cron.CronJob(t, function() {
+      assert.ok(true);
+    }, null, true, zone);
+    setTimeout(function() {
+      c.stop();
+      assert.done();
+    }, 2250);
   }
 });
