@@ -120,5 +120,18 @@ module.exports = testCase({
           var ct = new cron.CronTime(d);
           assert.equals(ct.source.getTime(), d.getTime());
           assert.done();
+        },
+        'test day roll-over': function(assert) {
+          var numHours = 24;
+          assert.expect(numHours * 2);
+          var ct = new cron.CronTime('0 0 17 * * *');
+          
+          for (var hr = 0; hr < numHours; hr++) {
+            var start = new time.Date(2012, 3, 16, hr, 30, 30);
+            var next = ct._getNextDateFrom(start);
+            assert.ok(next - start < 24*60*60*1000);
+            assert.ok(next > start);
+          }
+          assert.done();
         }
 });
