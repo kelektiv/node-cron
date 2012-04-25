@@ -9,7 +9,7 @@ After [Craig Condon][crcn] made some updates and changes to the code base this h
 
 Additionally, this library goes beyond the basic cron syntax and allows you to supply a Date object. This will be used as the trigger for your callback. Cron syntax is still an acceptable CronTime format.
 
-Usage:
+Usage (basic cron usage):
 ==========
 
     var cronJob = require('cron').CronJob;
@@ -27,7 +27,7 @@ Available Cron patterns:
     
 [Read up on cron patterns here](http://help.sap.com/saphelp_xmii120/helpdata/en/44/89a17188cc6fb5e10000000a155369/content.htm).
 
-Another example
+Another cron example
 ==========
 
     var cronJob = require('cron').CronJob;
@@ -35,6 +35,19 @@ Another example
         // Runs every weekday (Monday through Friday)
         // at 11:30:00 AM. It does not run on Saturday
         // or Sunday.
+      }, function () {
+        // This function is executed when the job stops
+      }, 
+      true /* Start the job right now */,
+      timeZone /* Time zone of this job. */
+    );
+
+Another example with Date
+==========
+
+    var cronJob = require('cron').CronJob;
+    var job = new cronJob(new Date(), function(){
+        //runs once at the specified date.
       }, function () {
         // This function is executed when the job stops
       }, 
