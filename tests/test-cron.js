@@ -274,5 +274,19 @@ module.exports = testCase({
         assert.done();
       }, 2250);
     }
+  },
+  'test dates fire only once': function(assert) {
+    assert.expect(1);
+    var count = 0;
+    var d = new Date().getTime() + 1000;
+    var job = cron.job(new Date(d), function() { 
+      count++;
+    }); 
+    job.start();
+    setTimeout(function() {
+      job.stop();
+      assert.equal(count, 1);
+      assert.done();
+    }, 5250);
   }
 });
