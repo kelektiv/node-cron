@@ -13,15 +13,15 @@ module.exports = testCase({
     }, 1250);
   },
   'test second with oncomplete (* * * * * *)': function(assert) {
-    assert.expect(1);
+    assert.expect(2);
     var c = new cron.CronJob('* * * * * *', function(done) {
-      done();
+      assert.ok(true);
     }, function () {
       assert.ok(true);
+      assert.done();
     }, true);
     setTimeout(function() {
       c.stop();
-      assert.done();
     }, 1250);
   },
   'test every second for 5 seconds (* * * * * *)': function(assert) {
@@ -35,15 +35,15 @@ module.exports = testCase({
     }, 5250);
   },
   'test every second for 5 seconds with oncomplete (* * * * * *)': function(assert) {
-    assert.expect(5);
+    assert.expect(6);
     var c = new cron.CronJob('* * * * * *', function(done) {
-      done();
+      assert.ok(true);
     }, function() {
       assert.ok(true);
+      assert.done();
     }, true);
     setTimeout(function() {
       c.stop();
-      assert.done();
     }, 5250);
   },
   'test every 1 second for 5 seconds (*/1 * * * * *)': function(assert) {
@@ -57,15 +57,15 @@ module.exports = testCase({
     }, 5250);
   },
   'test every 1 second for 5 seconds with oncomplete (*/1 * * * * *)': function(assert) {
-    assert.expect(5);
+    assert.expect(6);
     var c = new cron.CronJob('*/1 * * * * *', function(done) {
-      done();
+      assert.ok(true);
     }, function() {
       assert.ok(true);
+      assert.done();
     }, true);
     setTimeout(function() {
       c.stop();
-      assert.done();
     }, 5250);
   },
   'test every second for a range ([start]-[end] * * * * *)': function(assert) {
@@ -91,7 +91,7 @@ module.exports = testCase({
     }
   },
   'test every second for a range with oncomplete ([start]-[end] * * * * *)': function(assert) {
-    assert.expect(5);
+    assert.expect(6);
     var prepDate = new Date();
     if ((54 - prepDate.getSeconds()) <= 0) {
       setTimeout(testRun, (60000 - (prepDate.getSeconds()*1000)) + 1000);
@@ -107,10 +107,10 @@ module.exports = testCase({
         assert.ok(true);
       }, function() {
         assert.ok(true);
+        assert.done();
       }, true);
       setTimeout(function() {
         c.stop();
-        assert.done();
       }, 6250);
     }
   },
@@ -129,20 +129,20 @@ module.exports = testCase({
     }, 1250);
   },
   'test second with oncomplete (* * * * * *) object constructor': function(assert) {
-    assert.expect(1);
+    assert.expect(2);
     var c = new cron.CronJob({
       cronTime: '* * * * * *',
       onTick: function(done) {
-        done();
+        assert.ok(true);
       },
       onComplete: function () {
         assert.ok(true);
+        assert.done();
       },
       start: true
     });
     setTimeout(function() {
       c.stop();
-      assert.done();
     }, 1250);
   },
   'test start/stop': function(assert) {
@@ -181,7 +181,7 @@ module.exports = testCase({
     }
   },
   'test specifying a specific date with oncomplete': function(assert) {
-    assert.expect(1);
+    assert.expect(2);
     var prepDate = new Date();
     if ((58 - prepDate.getSeconds()) <= 0) {
       setTimeout(testRun, (60000 - (prepDate.getSeconds()*1000)) + 1000);
@@ -197,10 +197,10 @@ module.exports = testCase({
         assert.ok(true);
       }, function() {
         assert.ok(true);
+        assert.done();
       }, true);
       setTimeout(function() {
         c.stop();
-        assert.done();
       }, 2250);
     }
   },
