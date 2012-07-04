@@ -293,5 +293,19 @@ module.exports = testCase({
       assert.equal(count, 1);
       assert.done();
     }, 5250);
+  },
+  'test long wait should not fire immediately': function(assert) {
+    assert.expect(1);
+    var count = 0;
+    var d = new Date().getTime() + 31 * 86400 * 1000;
+    var job = cron.job(new Date(d), function() {
+      assert.ok(false);
+    });
+    job.start();
+    setTimeout(function() {
+      job.stop();
+      assert.ok(true);
+      assert.done();
+    }, 250);
   }
 });
