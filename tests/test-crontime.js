@@ -37,6 +37,21 @@ module.exports = testCase({
             });
             assert.done();
         },
+        'test no second digit doesnt throw, i.e. standard cron format (8 8 8 8 5)': function(assert) {
+            assert.expect(1);
+            assert.doesNotThrow(function() {
+                new cron.CronTime('* * * * *');
+            });
+            assert.done();
+        },
+        'test no second digit defaults to 0, i.e. standard cron format (8 8 8 8 5)': function(assert) {
+            assert.expect(1);
+            var now = new Date();
+            var standard = new cron.CronTime('8 8 8 8 5');
+            var extended = new cron.CronTime('0 8 8 8 8 5');
+            assert.ok(standard._getNextDateFrom(now).getTime() === extended._getNextDateFrom(now).getTime());
+            assert.done();
+        },
         'test hyphen (0-10 * * * * *)': function(assert) {
             assert.expect(1);
             assert.doesNotThrow(function() {

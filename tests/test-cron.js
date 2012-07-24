@@ -34,6 +34,19 @@ module.exports = testCase({
       assert.done();
     }, 5250);
   },
+  'test standard cron no-seconds syntax doesnt send on seconds (* * * * *)': function(assert) {
+    assert.expect(1);
+    var called = 0;
+    var c = new cron.CronJob('* * * * *', function() {
+      called++;
+    }, null, true);
+    setTimeout(function() {
+      c.stop();
+      // Note that it could be called once if the test lands on a minute boundary
+      assert.ok(called <= 1);
+      assert.done();
+    }, 5250);
+  },
   'test every second for 5 seconds with oncomplete (* * * * * *)': function(assert) {
     assert.expect(6);
     var c = new cron.CronJob('* * * * * *', function(done) {
