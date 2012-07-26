@@ -7,7 +7,7 @@ Originally this project was a NodeJS fork of [James Padolsey's][jamespadolsey] [
 
 After [Craig Condon][crcn] made some updates and changes to the code base this has evolved to something that has a bit of both. The cron syntax parsing is mostly James' while using timeout instead of interval is Craig's.
 
-Additionally, this library goes beyond the basic cron syntax and allows you to supply a Date object. This will be used as the trigger for your callback. Cron syntax is still an acceptable CronTime format.
+Additionally, this library goes beyond the basic cron syntax and allows you to supply a Date object. This will be used as the trigger for your callback. Cron syntax is still an acceptable CronTime format. Although the Cron patterns suported here extend on the standard Unix format to support seconds digits, leaving it off will default to 0 and match the Unix behavior.
 
 Usage (basic cron usage):
 ==========
@@ -25,13 +25,13 @@ Available Cron patterns:
     Ranges. E.g. 1-3,5
     Steps. E.g. */2
     
-[Read up on cron patterns here](http://help.sap.com/saphelp_xmii120/helpdata/en/44/89a17188cc6fb5e10000000a155369/content.htm).
+[Read up on cron patterns here](http://crontab.org).
 
 Another cron example
 ==========
 
     var cronJob = require('cron').CronJob;
-    var job = new cronJob('00 30 11 * * 2-6', function(){
+    var job = new cronJob('00 30 11 * * 1-5', function(){
         // Runs every weekday (Monday through Friday)
         // at 11:30:00 AM. It does not run on Saturday
         // or Sunday.
@@ -60,7 +60,7 @@ For good measure
 
     var cronJob = require('cron').CronJob;
     var job = new cronJob({
-      cronTime: '00 30 11 * * 2-6',
+      cronTime: '00 30 11 * * 1-5',
       onTick: function() {
         // Runs every weekday (Monday through Friday)
         // at 11:30:00 AM. It does not run on Saturday

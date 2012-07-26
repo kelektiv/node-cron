@@ -34,6 +34,26 @@ module.exports = testCase({
       assert.done();
     }, 5250);
   },
+  'test standard cron no-seconds syntax doesnt send on seconds (* * * * *)': function(assert) {
+    assert.expect(0);
+    // Delay test from running at minute boundary
+    var prepDate = new Date();
+    if (prepDate.getSeconds() >= 55) {
+      setTimeout(testRun, 5000);
+    } else {
+      testRun();
+    }
+
+    function testRun() {
+      var c = new cron.CronJob('* * * * *', function() {
+        assert.ok(true);
+      }, null, true);
+      setTimeout(function() {
+        c.stop();
+        assert.done();
+      }, 5250);
+    }
+  },
   'test every second for 5 seconds with oncomplete (* * * * * *)': function(assert) {
     assert.expect(6);
     var c = new cron.CronJob('* * * * * *', function(done) {
