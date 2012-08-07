@@ -16,7 +16,7 @@ As goes with semver, breaking backwards compatibility should be explicit in the 
 
 <table>
 <tr>
-<td>Cron Ver</td><td>Issue #</td>
+<td>Node Cron Ver</td><td>Issue #</td>
 </tr>
 <tr>
 <td>1.0.0</td><td><ul><li><a href="https://github.com/ncb000gt/node-cron/pull/41">GH-41</a></li><li><a href="https://github.com/ncb000gt/node-cron/pull/36">GH-36</a></li></ul></td>
