@@ -9,6 +9,21 @@ After [Craig Condon][crcn] made some updates and changes to the code base this h
 
 Additionally, this library goes beyond the basic cron syntax and allows you to supply a Date object. This will be used as the trigger for your callback. Cron syntax is still an acceptable CronTime format. Although the Cron patterns suported here extend on the standard Unix format to support seconds digits, leaving it off will default to 0 and match the Unix behavior.
 
+Versions and Backwards compatability breaks:
+==========
+
+As goes with semver, breaking backwards compatibility should be explicit in the versioning of your library. As such, we'll upgrade the version of this module in accordance with breaking changes (I'm not always great about doing it this way so if you notice that there are breaking changes that haven't been bumped appropriately please let me know). This table lists out the issues which were the reason for the break in backward compatibility.
+
+<table>
+<tr>
+<td>Cron Ver</td><td>Issue #</td>
+</tr>
+<tr>
+<td>1.0.0</td><td><ul><li>GH-41</li><li>GH-36</li></ul></td>
+</tr>
+</table>
+
+
 Usage (basic cron usage):
 ==========
 
