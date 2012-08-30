@@ -327,5 +327,37 @@ module.exports = testCase({
       assert.ok(true);
       assert.done();
     }, 250);
+  },
+  'test start, change time, start again': function(assert) {
+    assert.expect(3);
+    var c = new cron.CronJob('* * * * * *', function() {
+      assert.ok(true);
+    });
+    var time = cron.time('*/2 * * * * *');
+    c.start();
+    setTimeout(function() {
+      c.stop();
+      c.setTime(time);
+      c.start();
+      setTimeout(function() {
+        c.stop();
+        assert.done();
+      }, 4250);
+    }, 1250);
+  },
+  'test start, change time, excpetion': function(assert) {
+    assert.expect(2);
+    var c = new cron.CronJob('* * * * * *', function() {
+      assert.ok(true);
+    });
+    var time = new Date();
+    c.start();
+    setTimeout(function() {
+      c.stop();
+      assert.throws(function() {
+        c.setTime(time);
+      });
+      assert.done();
+    }, 1250);
   }
 });
