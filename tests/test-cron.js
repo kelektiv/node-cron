@@ -171,36 +171,12 @@ module.exports = testCase({
       assert.ok(true);
       this.stop();
     });
-    setTimeout(function() {
-      c.start();
-    }, 1000);
+    c.start();
     setTimeout(function() {
       assert.done();
     }, 3250);
   },
   'test specifying a specific date': function(assert) {
-    assert.expect(1);
-    var prepDate = new Date();
-    if ((58 - prepDate.getSeconds()) <= 0) {
-      setTimeout(testRun, (60000 - (prepDate.getSeconds()*1000)) + 1000);
-    } else {
-      testRun();
-    }
-
-    function testRun() {
-      var d = new Date();
-      var s = d.getSeconds()+1;
-      d.setSeconds(s);
-      var c = new cron.CronJob(d, function() {
-        assert.ok(true);
-      }, null, true);
-      setTimeout(function() {
-        c.stop();
-        assert.done();
-      }, 2250);
-    }
-  },
-  'test specifying a specific date with oncomplete': function(assert) {
     assert.expect(2);
     var prepDate = new Date();
     if ((58 - prepDate.getSeconds()) <= 0) {
@@ -214,6 +190,32 @@ module.exports = testCase({
       var s = d.getSeconds()+1;
       d.setSeconds(s);
       var c = new cron.CronJob(d, function() {
+        var t = new Date();
+        assert.equal(t.getSeconds(), d.getSeconds());
+        assert.ok(true);
+      }, null, true);
+      setTimeout(function() {
+        c.stop();
+        assert.done();
+      }, 2250);
+    }
+  },
+  'test specifying a specific date with oncomplete': function(assert) {
+    assert.expect(3);
+    var prepDate = new Date();
+    if ((58 - prepDate.getSeconds()) <= 0) {
+      setTimeout(testRun, (60000 - (prepDate.getSeconds()*1000)) + 1000);
+    } else {
+      testRun();
+    }
+
+    function testRun() {
+      var d = new Date();
+      var s = d.getSeconds()+1;
+      d.setSeconds(s);
+      var c = new cron.CronJob(d, function() {
+        var t = new Date();
+        assert.equal(t.getSeconds(), d.getSeconds());
         assert.ok(true);
       }, function() {
         assert.ok(true);
