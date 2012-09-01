@@ -9,6 +9,12 @@ After [Craig Condon][crcn] made some updates and changes to the code base this h
 
 Additionally, this library goes beyond the basic cron syntax and allows you to supply a Date object. This will be used as the trigger for your callback. Cron syntax is still an acceptable CronTime format. Although the Cron patterns suported here extend on the standard Unix format to support seconds digits, leaving it off will default to 0 and match the Unix behavior.
 
+If You Are Submitting Bugs/Issues
+=============
+
+Because we can't magically know what you are doing to expose an issue, it is best if you provide a snippet of code. This snippet need not include your secret sauce, but it must replicate the issue you are describing. The issues that get closed without resolution tend to be the ones without code examples. Thanks.
+
+
 Versions and Backwards compatability breaks:
 ==========
 
