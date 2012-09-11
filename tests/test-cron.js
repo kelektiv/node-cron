@@ -361,5 +361,43 @@ module.exports = testCase({
       });
       assert.done();
     }, 1250);
+  },
+  'test cronjob scoping': function(assert) {
+    assert.expect(2);
+    var c = new cron.CronJob('* * * * * *', function() {
+      assert.ok(true);
+      assert.ok(c instanceof cron.CronJob);
+    }, null, true);
+    setTimeout(function() {
+      c.stop();
+      assert.done();
+    }, 1250);
+  },
+  'test non-cronjob scoping': function(assert) {
+    assert.expect(2);
+    var c = new cron.CronJob('* * * * * *', function() {
+      assert.ok(true);
+      assert.equal(this.hello, 'world');
+    }, null, true, null, {'hello':'world'});
+    setTimeout(function() {
+      c.stop();
+      assert.done();
+    }, 1250);
+  },
+  'test non-cronjob scoping inside object': function(assert) {
+    assert.expect(2);
+    var c = new cron.CronJob({
+      cronTime: '* * * * * *',
+      onTick: function() {
+        assert.ok(true);
+        assert.equal(this.hello, 'world');
+      },
+      start: true,
+      context: {hello: 'world'}
+    });
+    setTimeout(function() {
+      c.stop();
+      assert.done();
+    }, 1250);
   }
 });
