@@ -123,11 +123,13 @@ Parameter Based
 
 `CronJob`
 
-  * `constructor(cronTime, onTick, onComplete, start)` - Of note, the first parameter here can be a JSON object that has the below names and associated types (see examples above).
+  * `constructor(cronTime, onTick, onComplete, start, timezone, context)` - Of note, the first parameter here can be a JSON object that has the below names and associated types (see examples above).
     * `cronTime` - [REQUIRED] - The time to fire off your job. This can be in the form of cron syntax or a JS [Date](https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Date) object.
     * `onTick` - [REQUIRED] - The function to fire at the specified time.
     * `onComplete` - [OPTIONAL] - A function that will fire when the job is complete, when it is stopped.
     * `start` - [OPTIONAL] - Specifies whether to start the job after just before exiting the constructor.
+    * `timezone` - [OPTIONAL] - Specify the timezone for the execution. This will modify the actual time relative to your timezone.
+    * `context` - [OPTIONAL] - The context within which to execute the onTick method. This defaults to the cronjob itself allowing you to call `this.stop()`. However, if you change this you'll have access to the functions and values within your context object.
   * `start` - Runs your job.
   * `stop` - Stops your job.
 
