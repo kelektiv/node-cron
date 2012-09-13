@@ -284,14 +284,14 @@ module.exports = testCase({
     assert.notEqual(d.getHours(), t.getHours());
     assert.ok(!(Date instanceof time.Date));
 
-    if ((58 - t.getSeconds()) <= 0) {
+    if ((56 - t.getSeconds()) <= 0) {
       setTimeout(testRun, (60000 - (t.getSeconds()*1000)) + 1000);
     } else {
       testRun();
     }
 
     function testRun() {
-      var s = d.getSeconds()+1;
+      var s = d.getSeconds()+2;
       d.setSeconds(s);
       var c = new cron.CronJob(d, function() {
         assert.ok(true);
