@@ -148,5 +148,11 @@ module.exports = testCase({
             assert.ok(next > start);
           }
           assert.done();
-        }
+        },
+        'test illegal repetition syntax': function(assert){
+          assert.throws(function(){
+            new cron.CronTime('* * /4 * * *');
+          });
+          assert.done();
+	      }
 });
