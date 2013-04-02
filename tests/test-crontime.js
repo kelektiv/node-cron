@@ -154,5 +154,27 @@ module.exports = testCase({
             new cron.CronTime('* * /4 * * *');
           });
           assert.done();
-	      }
+				},
+				'test next date': function(assert) {
+          assert.expect(2);
+          var ct = new cron.CronTime('0 0 */4 * * *');
+
+					var nextDate = new Date();
+					nextDate.setHours(23);
+					var nextdt = ct._getNextDateFrom(nextDate);
+					assert.ok(nextdt > nextDate);
+					assert.ok(nextdt.getHours() % 4 === 0);
+					assert.done();
+				},
+				'test next real date': function(assert) {
+          assert.expect(2);
+          var ct = new cron.CronTime(new Date());
+
+					var nextDate = new Date();
+					nextDate.setMonth(nextDate.getMonth()+1);
+					assert.ok(nextDate > ct.source);
+					var nextdt = ct._getNextDateFrom(nextDate);
+					assert.deepEqual(nextdt, nextDate);
+					assert.done();
+				}
 });
