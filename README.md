@@ -1,7 +1,7 @@
 node-cron
 =========
 
-[![Build Status](https://secure.travis-ci.org/ncb000gt/node-cron.png)](http://travis-ci.org/#!/ncb000gt/node-cron) 
+[![Build Status](https://secure.travis-ci.org/ncb000gt/node-cron.png)](http://travis-ci.org/#!/ncb000gt/node-cron)
 
 Originally this project was a NodeJS fork of [James Padolsey's][jamespadolsey] [cron.js](http://github.com/padolsey/cron.js).
 
@@ -37,7 +37,7 @@ Usage (basic cron usage):
     new cronJob('* * * * * *', function(){
         console.log('You will see this message every second');
     }, null, true, "America/Los_Angeles");
-    
+
 
 Available Cron patterns:
 ==========
@@ -45,7 +45,7 @@ Available Cron patterns:
     Asterisk. E.g. *
     Ranges. E.g. 1-3,5
     Steps. E.g. */2
-    
+
 [Read up on cron patterns here](http://crontab.org).
 
 Another cron example
@@ -58,7 +58,7 @@ Another cron example
         // or Sunday.
       }, function () {
         // This function is executed when the job stops
-      }, 
+      },
       true /* Start the job right now */,
       timeZone /* Time zone of this job. */
     );
@@ -71,7 +71,7 @@ Another example with Date
         //runs once at the specified date.
       }, function () {
         // This function is executed when the job stops
-      }, 
+      },
       true /* Start the job right now */,
       timeZone /* Time zone of this job. */
     );
@@ -113,7 +113,7 @@ Install
 
 If you want to specify timezones, you'll need to install the [time](https://github.com/TooTallNate/node-time) module or place an entry for it in your package.json file.
 
-    `npm install time`
+    npm install time
 
 
 API
