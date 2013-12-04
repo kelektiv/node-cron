@@ -13,7 +13,7 @@
         "danhbear"
     ],
     "description": "js cron handler",
-    "main": "lib/cron.js",
+    "main": ["lib/cron.js"],
     "keywords": [
         "cron",
         "js"
