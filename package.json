@@ -1,7 +1,7 @@
 {
   "name": "cron",
   "description": "Cron jobs for your node",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "author": "Nick Campbell <nicholas.j.campbell@gmail.com> (http://github.com/ncb000gt)",
   "bugs" : {
     "url" : "http://github.com/ncb000gt/node-cron/issues"
@@ -33,6 +33,7 @@
     "humanchimp <morphcham@gmail.com> (https://github.com/humanchimp)",
     "Craig Condon <craig@spiceapps.com> (https://github.com/spiceapps)",
     "Dan Bear <daniel@hulu.com> (https://github.com/danhbear)",
-    "Vadim Baryshev <vadimbaryshev@gmail.com> (https://github.com/baryshev)"
+    "Vadim Baryshev <vadimbaryshev@gmail.com> (https://github.com/baryshev)",
+    "Leandro Ferrari <lfthomaz@gmail.com> (https://github.com/lfthomaz)"
   ]
 }
