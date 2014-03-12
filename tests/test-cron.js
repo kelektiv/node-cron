@@ -295,11 +295,12 @@ module.exports = testCase({
       d.setSeconds(s);
       var c = new cron.CronJob(d, function() {
         assert.ok(true);
-      }, null, true, zone);
+      }, null, false, zone);
       setTimeout(function() {
         c.stop();
         assert.done();
       }, 2250);
+			c.start();
     }
   },
   'test dates fire only once': function(assert) {
