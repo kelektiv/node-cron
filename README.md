@@ -33,8 +33,8 @@ As goes with semver, breaking backwards compatibility should be explicit in the 
 Usage (basic cron usage):
 ==========
 
-    var cronJob = require('cron').CronJob;
-    new cronJob('* * * * * *', function(){
+    var CronJob = require('cron').CronJob;
+    new CronJob('* * * * * *', function(){
         console.log('You will see this message every second');
     }, null, true, "America/Los_Angeles");
 
@@ -63,8 +63,8 @@ When specifying your cron values you'll need to make sure that your values fall 
 Another cron example
 ==========
 
-    var cronJob = require('cron').CronJob;
-    var job = new cronJob('00 30 11 * * 1-5', function(){
+    var CronJob = require('cron').CronJob;
+    var job = new CronJob('00 30 11 * * 1-5', function(){
         // Runs every weekday (Monday through Friday)
         // at 11:30:00 AM. It does not run on Saturday
         // or Sunday.
@@ -78,8 +78,8 @@ Another cron example
 Another example with Date
 ==========
 
-    var cronJob = require('cron').CronJob;
-    var job = new cronJob(new Date(), function(){
+    var CronJob = require('cron').CronJob;
+    var job = new CronJob(new Date(), function(){
         //runs once at the specified date.
       }, function () {
         // This function is executed when the job stops
@@ -91,8 +91,8 @@ Another example with Date
 For good measure
 ==========
 
-    var cronJob = require('cron').CronJob;
-    var job = new cronJob({
+    var CronJob = require('cron').CronJob;
+    var job = new CronJob({
       cronTime: '00 30 11 * * 1-5',
       onTick: function() {
         // Runs every weekday (Monday through Friday)
@@ -109,7 +109,7 @@ How to check if a cron pattern is valid:
 ==========
 
 		try {
-			new cronJob('invalid cron pattern', function() {
+			new CronJob('invalid cron pattern', function() {
 				console.log('this should not be printed');
 			})
 		} catch(ex) {
