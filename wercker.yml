@@ -1,4 +1,4 @@
-box: werker/nodejs
+box: wercker/nodejs
 build:
   steps:
     - npm-install
