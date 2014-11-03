@@ -400,5 +400,19 @@ module.exports = testCase({
       c.stop();
       assert.done();
     }, 1250);
-  }
+  },
+	'test avoid inf loop on invalid time': function(assert) {
+		// currently, the instantiation never completes
+		var invalid1 = new cron.CronJob('* 60 * * * *', function() {
+			assert.ok(true);
+		}, null, true);
+		var invalid2 = new cron.CronJob('* * 24 * * *', function() {
+			assert.ok(true);
+		}, null, true);
+
+		// assert that it gets here, right now it won't
+		invalid1.stop();
+		invalid2.stop();
+		assert.done()
+	}
 });
