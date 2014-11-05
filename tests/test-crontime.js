@@ -176,5 +176,19 @@ module.exports = testCase({
 					var nextdt = ct._getNextDateFrom(nextDate);
 					assert.deepEqual(nextdt, nextDate);
 					assert.done();
+				},
+				'test < constraints day of month': function(assert) {
+					assert.expect(5);
+
+					var ltm = [1, 3, 5, 8, 10];
+					for (var i = 0; i < ltm.length; i++) {
+						(function(m) {
+							assert.throws(function() {
+								var ct = new cron.CronTime('0 0 0 33 ' + m + ' *');
+							});
+						})(ltm[i]);
+					}
+
+					assert.done();
 				}
 });
