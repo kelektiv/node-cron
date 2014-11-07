@@ -190,5 +190,20 @@ module.exports = testCase({
 					}
 
 					assert.done();
+				},
+				'test next month selection': function(assert) {
+					assert.expect(1);
+					var date = new Date();
+					var dom = date.getDate() + 1;
+					var ct = new cron.CronTime('0 0 0 ' + dom + ' * *');
+
+					var saDate = ct.sendAt();
+
+					if (dom < date.getDate())
+						date.setMonth(date.getMonth()+1);
+
+					assert.equal(date.getMonth(), saDate.getMonth());
+
+					assert.done()
 				}
 });

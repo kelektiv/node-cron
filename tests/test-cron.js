@@ -348,7 +348,7 @@ module.exports = testCase({
       }, 4250);
     }, 1250);
   },
-  'test start, change time, excpetion': function(assert) {
+  'test start, change time, exception': function(assert) {
     assert.expect(2);
     var c = new cron.CronJob('* * * * * *', function() {
       assert.ok(true);
