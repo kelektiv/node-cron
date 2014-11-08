@@ -1,39 +1,91 @@
 {
-  "name": "cron",
-  "description": "Cron jobs for your node",
-  "version": "1.0.5",
-  "author": "Nick Campbell <nicholas.j.campbell@gmail.com> (http://github.com/ncb000gt)",
-  "bugs" : {
-    "url" : "http://github.com/ncb000gt/node-cron/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "http://github.com/ncb000gt/node-cron.git"
-  },
-  "main": "lib/cron",
-  "scripts": {
-    "test": "make test"
-  },
-  "devDependencies": {
-    "nodeunit": ">=0.5.4",
-    "time" : "0.8.0"
-  },
-  "licenses": [
-    {
-      "type": "MIT",
-      "url": "http://www.opensource.org/licenses/mit-license.php" 
-    }
-  ],
-  "contributors": [
-    "Romain Beauxis <toots@rastageeks.org> (https://github.com/toots)",
-    "James Padolsey <> (https://github.com/jamespadolsey)",
-    "Finn Herpich <fh@three-heads.de> (https://github.com/ErrorProne)",
-    "Clifton Cunningham <clifton.cunningham@gmail.com> (https://github.com/cliftonc)",
-    "Eric Abouaf <eric.abouaf@gmail.com> (https://github.com/neyric)",
-    "humanchimp <morphcham@gmail.com> (https://github.com/humanchimp)",
-    "Craig Condon <craig@spiceapps.com> (https://github.com/spiceapps)",
-    "Dan Bear <daniel@hulu.com> (https://github.com/danhbear)",
-    "Vadim Baryshev <vadimbaryshev@gmail.com> (https://github.com/baryshev)",
-    "Leandro Ferrari <lfthomaz@gmail.com> (https://github.com/lfthomaz)"
-  ]
+    "name": "cron",
+    "description": "Cron jobs for your node",
+    "version": "1.0.5",
+    "author": {
+        "name": "Nick Campbell",
+        "email": "nicholas.j.campbell@gmail.com",
+        "url": "http://github.com/ncb000gt"
+    },
+    "bugs": {
+        "url": "http://github.com/ncb000gt/node-cron/issues"
+    },
+    "repository": {
+        "type": "git",
+        "url": "http://github.com/ncb000gt/node-cron.git"
+    },
+    "main": "lib/cron",
+    "scripts": {
+        "test": "make test"
+    },
+    "devDependencies": {
+        "nodeunit": ">=0.5.4"
+    },
+    "dependencies": {
+        "moment-timezone": "0.2.4"
+    },
+    "licenses": [{
+        "type": "MIT",
+        "url": "http://www.opensource.org/licenses/mit-license.php"
+    }],
+    "contributors": [{
+        "name": "Romain Beauxis",
+        "email": "toots@rastageeks.org",
+        "url": "https://github.com/toots"
+    }, {
+        "name": "James Padolsey",
+        "url": "https://github.com/jamespadolsey"
+    }, {
+        "name": "Finn Herpich",
+        "email": "fh@three-heads.de",
+        "url": "https://github.com/ErrorProne"
+    }, {
+        "name": "Clifton Cunningham",
+        "email": "clifton.cunningham@gmail.com",
+        "url": "https://github.com/cliftonc"
+    }, {
+        "name": "Eric Abouaf",
+        "email": "eric.abouaf@gmail.com",
+        "url": "https://github.com/neyric"
+    }, {
+        "name": "humanchimp",
+        "email": "morphcham@gmail.com",
+        "url": "https://github.com/humanchimp"
+    }, {
+        "name": "Craig Condon",
+        "email": "craig@spiceapps.com",
+        "url": "https://github.com/spiceapps"
+    }, {
+        "name": "Dan Bear",
+        "email": "daniel@hulu.com",
+        "url": "https://github.com/danhbear"
+    }, {
+        "name": "Vadim Baryshev",
+        "email": "vadimbaryshev@gmail.com",
+        "url": "https://github.com/baryshev"
+    }, {
+        "name": "Leandro Ferrari",
+        "email": "lfthomaz@gmail.com",
+        "url": "https://github.com/lfthomaz"
+    }],
+    "gitHead": "b3e6891ab3867fc14654d6f0f68827daf8457439",
+    "homepage": "https://github.com/ncb000gt/node-cron",
+    "_id": "cron@1.0.5",
+    "_shasum": "9127e2edb831afe867be79388f438d483f924f0e",
+    "_from": "cron@*",
+    "_npmVersion": "1.4.14",
+    "_npmUser": {
+        "name": "ncb000gt",
+        "email": "nicholas.j.campbell@gmail.com"
+    },
+    "maintainers": [{
+        "name": "ncb000gt",
+        "email": "nicholas.j.campbell@gmail.com"
+    }],
+    "dist": {
+        "shasum": "9127e2edb831afe867be79388f438d483f924f0e",
+        "tarball": "http://registry.npmjs.org/cron/-/cron-1.0.5.tgz"
+    },
+    "directories": {},
+    "_resolved": "https://registry.npmjs.org/cron/-/cron-1.0.5.tgz"
 }
