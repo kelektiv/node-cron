@@ -37,7 +37,7 @@ module.exports = testCase({
             });
             assert.done();
         },
-        'test no second digit doesnt throw, i.e. standard cron format (8 8 8 8 5)': function(assert) {
+        'test no second digit doesnt throw, i.e. standard cron format (* * * * *)': function(assert) {
             assert.expect(1);
             assert.doesNotThrow(function() {
                 new cron.CronTime('* * * * *');
@@ -45,11 +45,18 @@ module.exports = testCase({
             assert.done();
         },
         'test no second digit defaults to 0, i.e. standard cron format (8 8 8 8 5)': function(assert) {
-            assert.expect(1);
-            var now = new Date();
+            assert.expect(6);
+            var now = Date.now();
             var standard = new cron.CronTime('8 8 8 8 5');
             var extended = new cron.CronTime('0 8 8 8 8 5');
-            assert.ok(standard._getNextDateFrom(now).getTime() === extended._getNextDateFrom(now).getTime());
+
+						assert.deepEqual(standard.dayOfWeek, extended.dayOfWeek);
+						assert.deepEqual(standard.month, extended.month);
+						assert.deepEqual(standard.dayOfMonth, extended.dayOfMonth);
+						assert.deepEqual(standard.hour, extended.hour);
+						assert.deepEqual(standard.minute, extended.minute);
+						assert.deepEqual(standard.second, extended.second);
+
             assert.done();
         },
         'test hyphen (0-10 * * * * *)': function(assert) {
@@ -133,7 +140,7 @@ module.exports = testCase({
           assert.expect(1);
           var d = new Date();
           var ct = new cron.CronTime(d);
-          assert.equals(ct.source.getTime(), d.getTime());
+          assert.ok(ct.source.isSame(d.getTime()));
           assert.done();
         },
         'test day roll-over': function(assert) {
@@ -163,7 +170,7 @@ module.exports = testCase({
 					nextDate.setHours(23);
 					var nextdt = ct._getNextDateFrom(nextDate);
 					assert.ok(nextdt > nextDate);
-					assert.ok(nextdt.getHours() % 4 === 0);
+					assert.ok(nextdt.hours() % 4 === 0);
 					assert.done();
 				},
 				'test next real date': function(assert) {
@@ -174,7 +181,7 @@ module.exports = testCase({
 					nextDate.setMonth(nextDate.getMonth()+1);
 					assert.ok(nextDate > ct.source);
 					var nextdt = ct._getNextDateFrom(nextDate);
-					assert.deepEqual(nextdt, nextDate);
+					assert.ok(nextdt.isSame(nextDate));
 					assert.done();
 				},
 				'test < constraints day of month': function(assert) {
@@ -202,7 +209,7 @@ module.exports = testCase({
 					if (dom < date.getDate())
 						date.setMonth(date.getMonth()+1);
 
-					assert.equal(date.getMonth(), saDate.getMonth());
+					assert.equal(date.getMonth(), saDate.month());
 
 					assert.done()
 				}

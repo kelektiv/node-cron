@@ -14,9 +14,11 @@
   "scripts": {
     "test": "make test"
   },
+	"dependencies": {
+		"moment-timezone": "0.2.4"
+	},
   "devDependencies": {
-    "nodeunit": ">=0.5.4",
-    "time" : "0.8.0"
+    "nodeunit": ">=0.5.4"
   },
   "licenses": [
     {
