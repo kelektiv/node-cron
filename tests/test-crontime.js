@@ -173,6 +173,14 @@ module.exports = testCase({
 					assert.ok(nextdt.hours() % 4 === 0);
 					assert.done();
 				},
+				'test next date from invalid date': function(assert) {
+					assert.expect(1);
+					var ct = new cron.CronTime('0 0 * * * *');
+					var nextDate = new Date('My invalid date string');
+					var nextdt = ct._getNextDateFrom(nextDate);
+					assert.equal(nextdt.toString(), 'Invalid date');
+					assert.done();
+				},
 				'test next real date': function(assert) {
           assert.expect(2);
           var ct = new cron.CronTime(new Date());
