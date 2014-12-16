@@ -124,10 +124,6 @@ Install
     From source: `npm install`
     From npm: `npm install cron`
 
-If you want to specify timezones, you'll need to install the [time](https://github.com/TooTallNate/node-time) module or place an entry for it in your package.json file.
-
-    npm install time
-
 
 API
 ==========
