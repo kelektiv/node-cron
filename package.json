@@ -14,9 +14,9 @@
   "scripts": {
     "test": "make test"
   },
-	"dependencies": {
-		"moment-timezone": "0.2.4"
-	},
+  "dependencies": {
+    "moment-timezone": "0.2.4"
+  },
   "devDependencies": {
     "nodeunit": ">=0.5.4"
   },
