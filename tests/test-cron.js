@@ -1,405 +1,437 @@
 var testCase = require('nodeunit').testCase,
+		sinon = require('sinon'),
     cron = require('../lib/cron');
 
 module.exports = testCase({
-  'test second (* * * * * *)': function(assert) {
-    assert.expect(1);
-    var c = new cron.CronJob('* * * * * *', function() {
-      assert.ok(true);
-    }, null, true);
-    setTimeout(function() {
-      c.stop();
-      assert.done();
-    }, 1250);
-  },
-  'test second with oncomplete (* * * * * *)': function(assert) {
-    assert.expect(2);
-    var c = new cron.CronJob('* * * * * *', function(done) {
-      assert.ok(true);
-    }, function () {
-      assert.ok(true);
-      assert.done();
-    }, true);
-    setTimeout(function() {
-      c.stop();
-    }, 1250);
-  },
-  'test every second for 5 seconds (* * * * * *)': function(assert) {
-    assert.expect(5);
-    var c = new cron.CronJob('* * * * * *', function() {
-      assert.ok(true);
-    }, null, true);
-    setTimeout(function() {
-      c.stop();
-      assert.done();
-    }, 5250);
-  },
-  'test standard cron no-seconds syntax doesnt send on seconds (* * * * *)': function(assert) {
-    assert.expect(0);
-    // Delay test from running at minute boundary
-    var prepDate = new Date();
-    if (prepDate.getSeconds() >= 55) {
-      setTimeout(testRun, 5000);
-    } else {
-      testRun();
-    }
+	'test second (* * * * * *)': function(assert) {
+		var clock = sinon.useFakeTimers();
+		assert.expect(1);
 
-    function testRun() {
-      var c = new cron.CronJob('* * * * *', function() {
-        assert.ok(true);
-      }, null, true);
-      setTimeout(function() {
-        c.stop();
-        assert.done();
-      }, 5250);
-    }
-  },
-  'test every second for 5 seconds with oncomplete (* * * * * *)': function(assert) {
-    assert.expect(6);
-    var c = new cron.CronJob('* * * * * *', function(done) {
-      assert.ok(true);
-    }, function() {
-      assert.ok(true);
-      assert.done();
-    }, true);
-    setTimeout(function() {
-      c.stop();
-    }, 5250);
-  },
-  'test every 1 second for 5 seconds (*/1 * * * * *)': function(assert) {
-    assert.expect(5);
-    var c = new cron.CronJob('*/1 * * * * *', function() {
-      assert.ok(true);
-    }, null, true);
-    setTimeout(function() {
-      assert.done();
-      c.stop();
-    }, 5250);
-  },
-  'test every 1 second for 5 seconds with oncomplete (*/1 * * * * *)': function(assert) {
-    assert.expect(6);
-    var c = new cron.CronJob('*/1 * * * * *', function(done) {
-      assert.ok(true);
-    }, function() {
-      assert.ok(true);
-      assert.done();
-    }, true);
-    setTimeout(function() {
-      c.stop();
-    }, 5250);
-  },
-  'test every second for a range ([start]-[end] * * * * *)': function(assert) {
-    assert.expect(5);
-    var prepDate = new Date();
-    if ((54 - prepDate.getSeconds()) <= 0) {
-      setTimeout(testRun, (60000 - (prepDate.getSeconds()*1000)) + 1000);
-    } else {
-      testRun();
-    }
+		var job = new cron.CronJob('* * * * * *', function() {
+			assert.ok(true);
+		}, null, true);
+		clock.tick(1000);
+		job.stop();
 
-    function testRun() {
-      var d = new Date();
-      var s = d.getSeconds()+2;
-      var e = s + 6; //end value is inclusive
-      var c = new cron.CronJob(s + '-' + e +' * * * * *', function() {
-        assert.ok(true);
-      }, null, true);
-      setTimeout(function() {
-        c.stop();
-        assert.done();
-      }, 6250);
-    }
-  },
-  'test every second for a range with oncomplete ([start]-[end] * * * * *)': function(assert) {
-    assert.expect(6);
-    var prepDate = new Date();
-    if ((54 - prepDate.getSeconds()) <= 0) {
-      setTimeout(testRun, (60000 - (prepDate.getSeconds()*1000)) + 1000);
-    } else {
-      testRun();
-    }
+		clock.restore();
+		assert.done();
+	},
+	'test second with oncomplete (* * * * * *)': function(assert) {
+		var clock = sinon.useFakeTimers();
+		assert.expect(2);
+		var job = new cron.CronJob('* * * * * *', function(done) {
+			assert.ok(true);
+		}, function () {
+			assert.ok(true);
+			assert.done();
+		}, true);
+		clock.tick(1000);
+		clock.restore();
+		job.stop();
+	},
+	'test standard cron no-seconds syntax doesnt send on seconds (* * * * *)': function(assert) {
+		var clock = sinon.useFakeTimers();
+		assert.expect(1);
 
-    function testRun() {
-      var d = new Date();
-      var s = d.getSeconds()+2;
-      var e = s + 6; //end value is inclusive
-      var c = new cron.CronJob(s + '-' + e +' * * * * *', function() {
-        assert.ok(true);
-      }, function() {
-        assert.ok(true);
-        assert.done();
-      }, true);
-      setTimeout(function() {
-        c.stop();
-      }, 6250);
-    }
-  },
-  'test second (* * * * * *) object constructor': function(assert) {
-    assert.expect(1);
-    var c = new cron.CronJob({
-      cronTime: '* * * * * *',
-      onTick: function() {
-        assert.ok(true);
-      },
-      start: true
-    });
-    setTimeout(function() {
-      c.stop();
-      assert.done();
-    }, 1250);
-  },
-  'test second with oncomplete (* * * * * *) object constructor': function(assert) {
-    assert.expect(2);
-    var c = new cron.CronJob({
-      cronTime: '* * * * * *',
-      onTick: function(done) {
-        assert.ok(true);
-      },
-      onComplete: function () {
-        assert.ok(true);
-        assert.done();
-      },
-      start: true
-    });
-    setTimeout(function() {
-      c.stop();
-    }, 1250);
-  },
-  'test start/stop': function(assert) {
-    assert.expect(1);
-    var c = new cron.CronJob('* * * * * *', function() {
-      assert.ok(true);
-      this.stop();
-    });
-    c.start();
-    setTimeout(function() {
-      assert.done();
-    }, 3250);
-  },
-  'test specifying a specific date': function(assert) {
-    assert.expect(2);
-    var prepDate = new Date();
-    if ((58 - prepDate.getSeconds()) <= 0) {
-      setTimeout(testRun, (60000 - (prepDate.getSeconds()*1000)) + 1000);
-    } else {
-      testRun();
-    }
+		var job = new cron.CronJob('* * * * *', function() {
+			assert.ok(true);
+		}, null, true);
 
-    function testRun() {
-      var d = new Date();
-      var s = d.getSeconds()+1;
-      d.setSeconds(s);
-      var c = new cron.CronJob(d, function() {
-        var t = new Date();
-        assert.equal(t.getSeconds(), d.getSeconds());
-        assert.ok(true);
-      }, null, true);
-      setTimeout(function() {
-        c.stop();
-        assert.done();
-      }, 2250);
-    }
-  },
-  'test specifying a specific date with oncomplete': function(assert) {
-    assert.expect(3);
-    var prepDate = new Date();
-    if ((58 - prepDate.getSeconds()) <= 0) {
-      setTimeout(testRun, (60000 - (prepDate.getSeconds()*1000)) + 1000);
-    } else {
-      testRun();
-    }
+		clock.tick(1000); //tick second
 
-    function testRun() {
-      var d = new Date();
-      var s = d.getSeconds()+1;
-      d.setSeconds(s);
-      var c = new cron.CronJob(d, function() {
-        var t = new Date();
-        assert.equal(t.getSeconds(), d.getSeconds());
-        assert.ok(true);
-      }, function() {
-        assert.ok(true);
-        assert.done();
-      }, true);
-      setTimeout(function() {
-        c.stop();
-      }, 2250);
-    }
-  },
-  'test a job with a string and a given time zone': function (assert) {
-    assert.expect(2);
+		clock.tick(59 * 1000); //tick minute
 
-    var moment = require("moment-timezone");
-    var zone = "America/Chicago";
+		job.stop();
+		clock.restore();
+		assert.done();
+	},
+	'test every second for 5 seconds (* * * * * *)': function(assert) {
+		var clock = sinon.useFakeTimers();
+		assert.expect(5);
 
-    // New Orleans time
-    var t = moment();
-    t.tz(zone);
+		var job = new cron.CronJob('* * * * * *', function() {
+			assert.ok(true);
+		}, null, true);
 
-    // Current time
-    d = moment();
+		for (var i = 0; i < 5; i++)
+			clock.tick(1000);
 
-    // If current time is New Orleans time, switch to Los Angeles..
-    if (t.hours() === d.hours()) {
-      zone = "America/Los_Angeles";
-      t.tz(zone);
-    }
-    assert.notEqual(d.hours(), t.hours());
+		clock.restore();
+		job.stop();
+		assert.done();
+	},
+	'test every second for 5 seconds with oncomplete (* * * * * *)': function(assert) {
+		var clock = sinon.useFakeTimers();
+		assert.expect(6);
+		var job = new cron.CronJob('* * * * * *', function(done) {
+			assert.ok(true);
+		}, function() {
+			assert.ok(true);
+			assert.done();
+		}, true);
 
-    // If t = 59s12m then t.setSeconds(60)
-    // becones 00s13m so we're fine just doing
-    // this and no testRun callback.
-    t.add(1, 's');
-    // Run a job designed to be executed at a given 
-    // time in `zone`, making sure that it is a different
-    // hour than local time.
-    var c = new cron.CronJob(t.seconds() + ' ' + t.minutes() + ' ' + t.hours() +  ' * * *', function(){
-      assert.ok(true);
-    }, null, true, zone);
+		for (var i = 0; i < 5; i++)
+			clock.tick(1000);
 
-    setTimeout(function() {
-      c.stop();
-      assert.done();
-    }, 1250);
-  },
+		clock.restore();
+		job.stop();
+	},
+	'test every 1 second for 5 seconds (*/1 * * * * *)': function(assert) {
+		var clock = sinon.useFakeTimers();
+		assert.expect(5);
+
+		var job = new cron.CronJob('*/1 * * * * *', function() {
+			assert.ok(true);
+		}, null, true);
+
+		for (var i = 0; i < 5; i++)
+			clock.tick(1000);
+
+		clock.restore();
+		job.stop();
+		assert.done();
+	},
+	'test every 1 second for 5 seconds with oncomplete (*/1 * * * * *)': function(assert) {
+		var clock = sinon.useFakeTimers();
+
+		assert.expect(6);
+		var job = new cron.CronJob('*/1 * * * * *', function(done) {
+			assert.ok(true);
+		}, function() {
+			assert.ok(true);
+			assert.done();
+		}, true);
+
+		for (var i = 0; i < 5; i++)
+			clock.tick(1000);
+
+		clock.restore();
+		job.stop();
+	},
+	'test every second for a range ([start]-[end] * * * * *)': function(assert) {
+		var clock = sinon.useFakeTimers();
+
+		assert.expect(5);
+
+		var job = new cron.CronJob('0-5 * * * * *', function() {
+			assert.ok(true);
+		}, null, true);
+
+		for (var i = 0; i < 5; i++)
+			clock.tick(1000);
+
+		clock.restore();
+		job.stop();
+		assert.done();
+	},
+	'test every second for a range with oncomplete ([start]-[end] * * * * *)': function(assert) {
+		var clock = sinon.useFakeTimers();
+
+		assert.expect(6);
+
+		var job = new cron.CronJob('0-5 * * * * *', function() {
+			assert.ok(true);
+		}, function() {
+			assert.ok(true);
+			assert.done();
+		}, true);
+
+		for (var i = 0; i < 5; i++)
+			clock.tick(1000);
+
+		clock.restore();
+		job.stop();
+	},
+	'test second (* * * * * *) object constructor': function(assert) {
+		var clock = sinon.useFakeTimers();
+
+		assert.expect(1);
+
+		var job = new cron.CronJob({
+			cronTime: '* * * * * *',
+			onTick: function() {
+				assert.ok(true);
+			},
+			start: true
+		});
+
+		clock.tick(1000);
+
+		clock.restore();
+		job.stop();
+		assert.done();
+	},
+	'test second with oncomplete (* * * * * *) object constructor': function(assert) {
+		var clock = sinon.useFakeTimers();
+
+		assert.expect(2);
+
+		var job = new cron.CronJob({
+			cronTime: '* * * * * *',
+			onTick: function(done) {
+				assert.ok(true);
+			},
+			onComplete: function () {
+				assert.ok(true);
+				assert.done();
+			},
+			start: true
+		});
+
+		clock.tick(1000);
+
+		clock.restore();
+		job.stop();
+	},
+	'test start/stop': function(assert) {
+		var clock = sinon.useFakeTimers();
+
+		assert.expect(1);
+
+		var job = new cron.CronJob('* * * * * *', function() {
+			clock.restore();
+			assert.ok(true);
+			this.stop();
+			assert.done();
+		});
+		job.start();
+
+		clock.tick(1000);
+	},
+	'test specifying a specific date': function(assert) {
+		assert.expect(2);
+
+		var d = new Date();
+		var clock = sinon.useFakeTimers(d.getTime());
+		var s = d.getSeconds()+1;
+		d.setSeconds(s);
+		var job = new cron.CronJob(d, function() {
+			var t = new Date();
+			assert.equal(t.getSeconds(), d.getSeconds());
+			assert.ok(true);
+		}, null, true);
+		clock.tick(1000);
+
+		clock.restore();
+		job.stop();
+		assert.done();
+	},
+	'test specifying a specific date with oncomplete': function(assert) {
+		assert.expect(3);
+
+		var d = new Date();
+		var clock = sinon.useFakeTimers(d.getTime());
+		var s = d.getSeconds()+1;
+		d.setSeconds(s);
+		var job = new cron.CronJob(d, function() {
+			var t = new Date();
+			assert.equal(t.getSeconds(), d.getSeconds());
+			assert.ok(true);
+		}, function() {
+			assert.ok(true);
+			assert.done();
+		}, true);
+		clock.tick(1000);
+
+		clock.restore();
+		job.stop();
+	},
+	'test a job with a string and a given time zone': function (assert) {
+		var clock = sinon.useFakeTimers();
+
+		assert.expect(2);
+
+		var moment = require("moment-timezone");
+		var zone = "America/Chicago";
+
+		// New Orleans time
+		var t = moment();
+		t.tz(zone);
+
+		// Current time
+		d = moment();
+
+		// If current time is New Orleans time, switch to Los Angeles..
+		if (t.hours() === d.hours()) {
+			zone = "America/Los_Angeles";
+			t.tz(zone);
+		}
+		assert.notEqual(d.hours(), t.hours());
+
+		// If t = 59s12m then t.setSeconds(60)
+		// becones 00s13m so we're fine just doing
+		// this and no testRun callback.
+		t.add(1, 's');
+		// Run a job designed to be executed at a given 
+		// time in `zone`, making sure that it is a different
+		// hour than local time.
+		var job = new cron.CronJob(t.seconds() + ' ' + t.minutes() + ' ' + t.hours() +  ' * * *', function(){
+			assert.ok(true);
+		}, null, true, zone);
+
+		clock.tick(1000);
+		clock.restore();
+		job.stop();
+		assert.done();
+	},
   'test a job with a date and a given time zone': function (assert) {
-    assert.expect(2);
+		assert.expect(2);
 
-    var moment = require("moment-timezone");
-    var zone = "America/Chicago";
+		var moment = require("moment-timezone");
+		var zone = "America/Chicago";
 
-    // New Orleans time
-    var t = moment();
-    t.tz(zone);
+		// New Orleans time
+		var t = moment();
+		t.tz(zone);
 
-    // Current time
-    d = moment();
+		// Current time
+		d = moment();
 
-    // If current time is New Orleans time, switch to Los Angeles..
-    if (t.hours() === d.hours()) {
-      zone = "America/Los_Angeles";
-      t.tz(zone);
-    }
-    assert.notEqual(d.hours(), t.hours());
+		// If current time is New Orleans time, switch to Los Angeles..
+		if (t.hours() === d.hours()) {
+			zone = "America/Los_Angeles";
+			t.tz(zone);
+		}
+		assert.notEqual(d.hours(), t.hours());
 
-    if ((56 - t.seconds()) <= 0) {
-      setTimeout(testRun, (60000 - (t.seconds()*1000)) + 1000);
-    } else {
-      testRun();
-    }
+		d.add(1, 's');
+		var clock = sinon.useFakeTimers(d._d.getTime());
 
-    function testRun() {
-      d.add(2, 's');
-      var c = new cron.CronJob(d._d, function() {
-        assert.ok(true);
-      }, null, false, zone);
-      setTimeout(function() {
-        c.stop();
-        assert.done();
-      }, 2250);
-			c.start();
-    }
-  },
-  'test dates fire only once': function(assert) {
-    assert.expect(1);
-    var count = 0;
-    var d = new Date().getTime() + 1000;
-    var job = cron.job(new Date(d), function() { 
-      count++;
-    }); 
-    job.start();
-    setTimeout(function() {
-      job.stop();
-      assert.equal(count, 1);
-      assert.done();
-    }, 5250);
-  },
-  'test long wait should not fire immediately': function(assert) {
-    assert.expect(1);
-    var count = 0;
-    var d = new Date().getTime() + 31 * 86400 * 1000;
-    var job = cron.job(new Date(d), function() {
-      assert.ok(false);
-    });
-    job.start();
-    setTimeout(function() {
-      job.stop();
-      assert.ok(true);
-      assert.done();
-    }, 250);
-  },
-  'test start, change time, start again': function(assert) {
-    assert.expect(3);
-    var c = new cron.CronJob('* * * * * *', function() {
-      assert.ok(true);
-    });
-    var time = cron.time('*/2 * * * * *');
-    c.start();
-    setTimeout(function() {
-      c.stop();
-      c.setTime(time);
-      c.start();
-      setTimeout(function() {
-        c.stop();
-        assert.done();
-      }, 4250);
-    }, 1250);
+		var job = new cron.CronJob(d._d, function() {
+			assert.ok(true);
+		}, null, true, zone);
+
+		clock.tick(1000);
+		clock.restore();
+		job.stop();
+		assert.done();
+	},
+	'test long wait should not fire immediately': function(assert) {
+		var clock = sinon.useFakeTimers();
+
+		assert.expect(0);
+
+		var d = new Date().getTime() + 31 * 86400 * 1000;
+
+		var job = cron.job(new Date(d), function() {
+			assert.ok(false);
+		});
+		job.start();
+
+		clock.tick(1000);
+
+		clock.restore();
+		job.stop();
+		assert.done();
+	},
+	'test start, change time, start again': function(assert) {
+		var clock = sinon.useFakeTimers();
+
+		assert.expect(3);
+
+		var job = new cron.CronJob('* * * * * *', function() {
+			assert.ok(true);
+		});
+
+		var time = cron.time('*/2 * * * * *');
+		job.start();
+
+		clock.tick(1000);
+
+		job.stop();
+		job.setTime(time);
+		job.start();
+
+		clock.tick(4000);
+
+		clock.restore();
+		job.stop();
+		assert.done();
   },
   'test start, change time, exception': function(assert) {
-    assert.expect(2);
-    var c = new cron.CronJob('* * * * * *', function() {
-      assert.ok(true);
-    });
-    var time = new Date();
-    c.start();
-    setTimeout(function() {
-      c.stop();
-      assert.throws(function() {
-        c.setTime(time);
-      });
-      assert.done();
-    }, 1250);
-  },
-  'test cronjob scoping': function(assert) {
-    assert.expect(2);
-    var c = new cron.CronJob('* * * * * *', function() {
-      assert.ok(true);
-      assert.ok(c instanceof cron.CronJob);
-    }, null, true);
-    setTimeout(function() {
-      c.stop();
-      assert.done();
-    }, 1250);
-  },
-  'test non-cronjob scoping': function(assert) {
-    assert.expect(2);
-    var c = new cron.CronJob('* * * * * *', function() {
-      assert.ok(true);
-      assert.equal(this.hello, 'world');
-    }, null, true, null, {'hello':'world'});
-    setTimeout(function() {
-      c.stop();
-      assert.done();
-    }, 1250);
-  },
-  'test non-cronjob scoping inside object': function(assert) {
-    assert.expect(2);
-    var c = new cron.CronJob({
-      cronTime: '* * * * * *',
-      onTick: function() {
-        assert.ok(true);
-        assert.equal(this.hello, 'world');
-      },
-      start: true,
-      context: {hello: 'world'}
-    });
-    setTimeout(function() {
-      c.stop();
-      assert.done();
-    }, 1250);
-  },
+		var clock = sinon.useFakeTimers();
+
+		assert.expect(2);
+
+		var job = new cron.CronJob('* * * * * *', function() {
+			assert.ok(true);
+		});
+
+		var time = new Date();
+		job.start();
+
+		clock.tick(1000);
+
+		job.stop();
+		assert.throws(function() {
+			job.setTime(time);
+		});
+
+		clock.restore();
+		job.stop();
+		assert.done();
+	},
+	'test cronjob scoping': function(assert) {
+		var clock = sinon.useFakeTimers();
+
+		assert.expect(3);
+
+		var job = new cron.CronJob('* * * * * *', function() {
+			assert.ok(true);
+			assert.ok(job instanceof cron.CronJob);
+			assert.ok(job === this);
+		}, null, true);
+
+		clock.tick(1000);
+
+		clock.restore();
+		job.stop();
+		assert.done();
+	},
+	'test non-cronjob scoping': function(assert) {
+		var clock = sinon.useFakeTimers();
+
+		assert.expect(3);
+
+		var job = new cron.CronJob('* * * * * *', function() {
+			assert.ok(true);
+			assert.equal(this.hello, 'world');
+			assert.ok(job !== this);
+		}, null, true, null, {'hello':'world'});
+
+		clock.tick(1000);
+
+		clock.restore();
+		job.stop();
+		assert.done();
+	},
+	'test non-cronjob scoping inside object': function(assert) {
+		var clock = sinon.useFakeTimers();
+
+		assert.expect(3);
+
+		var job = new cron.CronJob({
+			cronTime: '* * * * * *',
+			onTick: function() {
+				assert.ok(true);
+				assert.equal(this.hello, 'world');
+				assert.ok(job !== this);
+			},
+			start: true,
+			context: {hello: 'world'}
+		});
+
+		clock.tick(1000);
+
+		clock.restore();
+		job.stop();
+		assert.done();
+	},
 	'test avoid inf loop on invalid time': function(assert) {
-		// currently, the instantiation never completes
+		var clock = sinon.useFakeTimers();
+
+		assert.expect(1);
+
 		var invalid1 = new cron.CronJob('* 60 * * * *', function() {
 			assert.ok(true);
 		}, null, true);
@@ -407,9 +439,14 @@ module.exports = testCase({
 			assert.ok(true);
 		}, null, true);
 
-		// assert that it gets here, right now it won't
+		clock.tick(1000);
+
+		// assert that it gets here
+		assert.ok(true);
 		invalid1.stop();
 		invalid2.stop();
-		assert.done()
+
+		clock.restore();
+		assert.done();
 	}
 });
