@@ -196,19 +196,16 @@ module.exports = testCase({
 		});
 		job.start();
 
-		clock.tick(1000);
+		clock.tick(1001);
 	},
-	'test specifying a specific date': function(assert) {
-		assert.expect(2);
+	'test specifying a date': function(assert) {
+		assert.expect(1);
 
 		var d = new Date();
 		var clock = sinon.useFakeTimers(d.getTime());
-		var s = d.getSeconds()+1;
-		d.setSeconds(s);
 		var job = new cron.CronJob(d, function() {
 			var t = new Date();
-			assert.equal(t.getSeconds(), d.getSeconds());
-			assert.ok(true);
+			assert.equal(t.getSeconds(), d.getSeconds()+1);
 		}, null, true);
 		clock.tick(1000);
 
@@ -216,17 +213,14 @@ module.exports = testCase({
 		job.stop();
 		assert.done();
 	},
-	'test specifying a specific date with oncomplete': function(assert) {
-		assert.expect(3);
+	'test specifying a date with oncomplete': function(assert) {
+		assert.expect(2);
 
 		var d = new Date();
 		var clock = sinon.useFakeTimers(d.getTime());
-		var s = d.getSeconds()+1;
-		d.setSeconds(s);
 		var job = new cron.CronJob(d, function() {
 			var t = new Date();
-			assert.equal(t.getSeconds(), d.getSeconds());
-			assert.ok(true);
+			assert.equal(t.getSeconds(), d.getSeconds()+1);
 		}, function() {
 			assert.ok(true);
 			assert.done();
@@ -235,44 +229,6 @@ module.exports = testCase({
 
 		clock.restore();
 		job.stop();
-	},
-	'test a job with a string and a given time zone': function (assert) {
-		var clock = sinon.useFakeTimers();
-
-		assert.expect(2);
-
-		var moment = require("moment-timezone");
-		var zone = "America/Chicago";
-
-		// New Orleans time
-		var t = moment();
-		t.tz(zone);
-
-		// Current time
-		d = moment();
-
-		// If current time is New Orleans time, switch to Los Angeles..
-		if (t.hours() === d.hours()) {
-			zone = "America/Los_Angeles";
-			t.tz(zone);
-		}
-		assert.notEqual(d.hours(), t.hours());
-
-		// If t = 59s12m then t.setSeconds(60)
-		// becones 00s13m so we're fine just doing
-		// this and no testRun callback.
-		t.add(1, 's');
-		// Run a job designed to be executed at a given 
-		// time in `zone`, making sure that it is a different
-		// hour than local time.
-		var job = new cron.CronJob(t.seconds() + ' ' + t.minutes() + ' ' + t.hours() +  ' * * *', function(){
-			assert.ok(true);
-		}, null, true, zone);
-
-		clock.tick(1000);
-		clock.restore();
-		job.stop();
-		assert.done();
 	},
   'test a job with a date and a given time zone': function (assert) {
 		assert.expect(2);
@@ -333,7 +289,7 @@ module.exports = testCase({
 			assert.ok(true);
 		});
 
-		var time = cron.time('*/2 * * * * *');
+		var time = '*/2 * * * * ';
 		job.start();
 
 		clock.tick(1000);
@@ -348,29 +304,6 @@ module.exports = testCase({
 		job.stop();
 		assert.done();
   },
-  'test start, change time, exception': function(assert) {
-		var clock = sinon.useFakeTimers();
-
-		assert.expect(2);
-
-		var job = new cron.CronJob('* * * * * *', function() {
-			assert.ok(true);
-		});
-
-		var time = new Date();
-		job.start();
-
-		clock.tick(1000);
-
-		job.stop();
-		assert.throws(function() {
-			job.setTime(time);
-		});
-
-		clock.restore();
-		job.stop();
-		assert.done();
-	},
 	'test cronjob scoping': function(assert) {
 		var clock = sinon.useFakeTimers();
 
@@ -427,7 +360,7 @@ module.exports = testCase({
 		job.stop();
 		assert.done();
 	},
-	'test avoid inf loop on invalid time': function(assert) {
+	'test avoid infinite loop on invalid time': function(assert) {
 		var clock = sinon.useFakeTimers();
 
 		assert.expect(1);
