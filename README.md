@@ -34,10 +34,12 @@ As goes with semver, breaking backwards compatibility should be explicit in the 
 Usage (basic cron usage):
 ==========
 
-    var CronJob = require('cron').CronJob;
-    new CronJob('* * * * * *', function(){
-        console.log('You will see this message every second');
-    }, null, true, "America/Los_Angeles");
+```javascript
+var CronJob = require('cron').CronJob;
+new CronJob('* * * * * *', function(){
+    console.log('You will see this message every second');
+}, null, true, "America/Los_Angeles");
+```
 
 
 Available Cron patterns:
@@ -64,58 +66,66 @@ When specifying your cron values you'll need to make sure that your values fall 
 Another cron example
 ==========
 
-    var CronJob = require('cron').CronJob;
-    var job = new CronJob('00 30 11 * * 1-5', function(){
-        // Runs every weekday (Monday through Friday)
-        // at 11:30:00 AM. It does not run on Saturday
-        // or Sunday.
-      }, function () {
-        // This function is executed when the job stops
-      },
-      true /* Start the job right now */,
-      timeZone /* Time zone of this job. */
-    );
+```javascript
+var CronJob = require('cron').CronJob;
+var job = new CronJob('00 30 11 * * 1-5', function(){
+    // Runs every weekday (Monday through Friday)
+    // at 11:30:00 AM. It does not run on Saturday
+    // or Sunday.
+  }, function () {
+    // This function is executed when the job stops
+  },
+  true /* Start the job right now */,
+  timeZone /* Time zone of this job. */
+);
+```
 
 Another example with Date
 ==========
 
-    var CronJob = require('cron').CronJob;
-    var job = new CronJob(new Date(), function(){
-        //runs once at the specified date.
-      }, function () {
-        // This function is executed when the job stops
-      },
-      true /* Start the job right now */,
-      timeZone /* Time zone of this job. */
-    );
+```javascript
+var CronJob = require('cron').CronJob;
+var job = new CronJob(new Date(), function(){
+    //runs once at the specified date.
+  }, function () {
+    // This function is executed when the job stops
+  },
+  true /* Start the job right now */,
+  timeZone /* Time zone of this job. */
+);
+```
 
 For good measure
 ==========
 
-    var CronJob = require('cron').CronJob;
-    var job = new CronJob({
-      cronTime: '00 30 11 * * 1-5',
-      onTick: function() {
-        // Runs every weekday (Monday through Friday)
-        // at 11:30:00 AM. It does not run on Saturday
-        // or Sunday.
-      },
-      start: false,
-      timeZone: "America/Los_Angeles"
-    });
-    job.start();
+```javascript
+var CronJob = require('cron').CronJob;
+var job = new CronJob({
+  cronTime: '00 30 11 * * 1-5',
+  onTick: function() {
+    // Runs every weekday (Monday through Friday)
+    // at 11:30:00 AM. It does not run on Saturday
+    // or Sunday.
+  },
+  start: false,
+  timeZone: "America/Los_Angeles"
+});
+job.start();
+```
 
 
 How to check if a cron pattern is valid:
 ==========
 
-		try {
-			new CronJob('invalid cron pattern', function() {
-				console.log('this should not be printed');
-			})
-		} catch(ex) {
-			console.log("cron pattern not valid");
-		}
+```javascript
+try {
+	new CronJob('invalid cron pattern', function() {
+		console.log('this should not be printed');
+	})
+} catch(ex) {
+	console.log("cron pattern not valid");
+}
+```
 
 
 Install
