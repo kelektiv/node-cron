@@ -365,7 +365,7 @@ module.exports = testCase({
 		job.stop();
 		assert.throws(function() {
 			job.setTime(time);
-		});
+		}, Error, '\'time\' must be an instance of CronTime.');
 
 		clock.restore();
 		job.stop();
