@@ -16,7 +16,7 @@ If You Are Submitting Bugs/Issues
 Because we can't magically know what you are doing to expose an issue, it is best if you provide a snippet of code. This snippet need not include your secret sauce, but it must replicate the issue you are describing. The issues that get closed without resolution tend to be the ones without code examples. Thanks.
 
 
-Versions and Backwards compatability breaks:
+Versions and Backwards compatibility breaks:
 ==========
 
 As goes with semver, breaking backwards compatibility should be explicit in the versioning of your library. As such, we'll upgrade the version of this module in accordance with breaking changes (I'm not always great about doing it this way so if you notice that there are breaking changes that haven't been bumped appropriately please let me know). This table lists out the issues which were the reason for the break in backward compatibility.
