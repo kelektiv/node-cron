@@ -49,7 +49,9 @@ Available Cron patterns:
     Ranges. E.g. 1-3,5
     Steps. E.g. */2
 
-[Read up on cron patterns here](http://crontab.org).
+[Read up on cron patterns here](http://crontab.org). Note the examples in the
+link have five fields, and 1 minute as the finest granularity, but this library
+has six fields, with 1 second as the finest granularity.
 
 Cron Ranges
 ==========
@@ -142,7 +144,7 @@ Install
 API
 ==========
 
-Parameter Based 
+Parameter Based
 
 `CronJob`
 
