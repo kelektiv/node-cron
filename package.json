@@ -18,7 +18,8 @@
     "moment-timezone": "~0.3.0"
   },
   "devDependencies": {
-    "nodeunit": ">=0.5.4",
+    "mocha": "~2.3.3",
+    "chai": "~3.4.0",
     "sinon": "~1.12.x"
   },
   "licenses": [
