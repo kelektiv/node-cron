@@ -14,9 +14,9 @@ describe('cron', function() {
 
 		clock.tick(1000);
 		job.stop();
-		expect(c).to.eql(1);
-
 		clock.restore();
+
+		expect(c).to.eql(1);
 	});
 
 	it('should run second with oncomplete (* * * * * *)', function(done) {
@@ -102,6 +102,38 @@ describe('cron', function() {
 		clock.restore();
 		job.stop();
 		expect(c).to.eql(5);
+	});
+
+	//ensure that this is running on the second second
+	it('should run every 2 seconds for 1 seconds (*/2 * * * * *)', function() {
+		var clock = sinon.useFakeTimers();
+		var c = 0;
+
+		var job = new cron.CronJob('*/2 * * * * *', function() {
+			c++;
+		}, null, true);
+
+		clock.tick(1000);
+
+		clock.restore();
+		job.stop();
+		expect(c).to.eql(0);
+	});
+
+	it('should run every 2 seconds for 5 seconds (*/2 * * * * *)', function() {
+		var clock = sinon.useFakeTimers();
+		var c = 0;
+
+		var job = new cron.CronJob('*/2 * * * * *', function() {
+			c++;
+		}, null, true);
+
+		for (var i = 0; i < 5; i++)
+			clock.tick(1000);
+
+		clock.restore();
+		job.stop();
+		expect(c).to.eql(2);
 	});
 
 	it('should run every second for 5 seconds with oncomplete (*/1 * * * * *)', function(done) {
@@ -457,7 +489,7 @@ describe('cron', function() {
 		clock.restore();
 	});
 
-	it('test start of month', function() {
+	it('should test start of month', function() {
 		var c = 0;
 		var d = new Date('12/31/2014');
 		d.setSeconds(59);
@@ -476,8 +508,11 @@ describe('cron', function() {
 		expect(c).to.eql(1);
 
 		clock.tick(2678400001); //jump over 2 firsts
-		expect(c).to.eql(3);
 		clock.restore();
 		job.stop();
+
+		expect(c).to.eql(3);
 	});
+
+	it('should run every second monday');
 });

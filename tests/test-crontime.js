@@ -106,6 +106,8 @@ describe('crontime', function() {
 		}).to.not.throw;
 	});
 
+	it('should test every second monday (* * * * * mon/2)');
+
 	it('should test unknown alias (* * * * jar *)', function() {
 		expect(function() {
 			new cron.CronTime('* * * * jar *');
@@ -184,16 +186,17 @@ describe('crontime', function() {
 	});
 
 	it('should test next month selection', function() {
-		var date = new Date();
-		var dom = date.getDate() + 1;
+		var d = new Date();
+		var dom = d.getDate() + 1;
+		console.log(dom);
 		var ct = new cron.CronTime('0 0 0 ' + dom + ' * *');
 
 		var saDate = ct.sendAt();
 
-		if (dom < date.getDate())
-			date.setMonth(date.getMonth()+1);
+		if (dom < d.getDate())
+			d.setMonth(d.getMonth()+1);
 
-		expect(date.getMonth()).to.eql(saDate.month());
+		expect(d.getMonth()).to.eql(saDate.month());
 	});
 
 	describe('should throw an exception because `L` not supported', function() {
