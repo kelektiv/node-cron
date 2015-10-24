@@ -146,14 +146,14 @@ Parameter Based
 
 `CronJob`
 
-  * `constructor(cronTime, onTick, onComplete, start, timezone, context, onInit)` - Of note, the first parameter here can be a JSON object that has the below names and associated types (see examples above).
+  * `constructor(cronTime, onTick, onComplete, start, timezone, context, runOnInit)` - Of note, the first parameter here can be a JSON object that has the below names and associated types (see examples above).
     * `cronTime` - [REQUIRED] - The time to fire off your job. This can be in the form of cron syntax or a JS [Date](https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Date) object.
     * `onTick` - [REQUIRED] - The function to fire at the specified time.
     * `onComplete` - [OPTIONAL] - A function that will fire when the job is complete, when it is stopped.
     * `start` - [OPTIONAL] - Specifies whether to start the job just before exiting the constructor. By default this is set to false. If left at default you will need to call `job.start()` in order to start the job (assuming `job` is the variable you set the cronjob to). This does not immediately fire your `onTick` function, it just gives you more control over the behavior of your jobs.
     * `timeZone` - [OPTIONAL] - Specify the timezone for the execution. This will modify the actual time relative to your timezone.
     * `context` - [OPTIONAL] - The context within which to execute the onTick method. This defaults to the cronjob itself allowing you to call `this.stop()`. However, if you change this you'll have access to the functions and values within your context object.
-    * `onInit` - [OPTIONAL] - This will immediately fire your `onTick` function as soon as the requisit initialization has happened. This option is set to `false` by default for backwards compatability.
+    * `runOnInit` - [OPTIONAL] - This will immediately fire your `onTick` function as soon as the requisit initialization has happened. This option is set to `false` by default for backwards compatability.
   * `start` - Runs your job.
   * `stop` - Stops your job.
 
