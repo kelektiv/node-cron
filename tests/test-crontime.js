@@ -195,4 +195,42 @@ describe('crontime', function() {
 
 		expect(date.getMonth()).to.eql(saDate.month());
 	});
+
+	describe('should throw an exception because `L` not supported', function() {
+		it('(L * * * * *)', function() {
+			expect(function() {
+				new cron.CronTime('L * * * * *');
+			}).to.throw;
+		});
+
+		it('(* L * * * *)', function() {
+			expect(function() {
+				new cron.CronTime('* L * * * *');
+			}).to.throw;
+		});
+
+		it('(* * L * * *)', function() {
+			expect(function() {
+				new cron.CronTime('* * L * * *');
+			}).to.throw;
+		});
+
+		it('(* * * L * *)', function() {
+			expect(function() {
+				new cron.CronTime('* * * L * *');
+			}).to.throw;
+		});
+
+		it('(* * * * L *)', function() {
+			expect(function() {
+				new cron.CronTime('* * * * L *');
+			}).to.throw;
+		});
+
+		it('(* * * * * L)', function() {
+			expect(function() {
+				new cron.CronTime('* * * * * L');
+			}).to.throw;
+		});
+	});
 });
