@@ -6,37 +6,37 @@ describe('crontime', function() {
 	it('should test stars (* * * * * *)', function() {
 		expect(function() {
 			new cron.CronTime('* * * * * *');
-		}).to.not.throw;
+		}).to.not.throw(Error);
 	});
 
 	it('should test digit (0 * * * * *)', function() {
 		expect(function() {
 			new cron.CronTime('0 * * * * *');
-		}).to.not.throw;
+		}).to.not.throw(Error);
 	});
 
 	it('should test multi digits (08 * * * * *)', function() {
 		expect(function() {
 			new cron.CronTime('08 * * * * *');
-		}).to.not.throw;
+		}).to.not.throw(Error);
 	});
 
 	it('should test all digits (08 8 8 8 8 5)', function() {
 		expect(function() {
 			new cron.CronTime('08 * * * * *');
-		}).to.not.throw;
+		}).to.not.throw(Error);
 	});
 
 	it('should test too many digits (08 8 8 8 8 5)', function() {
 		expect(function() {
 			new cron.CronTime('08 * * * * *');
-		}).to.not.throw;
+		}).to.not.throw(Error);
 	});
 
 	it('should test standard cron format (* * * * *)', function() {
 		expect(function() {
 			new cron.CronTime('* * * * *');
-		}).to.not.throw;
+		}).to.not.throw(Error);
 	});
 
 	it('should test standard cron format (8 8 8 8 5)', function() {
@@ -55,55 +55,55 @@ describe('crontime', function() {
 	it('should test hyphen (0-10 * * * * *)', function() {
 		expect(function() {
 			new cron.CronTime('0-10 * * * * *');
-		}).to.not.throw;
+		}).to.not.throw(Error);
 	});
 
 	it('should test multi hyphens (0-10 0-10 * * * *)', function() {
 		expect(function() {
 			new cron.CronTime('0-10 0-10 * * * *');
-		}).to.not.throw;
+		}).to.not.throw(Error);
 	});
 
 	it('should test all hyphens (0-10 0-10 0-10 0-10 0-10 0-1)', function() {
 		expect(function() {
 			new cron.CronTime('0-10 0-10 0-10 0-10 0-10 0-1');
-		}).to.not.throw;
+		}).to.not.throw(Error);
 	});
 
 	it('should test comma (0,10 * * * * *)', function() {
 		expect(function() {
 			new cron.CronTime('0,10 * * * * *');
-		}).to.not.throw;
+		}).to.not.throw(Error);
 	});
 
 	it('should test multi commas (0,10 0,10 * * * *)', function() {
 		expect(function() {
 			new cron.CronTime('0,10 0,10 * * * *');
-		}).to.not.throw;
+		}).to.not.throw(Error);
 	});
 
 	it('should test all commas (0,10 0,10 0,10 0,10 0,10 0,1)', function() {
 		expect(function() {
 			new cron.CronTime('0,10 0,10 0,10 0,10 0,10 0,1');
-		}).to.not.throw;
+		}).to.not.throw(Error);
 	});
 
 	it('should test alias (* * * * jan *)', function() {
 		expect(function() {
 			new cron.CronTime('* * * * jan *');
-		}).to.not.throw;
+		}).to.not.throw(Error);
 	});
 
 	it('should test multi aliases (* * * * jan,feb *)', function() {
 		expect(function() {
 			new cron.CronTime('* * * * jan,feb *');
-		}).to.not.throw;
+		}).to.not.throw(Error);
 	});
 
 	it('should test all aliases (* * * * jan,feb mon,tue)', function() {
 		expect(function() {
 			new cron.CronTime('* * * * jan,feb mon,tue');
-		}).to.not.throw;
+		}).to.not.throw(Error);
 	});
 
 	it('should test every second monday (* * * * * mon/2)');
@@ -111,13 +111,13 @@ describe('crontime', function() {
 	it('should test unknown alias (* * * * jar *)', function() {
 		expect(function() {
 			new cron.CronTime('* * * * jar *');
-		}).to.throw;
+		}).to.throw(Error);
 	});
 
 	it('should test unknown alias - short (* * * * j *)', function() {
 		expect(function() {
 			new cron.CronTime('* * * * j *');
-		}).to.throw;
+		}).to.throw(Error);
 	});
 
 	it('should test Date', function() {
@@ -142,7 +142,7 @@ describe('crontime', function() {
 	it('should test illegal repetition syntax', function() {
 		expect(function(){
 			new cron.CronTime('* * /4 * * *');
-		}).to.throw;
+		}).to.throw(Error);
 	});
 
 	it('should test next date', function() {
@@ -180,7 +180,7 @@ describe('crontime', function() {
 			(function(m) {
 				expect(function() {
 					var ct = new cron.CronTime('0 0 0 33 ' + m + ' *');
-				}).to.throw;
+				}).to.throw(Error);
 			})(ltm[i]);
 		}
 	});
@@ -203,37 +203,37 @@ describe('crontime', function() {
 		it('(L * * * * *)', function() {
 			expect(function() {
 				new cron.CronTime('L * * * * *');
-			}).to.throw;
+			}).to.throw(Error);
 		});
 
 		it('(* L * * * *)', function() {
 			expect(function() {
 				new cron.CronTime('* L * * * *');
-			}).to.throw;
+			}).to.throw(Error);
 		});
 
 		it('(* * L * * *)', function() {
 			expect(function() {
 				new cron.CronTime('* * L * * *');
-			}).to.throw;
+			}).to.throw(Error);
 		});
 
 		it('(* * * L * *)', function() {
 			expect(function() {
 				new cron.CronTime('* * * L * *');
-			}).to.throw;
+			}).to.throw(Error);
 		});
 
 		it('(* * * * L *)', function() {
 			expect(function() {
 				new cron.CronTime('* * * * L *');
-			}).to.throw;
+			}).to.throw(Error);
 		});
 
 		it('(* * * * * L)', function() {
 			expect(function() {
 				new cron.CronTime('* * * * * L');
-			}).to.throw;
+			}).to.throw(Error);
 		});
 	});
 });

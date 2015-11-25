@@ -10,7 +10,8 @@
         "cliftonc",
         "neyric",
         "humanchimp",
-        "danhbear"
+        "danhbear",
+        "Jordan Abderrachid<jabderrachid@gmail.com>"
     ],
     "description": "js cron handler",
     "main": ["lib/cron.js"],
