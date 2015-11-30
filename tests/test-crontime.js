@@ -185,55 +185,19 @@ describe('crontime', function() {
 		}
 	});
 
-	it('should test next month selection', function() {
-		var d = new Date();
-		var dom = d.getDate() + 1;
-		console.log(dom);
-		var ct = new cron.CronTime('0 0 0 ' + dom + ' * *');
-
-		var saDate = ct.sendAt();
-
-		if (dom < d.getDate())
-			d.setMonth(d.getMonth()+1);
-
-		expect(d.getMonth()).to.eql(saDate.month());
-	});
+	it('should test next month selection');
 
 	describe('should throw an exception because `L` not supported', function() {
-		it('(L * * * * *)', function() {
-			expect(function() {
-				new cron.CronTime('L * * * * *');
-			}).to.throw;
-		});
-
-		it('(* L * * * *)', function() {
-			expect(function() {
-				new cron.CronTime('* L * * * *');
-			}).to.throw;
-		});
-
-		it('(* * L * * *)', function() {
-			expect(function() {
-				new cron.CronTime('* * L * * *');
-			}).to.throw;
-		});
-
 		it('(* * * L * *)', function() {
 			expect(function() {
 				new cron.CronTime('* * * L * *');
-			}).to.throw;
-		});
-
-		it('(* * * * L *)', function() {
-			expect(function() {
-				new cron.CronTime('* * * * L *');
-			}).to.throw;
+			}).to.throw(Error);
 		});
 
 		it('(* * * * * L)', function() {
 			expect(function() {
 				new cron.CronTime('* * * * * L');
-			}).to.throw;
+			}).to.throw(Error);
 		});
 	});
 });
