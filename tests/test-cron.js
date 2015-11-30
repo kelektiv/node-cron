@@ -357,6 +357,16 @@ describe('cron', function() {
 			job.stop();
 			expect(c).to.eql(1);
 		});
+
+		it('should test if timezone is valid.', function () {
+			expect(function () {
+				new cron.CronJob({
+					cronTime: '* * * * * *',
+					onTick: function (){},
+					timeZone: 'fake/timezone'
+				});
+			}).to.throw(Error);
+		});
 	});
 
 	it('should wait and not fire immediately', function() {
