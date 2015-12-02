@@ -416,7 +416,7 @@ describe('cron', function() {
 		job.stop();
 		expect(function() {
 			job.setTime(time);
-		}).to.throw;
+		}).to.throw(Error);
 
 		clock.restore();
 		job.stop();
