@@ -15,7 +15,7 @@
     "test": "make test"
   },
   "dependencies": {
-    "moment-timezone": "~0.3.0"
+    "moment-timezone": "^0.5.4"
   },
   "devDependencies": {
     "mocha": "~2.3.3",
