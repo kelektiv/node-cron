@@ -40,7 +40,6 @@ describe('crontime', function() {
 	});
 
 	it('should test standard cron format (8 8 8 8 5)', function() {
-		var now = Date.now();
 		var standard = new cron.CronTime('8 8 8 8 5');
 		var extended = new cron.CronTime('0 8 8 8 8 5');
 
@@ -172,17 +171,6 @@ describe('crontime', function() {
 		expect(nextDate).to.be.gt(ct.source);
 		var nextdt = ct._getNextDateFrom(nextDate);
 		expect(nextdt.isSame(nextDate)).to.be.true;
-	});
-
-	it('should test < constraints day of month', function() {
-		var ltm = [1, 3, 5, 8, 10];
-		for (var i = 0; i < ltm.length; i++) {
-			(function(m) {
-				expect(function() {
-					var ct = new cron.CronTime('0 0 0 33 ' + m + ' *');
-				}).to.throw(Error);
-			})(ltm[i]);
-		}
 	});
 
 	it('should test next month selection');
