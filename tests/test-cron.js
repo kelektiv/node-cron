@@ -35,6 +35,25 @@ describe('cron', function() {
 		job.stop();
 	});
 
+	it('should fire every 60 min', function () {
+		var m60 = 60 * 60 * 1000;
+    var clock = sinon.useFakeTimers();
+    var l = [];
+    var job = new cron.CronJob('00 30 * * * *', function () {
+      l.push(Math.floor(Date.now() / 60000));
+    },null,true);
+
+		clock.tick(m60 * 10);
+
+    expect(l.length).to.eql(10);
+		for (var i = 0; i < l.length; i++) {
+			expect(l[i] % 30).to.eql(0);
+		}
+
+		job.stop();
+		clock.restore();
+  });
+
 	it('should use standard cron no-seconds syntax (* * * * *)', function() {
 		var clock = sinon.useFakeTimers();
 		var c = 0;
@@ -312,7 +331,7 @@ describe('cron', function() {
 			// becones 00s13m so we're fine just doing
 			// this and no testRun callback.
 			t.add(1, 's');
-			// Run a job designed to be executed at a given 
+			// Run a job designed to be executed at a given
 			// time in `zone`, making sure that it is a different
 			// hour than local time.
 			var job = new cron.CronJob(t.seconds() + ' ' + t.minutes() + ' ' + t.hours() +  ' * * *', function(){
