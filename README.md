@@ -42,6 +42,7 @@ new CronJob('* * * * * *', function() {
 }, null, true, 'America/Los_Angeles');
 ```
 
+Note - You need to explictly start a job in order to make it run. This gives a little more control over running your jobs.
 
 Available Cron patterns:
 ==========
