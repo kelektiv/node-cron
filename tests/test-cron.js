@@ -543,5 +543,20 @@ describe('cron', function() {
 		expect(c).to.eql(3);
 	});
 
+	it('should not fire if time was adjusted back', function() {
+		var c = 0;
+		var clock = sinon.useFakeTimers('setTimeout');
+
+		var job = new cron.CronJob('0 * * * * *', function() {
+			c++;
+		}, null, true);
+
+		clock.tick(60000);
+		expect(c).to.eql(0);
+
+		clock.restore();
+		job.stop();
+	});
+
 	it('should run every second monday');
 });
