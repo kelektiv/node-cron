@@ -1,7 +1,7 @@
 {
   "name": "cron",
   "description": "Cron jobs for your node",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "author": "Nick Campbell <nicholas.j.campbell@gmail.com> (http://github.com/ncb000gt)",
   "bugs" : {
     "url" : "http://github.com/ncb000gt/node-cron/issues"
