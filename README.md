@@ -191,7 +191,7 @@ Parameter Based
     * `start` - [OPTIONAL] - Specifies whether to start the job just before exiting the constructor. By default this is set to false. If left at default you will need to call `job.start()` in order to start the job (assuming `job` is the variable you set the cronjob to). This does not immediately fire your `onTick` function, it just gives you more control over the behavior of your jobs.
     * `timeZone` - [OPTIONAL] - Specify the timezone for the execution. This will modify the actual time relative to your timezone. If the timezone is invalid, an error is thrown.
     * `context` - [OPTIONAL] - The context within which to execute the onTick method. This defaults to the cronjob itself allowing you to call `this.stop()`. However, if you change this you'll have access to the functions and values within your context object.
-    * `runOnInit` - [OPTIONAL] - This will immediately fire your `onTick` function as soon as the requisit initialization has happened. This option is set to `false` by default for backwards compatability.
+    * `runOnInit` - [OPTIONAL] - This will immediately fire your `onTick` function as soon as the requisit initialization has happened. This option is set to `false` by default for backwards compatibility.
   * `start` - Runs your job.
   * `stop` - Stops your job.
 
