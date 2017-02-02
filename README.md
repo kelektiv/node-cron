@@ -35,7 +35,7 @@ As goes with semver, breaking backwards compatibility should be explicit in the 
 Usage (basic cron usage):
 ==========
 
-```javascript
+```js
 var CronJob = require('cron').CronJob;
 new CronJob('* * * * * *', function() {
   console.log('You will see this message every second');
@@ -70,7 +70,7 @@ When specifying your cron values you'll need to make sure that your values fall 
 Another cron example
 ==========
 
-```javascript
+```js
 var CronJob = require('cron').CronJob;
 var job = new CronJob('00 30 11 * * 1-5', function() {
   /*
@@ -89,7 +89,7 @@ var job = new CronJob('00 30 11 * * 1-5', function() {
 Another example with Date
 ==========
 
-```javascript
+```js
 var CronJob = require('cron').CronJob;
 var job = new CronJob(new Date(), function() {
   /* runs once at the specified date. */
@@ -104,7 +104,7 @@ var job = new CronJob(new Date(), function() {
 For good measure
 ==========
 
-```javascript
+```js
 var CronJob = require('cron').CronJob;
 var job = new CronJob({
   cronTime: '00 30 11 * * 1-5',
@@ -125,7 +125,7 @@ job.start();
 How to check if a cron pattern is valid:
 ==========
 
-```javascript
+```js
 try {
 	new CronJob('invalid cron pattern', function() {
 		console.log('this should not be printed');
