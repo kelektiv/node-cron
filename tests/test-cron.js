@@ -559,4 +559,64 @@ describe('cron', function() {
 	});
 
 	it('should run every second monday');
+
+	describe('with utcOffset', function() {
+		it('should run a job using cron syntax with number format utcOffset', function () {
+			var clock = sinon.useFakeTimers();
+			var c = 0;
+
+			var moment = require("moment-timezone");
+
+			// Current time
+			var t = moment();
+
+			// UTC Offset decreased by an hour
+			var utcOffset = t.utcOffset() - 60;
+
+			var job = new cron.CronJob(t.seconds() + ' ' + t.minutes() + ' ' + t.hours() +  ' * * *', function(){
+				c++;
+			}, null, true, null, null, null, utcOffset);
+
+			// tick 1 sec before an hour
+			clock.tick(1000 * 60 * 60 - 1);
+			expect(c).to.eql(0);
+
+			clock.tick(1);
+			clock.restore();
+			job.stop();
+			expect(c).to.eql(1);
+		});
+
+		it('should run a job using cron syntax with string format utcOffset', function () {
+			var clock = sinon.useFakeTimers();
+			var c = 0;
+
+			var moment = require("moment-timezone");
+
+			// Current time
+			var t = moment();
+
+			// UTC Offset decreased by an hour (string format '(+/-)HH:mm')
+			var utcOffset = t.utcOffset() - 60;
+			var utcOffsetString = (0 < utcOffset ? '+' : '-');
+			utcOffsetString += ('0' + Math.floor(Math.abs(utcOffset) / 60)).slice(-2);
+			utcOffsetString += ':';
+			utcOffsetString += ('0' + (utcOffset % 60)).slice(-2);
+
+			var job = new cron.CronJob(t.seconds() + ' ' + t.minutes() + ' ' + t.hours() +  ' * * *', function(){
+				c++;
+			}, null, true, null, null, null, utcOffsetString);
+
+			// tick 1 sec before an hour
+			clock.tick(1000 * 60 * 60 - 1);
+			expect(c).to.eql(0);
+
+			// tick 1 sec
+			clock.tick(1);
+			clock.restore();
+			job.stop();
+			expect(c).to.eql(1);
+		});
+
+	});
 });
