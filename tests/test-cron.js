@@ -173,6 +173,74 @@ describe('cron', function() {
 		job.stop();
 	});
 
+	it('should run every 45 minutes for 2 hours (0 */45 * * * *)', function() {
+		var clock = sinon.useFakeTimers();
+		var c = 0;
+
+		var job = new cron.CronJob('0 */45 * * * *', function() {
+			c++;
+		}, null, true);
+
+		for (var i = 0; i < 2; i++)
+			clock.tick(60 * 60 * 1000);
+
+		clock.restore();
+		job.stop();
+		expect(c).to.eql(4); // 0 and 45
+	});
+
+	it('should run every 45 minutes for 2 hours with oncomplete (0 */45 * * * *)', function(done) {
+		var clock = sinon.useFakeTimers();
+		var c = 0;
+
+		var job = new cron.CronJob('0 */45 * * * *', function() {
+			c++
+		}, function() {
+			expect(c).to.eql(4); // 0 and 45
+			done();
+		}, true);
+
+		for (var i = 0; i < 2; i++)
+			clock.tick(60 * 60 * 1000);
+
+		clock.restore();
+		job.stop();
+	});
+
+	it('should run every 45 minutes for 2 hours (0 0,45 * * * *)', function() {
+		var clock = sinon.useFakeTimers();
+		var c = 0;
+
+		var job = new cron.CronJob('0 0,45 * * * *', function() {
+			c++;
+		}, null, true);
+
+		for (var i = 0; i < 2; i++)
+			clock.tick(60 * 60 * 1000);
+
+		clock.restore();
+		job.stop();
+		expect(c).to.eql(4); // 0 and 45
+	});
+
+	it('should run every 45 minutes for 2 hours with oncomplete (0 0,45 * * * *)', function(done) {
+		var clock = sinon.useFakeTimers();
+		var c = 0;
+
+		var job = new cron.CronJob('0 0,45 * * * *', function() {
+			c++
+		}, function() {
+			expect(c).to.eql(4); // 0 and 45
+			done();
+		}, true);
+
+		for (var i = 0; i < 2; i++)
+			clock.tick(60 * 60 * 1000);
+
+		clock.restore();
+		job.stop();
+	});
+
 	it('should run every second for a range ([start]-[end] * * * * *)', function() {
 		var clock = sinon.useFakeTimers();
 		var c = 0;
