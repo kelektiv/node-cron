@@ -182,8 +182,11 @@ API
 
 Parameter Based
 
-`CronJob`
-
+* `job` - shortcut to `new cron.CronJob()`.
+* `time` - shortcut to `new cron.CronTime()`.
+* `sendAt` - tells you when a `CronTime` will be run.
+* `timeout` - tells you when the next timeout is.
+* `CronJob`
   * `constructor(cronTime, onTick, onComplete, start, timezone, context, runOnInit)` - Of note, the first parameter here can be a JSON object that has the below names and associated types (see examples above).
     * `cronTime` - [REQUIRED] - The time to fire off your job. This can be in the form of cron syntax or a JS [Date](https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Date) object.
     * `onTick` - [REQUIRED] - The function to fire at the specified time.
@@ -194,9 +197,12 @@ Parameter Based
     * `runOnInit` - [OPTIONAL] - This will immediately fire your `onTick` function as soon as the requisit initialization has happened. This option is set to `false` by default for backwards compatibility.
   * `start` - Runs your job.
   * `stop` - Stops your job.
-
-`CronTime`
-
+	* `setTime` - Change the time for the `CronJob`. Param must be a `CronTime`.
+	* `lastDate` - Tells you the last execution date.
+	* `nextDates` - Provides an array of the next set of dates that will trigger an `onTick`.
+	* `fireOnTick` - Allows you to override the `onTick` calling behavior. This matters so only do this if you have a really good reason to do so.
+	* `addCallback` - Allows you to add `onTick` callbacks.
+* `CronTime`
   * `constructor(time)`
     * `time` - [REQUIRED] - The time to fire off your job. This can be in the form of cron syntax or a JS [Date](https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Date) object.
 
