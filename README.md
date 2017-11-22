@@ -1,7 +1,7 @@
 node-cron
 =========
 
-[![Build Status](https://secure.travis-ci.org/ncb000gt/node-cron.svg?branch=master)](https://travis-ci.org/kelektiv/node-cron.svg?branch=master)
+[![Build Status](https://travis-ci.org/kelektiv/node-cron.svg?branch=master)](https://travis-ci.org/#!/kelektiv/node-cron)
 [![wercker status](https://app.wercker.com/status/0cadfe5d45ad7bc819efb636026cf230/s "wercker status")](https://app.wercker.com/project/bykey/0cadfe5d45ad7bc819efb636026cf230)
 [![Dependency Status](https://david-dm.org/ncb000gt/node-cron.svg)](https://david-dm.org/ncb000gt/node-cron)
 
