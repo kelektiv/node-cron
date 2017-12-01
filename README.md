@@ -143,7 +143,7 @@ How to check if a job is running
 var cron = require('cron');
 
 var job1 = new cron.CronJob({
-  cronTime: '* * * * *',
+  cronTime: '* * * * * *',
   onTick: function() {
     console.log('job 1 ticked');
   },
@@ -152,7 +152,7 @@ var job1 = new cron.CronJob({
 });
 
 var job2 = new cron.CronJob({
-  cronTime: '* * * * *',
+  cronTime: '* * * * * *',
   onTick: function() {
     console.log('job 2 ticked');
   },
