@@ -18,9 +18,9 @@
     "moment-timezone": "^0.5.x"
   },
   "devDependencies": {
-    "mocha": "^5.1.*",
-    "chai": "^4.1.*",
-    "sinon": "^4.5.*"
+    "mocha": "^5.1.x",
+    "chai": "^4.1.x",
+    "sinon": "^4.5.x"
   },
   "license": "MIT",
   "contributors": [
