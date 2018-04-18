@@ -20,7 +20,7 @@
   "devDependencies": {
     "mocha": "^5.1.x",
     "chai": "^4.1.x",
-    "sinon": "^4.5.x"
+    "sinon": "^1.12.x"
   },
   "license": "MIT",
   "contributors": [
