@@ -680,6 +680,31 @@ describe('cron', function() {
 		expect(c).to.eql(3);
 	});
 
+	it('should run every minute', function() {
+		var c = 0;
+		var d = new Date('12/31/2014');
+		d.setSeconds(0);
+		d.setMinutes(0);
+		d.setHours(0);
+		var clock = sinon.useFakeTimers(d.getTime());
+
+		var job = new cron.CronJob({
+			cronTime: '00 * * * * *',
+			onTick: function() {
+				c++;
+			},
+			start: true
+		});
+
+		clock.tick(60 * 1000);
+		expect(c).to.eql(1);
+		clock.tick(60 * 1000);
+		expect(c).to.eql(2);
+
+		clock.restore();
+		job.stop();
+		expect(c).to.eql(2);
+	});
 
 	it('should run every second monday');
 
