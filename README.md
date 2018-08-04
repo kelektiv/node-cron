@@ -67,6 +67,7 @@ When specifying your cron values you'll need to make sure that your values fall 
  * Months: 0-11 (Jan-Dec)
  * Day of Week: 0-6 (Sun-Sat)
 
+
 Another cron example
 ==========
 
@@ -86,6 +87,7 @@ var job = new CronJob('00 30 11 * * 1-5', function() {
 );
 ```
 
+
 Another example with Date
 ==========
 
@@ -101,6 +103,7 @@ var job = new CronJob(new Date(), function() {
 );
 ```
 
+
 For good measure
 ==========
 
@@ -108,6 +111,27 @@ For good measure
 var CronJob = require('cron').CronJob;
 var job = new CronJob({
   cronTime: '00 30 11 * * 1-5',
+  onTick: function() {
+    /*
+     * Runs every weekday (Monday through Friday)
+     * at 11:30:00 AM. It does not run on Saturday
+     * or Sunday.
+     */
+  },
+  start: false,
+  timeZone: 'America/Los_Angeles'
+});
+job.start();
+```
+
+
+Running a job every 5 minutes
+==========
+
+```javascript
+var CronJob = require('cron').CronJob;
+var job = new CronJob({
+  cronTime: '00 */5 * * * *',
   onTick: function() {
     /*
      * Runs every weekday (Monday through Friday)
