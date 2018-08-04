@@ -626,6 +626,31 @@ describe('cron', function() {
 		job.stop();
 	});
 
+	it('should run every day', function() {
+		var c = 0;
+		var d = new Date('12/31/2014');
+		d.setSeconds(59);
+		d.setMinutes(59);
+		d.setHours(23);
+		var clock = sinon.useFakeTimers(d.getTime());
+
+		var job = new cron.CronJob({
+			cronTime: '59 59 3 * * *',
+			onTick: function() {
+				c++;
+			},
+			start: true,
+			timeZone: 'America/Los_Angeles'
+		});
+
+		var twoWeeks = 14 * 24 * 60 * 60 * 1000;
+		clock.tick(twoWeeks);
+
+		clock.restore();
+		job.stop();
+		expect(c).to.eql(14);
+	});
+
 	it('should run every second monday');
 
 	describe('with utcOffset', function() {
