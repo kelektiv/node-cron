@@ -222,10 +222,13 @@ Parameter Based
     * `onTick` - [REQUIRED] - The function to fire at the specified time. If an `onComplete` callback was provided, `onTick` will receive it as an argument. `onTick` may call `onComplete` when it has finished its work.
     * `onComplete` - [OPTIONAL] - A function that will fire when the job is stopped with `job.stop()`, and may also be called by `onTick` at the end of each run.
     * `start` - [OPTIONAL] - Specifies whether to start the job just before exiting the constructor. By default this is set to false. If left at default you will need to call `job.start()` in order to start the job (assuming `job` is the variable you set the cronjob to). This does not immediately fire your `onTick` function, it just gives you more control over the behavior of your jobs.
-    * `timeZone` - [OPTIONAL] - Specify the timezone for the execution. This will modify the actual time relative to your timezone. If the timezone is invalid, an error is thrown. You can check all timezones available at [Moment Timezone Website](http://momentjs.com/timezone/).
+    * `timeZone` - [OPTIONAL] - Specify the timezone for the execution. This will modify the actual time relative to your timezone. If the timezone is invalid, an error is thrown. You can check all timezones available at [Moment Timezone Website](http://momentjs.com/timezone/). Probably don't use both
+		`timeZone` and `utcOffset` together or weird things may happen.
     * `context` - [OPTIONAL] - The context within which to execute the onTick method. This defaults to the cronjob itself allowing you to call `this.stop()`. However, if you change this you'll have access to the functions and values within your context object.
     * `runOnInit` - [OPTIONAL] - This will immediately fire your `onTick` function as soon as the requisit initialization has happened. This option is set to `false` by default for backwards compatibility.
-		* `utcOffset` - 
+    * `utcOffset` - [OPTIONAL] - This allows you to specify the offset of your
+		timezone rather than using the `timeZone` param. Probably don't use both
+		`timeZone` and `utcOffset` together or weird things may happen.
   * `start` - Runs your job.
   * `stop` - Stops your job.
   * `setTime` - Change the time for the `CronJob`. Param must be a `CronTime`.
