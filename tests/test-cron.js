@@ -766,5 +766,26 @@ describe('cron', function() {
 			expect(c).to.eql(1);
 		});
 
+		it('should run a job using cron syntax with number format utcOffset that is 0', function () {
+			var clock = sinon.useFakeTimers();
+			var c = 0;
+
+			var moment = require("moment-timezone");
+
+			// Current time
+			var t = moment();
+
+			var job = new cron.CronJob('* * * * * *', function(){
+				c++;
+			}, null, true, null, null, null, 0);
+
+			clock.tick(999);
+			expect(c).to.eql(0);
+
+			clock.tick(1);
+			clock.restore();
+			job.stop();
+			expect(c).to.eql(1);
+		});
 	});
 });
