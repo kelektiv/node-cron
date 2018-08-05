@@ -11,6 +11,12 @@ After [Craig Condon][crcn] made some updates and changes to the code base this h
 
 Additionally, this library goes beyond the basic cron syntax and allows you to supply a Date object. This will be used as the trigger for your callback. Cron syntax is still an acceptable CronTime format. Although the Cron patterns supported here extend on the standard Unix format to support seconds digits, leaving it off will default to 0 and match the Unix behavior.
 
+There are tools that help when constructing your cronjobs. You might find
+something like https://cronjob.xyz/ helpful. But, note that it doesn't accept
+the exact same syntax as this library, for instance, it doesn't accept the
+`seconds` field, so keep that in mind.
+
+
 If You Are Submitting Bugs/Issues
 =============
 
@@ -219,6 +225,7 @@ Parameter Based
     * `timeZone` - [OPTIONAL] - Specify the timezone for the execution. This will modify the actual time relative to your timezone. If the timezone is invalid, an error is thrown. You can check all timezones available at [Moment Timezone Website](http://momentjs.com/timezone/).
     * `context` - [OPTIONAL] - The context within which to execute the onTick method. This defaults to the cronjob itself allowing you to call `this.stop()`. However, if you change this you'll have access to the functions and values within your context object.
     * `runOnInit` - [OPTIONAL] - This will immediately fire your `onTick` function as soon as the requisit initialization has happened. This option is set to `false` by default for backwards compatibility.
+		* `utcOffset` - 
   * `start` - Runs your job.
   * `stop` - Stops your job.
   * `setTime` - Change the time for the `CronJob`. Param must be a `CronTime`.
