@@ -736,6 +736,37 @@ describe('cron', function() {
 		expect(c).to.eql(8);
 	});
 
+	it('should run every day UTC', function() {
+		var c = 0;
+		var d = new Date('12/31/2014');
+		d.setSeconds(0);
+		d.setMinutes(0);
+		d.setHours(0);
+		var clock = sinon.useFakeTimers(d.getTime());
+
+		var job = new cron.CronJob({
+			cronTime: '00 30 00 * * *',
+			onTick: function() {
+				c++;
+			},
+			start: true,
+			timeZone: 'UTC'
+		});
+
+		var day = 24 * 60 * 60 * 1000;
+		clock.tick(day);
+		expect(c).to.eql(1);
+		clock.tick(day);
+		expect(c).to.eql(2);
+		clock.tick(day);
+		expect(c).to.eql(3);
+		clock.tick(5 * day);
+
+		clock.restore();
+		job.stop();
+		expect(c).to.eql(8);
+	});
+
 	it('should run every second monday');
 
 	describe('with utcOffset', function() {
