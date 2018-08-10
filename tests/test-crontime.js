@@ -190,4 +190,16 @@ describe('crontime', function() {
 			}).to.throw(Error);
 		});
 	});
+
+	it('should strip off millisecond', ()=>{
+		const cronTime = new cron.CronTime('0 */10 * * * *');
+		const x = cronTime._getNextDateFrom(new Date("2018-08-10T02:20:00.999Z"));
+		expect(x.toISOString()).to.equal('2018-08-10T02:30:00.000Z');
+	});
+
+	it('should strip off millisecond (2)', ()=>{
+		const cronTime = new cron.CronTime('0 */10 * * * *');
+		const x = cronTime._getNextDateFrom(new Date("2018-08-10T02:19:59.999Z"));
+		expect(x.toISOString()).to.equal('2018-08-10T02:20:00.000Z');
+	});
 });
