@@ -224,4 +224,12 @@ describe('crontime', function () {
 			previousDate=nextDate;
 		}
 	});
+
+	it('should generete the right next day when cron is set to every 15 min in Feb', function () {
+		var cronTime = new cron.CronTime('*/15 * * FEB *');
+		var min=60000*15;
+		var previousDate=new Date(Date.UTC(2018,3,0,0,0));
+		var nextDate = cronTime._getNextDateFrom(previousDate,"UTC");
+		expect(nextDate.valueOf()).to.equal(new Date(Date.UTC(2019,1,1,0,0)).valueOf());
+	});
 });
