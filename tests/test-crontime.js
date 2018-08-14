@@ -202,4 +202,34 @@ describe('crontime', function () {
 		var x = cronTime._getNextDateFrom(new Date("2018-08-10T02:19:59.999Z"));
 		expect(x.toISOString()).to.equal('2018-08-10T02:20:00.000Z');
 	});
+
+	it('should generete the right next days when cron is set to every minute', function () {
+		var cronTime = new cron.CronTime('* * * * *');
+		var min=60000;
+		var previousDate=new Date(Date.UTC(2018,5,3,0,0));
+		for(var i=0;i<25;i++){
+			var nextDate = cronTime._getNextDateFrom(previousDate);
+			expect(nextDate.valueOf()).to.equal(previousDate.valueOf()+min)
+			previousDate=nextDate;
+		}
+	});
+
+	it('should generete the right next days when cron is set to every 15 min', function () {
+		var cronTime = new cron.CronTime('*/15 * * * *');
+		var min=60000*15;
+		var previousDate=new Date(Date.UTC(2016,6,3,0,0));
+		for(var i=0;i<25;i++){
+			var nextDate = cronTime._getNextDateFrom(previousDate);
+			expect(nextDate.valueOf()).to.equal(previousDate.valueOf()+min)
+			previousDate=nextDate;
+		}
+	});
+
+	it('should generete the right next day when cron is set to every 15 min in Feb', function () {
+		var cronTime = new cron.CronTime('*/15 * * FEB *');
+		var min=60000*15;
+		var previousDate=new Date(Date.UTC(2018,3,0,0,0));
+		var nextDate = cronTime._getNextDateFrom(previousDate,"UTC");
+		expect(nextDate.valueOf()).to.equal(new Date(Date.UTC(2019,1,1,0,0)).valueOf());
+	});
 });
