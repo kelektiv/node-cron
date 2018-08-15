@@ -155,12 +155,15 @@ describe('crontime', function () {
 		expect(nextdt.hours() % 4).to.eql(0);
 	});
 
-	it('should test next date from invalid date', function () {
+	it('should throw an exception because next date is invalid', function () {
 		var ct = new cron.CronTime('0 0 * * * *');
 		var nextDate = new Date('My invalid date string');
+		try{
 		var nextdt = ct._getNextDateFrom(nextDate);
-
-		expect(nextdt.toString()).to.eql('Invalid date');
+		}
+		catch(e){
+			expect(e.message).to.eql('ERROR: You specified an invalid date.');
+		}
 	});
 
 	it('should test next real date', function () {
