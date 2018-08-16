@@ -23,7 +23,13 @@
     "sinon": "~1.12.x"
   },
   "keywords": [
-    "cron", "node cron", "node-cron", "schedule", "scheduler", "cronjob", "cron job"
+    "cron",
+    "node cron",
+    "node-cron",
+    "schedule",
+    "scheduler",
+    "cronjob",
+    "cron job"
   ],
   "license": "MIT",
   "contributors": [
