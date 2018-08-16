@@ -1,45 +1,47 @@
 node-cron
-=========
+=
 
 [![Build Status](https://travis-ci.org/kelektiv/node-cron.svg?branch=master)](https://travis-ci.org/#!/kelektiv/node-cron)
-[![wercker status](https://app.wercker.com/status/0cadfe5d45ad7bc819efb636026cf230/s "wercker status")](https://app.wercker.com/project/bykey/0cadfe5d45ad7bc819efb636026cf230)
 [![Dependency Status](https://david-dm.org/ncb000gt/node-cron.svg)](https://david-dm.org/ncb000gt/node-cron)
 
-Originally this project was a NodeJS fork of [James Padolsey's][jamespadolsey] [cron.js](http://github.com/padolsey/cron.js).
+Cron is a tool that allows you to execute _something_ on a schedule. This is
+typically done using the cron syntax. We allow you to execute a function
+whenever your scheduled job triggers. We also allow you to execute a job
+external to the javascript process using `child_process`. Additionally, this
+library goes beyond the basic cron syntax and allows you to 
+supply a Date object. This will be used as the trigger for your callback. Cron 
+syntax is still an acceptable CronTime format. Although the Cron patterns 
+supported here extend on the standard Unix format to support seconds digits, 
+leaving it off will default to 0 and match the Unix behavior.
 
-After [Craig Condon][crcn] made some updates and changes to the code base this has evolved to something that has a bit of both. The cron syntax parsing is mostly James' while using timeout instead of interval is Craig's.
 
-Additionally, this library goes beyond the basic cron syntax and allows you to supply a Date object. This will be used as the trigger for your callback. Cron syntax is still an acceptable CronTime format. Although the Cron patterns supported here extend on the standard Unix format to support seconds digits, leaving it off will default to 0 and match the Unix behavior.
+Installation
+==
 
-There are tools that help when constructing your cronjobs. You might find
-something like https://cronjob.xyz/ helpful. But, note that it doesn't accept
-the exact same syntax as this library, for instance, it doesn't accept the
-`seconds` field, so keep that in mind.
+    npm install cron
 
 
 If You Are Submitting Bugs/Issues
-=============
+==
 
-Because we can't magically know what you are doing to expose an issue, it is best if you provide a snippet of code. This snippet need not include your secret sauce, but it must replicate the issue you are describing. The issues that get closed without resolution tend to be the ones without code examples. Thanks.
+Because we can't magically know what you are doing to expose an issue, it is
+best if you provide a snippet of code. This snippet need not include your secret
+sauce, but it must replicate the issue you are describing. The issues that get
+closed without resolution tend to be the ones without code examples. Thanks.
 
 
 Versions and Backwards compatibility breaks:
-==========
+==
 
-As goes with semver, breaking backwards compatibility should be explicit in the versioning of your library. As such, we'll upgrade the version of this module in accordance with breaking changes (I'm not always great about doing it this way so if you notice that there are breaking changes that haven't been bumped appropriately please let me know). This table lists out the issues which were the reason for the break in backward compatibility.
-
-<table>
-<tr>
-<td>Node Cron Ver</td><td>Issue #</td>
-</tr>
-<tr>
-<td>1.0.0</td><td><ul><li><a href="https://github.com/ncb000gt/node-cron/pull/41">GH-41</a></li><li><a href="https://github.com/ncb000gt/node-cron/pull/36">GH-36</a></li></ul></td>
-</tr>
-</table>
+As goes with semver, breaking backwards compatibility should be explicit in the
+versioning of your library. As such, we'll upgrade the version of this module
+in accordance with breaking changes (I'm not always great about doing it this
+way so if you notice that there are breaking changes that haven't been bumped
+appropriately please let me know).
 
 
 Usage (basic cron usage):
-==========
+==
 
 ```javascript
 var CronJob = require('cron').CronJob;
@@ -48,10 +50,15 @@ new CronJob('* * * * * *', function() {
 }, null, true, 'America/Los_Angeles');
 ```
 
-Note - You need to explictly start a job in order to make it run. This gives a little more control over running your jobs.
+Note - You need to explictly start a job in order to make it run. This gives a
+little more control over running your jobs.
+
+There are more examples available in this repository at:
+[/examples](https://github.com/kelektiv/node-cron/tree/master/examples)
+
 
 Available Cron patterns:
-==========
+==
 
     Asterisk. E.g. *
     Ranges. E.g. 1-3,5
@@ -61,10 +68,18 @@ Available Cron patterns:
 link have five fields, and 1 minute as the finest granularity, but this library
 has six fields, with 1 second as the finest granularity.
 
-Cron Ranges
-==========
+There are tools that help when constructing your cronjobs. You might find
+something like https://cronjob.xyz/ helpful. But, note that it doesn't accept
+the exact same syntax as this library, for instance, it doesn't accept the
+`seconds` field, so keep that in mind.
 
-When specifying your cron values you'll need to make sure that your values fall within the ranges. For instance, some cron's use a 0-7 range for the day of week where both 0 and 7 represent Sunday. We do not.
+
+Cron Ranges
+==
+
+When specifying your cron values you'll need to make sure that your values fall
+within the ranges. For instance, some cron's use a 0-7 range for the day of
+week where both 0 and 7 represent Sunday. We do not.
 
  * Seconds: 0-59
  * Minutes: 0-59
@@ -74,141 +89,8 @@ When specifying your cron values you'll need to make sure that your values fall 
  * Day of Week: 0-6 (Sun-Sat)
 
 
-Another cron example
-==========
-
-```javascript
-var CronJob = require('cron').CronJob;
-var job = new CronJob('00 30 11 * * 1-5', function() {
-  /*
-   * Runs every weekday (Monday through Friday)
-   * at 11:30:00 AM. It does not run on Saturday
-   * or Sunday.
-   */
-  }, function () {
-    /* This function is executed when the job stops */
-  },
-  true, /* Start the job right now */
-  timeZone /* Time zone of this job. */
-);
-```
-
-
-Another example with Date
-==========
-
-```javascript
-var CronJob = require('cron').CronJob;
-var job = new CronJob(new Date(), function() {
-  /* runs once at the specified date. */
-  }, function () {
-    /* This function is executed when the job stops */
-  },
-  true, /* Start the job right now */
-  timeZone /* Time zone of this job. */
-);
-```
-
-
-For good measure
-==========
-
-```javascript
-var CronJob = require('cron').CronJob;
-var job = new CronJob({
-  cronTime: '00 30 11 * * 1-5',
-  onTick: function() {
-    /*
-     * Runs every weekday (Monday through Friday)
-     * at 11:30:00 AM. It does not run on Saturday
-     * or Sunday.
-     */
-  },
-  start: false,
-  timeZone: 'America/Los_Angeles'
-});
-job.start();
-```
-
-
-Running a job every 5 minutes
-==========
-
-```javascript
-var CronJob = require('cron').CronJob;
-var job = new CronJob({
-  cronTime: '00 */5 * * * *',
-  onTick: function() {
-    /*
-     * Runs every weekday (Monday through Friday)
-     * at 11:30:00 AM. It does not run on Saturday
-     * or Sunday.
-     */
-  },
-  start: false,
-  timeZone: 'America/Los_Angeles'
-});
-job.start();
-```
-
-
-How to check if a cron pattern is valid:
-==========
-
-```javascript
-try {
-	new CronJob('invalid cron pattern', function() {
-		console.log('this should not be printed');
-	})
-} catch(ex) {
-	console.log("cron pattern not valid");
-}
-```
-
-
-How to check if a job is running
-==========
-
-```javascript
-var cron = require('cron');
-
-var job1 = new cron.CronJob({
-  cronTime: '* * * * *',
-  onTick: function() {
-    console.log('job 1 ticked');
-  },
-  start: false,
-  timeZone: 'America/Los_Angeles'
-});
-
-var job2 = new cron.CronJob({
-  cronTime: '* * * * *',
-  onTick: function() {
-    console.log('job 2 ticked');
-  },
-  start: false,
-  timeZone: 'America/Los_Angeles'
-});
-
-console.log('job1 status', job1.running); // job1 status undefined
-console.log('job2 status', job2.running); // job2 status undefined
-
-job1.start(); // job 1 started
-
-console.log('job1 status', job1.running); // job1 status true
-console.log('job2 status', job2.running); // job2 status undefined
-```
-
-
-Install
-==========
-
-    From source: `npm install`
-    From npm: `npm install cron`
-
-
 API
-==========
+==
 
 Parameter Based
 
@@ -240,31 +122,18 @@ Parameter Based
   * `constructor(time)`
     * `time` - [REQUIRED] - The time to fire off your job. This can be in the form of cron syntax or a JS [Date](https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Date) object.
 
-Contributors
-===========
 
-* [Romain Beauxis][toots]
-* [James Padolsey][jamespadolsey]
-* [Craig Condon][crcn]
-* [Finn Herpich][errorprone]
-* [cliftonc][cliftonc]
-* [neyric][neyric]
-* [humanchimp][humanchimp]
-* [danhbear][danhbear]
-* [Jordan Abderrachid][jordanabderrachid]
+Contributions
+==
+
+This is a community effort project. In the truest sense, this project started as
+an open source project from [cron.js](http://github.com/padolsey/cron.js) and
+grew into something else. Other people have contributed code, time, and
+oversight to the project. At this point there are too many to name here so I'll
+just say thanks.
+
 
 License
-==========
+==
 
 MIT
-
-
-[toots]:http://github.com/toots
-[jamespadolsey]:http://github.com/padolsey
-[crcn]:http://github.com/crcn
-[cliftonc]:http://github.com/cliftonc
-[neyric]:http://github.com/neyric
-[humanchimp]:http://github.com/humanchimp
-[errorprone]:http://github.com/ErrorProne
-[danhbear]:http://github.com/danhbear
-[jordanabderrachid]:http://github.com/jordanabderrachid
