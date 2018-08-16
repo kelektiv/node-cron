@@ -1,16 +1,21 @@
-var chai = require('chai'),
-	expect = chai.expect,
-	sinon = require('sinon'),
-	cron = require('../lib/cron');
+var chai = require('chai');
+var expect = chai.expect;
+var sinon = require('sinon');
+var cron = require('../lib/cron');
 
 describe('cron', function() {
 	it('should run every second (* * * * * *)', function() {
 		var clock = sinon.useFakeTimers();
 		var c = 0;
 
-		var job = new cron.CronJob('* * * * * *', function() {
-			c++;
-		}, null, true);
+		var job = new cron.CronJob(
+			'* * * * * *',
+			function() {
+				c++;
+			},
+			null,
+			true
+		);
 
 		clock.tick(1000);
 		job.stop();
@@ -23,48 +28,63 @@ describe('cron', function() {
 		var clock = sinon.useFakeTimers();
 		var c = 0;
 
-		var job = new cron.CronJob('* * * * * *', function() {
-			c++;
-		}, function () {
-			expect(c).to.eql(1);
-			done();
-		}, true);
+		var job = new cron.CronJob(
+			'* * * * * *',
+			function() {
+				c++;
+			},
+			function() {
+				expect(c).to.eql(1);
+				done();
+			},
+			true
+		);
 
 		clock.tick(1000);
 		clock.restore();
 		job.stop();
 	});
 
-	it('should fire every 60 min', function () {
+	it('should fire every 60 min', function() {
 		var m60 = 60 * 60 * 1000;
-    var clock = sinon.useFakeTimers();
-    var l = [];
-    var job = new cron.CronJob('00 30 * * * *', function () {
-      l.push(Math.floor(Date.now() / 60000));
-    },null,true);
+		var clock = sinon.useFakeTimers();
+		var l = [];
+		var job = new cron.CronJob(
+			'00 30 * * * *',
+			function() {
+				l.push(Math.floor(Date.now() / 60000));
+			},
+			null,
+			true
+		);
 
 		clock.tick(m60 * 10);
 
-    expect(l.length).to.eql(10);
+		expect(l.length).to.eql(10);
 		for (var i = 0; i < l.length; i++) {
 			expect(l[i] % 30).to.eql(0);
 		}
 
 		job.stop();
 		clock.restore();
-  });
+	});
 
 	it('should use standard cron no-seconds syntax (* * * * *)', function() {
 		var clock = sinon.useFakeTimers();
 		var c = 0;
 
-		var job = new cron.CronJob('* * * * *', function() {
-			c++;
-		}, null, true);
+		var job = new cron.CronJob(
+			'* * * * *',
+			function() {
+				c++;
+			},
+			null,
+			true
+		);
 
-		clock.tick(1000); //tick second
+		clock.tick(1000); // tick second
 
-		clock.tick(59 * 1000); //tick minute
+		clock.tick(59 * 1000); // tick minute
 
 		job.stop();
 		clock.restore();
@@ -76,12 +96,16 @@ describe('cron', function() {
 		var clock = sinon.useFakeTimers();
 		var c = 0;
 
-		var job = new cron.CronJob('* * * * * *', function() {
-			c++;
-		}, null, true);
+		var job = new cron.CronJob(
+			'* * * * * *',
+			function() {
+				c++;
+			},
+			null,
+			true
+		);
 
-		for (var i = 0; i < 5; i++)
-			clock.tick(1000);
+		for (var i = 0; i < 5; i++) clock.tick(1000);
 
 		clock.restore();
 		job.stop();
@@ -93,15 +117,19 @@ describe('cron', function() {
 		var clock = sinon.useFakeTimers();
 		var c = 0;
 
-		var job = new cron.CronJob('* * * * * *', function() {
-			c++;
-		}, function() {
-			expect(c).to.eql(5);
-			done();
-		}, true);
+		var job = new cron.CronJob(
+			'* * * * * *',
+			function() {
+				c++;
+			},
+			function() {
+				expect(c).to.eql(5);
+				done();
+			},
+			true
+		);
 
-		for (var i = 0; i < 5; i++)
-			clock.tick(1000);
+		for (var i = 0; i < 5; i++) clock.tick(1000);
 
 		clock.restore();
 		job.stop();
@@ -111,26 +139,35 @@ describe('cron', function() {
 		var clock = sinon.useFakeTimers();
 		var c = 0;
 
-		var job = new cron.CronJob('*/1 * * * * *', function() {
-			c++;
-		}, null, true);
+		var job = new cron.CronJob(
+			'*/1 * * * * *',
+			function() {
+				c++;
+			},
+			null,
+			true
+		);
 
-		for (var i = 0; i < 5; i++)
-			clock.tick(1000);
+		for (var i = 0; i < 5; i++) clock.tick(1000);
 
 		clock.restore();
 		job.stop();
 		expect(c).to.eql(5);
 	});
 
-	//ensure that this is running on the second second
+	// ensure that this is running on the second second
 	it('should run every 2 seconds for 1 seconds (*/2 * * * * *)', function() {
 		var clock = sinon.useFakeTimers();
 		var c = 0;
 
-		var job = new cron.CronJob('*/2 * * * * *', function() {
-			c++;
-		}, null, true);
+		var job = new cron.CronJob(
+			'*/2 * * * * *',
+			function() {
+				c++;
+			},
+			null,
+			true
+		);
 
 		clock.tick(1000);
 
@@ -143,12 +180,16 @@ describe('cron', function() {
 		var clock = sinon.useFakeTimers();
 		var c = 0;
 
-		var job = new cron.CronJob('*/2 * * * * *', function() {
-			c++;
-		}, null, true);
+		var job = new cron.CronJob(
+			'*/2 * * * * *',
+			function() {
+				c++;
+			},
+			null,
+			true
+		);
 
-		for (var i = 0; i < 5; i++)
-			clock.tick(1000);
+		for (var i = 0; i < 5; i++) clock.tick(1000);
 
 		clock.restore();
 		job.stop();
@@ -159,15 +200,19 @@ describe('cron', function() {
 		var clock = sinon.useFakeTimers();
 		var c = 0;
 
-		var job = new cron.CronJob('*/1 * * * * *', function() {
-			c++
-		}, function() {
-			expect(c).to.eql(5);
-			done();
-		}, true);
+		var job = new cron.CronJob(
+			'*/1 * * * * *',
+			function() {
+				c++;
+			},
+			function() {
+				expect(c).to.eql(5);
+				done();
+			},
+			true
+		);
 
-		for (var i = 0; i < 5; i++)
-			clock.tick(1000);
+		for (var i = 0; i < 5; i++) clock.tick(1000);
 
 		clock.restore();
 		job.stop();
@@ -177,12 +222,16 @@ describe('cron', function() {
 		var clock = sinon.useFakeTimers();
 		var c = 0;
 
-		var job = new cron.CronJob('0 */45 * * * *', function() {
-			c++;
-		}, null, true);
+		var job = new cron.CronJob(
+			'0 */45 * * * *',
+			function() {
+				c++;
+			},
+			null,
+			true
+		);
 
-		for (var i = 0; i < 2; i++)
-			clock.tick(60 * 60 * 1000);
+		for (var i = 0; i < 2; i++) clock.tick(60 * 60 * 1000);
 
 		clock.restore();
 		job.stop();
@@ -193,15 +242,19 @@ describe('cron', function() {
 		var clock = sinon.useFakeTimers();
 		var c = 0;
 
-		var job = new cron.CronJob('0 */45 * * * *', function() {
-			c++
-		}, function() {
-			expect(c).to.eql(4); // 0 and 45
-			done();
-		}, true);
+		var job = new cron.CronJob(
+			'0 */45 * * * *',
+			function() {
+				c++;
+			},
+			function() {
+				expect(c).to.eql(4); // 0 and 45
+				done();
+			},
+			true
+		);
 
-		for (var i = 0; i < 2; i++)
-			clock.tick(60 * 60 * 1000);
+		for (var i = 0; i < 2; i++) clock.tick(60 * 60 * 1000);
 
 		clock.restore();
 		job.stop();
@@ -211,12 +264,16 @@ describe('cron', function() {
 		var clock = sinon.useFakeTimers();
 		var c = 0;
 
-		var job = new cron.CronJob('0 0,45 * * * *', function() {
-			c++;
-		}, null, true);
+		var job = new cron.CronJob(
+			'0 0,45 * * * *',
+			function() {
+				c++;
+			},
+			null,
+			true
+		);
 
-		for (var i = 0; i < 2; i++)
-			clock.tick(60 * 60 * 1000);
+		for (var i = 0; i < 2; i++) clock.tick(60 * 60 * 1000);
 
 		clock.restore();
 		job.stop();
@@ -227,15 +284,19 @@ describe('cron', function() {
 		var clock = sinon.useFakeTimers();
 		var c = 0;
 
-		var job = new cron.CronJob('0 0,45 * * * *', function() {
-			c++
-		}, function() {
-			expect(c).to.eql(4); // 0 and 45
-			done();
-		}, true);
+		var job = new cron.CronJob(
+			'0 0,45 * * * *',
+			function() {
+				c++;
+			},
+			function() {
+				expect(c).to.eql(4); // 0 and 45
+				done();
+			},
+			true
+		);
 
-		for (var i = 0; i < 2; i++)
-			clock.tick(60 * 60 * 1000);
+		for (var i = 0; i < 2; i++) clock.tick(60 * 60 * 1000);
 
 		clock.restore();
 		job.stop();
@@ -245,11 +306,16 @@ describe('cron', function() {
 		var clock = sinon.useFakeTimers();
 		var c = 0;
 
-		var job = new cron.CronJob('0-8 * * * * *', function() {
-			c++;
-		}, null, true);
+		var job = new cron.CronJob(
+			'0-8 * * * * *',
+			function() {
+				c++;
+			},
+			null,
+			true
+		);
 
-		clock.tick(10000); //run for 10 seconds
+		clock.tick(10000); // run for 10 seconds
 
 		clock.restore();
 		job.stop();
@@ -260,12 +326,17 @@ describe('cron', function() {
 		var clock = sinon.useFakeTimers();
 		var c = 0;
 
-		var job = new cron.CronJob('0-8 * * * * *', function() {
-			c++;
-		}, function() {
-			expect(c).to.eql(8);
-			done();
-		}, true);
+		var job = new cron.CronJob(
+			'0-8 * * * * *',
+			function() {
+				c++;
+			},
+			function() {
+				expect(c).to.eql(8);
+				done();
+			},
+			true
+		);
 
 		clock.tick(10000);
 
@@ -301,7 +372,7 @@ describe('cron', function() {
 			onTick: function(done) {
 				c++;
 			},
-			onComplete: function () {
+			onComplete: function() {
 				expect(c).to.eql(1);
 				done();
 			},
@@ -318,15 +389,19 @@ describe('cron', function() {
 		var clock = sinon.useFakeTimers();
 		var c = 0;
 
-		var job = new cron.CronJob('* * * * * *', function() {
-			c++;
-			this.stop();
-		}, function() {
-			expect(c).to.eql(1);
+		var job = new cron.CronJob(
+			'* * * * * *',
+			function() {
+				c++;
+				this.stop();
+			},
+			function() {
+				expect(c).to.eql(1);
 
-			clock.restore();
-			done();
-		});
+				clock.restore();
+				done();
+			}
+		);
 		job.start();
 
 		clock.tick(1000);
@@ -336,14 +411,19 @@ describe('cron', function() {
 		var c = 0;
 		var d = new Date();
 		var clock = sinon.useFakeTimers(d.getTime());
-		var s = d.getSeconds()+1;
+		var s = d.getSeconds() + 1;
 		d.setSeconds(s);
 
-		var job = new cron.CronJob(d, function() {
-			var t = new Date();
-			expect(t.getSeconds()).to.eql(d.getSeconds());
-			c++;
-		}, null, true);
+		var job = new cron.CronJob(
+			d,
+			function() {
+				var t = new Date();
+				expect(t.getSeconds()).to.eql(d.getSeconds());
+				c++;
+			},
+			null,
+			true
+		);
 		clock.tick(1000);
 
 		clock.restore();
@@ -355,17 +435,22 @@ describe('cron', function() {
 		var c = 0;
 		var d = new Date();
 		var clock = sinon.useFakeTimers(d.getTime());
-		var s = d.getSeconds()+1;
+		var s = d.getSeconds() + 1;
 		d.setSeconds(s);
 
-		var job = new cron.CronJob(d, function() {
-			var t = new Date();
-			expect(t.getSeconds()).to.eql(d.getSeconds());
-			c++;
-		}, function() {
-			expect(c).to.eql(1);
-			done();
-		}, true);
+		var job = new cron.CronJob(
+			d,
+			function() {
+				var t = new Date();
+				expect(t.getSeconds()).to.eql(d.getSeconds());
+				c++;
+			},
+			function() {
+				expect(c).to.eql(1);
+				done();
+			},
+			true
+		);
 		clock.tick(1000);
 
 		clock.restore();
@@ -373,24 +458,24 @@ describe('cron', function() {
 	});
 
 	describe('with timezone', function() {
-		it('should run a job using cron syntax', function () {
+		it('should run a job using cron syntax', function() {
 			var clock = sinon.useFakeTimers();
 
 			var c = 0;
 
-			var moment = require("moment-timezone");
-			var zone = "America/Chicago";
+			var moment = require('moment-timezone');
+			var zone = 'America/Chicago';
 
 			// New Orleans time
 			var t = moment();
 			t.tz(zone);
 
 			// Current time
-			d = moment();
+			var d = moment();
 
 			// If current time is New Orleans time, switch to Los Angeles..
 			if (t.hours() === d.hours()) {
-				zone = "America/Los_Angeles";
+				zone = 'America/Los_Angeles';
 				t.tz(zone);
 			}
 			expect(d.hours()).to.not.eql(t.hours());
@@ -402,9 +487,15 @@ describe('cron', function() {
 			// Run a job designed to be executed at a given
 			// time in `zone`, making sure that it is a different
 			// hour than local time.
-			var job = new cron.CronJob(t.seconds() + ' ' + t.minutes() + ' ' + t.hours() +  ' * * *', function(){
-				c++;
-			}, null, true, zone);
+			var job = new cron.CronJob(
+				t.seconds() + ' ' + t.minutes() + ' ' + t.hours() + ' * * *',
+				function() {
+					c++;
+				},
+				null,
+				true,
+				zone
+			);
 
 			clock.tick(1000);
 			clock.restore();
@@ -412,22 +503,22 @@ describe('cron', function() {
 			expect(c).to.eql(1);
 		});
 
-		it('should run a job using a date', function () {
+		it('should run a job using a date', function() {
 			var c = 0;
 
-			var moment = require("moment-timezone");
-			var zone = "America/Chicago";
+			var moment = require('moment-timezone');
+			var zone = 'America/Chicago';
 
 			// New Orleans time
 			var t = moment();
 			t.tz(zone);
 
 			// Current time
-			d = moment();
+			var d = moment();
 
 			// If current time is New Orleans time, switch to Los Angeles..
 			if (t.hours() === d.hours()) {
-				zone = "America/Los_Angeles";
+				zone = 'America/Los_Angeles';
 				t.tz(zone);
 			}
 			expect(d.hours()).to.not.eql(t.hours());
@@ -435,9 +526,15 @@ describe('cron', function() {
 			d.add(1, 's');
 			var clock = sinon.useFakeTimers(d._d.getTime());
 
-			var job = new cron.CronJob(d._d, function() {
-				c++;
-			}, null, true, zone);
+			var job = new cron.CronJob(
+				d._d,
+				function() {
+					c++;
+				},
+				null,
+				true,
+				zone
+			);
 
 			clock.tick(1000);
 			clock.restore();
@@ -445,11 +542,11 @@ describe('cron', function() {
 			expect(c).to.eql(1);
 		});
 
-		it('should test if timezone is valid.', function () {
-			expect(function () {
-				new cron.CronJob({
+		it('should test if timezone is valid.', function() {
+			expect(function() {
+				new cron.CronJob({ // ignore eslint error here
 					cronTime: '* * * * * *',
-					onTick: function (){},
+					onTick: function() {},
 					timeZone: 'fake/timezone'
 				});
 			}).to.throw(Error);
@@ -495,7 +592,7 @@ describe('cron', function() {
 		clock.restore();
 		job.stop();
 		expect(c).to.eql(3);
-  });
+	});
 
 	it('should start, change time, exception', function() {
 		var c = 0;
@@ -523,10 +620,15 @@ describe('cron', function() {
 	it('should scope onTick to running job', function() {
 		var clock = sinon.useFakeTimers();
 
-		var job = new cron.CronJob('* * * * * *', function() {
-			expect(job).to.be.instanceOf(cron.CronJob);
-			expect(job).to.eql(this);
-		}, null, true);
+		var job = new cron.CronJob(
+			'* * * * * *',
+			function() {
+				expect(job).to.be.instanceOf(cron.CronJob);
+				expect(job).to.eql(this);
+			},
+			null,
+			true
+		);
 
 		clock.tick(1000);
 
@@ -537,10 +639,17 @@ describe('cron', function() {
 	it('should scope onTick to object', function() {
 		var clock = sinon.useFakeTimers();
 
-		var job = new cron.CronJob('* * * * * *', function() {
-			expect(this.hello).to.eql('world');
-			expect(job).to.not.eql(this);
-		}, null, true, null, {'hello':'world'});
+		var job = new cron.CronJob(
+			'* * * * * *',
+			function() {
+				expect(this.hello).to.eql('world');
+				expect(job).to.not.eql(this);
+			},
+			null,
+			true,
+			null,
+			{ hello: 'world' }
+		);
 
 		clock.tick(1000);
 
@@ -558,7 +667,7 @@ describe('cron', function() {
 				expect(job).to.not.eql(this);
 			},
 			start: true,
-			context: {hello: 'world'}
+			context: { hello: 'world' }
 		});
 
 		clock.tick(1000);
@@ -570,12 +679,22 @@ describe('cron', function() {
 	it('should not get into an infinite loop on invalid times', function() {
 		var clock = sinon.useFakeTimers();
 
-		var invalid1 = new cron.CronJob('* 60 * * * *', function() {
-			assert.ok(true);
-		}, null, true);
-		var invalid2 = new cron.CronJob('* * 24 * * *', function() {
-			assert.ok(true);
-		}, null, true);
+		var invalid1 = new cron.CronJob(
+			'* 60 * * * *',
+			function() {
+				expect.ok(true);
+			},
+			null,
+			true
+		);
+		var invalid2 = new cron.CronJob(
+			'* * 24 * * *',
+			function() {
+				expect.ok(true);
+			},
+			null,
+			true
+		);
 
 		clock.tick(1000);
 
@@ -594,9 +713,14 @@ describe('cron', function() {
 		d.setHours(23);
 		var clock = sinon.useFakeTimers(d.getTime());
 
-		var job = new cron.CronJob('0 0 0 1 * *', function() {
-			c++;
-		}, null, true);
+		var job = new cron.CronJob(
+			'0 0 0 1 * *',
+			function() {
+				c++;
+			},
+			null,
+			true
+		);
 
 		clock.tick(1001);
 		expect(c).to.eql(1);
@@ -604,7 +728,7 @@ describe('cron', function() {
 		clock.tick(2678399001);
 		expect(c).to.eql(1);
 
-		clock.tick(2678400001); //jump over 2 firsts
+		clock.tick(2678400001); // jump over 2 firsts
 		clock.restore();
 		job.stop();
 
@@ -615,9 +739,14 @@ describe('cron', function() {
 		var c = 0;
 		var clock = sinon.useFakeTimers('setTimeout');
 
-		var job = new cron.CronJob('0 * * * * *', function() {
-			c++;
-		}, null, true);
+		var job = new cron.CronJob(
+			'0 * * * * *',
+			function() {
+				c++;
+			},
+			null,
+			true
+		);
 
 		clock.tick(60000);
 		expect(c).to.eql(0);
@@ -770,11 +899,11 @@ describe('cron', function() {
 	it('should run every second monday');
 
 	describe('with utcOffset', function() {
-		it('should run a job using cron syntax with number format utcOffset', function () {
+		it('should run a job using cron syntax with number format utcOffset', function() {
 			var clock = sinon.useFakeTimers();
 			var c = 0;
 
-			var moment = require("moment-timezone");
+			var moment = require('moment-timezone');
 
 			// Current time
 			var t = moment();
@@ -782,9 +911,18 @@ describe('cron', function() {
 			// UTC Offset decreased by an hour
 			var utcOffset = t.utcOffset() - 60;
 
-			var job = new cron.CronJob(t.seconds() + ' ' + t.minutes() + ' ' + t.hours() +  ' * * *', function(){
-				c++;
-			}, null, true, null, null, null, utcOffset);
+			var job = new cron.CronJob(
+				t.seconds() + ' ' + t.minutes() + ' ' + t.hours() + ' * * *',
+				function() {
+					c++;
+				},
+				null,
+				true,
+				null,
+				null,
+				null,
+				utcOffset
+			);
 
 			// tick 1 sec before an hour
 			clock.tick(1000 * 60 * 60 - 1);
@@ -796,25 +934,34 @@ describe('cron', function() {
 			expect(c).to.eql(1);
 		});
 
-		it('should run a job using cron syntax with string format utcOffset', function () {
+		it('should run a job using cron syntax with string format utcOffset', function() {
 			var clock = sinon.useFakeTimers();
 			var c = 0;
 
-			var moment = require("moment-timezone");
+			var moment = require('moment-timezone');
 
 			// Current time
 			var t = moment();
 
 			// UTC Offset decreased by an hour (string format '(+/-)HH:mm')
 			var utcOffset = t.utcOffset() - 60;
-			var utcOffsetString = (0 < utcOffset ? '+' : '-');
+			var utcOffsetString = utcOffset > 0 ? '+' : '-';
 			utcOffsetString += ('0' + Math.floor(Math.abs(utcOffset) / 60)).slice(-2);
 			utcOffsetString += ':';
 			utcOffsetString += ('0' + (utcOffset % 60)).slice(-2);
 
-			var job = new cron.CronJob(t.seconds() + ' ' + t.minutes() + ' ' + t.hours() +  ' * * *', function(){
-				c++;
-			}, null, true, null, null, null, utcOffsetString);
+			var job = new cron.CronJob(
+				t.seconds() + ' ' + t.minutes() + ' ' + t.hours() + ' * * *',
+				function() {
+					c++;
+				},
+				null,
+				true,
+				null,
+				null,
+				null,
+				utcOffsetString
+			);
 
 			// tick 1 sec before an hour
 			clock.tick(1000 * 60 * 60 - 1);
@@ -827,18 +974,22 @@ describe('cron', function() {
 			expect(c).to.eql(1);
 		});
 
-		it('should run a job using cron syntax with number format utcOffset that is 0', function () {
+		it('should run a job using cron syntax with number format utcOffset that is 0', function() {
 			var clock = sinon.useFakeTimers();
 			var c = 0;
 
-			var moment = require("moment-timezone");
-
-			// Current time
-			var t = moment();
-
-			var job = new cron.CronJob('* * * * * *', function(){
-				c++;
-			}, null, true, null, null, null, 0);
+			var job = new cron.CronJob(
+				'* * * * * *',
+				function() {
+					c++;
+				},
+				null,
+				true,
+				null,
+				null,
+				null,
+				0
+			);
 
 			clock.tick(999);
 			expect(c).to.eql(0);
@@ -849,7 +1000,7 @@ describe('cron', function() {
 			expect(c).to.eql(1);
 		});
 
-		it('should be able to detect out of range days of month and fix them', function () {
+		it('should be able to detect out of range days of month and fix them', function() {
 			var ct = new cron.CronTime('* * 32 FEB *');
 			expect(ct.dayOfMonth['32']).to.eql(undefined);
 			expect(ct.dayOfMonth['2']).to.eql(true);
