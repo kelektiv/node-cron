@@ -896,6 +896,28 @@ describe('cron', function() {
 		expect(c).to.eql(8);
 	});
 
+	// from https://github.com/kelektiv/node-cron/issues/180#issuecomment-154108131
+	it('should run once not double', function() {
+		var c = 0;
+		var d = new Date(2015, 1, 1, 1, 1, 41, 0);
+		var clock = sinon.useFakeTimers(d.getTime());
+
+		var job = new cron.CronJob({
+			cronTime: '* * * * *',
+			onTick: function() {
+				c++;
+			},
+			start: true
+		});
+
+		var minute = 60 * 1000;
+		clock.tick(minute);
+		expect(c).to.eql(1);
+		clock.restore();
+		job.stop();
+		expect(c).to.eql(1);
+	});
+
 	it('should run every second monday');
 
 	describe('with utcOffset', function() {
