@@ -100,7 +100,7 @@ Parameter Based
 * `timeout` - tells you when the next timeout is.
 * `CronJob`
   * `constructor(cronTime, onTick, onComplete, start, timezone, context,
-	runOnInit)` - Of note, the first parameter here can be a JSON object that
+	runOnInit, unrefTimeout)` - Of note, the first parameter here can be a JSON object that
 	has the below names and associated types (see examples above).
     * `cronTime` - [REQUIRED] - The time to fire off your job. This can be in
 		the form of cron syntax or a JS
