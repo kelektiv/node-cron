@@ -22,6 +22,9 @@
     "chai": "~4.1.x",
     "sinon": "~1.12.x"
   },
+  "keywords": [
+    "cron", "node cron", "node-cron", "schedule", "scheduler", "cronjob", "cron job"
+  ],
   "license": "MIT",
   "contributors": [
     "Romain Beauxis <toots@rastageeks.org> (https://github.com/toots)",
