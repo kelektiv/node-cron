@@ -132,7 +132,7 @@ Parameter Based
     * `utcOffset` - [OPTIONAL] - This allows you to specify the offset of your
 		timezone rather than using the `timeZone` param. Probably don't use both
 		`timeZone` and `utcOffset` together or weird things may happen.
-		* `unrefTimeout` - [OPTIONAL] - If you have code that keeps the event loop
+    * `unrefTimeout` - [OPTIONAL] - If you have code that keeps the event loop
 		running and want to stop the node process when that finishes regardless of
 		the state of your cronjob, you can do so making use of this parameter. This
 		is off by default and cron will run as if it needs to control the event
