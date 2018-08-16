@@ -134,7 +134,7 @@ describe('crontime', function () {
 			var next = ct._getNextDateFrom(start);
 
 			expect(next - start).to.be.lt(24 * 60 * 60 * 1000);
-			expect(next).to.be.gt(start);
+			expect(next._d).to.be.gt(start);
 		}
 	});
 
@@ -151,7 +151,7 @@ describe('crontime', function () {
 		nextDate.setHours(23);
 		var nextdt = ct._getNextDateFrom(nextDate);
 
-		expect(nextdt).to.be.gt(nextDate);
+		expect(nextdt._d).to.be.gt(nextDate);
 		expect(nextdt.hours() % 4).to.eql(0);
 	});
 
@@ -168,7 +168,7 @@ describe('crontime', function () {
 
 		var nextDate = new Date();
 		nextDate.setMonth(nextDate.getMonth() + 1);
-		expect(nextDate).to.be.gt(ct.source);
+		expect(nextDate).to.be.gt(ct.source._d);
 		var nextdt = ct._getNextDateFrom(nextDate);
 		expect(nextdt.isSame(nextDate)).to.be.true;
 	});
