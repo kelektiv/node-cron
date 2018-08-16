@@ -848,5 +848,11 @@ describe('cron', function() {
 			job.stop();
 			expect(c).to.eql(1);
 		});
+
+		it('should be able to detect out of range days of month and fix them', function () {
+			var ct = new cron.CronTime('* * 32 FEB *');
+			expect(ct.dayOfMonth['32']).to.eql(undefined);
+			expect(ct.dayOfMonth['2']).to.eql(true);
+		});
 	});
 });
