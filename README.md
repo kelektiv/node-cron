@@ -69,9 +69,10 @@ link have five fields, and 1 minute as the finest granularity, but this library
 has six fields, with 1 second as the finest granularity.
 
 There are tools that help when constructing your cronjobs. You might find
-something like https://cronjob.xyz/ helpful. But, note that it doesn't accept
-the exact same syntax as this library, for instance, it doesn't accept the
-`seconds` field, so keep that in mind.
+something like https://crontab.guru/ or https://cronjob.xyz/ helpful. But,
+note that these don't necessarily accept the exact same syntax as this
+library, for instance, it doesn't accept the `seconds` field, so keep that in
+mind.
 
 
 Cron Ranges
