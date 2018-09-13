@@ -50,7 +50,7 @@ new CronJob('* * * * * *', function() {
 }, null, true, 'America/Los_Angeles');
 ```
 
-Note - You need to explictly start a job in order to make it run. This gives a
+Note - You need to explicitly start a job in order to make it run. This gives a
 little more control over running your jobs.
 
 There are more examples available in this repository at:
