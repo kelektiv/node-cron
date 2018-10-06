@@ -1,6 +1,7 @@
 var chai = require('chai');
 var expect = chai.expect;
 var cron = require('../lib/cron');
+var moment = require('moment-timezone');
 
 // most eslint errors here are due to side effects. i don't care much about them right now
 
@@ -226,7 +227,13 @@ describe('crontime', function() {
 			previousDate = nextDate;
 		}
 	});
-
+	it('should work around time zone changes',function(){
+		var d = new Date("10-7-2018")
+		// America/Sao_Paulo has a time zone change around NOV 3 2018.
+		var cronTime = new cron.CronTime('0 0 9 4 * *');
+		var nextDate = cronTime._getNextDateFrom(d, 'America/Sao_Paulo');
+			expect(nextDate.valueOf()).to.equal(moment('2018-11-04T09:00:00.000-02:00').valueOf())
+	});
 	it('should generete the right next day when cron is set to every 15 min in Feb', function() {
 		var cronTime = new cron.CronTime('*/15 * * FEB *');
 		var previousDate = new Date(Date.UTC(2018, 3, 0, 0, 0));
