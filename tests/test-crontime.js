@@ -227,12 +227,67 @@ describe('crontime', function() {
 			previousDate = nextDate;
 		}
 	});
-	it('should work around time zone changes',function(){
+	it('should work around time zone changes that shifts time back (1)',function(){
 		var d = new Date("10-7-2018")
 		// America/Sao_Paulo has a time zone change around NOV 3 2018.
 		var cronTime = new cron.CronTime('0 0 9 4 * *');
 		var nextDate = cronTime._getNextDateFrom(d, 'America/Sao_Paulo');
 			expect(nextDate.valueOf()).to.equal(moment('2018-11-04T09:00:00.000-02:00').valueOf())
+	});
+	it('should work around time zone changes that shifts time back (2)',function(){
+		// Asia/Amman DST ends in  26 - OCT-2018 (-1 to hours)
+		var d = moment.tz('2018-10-25T23:00','Asia/Amman');
+		var cronTime = new cron.CronTime('0 0 * * *');
+		var nextDate = cronTime._getNextDateFrom(d, 'Asia/Amman');
+		expect(nextDate-moment.tz('2018-10-26T00:00','Asia/Amman')).to.equal(0);
+	});
+	it('should work around time zone changes that shifts time forward',function(){
+		// Asia/Amman DST starts in  30-March-2018 (+1 to hours)
+		var currentDate = moment.tz('2018-03-29T23:00','Asia/Amman');
+		var cronTime = new cron.CronTime('* * * * *');
+		for(var i=0;i<100;i++){
+			var nextDate = cronTime._getNextDateFrom(currentDate,'Asia/Amman');
+			expect(nextDate-currentDate).to.equal(1000*60);
+			currentDate=nextDate;
+		}
+	});
+	it('should generate the right  N next days for * * * * *',function(){
+		var cronTime = new cron.CronTime('* * * * *');
+		var currentDate=moment().seconds(0).milliseconds(0);
+		for(var i=0;i<100;i++){
+			var nextDate = cronTime._getNextDateFrom(currentDate);
+			expect(nextDate-currentDate).to.equal(1000*60);
+			currentDate=nextDate;
+		}
+	});
+	it('should generate the right  N next days for 0 0 9 * * *',function(){
+		var cronTime = new cron.CronTime('0 0 9 * * *');
+		var currentDate=moment().utc().seconds(0).milliseconds(0).hours(9).minutes(0);
+		for(var i=0;i<100;i++){
+			var nextDate = cronTime._getNextDateFrom(currentDate);
+			expect(nextDate-currentDate).to.equal(1000*60*60*24);
+			currentDate=nextDate;
+		}
+	});
+	it('should generate the right  N next days for 0 0 * * * with a time zone',function(){
+		var cronTime = new cron.CronTime('0 * * * *');
+		var currentDate=moment.tz('2018-11-02T23:00','America/Sao_Paulo').seconds(0).milliseconds(0);
+		for(var i=0;i<25;i++){
+			var nextDate = cronTime._getNextDateFrom(currentDate,'America/Sao_Paulo');
+			expect(nextDate-currentDate).to.equal(1000*60*60);
+			currentDate=nextDate;
+		}
+
+	});
+	it('should generate the right  N next days for */3 * * * * with a time zone',function(){
+		var cronTime = new cron.CronTime('*/3 * * * *');
+		var currentDate=moment.tz('2018-11-02T23:00','America/Sao_Paulo').seconds(0).milliseconds(0);
+		for(var i=0;i<25;i++){
+		var nextDate = cronTime._getNextDateFrom(currentDate,'America/Sao_Paulo');
+		expect(nextDate-currentDate).to.equal(1000*60*3);
+		currentDate=nextDate;
+		}
+
 	});
 	it('should generete the right next day when cron is set to every 15 min in Feb', function() {
 		var cronTime = new cron.CronTime('*/15 * * FEB *');
