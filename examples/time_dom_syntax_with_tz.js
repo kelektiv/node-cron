@@ -8,6 +8,6 @@ const job = new CronJob(
 	},
 	null,
 	true,
-	'America/New_York'
+	'America/Sao_Paulo'
 );
 console.log('second');
