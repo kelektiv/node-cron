@@ -2,6 +2,7 @@ var chai = require('chai');
 var expect = chai.expect;
 var cron = require('../lib/cron');
 var moment = require('moment-timezone');
+var sinon = require('sinon');
 
 // most eslint errors here are due to side effects. i don't care much about them right now
 
@@ -296,5 +297,29 @@ describe('crontime', function() {
 		expect(nextDate.valueOf()).to.equal(
 			new Date(Date.UTC(2019, 1, 1, 0, 0)).valueOf()
 		);
+	});
+
+	it('should accept 0 as a valid UTC offset', function() {
+		var clock = sinon.useFakeTimers();
+
+		var cronTime = new cron.CronTime('0 11 * * *', null, 0);
+		var expected = moment().add(11, 'hours').unix();
+		var actual = cronTime.sendAt().unix();
+
+		expect(actual).to.equal(expected);
+
+		clock.restore();
+	});
+
+	it('should accept -120 as a valid UTC offset', function() {
+		var clock = sinon.useFakeTimers();
+
+		var cronTime = new cron.CronTime('0 11 * * *', null, -120);
+		var expected = moment().add(13, 'hours').unix();
+		var actual = cronTime.sendAt().unix();
+
+		expect(actual).to.equal(expected);
+
+		clock.restore();
 	});
 });
