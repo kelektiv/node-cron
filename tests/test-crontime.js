@@ -4,7 +4,7 @@ var cron = require('../lib/cron');
 var moment = require('moment-timezone');
 var sinon = require('sinon');
 
-// most eslint errors here are due to side effects. i don't care much about them right now
+/* eslint-disable no-new */
 
 describe('crontime', function() {
 	it('should test stars (* * * * * *)', function() {

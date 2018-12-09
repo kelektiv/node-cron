@@ -3,6 +3,8 @@ var expect = chai.expect;
 var sinon = require('sinon');
 var cron = require('../lib/cron');
 
+/* eslint-disable no-new */
+
 describe('cron', function() {
 	it('should run every second (* * * * * *)', function() {
 		var clock = sinon.useFakeTimers();
@@ -544,7 +546,7 @@ describe('cron', function() {
 
 		it('should test if timezone is valid.', function() {
 			expect(function() {
-				new cron.CronJob({ // ignore eslint error here
+				new cron.CronJob({
 					cronTime: '* * * * * *',
 					onTick: function() {},
 					timeZone: 'fake/timezone'
