@@ -170,13 +170,18 @@ describe('crontime', function() {
 	});
 
 	it('should test next real date', function() {
-		var ct = new cron.CronTime(new Date());
+		var initialDate = new Date()
+		var ct = new cron.CronTime(initialDate);
 
 		var nextDate = new Date();
 		nextDate.setMonth(nextDate.getMonth() + 1);
 		expect(nextDate).to.be.gt(ct.source._d);
-		var nextdt = ct._getNextDateFrom(nextDate);
-		expect(nextdt.isSame(nextDate)).to.be.true;
+		var nextdt = ct.sendAt(0);
+		// there shouldn't be a "next date" when using a real date.
+		// execution happens once
+		// so the return should be the date passed in unless explicitly reset
+		expect(nextdt.isBefore(nextDate)).to.be.true;
+		expect(nextdt.isSame(initialDate)).to.be.true;
 	});
 
 	it('should test next month selection');

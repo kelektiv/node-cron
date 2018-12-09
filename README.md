@@ -90,6 +90,26 @@ week where both 0 and 7 represent Sunday. We do not.
  * Day of Week: 0-6 (Sun-Sat)
 
 
+Gotchas
+==
+
+* Millisecond level granularity in JS or moment date objects.
+    Because computers take time to do things, there may be some delay in execution.
+    This should be on the order of milliseconds. This module doesn't allow MS level
+    granularity for the regular cron syntax, but _does_ allow you to specify a real
+    date of execution in either a javascript date object or a moment object.
+		When this happens you may find that you aren't able to execute a job that
+		_should_ run in the future like with `new Date().setMilliseconds(new
+		Date().getMilliseconds() + 1)`. This is due to those cycles of execution
+		above. This wont be the same for everyone because of compute speed. When I
+		tried it locally I saw that somewhere around the 4-5 ms mark was where I got
+		consistent ticks using real dates, but anything less than that would result
+		in an exception. This could be really confusing. We could restrict the
+		granularity for all dates to seconds, but felt that it wasn't a huge problem
+		so long as you were made aware. If this becomes more of an issue, We can
+		revisit it.
+
+
 API
 ==
 
