@@ -170,7 +170,7 @@ describe('crontime', function() {
 	});
 
 	it('should test next real date', function() {
-		var initialDate = new Date()
+		var initialDate = new Date();
 		var ct = new cron.CronTime(initialDate);
 
 		var nextDate = new Date();
