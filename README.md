@@ -108,6 +108,9 @@ Gotchas
 		granularity for all dates to seconds, but felt that it wasn't a huge problem
 		so long as you were made aware. If this becomes more of an issue, We can
 		revisit it.
+* Arrow Functions for `onTick`
+    Arrow functions get their `this` context from their parent scope. Thus, if you use them, you will not get
+    the `this` context of the cronjob. You can read a little more in this ticket [GH-40](https://github.com/kelektiv/node-cron/issues/47#issuecomment-459762775)
 
 
 API
