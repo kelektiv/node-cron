@@ -739,7 +739,9 @@ describe('cron', function() {
 
 	it('should not fire if time was adjusted back', function() {
 		var c = 0;
-		var clock = sinon.useFakeTimers('setTimeout');
+		var clock = sinon.useFakeTimers({
+			toFake: ['setTimeout']
+		});
 
 		var job = new cron.CronJob(
 			'0 * * * * *',
@@ -867,7 +869,7 @@ describe('cron', function() {
 		expect(c).to.eql(8);
 	});
 
-	it.only('should trigger onTick at midnight', function() {
+	it('should trigger onTick at midnight', function() {
 		var c = 0;
 		var d = new Date('12/31/2014');
 		d.setSeconds(59);

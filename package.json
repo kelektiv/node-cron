@@ -18,18 +18,18 @@
     "moment-timezone": "^0.5.x"
   },
   "devDependencies": {
-    "mocha": "~5.1.x",
-    "chai": "~4.1.x",
-    "sinon": "~1.12.x",
-    "eslint": "~5.3.x",
-    "eslint-config-prettier": "~3.0.x",
-    "eslint-config-standard": "~11.0.x",
-    "eslint-plugin-import": "~2.14.x",
-    "eslint-plugin-node": "~7.0.x",
-    "eslint-plugin-prettier": "~2.6.x",
-    "eslint-plugin-promise": "~3.8.x",
-    "eslint-plugin-standard": "~3.1.x",
-    "prettier": "~1.14.x"
+    "mocha": "~5.2.x",
+    "chai": "~4.2.x",
+    "sinon": "~7.2.x",
+    "eslint": "~5.13.x",
+    "eslint-config-prettier": "~4.0.x",
+    "eslint-config-standard": "~12.0.x",
+    "eslint-plugin-import": "~2.16.x",
+    "eslint-plugin-node": "~8.0.x",
+    "eslint-plugin-prettier": "~3.0.x",
+    "eslint-plugin-promise": "~4.0.x",
+    "eslint-plugin-standard": "~4.0.x",
+    "prettier": "~1.16.x"
   },
   "keywords": [
     "cron",
