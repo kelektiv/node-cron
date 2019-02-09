@@ -867,6 +867,31 @@ describe('cron', function() {
 		expect(c).to.eql(8);
 	});
 
+	it.only('should trigger onTick at midnight', function() {
+		var c = 0;
+		var d = new Date('12/31/2014');
+		d.setSeconds(59);
+		d.setMinutes(59);
+		d.setHours(23);
+		var clock = sinon.useFakeTimers(d.getTime());
+
+		var job = new cron.CronJob({
+			cronTime: '00 * * * * *',
+			onTick: function() {
+				c++;
+			},
+			start: true,
+			timeZone: 'UTC'
+		});
+
+		clock.tick(1000); // move clock 1 second
+		expect(c).to.eql(1);
+
+		clock.restore();
+		job.stop();
+		expect(c).to.eql(1);
+	});
+
 	it('should run every day UTC', function() {
 		var c = 0;
 		var d = new Date('12/31/2014');
