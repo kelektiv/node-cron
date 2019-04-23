@@ -303,6 +303,30 @@ describe('crontime', function() {
 			new Date(Date.UTC(2019, 1, 1, 0, 0)).valueOf()
 		);
 	});
+  it('should generate the right next day when cron is set to both day of the month and day of the week (1)', function() {
+		var cronTime = new cron.CronTime('0 8 1 * 4');
+		var previousDate = new Date(Date.UTC(2019, 3, 22, 0, 0));
+		var nextDate = cronTime._getNextDateFrom(previousDate, 'UTC');
+		expect(nextDate.valueOf()).to.equal(
+			new Date(Date.UTC(2019, 3, 25, 8, 0)).valueOf()
+		);
+  });
+  it('should generate the right next day when cron is set to both day of the month and day of the week (2)', function() {
+		var cronTime = new cron.CronTime('0 8 1 * 4');
+		var previousDate = new Date(Date.UTC(2019, 3, 26, 0, 0));
+		var nextDate = cronTime._getNextDateFrom(previousDate, 'UTC');
+		expect(nextDate.valueOf()).to.equal(
+			new Date(Date.UTC(2019, 4, 1, 8, 0)).valueOf()
+		);
+  });
+  it('should generate the right next day when cron is set to both day of the month and day of the week (3)', function() {
+		var cronTime = new cron.CronTime('0 8 1 * 4');
+		var previousDate = new Date(Date.UTC(2019, 7, 1, 7, 59));
+		var nextDate = cronTime._getNextDateFrom(previousDate, 'UTC');
+		expect(nextDate.valueOf()).to.equal(
+			new Date(Date.UTC(2019, 7, 1, 8, 0)).valueOf()
+		);
+  });
 
 	it('should accept 0 as a valid UTC offset', function() {
 		var clock = sinon.useFakeTimers();
