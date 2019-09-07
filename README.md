@@ -1,7 +1,7 @@
 node-cron
 =
 
-[![Build Status](https://travis-ci.org/kelektiv/node-cron.svg?branch=master)](https://travis-ci.org/#!/kelektiv/node-cron)
+[![Build Status](https://travis-ci.org/kelektiv/node-cron.svg?branch=master)](https://travis-ci.org/kelektiv/node-cron)
 [![Dependency Status](https://david-dm.org/ncb000gt/node-cron.svg)](https://david-dm.org/ncb000gt/node-cron)
 
 Cron is a tool that allows you to execute _something_ on a schedule. This is
