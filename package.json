@@ -1,7 +1,7 @@
 {
   "name": "cron",
   "description": "Cron jobs for your node",
-  "version": "1.7.1",
+  "version": "1.7.2",
   "author": "Nick Campbell <nicholas.j.campbell@gmail.com> (http://github.com/ncb000gt)",
   "bugs": {
     "url": "http://github.com/kelektiv/node-cron/issues"
@@ -18,18 +18,18 @@
     "moment-timezone": "^0.5.x"
   },
   "devDependencies": {
-    "mocha": "~5.2.x",
+    "mocha": "~6.2.x",
     "chai": "~4.2.x",
-    "sinon": "~7.2.x",
-    "eslint": "~5.13.x",
-    "eslint-config-prettier": "~4.0.x",
-    "eslint-config-standard": "~12.0.x",
-    "eslint-plugin-import": "~2.16.x",
-    "eslint-plugin-node": "~8.0.x",
-    "eslint-plugin-prettier": "~3.0.x",
-    "eslint-plugin-promise": "~4.0.x",
+    "sinon": "~7.4.x",
+    "eslint": "~6.3.x",
+    "eslint-config-prettier": "~6.2.x",
+    "eslint-config-standard": "~14.1.x",
+    "eslint-plugin-import": "~2.18.x",
+    "eslint-plugin-node": "~10.0.x",
+    "eslint-plugin-prettier": "~3.1.x",
+    "eslint-plugin-promise": "~4.2.x",
     "eslint-plugin-standard": "~4.0.x",
-    "prettier": "~1.16.x"
+    "prettier": "~1.18.x"
   },
   "keywords": [
     "cron",
