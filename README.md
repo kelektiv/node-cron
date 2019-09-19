@@ -165,7 +165,7 @@ Parameter Based
 		from the NodeJS docs.
   * `start` - Runs your job.
   * `stop` - Stops your job.
-  * `setTime` - Change the time for the `CronJob`. Param must be a `CronTime`.
+  * `setTime` - Stops and changes the time for the `CronJob`. Param must be a `CronTime`.
   * `lastDate` - Tells you the last execution date.
   * `nextDates` - Provides an array of the next set of dates that will trigger an `onTick`.
   * `fireOnTick` - Allows you to override the `onTick` calling behavior. This
