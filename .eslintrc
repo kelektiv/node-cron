@@ -5,7 +5,7 @@
     "prettier/standard"
   ],
   "parserOptions": {
-    "ecmaVersion": "2017",
+    "ecmaVersion": 2017,
     "sourceType": "module"
   },
   "globals": {
@@ -19,10 +19,12 @@
     "it": true
   },
   "env": {
+    "jest/globals": true,
     "browser": true,
     "node": true
   },
   "plugins": [
+    "jest",
     "prettier",
     "standard"
   ],
