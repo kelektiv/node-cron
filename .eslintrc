@@ -1,34 +1,28 @@
 {
-  "extends": [
-    "standard",
-    "prettier",
-    "prettier/standard"
-  ],
-  "parserOptions": {
-    "ecmaVersion": "2017",
-    "sourceType": "module"
-  },
-  "globals": {
-    "define": true,
-    "after": true,
-    "afterEach": true,
-    "before": true,
-    "beforeEach": true,
-    "describe": true,
-    "expect": true,
-    "it": true
-  },
-  "env": {
-    "browser": true,
-    "node": true
-  },
-  "plugins": [
-    "prettier",
-    "standard"
-  ],
-  "rules": {
-    "space-before-function-paren": 0,
-    "new-cap": 0,
-    "prettier/prettier": 2
-  }
+	"extends": ["standard", "prettier", "prettier/standard"],
+	"parserOptions": {
+		"ecmaVersion": "2017",
+		"sourceType": "module"
+	},
+	"globals": {
+		"define": true,
+		"after": true,
+		"afterEach": true,
+		"before": true,
+		"beforeEach": true,
+		"describe": true,
+		"expect": true,
+		"it": true
+	},
+	"env": {
+		"browser": true,
+		"node": true,
+		"jest/globals": true
+	},
+	"plugins": ["prettier", "standard", "jest"],
+	"rules": {
+		"space-before-function-paren": 0,
+		"new-cap": 0,
+		"prettier/prettier": 2
+	}
 }
