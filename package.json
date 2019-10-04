@@ -11,6 +11,7 @@
     "url": "http://github.com/kelektiv/node-cron.git"
   },
   "main": "lib/cron",
+  "types": "lib/cron.d.ts",
   "scripts": {
     "test": "make test"
   },
