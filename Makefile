@@ -4,7 +4,7 @@ all: test
 
 test:
 	npm install .
-	@./node_modules/mocha/bin/mocha \
+	@./node_modules/jest/bin/jest.js \
 		$(TESTS)
 
 .PHONY: test

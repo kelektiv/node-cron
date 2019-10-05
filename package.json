@@ -19,18 +19,19 @@
     "moment-timezone": "^0.5.x"
   },
   "devDependencies": {
-    "mocha": "~6.2.x",
     "chai": "~4.2.x",
-    "sinon": "~7.4.x",
     "eslint": "~6.3.x",
     "eslint-config-prettier": "~6.2.x",
     "eslint-config-standard": "~14.1.x",
     "eslint-plugin-import": "~2.18.x",
+    "eslint-plugin-jest": "^22.17.0",
     "eslint-plugin-node": "~10.0.x",
     "eslint-plugin-prettier": "~3.1.x",
     "eslint-plugin-promise": "~4.2.x",
     "eslint-plugin-standard": "~4.0.x",
-    "prettier": "~1.18.x"
+    "jest": "^24.9.0",
+    "prettier": "~1.18.x",
+    "sinon": "~7.4.x"
   },
   "keywords": [
     "cron",
@@ -55,6 +56,7 @@
     "Leandro Ferrari <lfthomaz@gmail.com> (https://github.com/lfthomaz)",
     "Gregg Zigler <greggzigler@gmail.com> (https://github.com/greggzigler)",
     "Jordan Abderrachid <jabderrachid@gmail.com> (https://github.com/jordanabderrachid)",
-    "Masakazu Matsushita <matsukaz@gmail.com> (matsukaz)"
+    "Masakazu Matsushita <matsukaz@gmail.com> (matsukaz)",
+    "Christopher Lunt <me@kirisu.co.uk> (https://github.com/kirisu)"
   ]
 }
