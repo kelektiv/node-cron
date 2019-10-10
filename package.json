@@ -13,7 +13,7 @@
   "main": "lib/cron",
   "types": "lib/cron.d.ts",
   "scripts": {
-    "test": "make test"
+    "test": "jest"
   },
   "dependencies": {
     "moment-timezone": "^0.5.x"
