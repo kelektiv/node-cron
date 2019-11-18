@@ -1,3 +1,4 @@
+/* eslint-disable no-new */
 const sinon = require('sinon');
 const cron = require('../lib/cron');
 describe('cron', () => {
@@ -486,32 +487,27 @@ describe('cron', () => {
 	});
 
 	it('should not get into an infinite loop on invalid times', function() {
-		const clock = sinon.useFakeTimers();
+		expect(function() {
+			new cron.CronJob(
+				'* 60 * * * *',
+				function() {
+					expect.ok(true);
+				},
+				null,
+				true
+			);
+		}).toThrow();
 
-		const invalid1 = new cron.CronJob(
-			'* 60 * * * *',
-			function() {
-				expect.ok(true);
-			},
-			null,
-			true
-		);
-		var invalid2 = new cron.CronJob(
-			'* * 24 * * *',
-			function() {
-				expect.ok(true);
-			},
-			null,
-			true
-		);
-
-		clock.tick(1000);
-
-		// assert that it gets here
-		invalid1.stop();
-		invalid2.stop();
-
-		clock.restore();
+		expect(function() {
+			new cron.CronJob(
+				'* * 24 * * *',
+				function() {
+					expect.ok(true);
+				},
+				null,
+				true
+			);
+		}).toThrow();
 	});
 
 	it('should test start of month', function() {
@@ -822,10 +818,10 @@ describe('cron', () => {
 			expect(callback).toHaveBeenCalledTimes(1);
 		});
 
-		it('should be able to detect out of range days of month and fix them', function() {
-			var ct = new cron.CronTime('* * 32 FEB *');
-			expect(ct.dayOfMonth['32']).toBe(undefined);
-			expect(ct.dayOfMonth['2']).toBe(true);
+		it('should be able to detect out of range days of month', function() {
+			expect(function() {
+				new cron.CronTime('* * 32 FEB *');
+			}).toThrow();
 		});
 	});
 });

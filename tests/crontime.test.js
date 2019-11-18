@@ -64,9 +64,9 @@ describe('crontime', function() {
 		}).not.toThrow();
 	});
 
-	it('should test all hyphens (0-10 0-10 0-10 0-10 0-10 0-1)', function() {
+	it('should test all hyphens (0-10 0-10 1-10 1-10 0-6 0-1)', function() {
 		expect(function() {
-			new cron.CronTime('0-10 0-10 0-10 0-10 0-10 0-1');
+			new cron.CronTime('0-10 0-10 1-10 1-10 0-6 0-1');
 		}).not.toThrow();
 	});
 
@@ -82,9 +82,9 @@ describe('crontime', function() {
 		}).not.toThrow();
 	});
 
-	it('should test all commas (0,10 0,10 0,10 0,10 0,10 0,1)', function() {
+	it('should test all commas (0,10 0,10 1,10 1,10 0,6 0,1)', function() {
 		expect(function() {
-			new cron.CronTime('0,10 0,10 0,10 0,10 0,10 0,1');
+			new cron.CronTime('0,10 0,10 1,10 1,10 0,6 0,1');
 		}).not.toThrow();
 	});
 
@@ -115,6 +115,42 @@ describe('crontime', function() {
 	it('should test unknown alias - short (* * * * j *)', function() {
 		expect(function() {
 			new cron.CronTime('* * * * j *');
+		}).toThrow();
+	});
+
+	it('should test too few fields', function() {
+		expect(function() {
+			new cron.CronTime('* * * *', null, null);
+		}).toThrow();
+	});
+
+	it('should test too many fields', function() {
+		expect(function() {
+			new cron.CronTime('* * * * * * *', null, null);
+		}).toThrow();
+	});
+
+	it('should test out of range values', function() {
+		expect(function() {
+			new cron.CronTime('* * * * 1234', null, null);
+		}).toThrow();
+	});
+
+	it('should test invalid wildcard expression', function() {
+		expect(function() {
+			new cron.CronTime('* * * * 0*');
+		}).toThrow();
+	});
+
+	it('should test invalid step', function() {
+		expect(function() {
+			new cron.CronTime('* * * 1/0 *');
+		}).toThrow();
+	});
+
+	it('should test invalid range', function() {
+		expect(function() {
+			new cron.CronTime('* 2-1 * * *');
 		}).toThrow();
 	});
 
