@@ -145,6 +145,22 @@ describe('cron', () => {
 			clock.restore();
 		});
 
+		it('should default to full range when upper range not provided (1/2 * * * * *)', done => {
+			const callback = jest.fn();
+			const job = new cron.CronJob(
+				'1/2 * * * * *',
+				callback,
+				() => {
+					expect(callback).toHaveBeenCalledTimes(30);
+					done();
+				},
+				true
+			);
+			clock.tick(1000 * 60);
+			job.stop();
+			clock.restore();
+		});
+
 		it('should run every second (* * * * * *) using the object constructor', () => {
 			const callback = jest.fn();
 			const job = new cron.CronJob({
