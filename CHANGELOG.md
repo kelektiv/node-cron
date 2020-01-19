@@ -1,3 +1,6 @@
+## [v1.8.0] - 2020-01-19
+- GH-454 - Range upper limit should default to highest value when step is provided by Noah May <noahmouse2011@gmail.com> in d36dc9581f9f68580a2016b368f8002a9f1e357d
+
 ## [v1.7.1] - 2019-04-26
 - GH-416 - Fix issue where next execution time is incorrect in some cases in Naoya Inada <naoina@kuune.org> in c08522ff80b3987843e9930c307b76d5fe38b5dc
 
