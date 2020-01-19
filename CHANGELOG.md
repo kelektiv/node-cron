@@ -1,3 +1,6 @@
+## [v1.8.1] - 2020-01-19
+- Revert TS definition defaulting to DefinitelyTyped definitions.
+
 ## [v1.8.0] - 2020-01-19
 - GH-454 - Range upper limit should default to highest value when step is provided by Noah May <noahmouse2011@gmail.com> in d36dc9581f9f68580a2016b368f8002a9f1e357d
 
