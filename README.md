@@ -45,9 +45,10 @@ Usage (basic cron usage):
 
 ```javascript
 var CronJob = require('cron').CronJob;
-new CronJob('* * * * * *', function() {
+var job = new CronJob('* * * * * *', function() {
   console.log('You will see this message every second');
 }, null, true, 'America/Los_Angeles');
+job.start();
 ```
 
 Note - You need to explicitly start a job in order to make it run. This gives a
