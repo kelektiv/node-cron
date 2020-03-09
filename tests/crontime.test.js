@@ -22,6 +22,12 @@ describe('crontime', function() {
 		}).not.toThrow();
 	});
 
+	it('should correctly parse this', function() {
+		expect(function() {
+			new cron.CronTime('{"second": "0", "hour": "*", "minute": "*","dayOfWeek": "*"}');
+		}).not.toThrow();
+	});
+
 	it('should test all digits (08 8 8 8 8 5)', function() {
 		expect(function() {
 			new cron.CronTime('08 * * * * *');
