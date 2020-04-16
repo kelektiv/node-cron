@@ -1,7 +1,7 @@
 /* eslint-disable no-new */
 const sinon = require('sinon');
 const cron = require('../lib/cron');
-const moment = require('moment-timezone');
+const luxon = require('luxon');
 
 describe('crontime', function() {
 	it('should test stars (* * * * * *)', function() {
@@ -157,7 +157,7 @@ describe('crontime', function() {
 	it('should test Date', function() {
 		const d = new Date();
 		const ct = new cron.CronTime(d);
-		expect(ct.source.isSame(d.getTime())).toBe(true);
+		expect(ct.source.toMillis()).toEqual(d.getTime());
 	});
 
 	it('should test day roll-over', function() {
@@ -168,7 +168,7 @@ describe('crontime', function() {
 			const start = new Date(2012, 3, 16, hr, 30, 30);
 			const next = ct._getNextDateFrom(start);
 			expect(next - start).toBeLessThan(24 * 60 * 60 * 1000);
-			expect(next._d.getTime()).toBeGreaterThan(start.getTime());
+			expect(next.toMillis()).toBeGreaterThan(start.getTime());
 		}
 	});
 
@@ -185,8 +185,8 @@ describe('crontime', function() {
 		nextDate.setHours(23);
 		const nextdt = ct._getNextDateFrom(nextDate);
 
-		expect(nextdt._d.getTime()).toBeGreaterThan(nextDate.getTime());
-		expect(nextdt.hours() % 4).toEqual(0);
+		expect(nextdt.toMillis()).toBeGreaterThan(nextDate.getTime());
+		expect(nextdt.hour % 4).toEqual(0);
 	});
 
 	it('should throw an exception because next date is invalid', function() {
@@ -202,17 +202,18 @@ describe('crontime', function() {
 
 	it('should test next real date', function() {
 		const initialDate = new Date();
+		initialDate.setDate(initialDate.getDate() + 1); // In other case date will be in the past
 		const ct = new cron.CronTime(initialDate);
 
 		const nextDate = new Date();
 		nextDate.setMonth(nextDate.getMonth() + 1);
-		expect(nextDate.getTime()).toBeGreaterThan(ct.source._d.getTime());
+		expect(nextDate.getTime()).toBeGreaterThan(ct.source.toMillis());
 		const nextdt = ct.sendAt(0);
 		// there shouldn't be a "next date" when using a real date.
 		// execution happens once
 		// so the return should be the date passed in unless explicitly reset
-		expect(nextdt.isBefore(nextDate)).toBeTruthy();
-		expect(nextdt.isSame(initialDate)).toBeTruthy();
+		expect(nextdt < nextDate).toBeTruthy();
+		expect(nextdt.toMillis()).toEqual(initialDate.getTime());
 	});
 
 	describe('should throw an exception because `L` not supported', function() {
@@ -232,13 +233,17 @@ describe('crontime', function() {
 	it('should strip off millisecond', function() {
 		const cronTime = new cron.CronTime('0 */10 * * * *');
 		const x = cronTime._getNextDateFrom(new Date('2018-08-10T02:20:00.999Z'));
-		expect(x.toISOString()).toEqual('2018-08-10T02:30:00.000Z');
+		expect(x.toMillis()).toEqual(
+			new Date('2018-08-10T02:30:00.000Z').getTime()
+		);
 	});
 
 	it('should strip off millisecond (2)', function() {
 		const cronTime = new cron.CronTime('0 */10 * * * *');
 		const x = cronTime._getNextDateFrom(new Date('2018-08-10T02:19:59.999Z'));
-		expect(x.toISOString()).toEqual('2018-08-10T02:20:00.000Z');
+		expect(x.toMillis()).toEqual(
+			new Date('2018-08-10T02:20:00.000Z').getTime()
+		);
 	});
 
 	it('should generete the right next days when cron is set to every minute', function() {
@@ -268,19 +273,23 @@ describe('crontime', function() {
 		const cronTime = new cron.CronTime('0 0 9 4 * *');
 		const nextDate = cronTime._getNextDateFrom(d, 'America/Sao_Paulo');
 		expect(nextDate.valueOf()).toEqual(
-			moment('2018-11-04T09:00:00.000-02:00').valueOf()
+			luxon.DateTime.fromISO('2018-11-04T09:00:00.000-02:00').valueOf()
 		);
 	});
 	it('should work around time zone changes that shifts time back (2)', function() {
 		// Asia/Amman DST ends in  26 - OCT-2018 (-1 to hours)
-		const d = moment.tz('2018-10-25T23:00', 'Asia/Amman');
+		const d = luxon.DateTime.fromISO('2018-10-25T23:00').setZone('Asia/Amman');
 		const cronTime = new cron.CronTime('0 0 * * *');
 		const nextDate = cronTime._getNextDateFrom(d, 'Asia/Amman');
-		expect(nextDate - moment.tz('2018-10-26T00:00', 'Asia/Amman')).toEqual(0);
+		expect(
+			nextDate -
+				luxon.DateTime.fromISO('2018-10-26T00:00').setZone('Asia/Amman')
+		).toEqual(0);
 	});
 	it('should work around time zone changes that shifts time forward', function() {
 		// Asia/Amman DST starts in  30-March-2018 (+1 to hours)
-		let currentDate = moment.tz('2018-03-29T23:00', 'Asia/Amman');
+		let currentDate = luxon.DateTime.fromISO('2018-03-29T23:00')
+			.setZone('Asia/Amman');
 		const cronTime = new cron.CronTime('* * * * *');
 		for (let i = 0; i < 100; i++) {
 			const nextDate = cronTime._getNextDateFrom(currentDate, 'Asia/Amman');
@@ -290,9 +299,7 @@ describe('crontime', function() {
 	});
 	it('should generate the right  N next days for * * * * *', function() {
 		const cronTime = new cron.CronTime('* * * * *');
-		let currentDate = moment()
-			.seconds(0)
-			.milliseconds(0);
+		let currentDate = luxon.DateTime.local().set({ second: 0, millisecond: 0 });
 		for (let i = 0; i < 100; i++) {
 			const nextDate = cronTime._getNextDateFrom(currentDate);
 			expect(nextDate - currentDate).toEqual(1000 * 60);
@@ -301,12 +308,9 @@ describe('crontime', function() {
 	});
 	it('should generate the right  N next days for 0 0 9 * * *', function() {
 		const cronTime = new cron.CronTime('0 0 9 * * *');
-		let currentDate = moment()
-			.utc()
-			.seconds(0)
-			.milliseconds(0)
-			.hours(9)
-			.minutes(0);
+		let currentDate = luxon.DateTime.local()
+			.setZone('utc')
+			.set({ hour: 9, minute: 0, second: 0, millisecond: 0 });
 		for (let i = 0; i < 100; i++) {
 			const nextDate = cronTime._getNextDateFrom(currentDate);
 			expect(nextDate - currentDate).toEqual(1000 * 60 * 60 * 24);
@@ -315,10 +319,9 @@ describe('crontime', function() {
 	});
 	it('should generate the right  N next days for 0 0 * * * with a time zone', function() {
 		const cronTime = new cron.CronTime('0 * * * *');
-		let currentDate = moment
-			.tz('2018-11-02T23:00', 'America/Sao_Paulo')
-			.seconds(0)
-			.milliseconds(0);
+		let currentDate = luxon.DateTime.fromISO('2018-11-02T23:00')
+			.setZone('America/Sao_Paulo')
+			.set({ second: 0, millisecond: 0 });
 		for (let i = 0; i < 25; i++) {
 			const nextDate = cronTime._getNextDateFrom(
 				currentDate,
@@ -330,10 +333,9 @@ describe('crontime', function() {
 	});
 	it('should generate the right  N next days for */3 * * * * with a time zone', function() {
 		const cronTime = new cron.CronTime('*/3 * * * *');
-		let currentDate = moment
-			.tz('2018-11-02T23:00', 'America/Sao_Paulo')
-			.seconds(0)
-			.milliseconds(0);
+		let currentDate = luxon.DateTime.fromISO('2018-11-02T23:00')
+			.setZone('America/Sao_Paulo')
+			.set({ second: 0, millisecond: 0 });
 		for (let i = 0; i < 25; i++) {
 			const nextDate = cronTime._getNextDateFrom(
 				currentDate,
@@ -353,18 +355,18 @@ describe('crontime', function() {
 	});
 	it('should generate the right next day when cron is set to both day of the month and day of the week (1)', function() {
 		const cronTime = new cron.CronTime('0 8 1 * 4');
-		const previousDate = new Date(Date.UTC(2019, 3, 22, 0, 0));
+		const previousDate = new Date(Date.UTC(2019, 3, 21, 0, 0));
 		const nextDate = cronTime._getNextDateFrom(previousDate, 'UTC');
-		expect(nextDate.valueOf()).toEqual(
-			new Date(Date.UTC(2019, 3, 25, 8, 0)).valueOf()
+		expect(nextDate.toMillis()).toEqual(
+			new Date(Date.UTC(2019, 3, 25, 8, 0)).getTime()
 		);
 	});
 	it('should generate the right next day when cron is set to both day of the month and day of the week (2)', function() {
 		const cronTime = new cron.CronTime('0 8 1 * 4');
 		const previousDate = new Date(Date.UTC(2019, 3, 26, 0, 0));
 		const nextDate = cronTime._getNextDateFrom(previousDate, 'UTC');
-		expect(nextDate.valueOf()).toEqual(
-			new Date(Date.UTC(2019, 4, 1, 8, 0)).valueOf()
+		expect(nextDate.toMillis()).toEqual(
+			new Date(Date.UTC(2019, 4, 1, 8, 0)).getTime()
 		);
 	});
 	it('should generate the right next day when cron is set to both day of the month and day of the week (3)', function() {
@@ -380,10 +382,10 @@ describe('crontime', function() {
 		const clock = sinon.useFakeTimers();
 
 		const cronTime = new cron.CronTime('0 11 * * *', null, 0);
-		const expected = moment()
-			.add(11, 'hours')
-			.unix();
-		const actual = cronTime.sendAt().unix();
+		const expected = luxon.DateTime.local()
+			.plus({ hours: 11 })
+			.toSeconds();
+		const actual = cronTime.sendAt().toSeconds();
 
 		expect(actual).toEqual(expected);
 
@@ -394,10 +396,10 @@ describe('crontime', function() {
 		const clock = sinon.useFakeTimers();
 
 		const cronTime = new cron.CronTime('0 11 * * *', null, -120);
-		const expected = moment()
-			.add(13, 'hours')
-			.unix();
-		const actual = cronTime.sendAt().unix();
+		const expected = luxon.DateTime.local()
+			.plus({ hours: 13 })
+			.toSeconds();
+		const actual = cronTime.sendAt().toSeconds();
 
 		expect(actual).toEqual(expected);
 

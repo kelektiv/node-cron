@@ -15,7 +15,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "moment-timezone": "^0.5.x"
+    "luxon": "^1.23.x"
   },
   "devDependencies": {
     "chai": "~4.2.x",
