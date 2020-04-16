@@ -325,32 +325,29 @@ describe('cron', () => {
 	describe('with timezone', () => {
 		it('should run a job using cron syntax', function() {
 			const callback = jest.fn();
-			const moment = require('moment-timezone');
+			const luxon = require('luxon');
 			let zone = 'America/Chicago';
-
 			// New Orleans time
-			const t = moment();
-			t.tz(zone);
-
+			let t = luxon.DateTime.local().setZone(zone);
 			// Current time
-			const d = moment();
+			const d = luxon.DateTime.local();
 
 			// If current time is New Orleans time, switch to Los Angeles..
-			if (t.hours() === d.hours()) {
+			if (t.hour === d.hour) {
 				zone = 'America/Los_Angeles';
-				t.tz(zone);
+				t = t.setZone(zone);
 			}
-			expect(d.hours()).not.toBe(t.hours());
+			expect(d.hour).not.toBe(t.hour);
 
 			// If t = 59s12m then t.setSeconds(60)
 			// becomes 00s13m so we're fine just doing
 			// this and no testRun callback.
-			t.add(1, 's');
+			t = t.plus({ seconds: 1 });
 			// Run a job designed to be executed at a given
 			// time in `zone`, making sure that it is a different
 			// hour than local time.
 			const job = new cron.CronJob(
-				t.seconds() + ' ' + t.minutes() + ' ' + t.hours() + ' * * *',
+				t.second + ' ' + t.minute + ' ' + t.hour + ' * * *',
 				callback,
 				null,
 				true,
@@ -364,25 +361,24 @@ describe('cron', () => {
 		});
 
 		it('should run a job using a date', function() {
-			const moment = require('moment-timezone');
+			const luxon = require('luxon');
 			let zone = 'America/Chicago';
 			// New Orleans time
-			const t = moment();
-			t.tz(zone);
+			let t = luxon.DateTime.local().setZone(zone);
 			// Current time
-			const d = moment();
+			let d = luxon.DateTime.local();
 
 			// If current time is New Orleans time, switch to Los Angeles..
-			if (t.hours() === d.hours()) {
+			if (t.hour === d.hour) {
 				zone = 'America/Los_Angeles';
-				t.tz(zone);
+				t = t.setZone(zone);
 			}
 
-			expect(d.hours()).not.toBe(t.hours());
-			d.add(1, 'second');
+			expect(d.hour).not.toBe(t.hour);
+			d = d.plus({ seconds: 1 });
 			const clock = sinon.useFakeTimers(d.valueOf());
 			const callback = jest.fn();
-			const job = new cron.CronJob(d._d, callback, null, true, zone);
+			const job = new cron.CronJob(d.toJSDate(), callback, null, true, zone);
 			clock.tick(1000);
 			clock.restore();
 			job.stop();
@@ -742,17 +738,14 @@ describe('cron', () => {
 		it('should run a job using cron syntax with number format utcOffset', function() {
 			const clock = sinon.useFakeTimers();
 			const callback = jest.fn();
-
-			const moment = require('moment-timezone');
-
+			const luxon = require('luxon');
 			// Current time
-			const t = moment();
-
+			const t = luxon.DateTime.local();
 			// UTC Offset decreased by an hour
-			const utcOffset = t.utcOffset() - 60;
+			const utcOffset = t.offset - 60;
 
 			const job = new cron.CronJob(
-				t.seconds() + ' ' + t.minutes() + ' ' + t.hours() + ' * * *',
+				t.second + ' ' + t.minute + ' ' + t.hour + ' * * *',
 				callback,
 				null,
 				true,
@@ -775,21 +768,18 @@ describe('cron', () => {
 		it('should run a job using cron syntax with string format utcOffset', function() {
 			const clock = sinon.useFakeTimers();
 			const callback = jest.fn();
-
-			const moment = require('moment-timezone');
-
+			const luxon = require('luxon');
 			// Current time
-			const t = moment();
-
+			const t = luxon.DateTime.local();
 			// UTC Offset decreased by an hour (string format '(+/-)HH:mm')
-			const utcOffset = t.utcOffset() - 60;
+			const utcOffset = t.offset - 60;
 			let utcOffsetString = utcOffset > 0 ? '+' : '-';
 			utcOffsetString += ('0' + Math.floor(Math.abs(utcOffset) / 60)).slice(-2);
 			utcOffsetString += ':';
 			utcOffsetString += ('0' + (utcOffset % 60)).slice(-2);
 
 			var job = new cron.CronJob(
-				t.seconds() + ' ' + t.minutes() + ' ' + t.hours() + ' * * *',
+				t.second + ' ' + t.minute + ' ' + t.hour + ' * * *',
 				callback,
 				null,
 				true,
