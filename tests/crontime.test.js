@@ -278,18 +278,19 @@ describe('crontime', function() {
 	});
 	it('should work around time zone changes that shifts time back (2)', function() {
 		// Asia/Amman DST ends in  26 - OCT-2018 (-1 to hours)
-		const d = luxon.DateTime.fromISO('2018-10-25T23:00').setZone('Asia/Amman');
+		const d = luxon.DateTime.fromISO('2018-05-25T23:00').setZone('Asia/Amman');
 		const cronTime = new cron.CronTime('0 0 * * *');
 		const nextDate = cronTime._getNextDateFrom(d, 'Asia/Amman', true);
 		expect(
 			nextDate -
-				luxon.DateTime.fromISO('2018-10-26T00:00').setZone('Asia/Amman')
+				luxon.DateTime.fromISO('2018-05-26T00:00').setZone('Asia/Amman')
 		).toEqual(0);
 	});
 	it('should work around time zone changes that shifts time forward', function() {
 		// Asia/Amman DST starts in  30-March-2018 (+1 to hours)
-		let currentDate = luxon.DateTime.fromISO('2018-03-29T23:00')
-			.setZone('Asia/Amman');
+		let currentDate = luxon.DateTime.fromISO('2018-03-29T23:00').setZone(
+			'Asia/Amman'
+		);
 		const cronTime = new cron.CronTime('* * * * *');
 		for (let i = 0; i < 100; i++) {
 			const nextDate = cronTime._getNextDateFrom(currentDate, 'Asia/Amman');
