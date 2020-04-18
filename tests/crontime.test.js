@@ -279,6 +279,8 @@ describe('crontime', function() {
 	it('should work around time zone changes that shifts time back (2)', function() {
 		// Asia/Amman DST ends in  26 - OCT-2018 (-1 to hours)
 		const d = luxon.DateTime.fromISO('2018-05-25T23:00').setZone('Asia/Amman');
+		console.log(d);
+		console.log(d.toString());
 		const cronTime = new cron.CronTime('0 0 * * *');
 		const nextDate = cronTime._getNextDateFrom(d, 'Asia/Amman', true);
 		expect(
