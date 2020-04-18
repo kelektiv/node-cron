@@ -280,7 +280,7 @@ describe('crontime', function() {
 		// Asia/Amman DST ends in  26 - OCT-2018 (-1 to hours)
 		const d = luxon.DateTime.fromISO('2018-10-25T23:00').setZone('Asia/Amman');
 		const cronTime = new cron.CronTime('0 0 * * *');
-		const nextDate = cronTime._getNextDateFrom(d, 'Asia/Amman');
+		const nextDate = cronTime._getNextDateFrom(d, 'Asia/Amman', true);
 		expect(
 			nextDate -
 				luxon.DateTime.fromISO('2018-10-26T00:00').setZone('Asia/Amman')
