@@ -278,18 +278,23 @@ describe('crontime', function() {
 	});
 	it('should work around time zone changes that shifts time back (2)', function() {
 		// Asia/Amman DST ends in  26 - OCT-2018 (-1 to hours)
-		const d = luxon.DateTime.fromISO('2018-10-25T23:00').setZone('Asia/Amman');
+		const d = luxon.DateTime.fromISO('2018-10-25T23:00', {
+			zone: 'Asia/Amman'
+		});
 		const cronTime = new cron.CronTime('0 0 * * *');
 		const nextDate = cronTime._getNextDateFrom(d, 'Asia/Amman');
 		expect(
 			nextDate -
-				luxon.DateTime.fromISO('2018-10-26T00:00').setZone('Asia/Amman')
+				luxon.DateTime.fromISO('2018-10-26T00:00', {
+					zone: 'Asia/Amman'
+				})
 		).toEqual(0);
 	});
 	it('should work around time zone changes that shifts time forward', function() {
 		// Asia/Amman DST starts in  30-March-2018 (+1 to hours)
-		let currentDate = luxon.DateTime.fromISO('2018-03-29T23:00')
-			.setZone('Asia/Amman');
+		let currentDate = luxon.DateTime.fromISO('2018-03-29T23:00', {
+			zone: 'Asia/Amman'
+		});
 		const cronTime = new cron.CronTime('* * * * *');
 		for (let i = 0; i < 100; i++) {
 			const nextDate = cronTime._getNextDateFrom(currentDate, 'Asia/Amman');
@@ -319,9 +324,9 @@ describe('crontime', function() {
 	});
 	it('should generate the right  N next days for 0 0 * * * with a time zone', function() {
 		const cronTime = new cron.CronTime('0 * * * *');
-		let currentDate = luxon.DateTime.fromISO('2018-11-02T23:00')
-			.setZone('America/Sao_Paulo')
-			.set({ second: 0, millisecond: 0 });
+		let currentDate = luxon.DateTime.fromISO('2018-11-02T23:00', {
+			zone: 'America/Sao_Paulo'
+		}).set({ second: 0, millisecond: 0 });
 		for (let i = 0; i < 25; i++) {
 			const nextDate = cronTime._getNextDateFrom(
 				currentDate,
@@ -333,9 +338,9 @@ describe('crontime', function() {
 	});
 	it('should generate the right  N next days for */3 * * * * with a time zone', function() {
 		const cronTime = new cron.CronTime('*/3 * * * *');
-		let currentDate = luxon.DateTime.fromISO('2018-11-02T23:00')
-			.setZone('America/Sao_Paulo')
-			.set({ second: 0, millisecond: 0 });
+		let currentDate = luxon.DateTime.fromISO('2018-11-02T23:00', {
+			zone: 'America/Sao_Paulo'
+		}).set({ second: 0, millisecond: 0 });
 		for (let i = 0; i < 25; i++) {
 			const nextDate = cronTime._getNextDateFrom(
 				currentDate,
