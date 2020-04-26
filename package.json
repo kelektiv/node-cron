@@ -1,61 +1,75 @@
 {
-  "name": "cron",
-  "description": "Cron jobs for your node",
-  "version": "1.8.2",
-  "author": "Nick Campbell <nicholas.j.campbell@gmail.com> (http://github.com/ncb000gt)",
-  "bugs": {
-    "url": "http://github.com/kelektiv/node-cron/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "http://github.com/kelektiv/node-cron.git"
-  },
-  "main": "lib/cron",
-  "scripts": {
-    "test": "jest"
-  },
-  "dependencies": {
-    "luxon": "^1.23.x"
-  },
-  "devDependencies": {
-    "chai": "~4.2.x",
-    "eslint": "~6.3.x",
-    "eslint-config-prettier": "~6.2.x",
-    "eslint-config-standard": "~14.1.x",
-    "eslint-plugin-import": "~2.18.x",
-    "eslint-plugin-jest": "^22.17.0",
-    "eslint-plugin-node": "~10.0.x",
-    "eslint-plugin-prettier": "~3.1.x",
-    "eslint-plugin-promise": "~4.2.x",
-    "eslint-plugin-standard": "~4.0.x",
-    "jest": "^24.9.0",
-    "prettier": "~1.18.x",
-    "sinon": "~7.4.x"
-  },
-  "keywords": [
-    "cron",
-    "node cron",
-    "node-cron",
-    "schedule",
-    "scheduler",
-    "cronjob",
-    "cron job"
-  ],
-  "license": "MIT",
-  "contributors": [
-    "Romain Beauxis <toots@rastageeks.org> (https://github.com/toots)",
-    "James Padolsey <> (https://github.com/jamespadolsey)",
-    "Finn Herpich <fh@three-heads.de> (https://github.com/ErrorProne)",
-    "Clifton Cunningham <clifton.cunningham@gmail.com> (https://github.com/cliftonc)",
-    "Eric Abouaf <eric.abouaf@gmail.com> (https://github.com/neyric)",
-    "humanchimp <morphcham@gmail.com> (https://github.com/humanchimp)",
-    "Craig Condon <craig@spiceapps.com> (https://github.com/spiceapps)",
-    "Dan Bear <daniel@hulu.com> (https://github.com/danhbear)",
-    "Vadim Baryshev <vadimbaryshev@gmail.com> (https://github.com/baryshev)",
-    "Leandro Ferrari <lfthomaz@gmail.com> (https://github.com/lfthomaz)",
-    "Gregg Zigler <greggzigler@gmail.com> (https://github.com/greggzigler)",
-    "Jordan Abderrachid <jabderrachid@gmail.com> (https://github.com/jordanabderrachid)",
-    "Masakazu Matsushita <matsukaz@gmail.com> (matsukaz)",
-    "Christopher Lunt <me@kirisu.co.uk> (https://github.com/kirisu)"
-  ]
+	"name": "cron",
+	"description": "Cron jobs for your node",
+	"version": "1.8.2",
+	"author": "Nick Campbell <nicholas.j.campbell@gmail.com> (http://github.com/ncb000gt)",
+	"bugs": {
+		"url": "http://github.com/kelektiv/node-cron/issues"
+	},
+	"repository": {
+		"type": "git",
+		"url": "http://github.com/kelektiv/node-cron.git"
+	},
+	"main": "lib/cron",
+	"scripts": {
+		"test": "jest --coverage"
+	},
+	"dependencies": {
+		"luxon": "^1.23.x"
+	},
+	"devDependencies": {
+		"chai": "~4.2.x",
+		"eslint": "~6.8.x",
+		"eslint-config-prettier": "^6.11.x",
+		"eslint-config-standard": "~14.1.x",
+		"eslint-plugin-import": "~2.20.x",
+		"eslint-plugin-jest": "~23.8.x",
+		"eslint-plugin-node": "~11.1.x",
+		"eslint-plugin-prettier": "~3.1.x",
+		"eslint-plugin-promise": "~4.2.x",
+		"eslint-plugin-standard": "~4.0.x",
+		"jest": "~25.4.x",
+		"prettier": "~2.0.x",
+		"sinon": "^9.0.x"
+	},
+	"keywords": [
+		"cron",
+		"node cron",
+		"node-cron",
+		"schedule",
+		"scheduler",
+		"cronjob",
+		"cron job"
+	],
+	"license": "MIT",
+	"contributors": [
+		"Romain Beauxis <toots@rastageeks.org> (https://github.com/toots)",
+		"James Padolsey <> (https://github.com/jamespadolsey)",
+		"Finn Herpich <fh@three-heads.de> (https://github.com/ErrorProne)",
+		"Clifton Cunningham <clifton.cunningham@gmail.com> (https://github.com/cliftonc)",
+		"Eric Abouaf <eric.abouaf@gmail.com> (https://github.com/neyric)",
+		"humanchimp <morphcham@gmail.com> (https://github.com/humanchimp)",
+		"Craig Condon <craig@spiceapps.com> (https://github.com/spiceapps)",
+		"Dan Bear <daniel@hulu.com> (https://github.com/danhbear)",
+		"Vadim Baryshev <vadimbaryshev@gmail.com> (https://github.com/baryshev)",
+		"Leandro Ferrari <lfthomaz@gmail.com> (https://github.com/lfthomaz)",
+		"Gregg Zigler <greggzigler@gmail.com> (https://github.com/greggzigler)",
+		"Jordan Abderrachid <jabderrachid@gmail.com> (https://github.com/jordanabderrachid)",
+		"Masakazu Matsushita <matsukaz@gmail.com> (matsukaz)",
+		"Christopher Lunt <me@kirisu.co.uk> (https://github.com/kirisu)"
+	],
+	"jest": {
+		"collectCoverage": true,
+		"collectCoverageFrom": [
+			"lib/*.js"
+		],
+		"coverageThreshold": {
+			"global": {
+				"statements": 80,
+				"branches": 80,
+				"functions": 70,
+				"lines": 80
+			}
+		}
+	}
 }
