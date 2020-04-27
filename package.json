@@ -23,6 +23,7 @@
 		"eslint": "~6.8.x",
 		"eslint-config-prettier": "^6.11.x",
 		"eslint-config-standard": "~14.1.x",
+		"eslint-module-utils": "~2.6.x",
 		"eslint-plugin-import": "~2.20.x",
 		"eslint-plugin-jest": "~23.8.x",
 		"eslint-plugin-node": "~11.1.x",
