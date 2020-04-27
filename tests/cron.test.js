@@ -1,6 +1,7 @@
 /* eslint-disable no-new */
 const sinon = require('sinon');
 const cron = require('../lib/cron');
+
 describe('cron', () => {
 	let clock;
 
@@ -26,7 +27,7 @@ describe('cron', () => {
 			const job = new cron.CronJob(
 				'* * * * * *',
 				callback,
-				function() {
+				() => {
 					expect(callback).toHaveBeenCalledTimes(1);
 					done();
 				},
@@ -66,7 +67,7 @@ describe('cron', () => {
 			const job = new cron.CronJob(
 				'* * * * * *',
 				callback,
-				function() {
+				() => {
 					expect(callback).toHaveBeenCalledTimes(5);
 					done();
 				},
@@ -109,7 +110,7 @@ describe('cron', () => {
 			const job = new cron.CronJob(
 				'*/1 * * * * *',
 				callback,
-				function() {
+				() => {
 					expect(callback).toHaveBeenCalledTimes(5);
 					done();
 				},
@@ -129,12 +130,12 @@ describe('cron', () => {
 			expect(callback).toHaveBeenCalledTimes(8);
 		});
 
-		it('should run every second for a range ([start]-[end] * * * * *)', done => {
+		it('should run every second for a range ([start]-[end] * * * * *) with onComplete', done => {
 			const callback = jest.fn();
 			const job = new cron.CronJob(
 				'0-8 * * * * *',
 				callback,
-				function() {
+				() => {
 					expect(callback).toHaveBeenCalledTimes(8);
 					done();
 				},
@@ -179,7 +180,7 @@ describe('cron', () => {
 			const job = new cron.CronJob({
 				cronTime: '* * * * * *',
 				onTick: callback,
-				onComplete: function() {
+				onComplete: () => {
 					expect(callback).toHaveBeenCalledTimes(1);
 					done();
 				},
@@ -197,7 +198,7 @@ describe('cron', () => {
 			const l = [];
 			const job = new cron.CronJob(
 				'00 30 * * * *',
-				function() {
+				() => {
 					l.push(Math.floor(Date.now() / 60000));
 				},
 				null,
@@ -206,7 +207,7 @@ describe('cron', () => {
 
 			clock.tick(m60 * 10);
 
-			expect(l.length).toBe(10);
+			expect(l).toHaveLength(10);
 			expect(l.every(i => i % 30 === 0)).toBe(true);
 
 			job.stop();
@@ -222,12 +223,12 @@ describe('cron', () => {
 			expect(callback).toHaveBeenCalledTimes(4);
 		});
 
-		it('should run every 45 minutes for 2 hours (0 */45 * * * *)', done => {
+		it('should run every 45 minutes for 2 hours (0 */45 * * * *) with onComplete', done => {
 			const callback = jest.fn();
 			const job = new cron.CronJob(
 				'0 */45 * * * *',
 				callback,
-				function() {
+				() => {
 					expect(callback).toHaveBeenCalledTimes(4);
 					done();
 				},
@@ -243,11 +244,11 @@ describe('cron', () => {
 		const callback = jest.fn();
 		const job = new cron.CronJob(
 			'* * * * * *',
-			function() {
+			function () {
 				callback();
 				this.stop();
 			},
-			function() {
+			() => {
 				expect(callback).toHaveBeenCalledTimes(1);
 				clock.restore();
 				done();
@@ -267,7 +268,7 @@ describe('cron', () => {
 			const callback = jest.fn();
 			const job = new cron.CronJob(
 				d,
-				function() {
+				() => {
 					var t = new Date();
 					expect(t.getSeconds()).toBe(d.getSeconds());
 					callback();
@@ -289,12 +290,12 @@ describe('cron', () => {
 			const callback = jest.fn();
 			const job = new cron.CronJob(
 				d,
-				function() {
+				() => {
 					var t = new Date();
 					expect(t.getSeconds()).toBe(d.getSeconds());
 					callback();
 				},
-				function() {
+				() => {
 					expect(callback).toHaveBeenCalledTimes(1);
 					done();
 				},
@@ -305,7 +306,7 @@ describe('cron', () => {
 			job.stop();
 		});
 
-		it('should wait and not fire immediately', function() {
+		it('should wait and not fire immediately', () => {
 			const clock = sinon.useFakeTimers();
 			const callback = jest.fn();
 
@@ -320,10 +321,33 @@ describe('cron', () => {
 			job.stop();
 			expect(callback).toHaveBeenCalledTimes(0);
 		});
+
+		it('should wait but fire on init', () => {
+			const clock = sinon.useFakeTimers();
+			const callback = jest.fn();
+
+			const d = new Date().getTime() + 31 * 86400 * 1000;
+
+			var job = cron.job({
+				cronTime: new Date(d),
+				onTick: callback,
+				runOnInit: true
+			});
+
+			expect(callback).toHaveBeenCalledTimes(1);
+
+			job.start();
+
+			clock.tick(1000);
+
+			clock.restore();
+			job.stop();
+			expect(callback).toHaveBeenCalledTimes(1);
+		});
 	});
 
 	describe('with timezone', () => {
-		it('should run a job using cron syntax', function() {
+		it('should run a job using cron syntax', () => {
 			const callback = jest.fn();
 			const luxon = require('luxon');
 			let zone = 'America/Chicago';
@@ -360,7 +384,7 @@ describe('cron', () => {
 			expect(callback).toHaveBeenCalledTimes(1);
 		});
 
-		it('should run a job using a date', function() {
+		it('should run a job using a date', () => {
 			const luxon = require('luxon');
 			let zone = 'America/Chicago';
 			// New Orleans time
@@ -385,19 +409,19 @@ describe('cron', () => {
 			expect(callback).toHaveBeenCalledTimes(1);
 		});
 
-		it('should test if timezone is valid.', function() {
-			expect(function() {
+		it('should test if timezone is valid.', () => {
+			expect(() => {
 				// eslint-disable-next-line no-new
 				new cron.CronJob({
 					cronTime: '* * * * * *',
-					onTick: function() {},
+					onTick: () => {},
 					timeZone: 'fake/timezone'
 				});
 			}).toThrow();
 		});
 	});
 
-	it('should start, change time, start again', function() {
+	it('should start, change time, start again', () => {
 		const callback = jest.fn();
 		const clock = sinon.useFakeTimers();
 
@@ -418,7 +442,15 @@ describe('cron', () => {
 		expect(callback).toHaveBeenCalledTimes(3);
 	});
 
-	it('should start, change time, exception', function() {
+	it('should setTime with invalid object', () => {
+		const callback = jest.fn();
+		const job = new cron.CronJob('* * * * * *', callback);
+		expect(() => {
+			job.setTime(undefined);
+		}).toThrow();
+	});
+
+	it('should start, change time, exception', () => {
 		const callback = jest.fn();
 		var clock = sinon.useFakeTimers();
 
@@ -430,7 +462,7 @@ describe('cron', () => {
 		clock.tick(1000);
 
 		job.stop();
-		expect(function() {
+		expect(() => {
 			job.setTime(time);
 		}).toThrow();
 
@@ -439,12 +471,12 @@ describe('cron', () => {
 		expect(callback).toHaveBeenCalledTimes(1);
 	});
 
-	it('should scope onTick to running job', function() {
+	it('should scope onTick to running job', () => {
 		const clock = sinon.useFakeTimers();
 
 		const job = new cron.CronJob(
 			'* * * * * *',
-			function() {
+			function () {
 				expect(job).toBeInstanceOf(cron.CronJob);
 				expect(job).toEqual(this);
 			},
@@ -458,12 +490,12 @@ describe('cron', () => {
 		job.stop();
 	});
 
-	it('should scope onTick to object', function() {
+	it('should scope onTick to object', () => {
 		const clock = sinon.useFakeTimers();
 
 		const job = new cron.CronJob(
 			'* * * * * *',
-			function() {
+			function () {
 				expect(this.hello).toEqual('world');
 				expect(job).not.toEqual(this);
 			},
@@ -479,12 +511,12 @@ describe('cron', () => {
 		job.stop();
 	});
 
-	it('should scope onTick to object within contstructor object', function() {
+	it('should scope onTick to object within contstructor object', () => {
 		const clock = sinon.useFakeTimers();
 
 		const job = new cron.CronJob({
 			cronTime: '* * * * * *',
-			onTick: function() {
+			onTick: function () {
 				expect(this.hello).toEqual('world');
 				expect(job).not.toEqual(this);
 			},
@@ -498,11 +530,11 @@ describe('cron', () => {
 		job.stop();
 	});
 
-	it('should not get into an infinite loop on invalid times', function() {
-		expect(function() {
+	it('should not get into an infinite loop on invalid times', () => {
+		expect(() => {
 			new cron.CronJob(
 				'* 60 * * * *',
-				function() {
+				() => {
 					expect.ok(true);
 				},
 				null,
@@ -510,10 +542,10 @@ describe('cron', () => {
 			);
 		}).toThrow();
 
-		expect(function() {
+		expect(() => {
 			new cron.CronJob(
 				'* * 24 * * *',
-				function() {
+				() => {
 					expect.ok(true);
 				},
 				null,
@@ -522,7 +554,7 @@ describe('cron', () => {
 		}).toThrow();
 	});
 
-	it('should test start of month', function() {
+	it('should test start of month', () => {
 		const callback = jest.fn();
 		const d = new Date('12/31/2014');
 		d.setSeconds(59);
@@ -545,7 +577,7 @@ describe('cron', () => {
 		expect(callback).toHaveBeenCalledTimes(3);
 	});
 
-	it('should not fire if time was adjusted back', function() {
+	it('should not fire if time was adjusted back', () => {
 		const callback = jest.fn();
 		const clock = sinon.useFakeTimers({
 			toFake: ['setTimeout']
@@ -560,7 +592,7 @@ describe('cron', () => {
 		job.stop();
 	});
 
-	it('should run every day', function() {
+	it('should run every day', () => {
 		const callback = jest.fn();
 		const d = new Date('12/31/2014');
 		d.setSeconds(59);
@@ -583,7 +615,7 @@ describe('cron', () => {
 		expect(callback).toHaveBeenCalledTimes(14);
 	});
 
-	it('should run every 2 hours between hours', function() {
+	it('should run every 2 hours between hours', () => {
 		const callback = jest.fn();
 		const d = new Date('12/31/2014');
 		d.setSeconds(0);
@@ -610,7 +642,7 @@ describe('cron', () => {
 		expect(callback).toHaveBeenCalledTimes(3);
 	});
 
-	it('should run every minute', function() {
+	it('should run every minute', () => {
 		const callback = jest.fn();
 		const d = new Date('12/31/2014');
 		d.setSeconds(0);
@@ -634,7 +666,7 @@ describe('cron', () => {
 		expect(callback).toHaveBeenCalledTimes(2);
 	});
 
-	it('should run every day', function() {
+	it('should run every day at 12:30', () => {
 		const callback = jest.fn();
 		const d = new Date('12/31/2014');
 		d.setSeconds(0);
@@ -662,7 +694,7 @@ describe('cron', () => {
 		expect(callback).toHaveBeenCalledTimes(8);
 	});
 
-	it('should trigger onTick at midnight', function() {
+	it('should trigger onTick at midnight', () => {
 		const callback = jest.fn();
 		const d = new Date('12/31/2014');
 		d.setSeconds(59);
@@ -685,7 +717,7 @@ describe('cron', () => {
 		expect(callback).toHaveBeenCalledTimes(1);
 	});
 
-	it('should run every day UTC', function() {
+	it('should run every day UTC', () => {
 		const callback = jest.fn();
 		const d = new Date('12/31/2014');
 		d.setSeconds(0);
@@ -715,7 +747,7 @@ describe('cron', () => {
 	});
 
 	// from https://github.com/kelektiv/node-cron/issues/180#issuecomment-154108131
-	it('should run once not double', function() {
+	it('should run once not double', () => {
 		const callback = jest.fn();
 		const d = new Date(2015, 1, 1, 1, 1, 41, 0);
 		const clock = sinon.useFakeTimers(d.getTime());
@@ -734,8 +766,8 @@ describe('cron', () => {
 		expect(callback).toHaveBeenCalledTimes(1);
 	});
 
-	describe('with utcOffset', function() {
-		it('should run a job using cron syntax with number format utcOffset', function() {
+	describe('with utcOffset', () => {
+		it('should run a job using cron syntax with number format utcOffset', () => {
 			const clock = sinon.useFakeTimers();
 			const callback = jest.fn();
 			const luxon = require('luxon');
@@ -765,7 +797,7 @@ describe('cron', () => {
 			expect(callback).toHaveBeenCalledTimes(1);
 		});
 
-		it('should run a job using cron syntax with string format utcOffset', function() {
+		it('should run a job using cron syntax with string format utcOffset', () => {
 			const clock = sinon.useFakeTimers();
 			const callback = jest.fn();
 			const luxon = require('luxon');
@@ -800,7 +832,7 @@ describe('cron', () => {
 			expect(callback).toHaveBeenCalledTimes(1);
 		});
 
-		it('should run a job using cron syntax with number format utcOffset that is 0', function() {
+		it('should run a job using cron syntax with number format utcOffset that is 0', () => {
 			const clock = sinon.useFakeTimers();
 			const callback = jest.fn();
 
@@ -824,10 +856,65 @@ describe('cron', () => {
 			expect(callback).toHaveBeenCalledTimes(1);
 		});
 
-		it('should be able to detect out of range days of month', function() {
-			expect(function() {
+		it('should be able to detect out of range days of month', () => {
+			expect(() => {
 				new cron.CronTime('* * 32 FEB *');
 			}).toThrow();
 		});
+	});
+
+	it('should give the next date to run at', () => {
+		const callback = jest.fn();
+		const clock = sinon.useFakeTimers();
+		const job = new cron.CronJob('* * * * * *', callback);
+		const d = Date.now();
+
+		expect(job.nextDate().toMillis()).toEqual(d + 1000);
+
+		clock.restore();
+	});
+
+	it('should give the next dates to run at', () => {
+		const callback = jest.fn();
+		const clock = sinon.useFakeTimers();
+		const job = new cron.CronJob('* * * * * *', callback);
+		const d = Date.now();
+
+		expect(job.nextDates(5).map(d => d.toMillis())).toEqual([
+			d + 1000,
+			d + 2000,
+			d + 3000,
+			d + 4000,
+			d + 5000
+		]);
+
+		clock.restore();
+	});
+
+	it('should automatically setup a new timeout if we roll past the max timeout delay', () => {
+		const callback = jest.fn();
+		const clock = sinon.useFakeTimers();
+		const d = new Date();
+		d.setMilliseconds(2147485647 * 2); // MAXDELAY in `job.js` + 2000.
+		const job = new cron.CronJob(d, callback);
+		job.start();
+		clock.tick(2147483648);
+		expect(callback).toHaveBeenCalledTimes(0);
+		clock.tick(2147489648);
+		expect(callback).toHaveBeenCalledTimes(1);
+		job.stop();
+		clock.restore();
+	});
+
+	it('should give the last execution date', () => {
+		const callback = jest.fn();
+		const clock = sinon.useFakeTimers();
+		const job = new cron.CronJob('* * * * * *', callback);
+		job.start();
+		clock.tick(1000);
+		expect(callback).toHaveBeenCalledTimes(1);
+		expect(job.lastDate().getTime()).toEqual(1000);
+		job.stop();
+		clock.restore();
 	});
 });
