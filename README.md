@@ -4,7 +4,7 @@
 [![Build Status](https://badgen.net/github/status/kelektiv/node-cron?icon=github)](https://badgen.net/github/status/kelektiv/node-cron)
 [![Build Checks](https://badgen.net/github/checks/kelektiv/node-cron?icon=github)](https://badgen.net/github/checks/kelektiv/node-cron)
 [![Dependency Status](https://badgen.net/david/dep/kelektiv/node-cron)](https://badgen.net/david/dev/kelektiv/node-cron)
-[![Code Coverage](https://badgen.net/codecov/c/github/kelektiv/node-cron?icon=codecov)](https://badgen.net/codecov/c/igithub/kelektiv/node-cron)
+[![Code Coverage](https://badgen.net/codecov/c/github/kelektiv/node-cron?icon=codecov)](https://badgen.net/codecov/c/github/kelektiv/node-cron)
 [![Known Vulnerabilities](https://snyk.io/test/github/kelektiv/node-cron/badge.svg)](https://snyk.io/test/github/kelektiv/node-cron)
 [![Minified size](https://badgen.net/bundlephobia/min/cron)](https://badgen.net/bundlephobia/min/cron)
 [![Minzipped size](https://badgen.net/bundlephobia/minzip/cron)](https://badgen.net/bundlephobia/minzip/cron)
