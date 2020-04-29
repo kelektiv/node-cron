@@ -52,11 +52,11 @@ var job = new CronJob(
 	true,
 	'America/Los_Angeles'
 );
-job.start();
+// Use this if the 4th param is default value(false)
+// job.start()
 ```
 
-Note - You need to explicitly start a job in order to make it run. This gives a
-little more control over running your jobs.
+Note - You don't need to explicitly start a job in order to make it run since the 4th parameter is set to `true`. However, by default you need to call `job.start()` to start the cron job, which gives a little more control over running your jobs.
 
 There are more examples available in this repository at:
 [/examples](https://github.com/kelektiv/node-cron/tree/master/examples)
