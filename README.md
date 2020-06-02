@@ -158,6 +158,11 @@ Parameter Based
       loop. For more information take a look at
       [timers#timers_timeout_unref](https://nodejs.org/api/timers.html#timers_timeout_unref)
       from the NodeJS docs.
+    - `softTimeout` - [OPTIONAL] - This module needs to determine the time at which to run.
+      However, there have been cases when an infinite loop can occur in this determination.
+      When `true`, the module will display a warning if the time has slipped by more than 5
+      seconds trying to determine the next time to trigger the onTick. When `false`, this
+      will throw an exception stopping the execution.
   - `start` - Runs your job.
   - `stop` - Stops your job.
   - `setTime` - Stops and changes the time for the `CronJob`. Param must be a `CronTime`.
