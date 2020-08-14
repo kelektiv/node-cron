@@ -991,6 +991,16 @@ describe('cron', () => {
 		clock.restore();
 	});
 
+	it('Should give an empty array', () => {
+		const callback = jest.fn();
+		const clock = sinon.useFakeTimers();
+		const job = new cron.CronJob('* * * * * *', callback);
+
+		expect(job.nextDates()).toHaveLength(0);
+
+		clock.restore();
+	});
+
 	it('should automatically setup a new timeout if we roll past the max timeout delay', () => {
 		const callback = jest.fn();
 		const clock = sinon.useFakeTimers();
