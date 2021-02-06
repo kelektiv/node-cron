@@ -292,7 +292,21 @@ describe('crontime', () => {
 		);
 	});
 
-	it('should generete the right next days when cron is set to every minute', () => {
+	it('should expose _getNextDateFrom as a public function', () => {
+		const cronTime = new cron.CronTime('0 */10 * * * *');
+		cronTime._getNextDateFrom = jest.fn();
+
+		const testDate = new Date('2018-08-10T02:19:59.999Z');
+		const testTimezone = 'Asia/Amman';
+		cronTime.getNextDateFrom(testDate, testTimezone);
+
+		expect(cronTime._getNextDateFrom).toHaveBeenCalledWith(
+			testDate,
+			testTimezone
+		);
+	});
+
+	it('should generate the right next days when cron is set to every minute', () => {
 		const cronTime = new cron.CronTime('* * * * *');
 		const min = 60000;
 		let previousDate = new Date(Date.UTC(2018, 5, 3, 0, 0));
@@ -303,7 +317,7 @@ describe('crontime', () => {
 		}
 	});
 
-	it('should generete the right next days when cron is set to every 15 min', () => {
+	it('should generate the right next days when cron is set to every 15 min', () => {
 		const cronTime = new cron.CronTime('*/15 * * * *');
 		const min = 60000 * 15;
 		let previousDate = new Date(Date.UTC(2016, 6, 3, 0, 0));
@@ -394,7 +408,7 @@ describe('crontime', () => {
 			currentDate = nextDate;
 		}
 	});
-	it('should generete the right next day when cron is set to every 15 min in Feb', () => {
+	it('should generate the right next day when cron is set to every 15 min in Feb', () => {
 		const cronTime = new cron.CronTime('*/15 * * FEB *');
 		const previousDate = new Date(Date.UTC(2018, 3, 0, 0, 0));
 		const nextDate = cronTime._getNextDateFrom(previousDate, 'UTC');
