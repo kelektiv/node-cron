@@ -139,8 +139,7 @@ Parameter Based
       will modify the actual time relative to your timezone. If the timezone is
       invalid, an error is thrown. You can check all timezones available at
       [Moment Timezone Website](http://momentjs.com/timezone/). Probably don't use
-      both.
-      `timeZone` and `utcOffset` together or weird things may happen.
+      both `timeZone` and `utcOffset` together or weird things may happen.
     - `context` - [OPTIONAL] - The context within which to execute the onTick
       method. This defaults to the cronjob itself allowing you to call
       `this.stop()`. However, if you change this you'll have access to the
