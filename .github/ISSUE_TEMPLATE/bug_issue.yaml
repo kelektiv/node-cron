@@ -1,0 +1,30 @@
+name: Bug
+description: Report a bug found in the bot's source code
+labels: ["🛠 goal: fix"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: A brief description of the question or issue, also include what you tried and what didn't work
+    validations:
+      required: true
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots
+      description: Please add screenshots if applicable
+    validations:
+      required: false
+  - type: textarea
+    id: extrainfo
+    attributes:
+      label: Additional information
+      description: Is there anything else we should know about this bug?
+    validations:
+      required: false
+  - type: markdown
+    attributes:
+      value: |
+        You can also join the Discord community [here](http://discord.eddiehub.org)
+        Feel free to check out other cool repositories of the EddieHub Community [here](https://github.com/EddieHubCommunity)
