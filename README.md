@@ -1,3 +1,8 @@
+# Looking for maintainers/contributors
+
+This project is looking for help! If you're interested in helping with the project please reach out to me [ncb000gt](https://twitter.com/ncb000gt) and let me know. I'd love for it to continue on, but it needs a lot of attention.
+
+
 # node-cron
 
 [![Version](https://badgen.net/npm/v/cron?icon=npm)](https://badgen.net/npm/v/cron)
