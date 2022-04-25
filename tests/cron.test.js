@@ -240,7 +240,25 @@ describe('cron', () => {
 		});
 	});
 
-	it('should start and stop job', done => {
+	it('should start and stop job from outside', done => {
+		const callback = jest.fn();
+		const job = new cron.CronJob(
+			'* * * * * *',
+			function () {
+				callback();
+			},
+			() => {
+				expect(callback).toHaveBeenCalledTimes(1);
+				clock.restore();
+				done();
+			},
+			true
+		);
+		clock.tick(1000);
+		job.stop();
+	});
+
+	it('should start and stop job from inside (default context)', done => {
 		const callback = jest.fn();
 		const job = new cron.CronJob(
 			'* * * * * *',
@@ -256,7 +274,6 @@ describe('cron', () => {
 			true
 		);
 		clock.tick(1000);
-		job.stop();
 	});
 
 	describe('with date', () => {

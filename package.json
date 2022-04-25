@@ -30,7 +30,7 @@
 		"eslint-plugin-prettier": "~3.1.x",
 		"eslint-plugin-promise": "~4.2.x",
 		"eslint-plugin-standard": "~4.0.x",
-		"jest": "~25.4.x",
+		"jest": "~28.0.x",
 		"prettier": "~2.0.x",
 		"sinon": "^9.0.x"
 	},
