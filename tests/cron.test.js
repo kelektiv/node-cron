@@ -528,7 +528,7 @@ describe('cron', () => {
 		job.stop();
 	});
 
-	it('should scope onTick to object within contstructor object', () => {
+	it('should scope onTick to object within constructor object', () => {
 		const clock = sinon.useFakeTimers();
 
 		const job = new cron.CronJob({
