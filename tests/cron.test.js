@@ -260,7 +260,7 @@ describe('cron', () => {
 
 	it('should start and stop job from inside (default context)', done => {
 		const callback = jest.fn();
-		const job = new cron.CronJob(
+		new cron.CronJob(
 			'* * * * * *',
 			function () {
 				callback();
