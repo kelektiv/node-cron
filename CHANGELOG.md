@@ -1,3 +1,10 @@
+## [v2.0.0] - 2022-05-03
+- Upgrade vulnerable dependencies
+- Move from moment.js to luxon (breaking change)
+
+## [v1.8.2] - 2020-01-24
+- Fix syntax parsing bug
+
 ## [v1.8.1] - 2020-01-19
 - Revert TS definition defaulting to DefinitelyTyped definitions.
 
