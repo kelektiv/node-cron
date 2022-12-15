@@ -360,6 +360,67 @@ describe('crontime', () => {
 			currentDate = nextDate;
 		}
 	});
+	it('Should schedule jobs inside time zone changes that shifts time forward to the end of the shift, for weekly jobs', () => {
+		let currentDate = luxon.DateTime.fromISO('2018-03-29T23:15', {
+			zone: 'Asia/Amman'
+		});
+		const cronTime = new cron.CronTime('30 0 * * 5'); // the next 0:30 is March 30th, but it will jump from 0:00 to 1:00.
+		let nextDate = cronTime._getNextDateFrom(currentDate, 'Asia/Amman');
+		expect(nextDate - currentDate).toEqual(1000 * 60 * 45); // 45 minutes is 30T00:00, which jumps to 1:00 which is past the trigger of 0:30.
+		// the next one should just be at 0:30 again. i.e. a week minus 30 minutes.
+		currentDate = nextDate;
+		nextDate = cronTime._getNextDateFrom(currentDate);
+		expect(nextDate - currentDate).toEqual(3600000 * 24 * 7 - 60000 * 30);
+		// the next one is again at 0:30, but now we're 'back to normal' with weekly offsets.
+		currentDate = nextDate;
+		nextDate = cronTime._getNextDateFrom(currentDate);
+		expect(nextDate - currentDate).toEqual(1000 * 3600 * 24 * 7);
+	});
+	it('Should schedule jobs inside time zone changes that shifts the time forward to the end of the shift, for daily jobs', () => {
+		let currentDate = luxon.DateTime.fromISO('2018-03-29T23:45', {
+			zone: 'Asia/Amman'
+		});
+		const cronTime = new cron.CronTime('30 0 * * *'); // the next 0:30 is March 30th, but it will jump from 0:00 to 1:00.
+		let nextDate = cronTime._getNextDateFrom(currentDate, 'Asia/Amman');
+		expect(nextDate - currentDate).toEqual(1000 * 60 * 15); // 15 minutes is 30T00:00, which jumps to 1:00 which is past the trigger of 0:30.
+		// the next one is tomorrow at 0:30, so 23h30m.
+		currentDate = nextDate;
+		nextDate = cronTime._getNextDateFrom(currentDate);
+		expect(nextDate - currentDate).toEqual(1000 * 3600 * 24 - 1000 * 60 * 30);
+		// back to normal.
+		currentDate = nextDate;
+		nextDate = cronTime._getNextDateFrom(currentDate);
+		expect(nextDate - currentDate).toEqual(1000 * 3600 * 24);
+	});
+	it('Should schedule jobs inside time zone changes that shifts the time forward to the end of the shift, for hourly jobs', () => {
+		let currentDate = luxon.DateTime.fromISO('2018-03-29T23:45', {
+			zone: 'Asia/Amman'
+		});
+		const cronTime = new cron.CronTime('30 * * * *'); // the next 0:30 is March 30th, but it will jump from 0:00 to 1:00.
+		let nextDate = cronTime._getNextDateFrom(currentDate, 'Asia/Amman');
+		expect(nextDate - currentDate).toEqual(1000 * 60 * 15); // 15 minutes is 30T00:00, which jumps to 1:00 which is past the trigger of 0:30.
+		// the next one is at 1:30, so 30m.
+		currentDate = nextDate;
+		nextDate = cronTime._getNextDateFrom(currentDate);
+		expect(nextDate - currentDate).toEqual(1000 * 60 * 30);
+		// back to normal.
+		currentDate = nextDate;
+		nextDate = cronTime._getNextDateFrom(currentDate);
+		expect(nextDate - currentDate).toEqual(1000 * 3600);
+	});
+	it('Should schedule jobs inside time zone changes that shifts the time forward to the end of the shift, for minutely jobs', () => {
+		let currentDate = luxon.DateTime.fromISO('2018-03-29T23:59', {
+			zone: 'Asia/Amman'
+		});
+		const cronTime = new cron.CronTime('* * * * *'); // the next minute is 0:00 is March 30th, but it will jump from 0:00 to 1:00.
+		let nextDate = cronTime._getNextDateFrom(currentDate, 'Asia/Amman');
+		expect(nextDate - currentDate).toEqual(1000 * 60);
+		// the next one is at 1:01:00, this should still be 60 seconds in the future.
+		currentDate = nextDate;
+		nextDate = cronTime._getNextDateFrom(currentDate);
+		expect(nextDate - currentDate).toEqual(1000 * 60);
+	});
+	// Do not think a similar test for secondly job is necessary, the minutely one already ensured no double hits in the overlap zone.
 	it('should generate the right  N next days for * * * * *', () => {
 		const cronTime = new cron.CronTime('* * * * *');
 		let currentDate = luxon.DateTime.local().set({ second: 0, millisecond: 0 });
