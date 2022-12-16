@@ -2,13 +2,13 @@
 	"name": "cron",
 	"description": "Cron jobs for your node",
 	"version": "2.1.0",
-	"author": "Nick Campbell <nicholas.j.campbell@gmail.com> (http://github.com/ncb000gt)",
+	"author": "Nick Campbell <nicholas.j.campbell@gmail.com> (https://github.com/ncb000gt)",
 	"bugs": {
-		"url": "http://github.com/kelektiv/node-cron/issues"
+		"url": "https://github.com/kelektiv/node-cron/issues"
 	},
 	"repository": {
 		"type": "git",
-		"url": "http://github.com/kelektiv/node-cron.git"
+		"url": "https://github.com/kelektiv/node-cron.git"
 	},
 	"main": "lib/cron",
 	"scripts": {
@@ -16,7 +16,7 @@
 		"test": "jest --coverage"
 	},
 	"dependencies": {
-		"luxon": "^1.23.x"
+		"luxon": "^3.1.1"
 	},
 	"devDependencies": {
 		"chai": "~4.2.x",
