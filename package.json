@@ -16,7 +16,7 @@
 		"test": "jest --coverage"
 	},
 	"dependencies": {
-		"luxon": "^1.23.x"
+		"luxon": "^1.28.1"
 	},
 	"devDependencies": {
 		"chai": "~4.2.x",
