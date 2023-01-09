@@ -329,7 +329,7 @@ describe('crontime', () => {
 		});
 		const cronTime = new cron.CronTime('0 0 * * *');
 		const nextDate = cronTime._getNextDateFrom(currentDate, 'Asia/Amman');
-		const expectedDate = luxon.DateTime.fromISO('2018-10-26T00:00', {
+		const expectedDate = luxon.DateTime.fromISO('2018-10-26T00:00+03:00', {
 			zone: 'Asia/Amman'
 		});
 		expect(nextDate - expectedDate).toEqual(0);
