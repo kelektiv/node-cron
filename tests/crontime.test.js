@@ -421,7 +421,76 @@ describe('crontime', () => {
 		expect(nextDate - currentDate).toEqual(1000 * 60);
 	});
 	// Do not think a similar test for secondly job is necessary, the minutely one already ensured no double hits in the overlap zone.
-	it('should generate the right  N next days for * * * * *', () => {
+
+	// The following few DST related tests do not need specific dates that are actually DST,
+	// the functions they are calling assume the given parameters encapsulate a DST jump,
+	// and use the raw hour and minute data to check it from there.
+	it('Should correctly scan time periods as if they are DST jumps, half hour jumps', () => {
+		let endDate = luxon.DateTime.fromISO('2023-01-01T16:00:00.000', {
+			zone: 'Europe/Amsterdam'
+		});
+		let startDate = endDate.minus({ minute: 30, second: 1 });
+		const cronTime = new cron.CronTime('5 16 * * *'); // at 16:05:00.
+		let jobInRange = cronTime._checkTimeInSkippedRange(startDate, endDate);
+		expect(jobInRange).toEqual(false);
+
+		endDate = endDate.plus({ minute: 30 }); // 16:30:00
+		startDate = endDate.minus({ minute: 30, second: 1 }); // 15:59:59
+		jobInRange = cronTime._checkTimeInSkippedRange(startDate, endDate);
+		expect(jobInRange).toEqual(true);
+	});
+	it('Should correctly scan time periods as if they are DST jumps, full hour jumps', () => {
+		let endDate = luxon.DateTime.fromISO('2023-01-01T16:00:00.000', {
+			zone: 'Europe/Amsterdam'
+		});
+		let startDate = endDate.minus({ hour: 1, second: 1 });
+		const cronTime = new cron.CronTime('5 16 * * *'); // at 16:05:00.
+		let jobInRange = cronTime._checkTimeInSkippedRange(startDate, endDate);
+		expect(jobInRange).toEqual(false);
+
+		endDate = endDate.plus({ hour: 1 }); // 17:00:00
+		startDate = endDate.minus({ hour: 1, second: 1 }); // 15:59:59
+		jobInRange = cronTime._checkTimeInSkippedRange(startDate, endDate);
+		expect(jobInRange).toEqual(true);
+	});
+	// A 'quirky' DST jump is one that should not break the implementation, but does not exist in real life (yet)
+	it('Should correctly scan time periods as if they are DST jumps, quirky jumps (1)', () => {
+		// Testing a jump that is less than an hour long, but wraps around an hour.
+		let endDate = luxon.DateTime.fromISO('2023-01-01T16:15:00.000', {
+			zone: 'Europe/Amsterdam'
+		});
+		let startDate = endDate.minus({ minute: 45, second: 1 }); // 15:29:59
+		const cronTime = new cron.CronTime('30 16 * * *'); // at 16:30:00.
+		let jobInRange = cronTime._checkTimeInSkippedRange(startDate, endDate);
+		expect(jobInRange).toEqual(false);
+
+		endDate = endDate.plus({ minute: 30 }); // 16:45:00
+		startDate = endDate.minus({ minute: 50, second: 1 }); // 15:54:59
+		jobInRange = cronTime._checkTimeInSkippedRange(startDate, endDate);
+		expect(jobInRange).toEqual(true);
+	});
+	it('Should correctly scan time periods as if they are DST jumps, quirky jumps (2)', () => {
+		// Testing a jump that is over an hour long.
+		let endDate = luxon.DateTime.fromISO('2023-01-01T16:15:00.000', {
+			zone: 'Europe/Amsterdam'
+		});
+		let startDate = endDate.minus({ hour: 3, minute: 45, second: 1 }); // 12:29:59
+		const cronTime = new cron.CronTime('30 16 * * *'); // at 16:30:00.
+		let jobInRange = cronTime._checkTimeInSkippedRange(startDate, endDate);
+		expect(jobInRange).toEqual(false);
+
+		endDate = endDate.plus({ minute: 30 }); // 16:45:00
+		startDate = endDate.minus({ hour: 3, minute: 45, second: 1 }); // 12:59:59
+		jobInRange = cronTime._checkTimeInSkippedRange(startDate, endDate);
+		expect(jobInRange).toEqual(true);
+	});
+	it('Enforces the hour difference assumption for handling multi-hour DST jumps', () => {
+		const cronTime = new cron.CronTime('30 16 * * *');
+		expect(() => {
+			cronTime._checkTimeInSkippedRangeMultiHour(0, 30, 15, 15);
+		}).toThrow();
+	});
+	it('should generate the right N next days for * * * * *', () => {
 		const cronTime = new cron.CronTime('* * * * *');
 		let currentDate = luxon.DateTime.local().set({ second: 0, millisecond: 0 });
 		for (let i = 0; i < 100; i++) {
