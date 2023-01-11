@@ -439,6 +439,20 @@ describe('crontime', () => {
 		jobInRange = cronTime._checkTimeInSkippedRange(startDate, endDate);
 		expect(jobInRange).toEqual(true);
 	});
+	it('Should not include seconds in the minute after the DST jump as part of the jump scan', () => {
+		const endDate = luxon.DateTime.fromISO('2023-01-01T16:00:00.000', {
+			zone: 'Europe/Amsterdam'
+		});
+		// 1 hour jump case
+		let startDate = endDate.minus({ hour: 1, second: 1 });
+		const cronTime = new cron.CronTime('1 5 16 * * *'); // at 16:00:01.
+		let jobInRange = cronTime._checkTimeInSkippedRange(startDate, endDate);
+		expect(jobInRange).toEqual(false);
+		// 'quirky' jump case
+		startDate = endDate.minus({ hour: 1, minute: 45, second: 1 });
+		jobInRange = cronTime._checkTimeInSkippedRange(startDate, endDate);
+		expect(jobInRange).toEqual(false);
+	});
 	it('Should correctly scan time periods as if they are DST jumps, full hour jumps', () => {
 		let endDate = luxon.DateTime.fromISO('2023-01-01T16:00:00.000', {
 			zone: 'Europe/Amsterdam'
