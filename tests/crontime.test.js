@@ -421,7 +421,20 @@ describe('crontime', () => {
 		expect(nextDate - currentDate).toEqual(1000 * 60);
 	});
 	// Do not think a similar test for secondly job is necessary, the minutely one already ensured no double hits in the overlap zone.
+	it('Should throw when dates that are not within 24 hours of DST jumps are checked for past DST jumps', () => {
+		const cronTime = new cron.CronTime('* * * * *');
+		const tryFindPastDST = isoTime => () => {
+			const maybeBadDate = luxon.DateTime.fromISO(isoTime, {
+				zone: 'Asia/Amman'
+			});
+			expect(maybeBadDate.invalid).toEqual(null);
+			cronTime._findPreviousDSTJump(maybeBadDate);
+		};
 
+		// This timezone jumps from 0:00 to 1:00 on March 30th, so the cutoff is March 31st 1:00:00
+		expect(tryFindPastDST('2018-03-31T00:59:00')).not.toThrow();
+		expect(tryFindPastDST('2018-03-31T01:00:00')).toThrow();
+	});
 	// The following few DST related tests do not need specific dates that are actually DST,
 	// the functions they are calling assume the given parameters encapsulate a DST jump,
 	// and use the raw hour and minute data to check it from there.
