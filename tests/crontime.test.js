@@ -514,7 +514,7 @@ describe('crontime', () => {
 	it('Enforces the hour difference assumption for handling multi-hour DST jumps', () => {
 		const cronTime = new cron.CronTime('30 16 * * *');
 		expect(() => {
-			cronTime._checkTimeInSkippedRangeMultiHour(0, 30, 15, 15);
+			cronTime._checkTimeInSkippedRangeMultiHour(15, 0, 15, 30);
 		}).toThrow();
 	});
 	it('should generate the right N next days for * * * * *', () => {
