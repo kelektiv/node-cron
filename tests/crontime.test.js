@@ -408,6 +408,19 @@ describe('crontime', () => {
 			currentDate = nextDate;
 		}
 	});
+	it('should test valid range of months (*/15 * * 6-11 *)', () => {
+		const cronTime = new cron.CronTime('*/15 * * 6-11 *');
+		const previousDate1 = new Date(Date.UTC(2018, 3, 0, 0, 0));
+		const nextDate1 = cronTime._getNextDateFrom(previousDate1, 'UTC');
+		expect(new Date(nextDate1).toUTCString()).toEqual(
+			new Date(Date.UTC(2018, 6, 1, 0, 0)).toUTCString()
+		);
+		const previousDate2 = new Date(Date.UTC(2018, 8, 0, 0, 0));
+		const nextDate2 = cronTime._getNextDateFrom(previousDate2, 'UTC');
+		expect(new Date(nextDate2).toUTCString()).toEqual(
+			new Date(Date.UTC(2018, 8, 0, 0, 15)).toUTCString()
+		);
+	});
 	it('should generate the right next day when cron is set to every 15 min in Feb', () => {
 		const cronTime = new cron.CronTime('*/15 * * FEB *');
 		const previousDate = new Date(Date.UTC(2018, 3, 0, 0, 0));
