@@ -13,7 +13,8 @@
 	"main": "lib/cron",
 	"scripts": {
 		"lint": "eslint {lib,tests}/*.js",
-		"test": "jest --coverage"
+		"test": "jest --coverage",
+		"test:watch": "jest --watch --coverage"
 	},
 	"dependencies": {
 		"luxon": "^3.2.1"
@@ -30,9 +31,9 @@
 		"eslint-plugin-prettier": "~3.1.x",
 		"eslint-plugin-promise": "~4.2.x",
 		"eslint-plugin-standard": "~4.0.x",
-		"jest": "~28.0.x",
+		"jest": "~29.5.x",
 		"prettier": "~2.0.x",
-		"sinon": "^9.0.x"
+		"sinon": "^15.0.x"
 	},
 	"keywords": [
 		"cron",
