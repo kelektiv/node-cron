@@ -1,5 +1,11 @@
 {
-	"extends": ["standard", "prettier", "prettier/standard"],
+	"extends": [
+		"standard",
+		"plugin:jest/recommended",
+		"plugin:import/recommended",
+		"plugin:prettier/recommended",
+		"plugin:promise/recommended"
+	],
 	"parserOptions": {
 		"ecmaVersion": 2018
 	},
@@ -12,15 +18,7 @@
 		"node": true,
 		"jest/globals": true
 	},
-	"plugins": ["prettier", "standard", "jest"],
 	"rules": {
-		"space-before-function-paren": 0,
-		"new-cap": 0,
-		"prettier/prettier": 2,
-		"jest/no-disabled-tests": 1,
-		"jest/no-focused-tests": 2,
-		"jest/no-identical-title": 2,
-		"jest/prefer-to-have-length": 1,
-		"jest/valid-expect": 2
+		"jest/no-done-callback": "off"
 	}
 }
