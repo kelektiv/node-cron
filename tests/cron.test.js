@@ -9,7 +9,7 @@ describe('cron', () => {
 			const callback = jest.fn();
 			const job = new cron.CronJob('* * * * * *', callback, null, true);
 
-			expect(callback).not.toBeCalled();
+			expect(callback).not.toHaveBeenCalled();
 			clock.tick(1000);
 			job.stop();
 			clock.restore();

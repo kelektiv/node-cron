@@ -192,11 +192,10 @@ describe('crontime', () => {
 	it('should throw an exception because next date is invalid', () => {
 		const ct = new cron.CronTime('0 0 * * * *');
 		const nextDate = new Date('My invalid date string');
-		try {
+
+		expect(() => {
 			ct._getNextDateFrom(nextDate);
-		} catch (e) {
-			expect(e.message).toEqual('ERROR: You specified an invalid date.');
-		}
+		}).toThrow('ERROR: You specified an invalid date.');
 	});
 
 	it('should test next real date', () => {
