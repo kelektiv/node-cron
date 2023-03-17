@@ -3,6 +3,7 @@
 		"standard",
 		"plugin:jest/recommended",
 		"plugin:import/recommended",
+		"plugin:n/recommended",
 		"plugin:prettier/recommended",
 		"plugin:promise/recommended"
 	],
