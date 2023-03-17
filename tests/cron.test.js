@@ -3,7 +3,6 @@ const sinon = require('sinon');
 const cron = require('../lib/cron');
 
 describe('cron', () => {
-
 	describe('with seconds', () => {
 		it('should run every second (* * * * * *)', () => {
 			const clock = sinon.useFakeTimers();
