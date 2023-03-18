@@ -42,7 +42,7 @@ var job = new CronJob(
 // job.start() - See note below when to use this
 ``` 
 
-Note - By default, jobs are started automatically after constructing a `CronJob()` object. You can turn this feature off by setting the 4th `CronJob()` parameter to `false` so job(s) can be started when needed.
+Note - In the example above, the 4th parameter of `CronJob()` automatically starts the job on initialization. If this parameter is falsy or not provided, the job needs to be explicitly started using `job.start()`.
 
 There are more examples available in this repository at: [/examples](https://github.com/kelektiv/node-cron/tree/master/examples) 
 
