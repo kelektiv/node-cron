@@ -72,5 +72,11 @@
 				"lines": 80
 			}
 		}
-	}
+	},
+	"files": [
+		"lib",
+		"CHANGELOG.md",
+		"LICENSE",
+		"README.md"
+	]
 }
