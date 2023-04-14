@@ -854,10 +854,8 @@ describe('cron', () => {
 			job.start();
 			clock.tick(1000);
 
-			job.stop();
 			const time = cron.time('*/2 * * * * *');
 			job.setTime(time);
-			job.start();
 
 			clock.tick(4000);
 
@@ -885,7 +883,6 @@ describe('cron', () => {
 
 			clock.tick(1000);
 
-			job.stop();
 			expect(() => {
 				job.setTime(time);
 			}).toThrow();
