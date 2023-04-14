@@ -864,6 +864,26 @@ describe('cron', () => {
 			expect(callback).toHaveBeenCalledTimes(3);
 		});
 
+		it('should start, stop, change time, not start again', () => {
+			const callback = jest.fn();
+			const clock = sinon.useFakeTimers();
+
+			const job = new cron.CronJob('* * * * * *', callback);
+
+			job.start();
+			clock.tick(1000);
+
+			job.stop();
+			const time = cron.time('*/2 * * * * *');
+			job.setTime(time);
+
+			clock.tick(4000);
+
+			clock.restore();
+			job.stop();
+			expect(callback).toHaveBeenCalledTimes(1);
+		});
+
 		it('should setTime with invalid object', () => {
 			const callback = jest.fn();
 			const job = new cron.CronJob('* * * * * *', callback);
