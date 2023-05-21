@@ -130,6 +130,14 @@ describe('crontime', () => {
 		}).toThrow();
 	});
 
+	it('should return the same object with 0 & 7 as Sunday (except "source" prop)', () => {
+		const sunday0 = new cron.CronTime('* * * * 0', null, null);
+		const sunday7 = new cron.CronTime('* * * * 7', null, null);
+		delete sunday0.source;
+		delete sunday7.source;
+		expect(sunday7).toEqual(sunday0);
+	});
+
 	describe('should test out of range values', () => {
 		it('should test out of range minute', () => {
 			expect(() => {
@@ -172,7 +180,7 @@ describe('crontime', () => {
 				new cron.CronTime('* * * * -1', null, null);
 			}).toThrow();
 			expect(() => {
-				new cron.CronTime('* * * * 7', null, null);
+				new cron.CronTime('* * * * 8', null, null);
 			}).toThrow();
 		});
 	});
