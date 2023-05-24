@@ -374,6 +374,27 @@ describe('cron', () => {
 			job.stop();
 			expect(callback).toHaveBeenCalledTimes(1);
 		});
+
+		it('should fire on init but not run until started', () => {
+			const clock = sinon.useFakeTimers();
+			const callback = jest.fn();
+
+			var job = cron.job({
+				cronTime: new Date('* * * * * *'),
+				onTick: callback,
+				runOnInit: true
+			});
+
+			expect(callback).toHaveBeenCalledTimes(1);
+
+			job.start();
+
+			clock.tick(3500);
+
+			clock.restore();
+			job.stop();
+			expect(callback).toHaveBeenCalledTimes(3);
+		});
 	});
 
 	describe('with timezone', () => {

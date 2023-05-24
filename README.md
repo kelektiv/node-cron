@@ -1,6 +1,6 @@
-## Looking for maintainers/contributors 
-
-This project is looking for help! If you're interested in helping with the project please reach out to me (ncb000gt) on [Twitter](https://twitter.com/ncb000gt) and let me know. I'd love for it to continue on, but it needs a lot of attention. You can also join the [Discord server](https://discord.gg/yyKns29zch) to learn more about what needs to be done.
+<p align="center">
+    <img src="logo.svg" alt="Node Cron Alarm Clock Star Logo" width="100" />
+</p>
 
 # node-cron
 
@@ -14,7 +14,12 @@ This project is looking for help! If you're interested in helping with the proje
 [![Minzipped size](https://badgen.net/bundlephobia/minzip/cron)](https://badgen.net/bundlephobia/minzip/cron)
 [![monthly downloads](https://badgen.net/npm/dm/cron?icon=npm)](https://badgen.net/npm/dm/cron) 
 
-Cron is a tool that allows you to execute _something_ on a schedule. This is typically done using the cron syntax. We allow you to execute a function whenever your scheduled job triggers. We also allow you to execute a job external to the javascript process using `child_process`. Additionally, this library goes beyond the basic cron syntax and allows you to supply a Date object. This will be used as the trigger for your callback. Cron syntax is still an acceptable CronTime format. Although the Cron patterns supported here extend on the standard Unix format to support seconds digits, leaving it off will default to 0 and match the Unix behavior. 
+Cron is a tool that allows you to execute _something_ on a schedule. This is typically done using the cron syntax. We allow you to:
+
+- execute a function whenever your scheduled job triggers
+- execute a job external to the javascript process using `child_process`
+- use a Date object instead of cron syntax as the trigger for your callback 
+- use an additional slot for seconds (leaving it off will default to 0 and match the Unix behavior)
 
 ## Installation 
 
@@ -22,11 +27,11 @@ Cron is a tool that allows you to execute _something_ on a schedule. This is typ
 npm install cron 
 ```
 
-## Versions and Backwards compatibility breaks: 
+## Versions and Backwards compatibility breaks
 
-As goes with semver, breaking backwards compatibility should be explicit in the versioning of your library. As such, we'll upgrade the version of this module in accordance with breaking changes (I'm not always great about doing it this way so if you notice that there are breaking changes that haven't been bumped appropriately please let me know). 
+As goes with semver, breaking backwards compatibility should be explicit in the versioning of your library. As such, we'll upgrade the version of this module in accordance with breaking changes (We're not always great about doing it this way so if you notice that there are breaking changes that haven't been bumped appropriately please let us know). 
 
-## Usage (basic cron usage): 
+## Usage (basic cron usage)
 
 ```javascript
 var CronJob = require('cron').CronJob;
@@ -47,7 +52,7 @@ Note - You don't need to explicitly start a job in order to make it run since th
 
 There are more examples available in this repository at: [/examples](https://github.com/kelektiv/node-cron/tree/master/examples) 
 
-## Available Cron patterns: 
+## Available Cron patterns
 
 ```
 Asterisks e.g. *
@@ -72,7 +77,7 @@ When specifying your cron values you'll need to make sure that your values fall 
 
 ## Gotchas 
 
-- Millisecond level granularity in JS `Date` or Luxon `DateTime` objects: Because computers take time to do things, there may be some delay in execution. This should be on the order of milliseconds. This module doesn't allow MS level granularity for the regular cron syntax, but _does_ allow you to specify a real date of execution in either a javascript `Date` object or a Luxon `DateTime` object. When this happens you may find that you aren't able to execute a job that _should_ run in the future like with `new Date().setMilliseconds(new Date().getMilliseconds() + 1)`. This is due to those cycles of execution above. This wont be the same for everyone because of compute speed. When I tried it locally I saw that somewhere around the 4-5 ms mark was where I got consistent ticks using real dates, but anything less than that would result in an exception. This could be really confusing. We could restrict the granularity for all dates to seconds, but felt that it wasn't a huge problem so long as you were made aware. If this becomes more of an issue, We can revisit it.
+- Millisecond level granularity in JS `Date` or Luxon `DateTime` objects: Because computers take time to do things, there may be some delay in execution. This should be on the order of milliseconds. This module doesn't allow MS level granularity for the regular cron syntax, but _does_ allow you to specify a real date of execution in either a javascript `Date` object or a Luxon `DateTime` object. When this happens you may find that you aren't able to execute a job that _should_ run in the future like with `new Date().setMilliseconds(new Date().getMilliseconds() + 1)`. This is due to those cycles of execution above. This wont be the same for everyone because of compute speed. When we tried it locally we saw that somewhere around the 4-5 ms mark was where we got consistent ticks using real dates, but anything less than that would result in an exception. This could be really confusing. We could restrict the granularity for all dates to seconds, but felt that it wasn't a huge problem so long as you were made aware. If this becomes more of an issue, We can revisit it.
 - Arrow Functions for `onTick`: Arrow functions get their `this` context from their parent scope. Thus, if you use them, you will not get the `this` context of the cronjob. You can read a little more in issue [GH-47](https://github.com/kelektiv/node-cron/issues/47#issuecomment-459762775) 
 
 ## API 
@@ -111,6 +116,10 @@ Join the [Discord server](https://discord.gg/yyKns29zch)! Here you can discuss i
 
 ## Contributing
 
+### Looking for maintainers/contributors
+
+This project is looking for help! If you're interested in helping with the project please reach out to me (ncb000gt) on [Twitter](https://twitter.com/ncb000gt). We'd love for it to continue on, but it needs a lot of attention. You can also join the [Discord server](https://discord.gg/yyKns29zch) to learn more about what needs to be done.
+
 ### Submitting Bugs/Issues
 
 Before submitting a bug, please search the existing issues, [Discord](https://discord.gg/yyKns29zch) conversations, and the web to see if someone else has run into the same issue before.
@@ -119,7 +128,7 @@ Because we can't magically know what you are doing to expose an issue, it is bes
 
 ### Acknowledgements
 
-This is a community effort project. In the truest sense, this project started as an open source project from [cron.js](http://github.com/padolsey/cron.js) and grew into something else. Other people have contributed code, time, and oversight to the project. At this point there are too many to name here so I'll just say thanks. 
+This is a community effort project. In the truest sense, this project started as an open source project from [cron.js](http://github.com/padolsey/cron.js) and grew into something else. Other people have contributed code, time, and oversight to the project. At this point there are too many to name here so We'll just say thanks. 
 
 ## License 
 
