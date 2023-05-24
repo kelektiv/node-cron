@@ -1,7 +1,7 @@
 {
 	"name": "cron",
 	"description": "Cron jobs for your node",
-	"version": "2.3.0",
+	"version": "2.3.1",
 	"author": "Nick Campbell <nicholas.j.campbell@gmail.com> (https://github.com/ncb000gt)",
 	"bugs": {
 		"url": "https://github.com/kelektiv/node-cron/issues"
@@ -21,18 +21,16 @@
 	},
 	"devDependencies": {
 		"chai": "~4.2.x",
-		"eslint": "~6.8.x",
-		"eslint-config-prettier": "^6.11.x",
-		"eslint-config-standard": "~14.1.x",
-		"eslint-module-utils": "~2.6.x",
-		"eslint-plugin-import": "~2.20.x",
-		"eslint-plugin-jest": "~23.8.x",
-		"eslint-plugin-node": "~11.1.x",
-		"eslint-plugin-prettier": "~3.1.x",
-		"eslint-plugin-promise": "~4.2.x",
-		"eslint-plugin-standard": "~4.0.x",
+		"eslint": "~8.36.x",
+		"eslint-config-prettier": "^8.7.x",
+		"eslint-config-standard": "~17.0.x",
+		"eslint-plugin-import": "~2.27.x",
+		"eslint-plugin-jest": "~27.2.x",
+		"eslint-plugin-n": "~15.6.x",
+		"eslint-plugin-prettier": "~4.2.x",
+		"eslint-plugin-promise": "~6.1.x",
 		"jest": "~29.5.x",
-		"prettier": "~2.0.x",
+		"prettier": "~2.8.x",
 		"sinon": "^15.0.x"
 	},
 	"keywords": [
@@ -75,5 +73,11 @@
 				"lines": 80
 			}
 		}
-	}
+	},
+	"files": [
+		"lib",
+		"CHANGELOG.md",
+		"LICENSE",
+		"README.md"
+	]
 }
