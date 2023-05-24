@@ -27,6 +27,21 @@ Cron is a tool that allows you to execute _something_ on a schedule. This is typ
 npm install cron 
 ```
 
+## Migrating from v2 to v3 
+
+In version 3 of this library, we aligned our format for the cron patterns with the UNIX format. See below for the changes you need to make when upgrading:
+
+<details>
+  <summary>Migrating from v2 to v3</summary>
+
+  ### Month & day-of-week indexing changes
+  
+  **Month indexing went from `0-11` to `1-12`. So you need to increment all numeric months by 1.**
+
+  For day-of-week indexing, we only added support for `7` as Sunday, so you don't need to change anything !
+
+</details>
+
 ## Versions and Backwards compatibility breaks
 
 As goes with semver, breaking backwards compatibility should be explicit in the versioning of your library. As such, we'll upgrade the version of this module in accordance with breaking changes (We're not always great about doing it this way so if you notice that there are breaking changes that haven't been bumped appropriately please let us know). 
