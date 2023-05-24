@@ -65,14 +65,21 @@ There are tools that help when constructing your cronjobs. You might find someth
 
 ### Cron Ranges 
 
-When specifying your cron values you'll need to make sure that your values fall within the ranges. For instance, some cron's use a 0-7 range for the day of week where both 0 and 7 represent Sunday. We do not. And that is an optimisation. 
+This library follows the [UNIX Cron format](https://man7.org/linux/man-pages/man5/crontab.5.html), with an added field at the beginning for second granularity.
 
-- Seconds: 0-59
-- Minutes: 0-59
-- Hours: 0-23
-- Day of Month: 1-31
-- Months: 0-11 (Jan-Dec) <-- currently different from Unix `cron`!
-- Day of Week: 0-6 (Sun-Sat) 
+```
+field          allowed values
+-----          --------------
+second         0-59
+minute         0-59
+hour           0-23
+day of month   1-31
+month          1-12 (or names, see below)
+day of week    0-7 (0 or 7 is Sunday, or use names)
+```
+
+> Names can also be used for the 'month' and 'day of week' fields. Use the first three letters of the particular day or month (case does not matter). Ranges and lists of names are allowed.  
+> Examples: "mon,wed,fri", "jan-mar".
 
 ## Gotchas 
 
