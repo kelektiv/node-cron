@@ -16,6 +16,7 @@
 		"test": "jest --coverage",
 		"test:watch": "jest --watch --coverage"
 	},
+	"types": "types/index.d.ts",
 	"dependencies": {
 		"luxon": "^3.2.1"
 	},
