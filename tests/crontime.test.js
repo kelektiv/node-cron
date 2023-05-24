@@ -118,6 +118,12 @@ describe('crontime', () => {
 		}).toThrow();
 	});
 
+	it('should be case-insensitive for aliases (* * * * JAN,FEB MON,TUE)', () => {
+		expect(() => {
+			new cron.CronTime('* * * * JAN,FEB MON,TUE', null, null);
+		}).not.toThrow();
+	});
+
 	it('should test too few fields', () => {
 		expect(() => {
 			new cron.CronTime('* * * *', null, null);
