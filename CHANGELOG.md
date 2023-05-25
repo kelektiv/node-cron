@@ -1,3 +1,36 @@
+## [v2.3.1]
+
+### Added
+
+- New test cases
+
+### Fixed
+
+- Linting issues
+
+## [v2.3.0]
+
+### Fixed
+
+- Some small bugs
+
+### Changed
+
+- Refactored get next date function
+
+## [v2.2.0]
+
+### Changed
+
+- Updated Luxon dependency
+- Updated unit tests to be compatible with new Luxon version
+
+## [v2.1.0]
+
+### Changed
+
+- "Maximum iterations" will direct the user to refer to a single canonical issue instead of creating a new one
+
 ## [v2.0.0] - 2022-05-03
 - Upgrade vulnerable dependencies
 - Move from moment.js to luxon (breaking change)
