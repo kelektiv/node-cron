@@ -380,7 +380,7 @@ describe('cron', () => {
 			const callback = jest.fn();
 
 			var job = cron.job({
-				cronTime: new Date('* * * * * *'),
+				cronTime: '* * * * * *',
 				onTick: callback,
 				runOnInit: true
 			});
@@ -393,7 +393,7 @@ describe('cron', () => {
 
 			clock.restore();
 			job.stop();
-			expect(callback).toHaveBeenCalledTimes(3);
+			expect(callback).toHaveBeenCalledTimes(4);
 		});
 	});
 
