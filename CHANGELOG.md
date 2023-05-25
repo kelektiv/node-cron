@@ -2,6 +2,7 @@
 
 ### Added
 
+- Logo!
 - New test cases
 
 ### Fixed
