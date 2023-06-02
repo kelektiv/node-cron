@@ -15,17 +15,17 @@ jobs:
         os: [ubuntu-latest, windows-latest, macos-latest]
 
     steps:
-    - name: Checkout project
-      uses: actions/checkout@v3
-    - name: Use Node.js ${{ matrix.node }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node }}
-    - name: Install packages
-      run: npm ci
-    - name: Check codestyle compliance
-      run: npm run lint
-    - name: Run tests
-      run: npm run test
-      env:
-        CI: true
+      - name: Checkout project
+        uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node }}
+      - name: Install packages
+        run: npm ci
+      - name: Check codestyle compliance
+        run: npm run lint
+      - name: Run tests
+        run: npm run test
+        env:
+          CI: true
