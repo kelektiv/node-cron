@@ -1,0 +1,35 @@
+name: Test & Release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  lint-and-test:
+    uses: ./.github/workflows/test.yml
+    secrets: inherit
+
+  release:
+    needs: lint-and-test
+
+    runs-on: ubuntu-latest
+    env:
+      node-version: 18.x
+
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v3
+        with:
+          persist-credentials: false
+      - name: Use Node.js ${{ env.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.node-version }}
+      - name: Install packages
+        run: npm ci
+      - name: Run Semantic Release
+        run: npm run release
+        env:
+          GITHUB_TOKEN: ${{ secrets.CI_GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
