@@ -1,0 +1,41 @@
+{
+	"repositoryUrl": "git@github.com:kelektiv/node-cron.git",
+	"branches": [
+		"master"
+	],
+	"tagFormat": "v${version}",
+	"plugins": [
+		[
+			"@semantic-release/commit-analyzer",
+			{
+				"config": "@insurgentlab/conventional-changelog-preset",
+				"releaseRules": "@insurgentlab/conventional-changelog-preset/release-rules"
+			}
+		],
+		[
+			"@semantic-release/release-notes-generator",
+			{
+				"config": "@insurgentlab/conventional-changelog-preset"
+			}
+		],
+		"@semantic-release/npm",
+		[
+			"@semantic-release/changelog",
+			{
+				"changelogFile": "CHANGELOG.md"
+			}
+		],
+		[
+			"@semantic-release/git",
+			{
+				"assets": [
+					"CHANGELOG.md",
+					"package.json",
+					"package-lock.json"
+				],
+				"message": "Release v${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
+			}
+		],
+		"@semantic-release/github"
+	]
+}

@@ -14,13 +14,21 @@
 	"scripts": {
 		"lint": "eslint {lib,tests}/*.js",
 		"test": "jest --coverage",
-		"test:watch": "jest --watch --coverage"
+		"test:watch": "jest --watch --coverage",
+		"release": "semantic-release"
 	},
 	"types": "types/index.d.ts",
 	"dependencies": {
 		"luxon": "^3.2.1"
 	},
 	"devDependencies": {
+		"@insurgentlab/conventional-changelog-preset": "~5.0.1",
+		"@semantic-release/changelog": "~6.0.x",
+		"@semantic-release/commit-analyzer": "~9.0.x",
+		"@semantic-release/git": "~10.0.x",
+		"@semantic-release/github": "~8.1.x",
+		"@semantic-release/npm": "~10.0.x",
+		"@semantic-release/release-notes-generator": "~11.0.x",
 		"chai": "~4.2.x",
 		"eslint": "~8.36.x",
 		"eslint-config-prettier": "^8.7.x",
@@ -32,6 +40,7 @@
 		"eslint-plugin-promise": "~6.1.x",
 		"jest": "~29.5.x",
 		"prettier": "~2.8.x",
+		"semantic-release": "~21.0.x",
 		"sinon": "^15.0.x"
 	},
 	"keywords": [
