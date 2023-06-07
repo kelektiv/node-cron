@@ -131,4 +131,4 @@ This is a community effort project. In the truest sense, this project started as
 
 ## License 
 
-MIT
+MIT - BSD
