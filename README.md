@@ -71,11 +71,12 @@ When specifying your cron values you'll need to make sure that your values fall 
 - Minutes: 0-59
 - Hours: 0-23
 - Day of Month: 1-31
-- Months: 0-11 (Jan-Dec)
+- Months: 0-11 (Jan-Dec) <-- currently different from Unix `cron`!
 - Day of Week: 0-6 (Sun-Sat) 
 
 ## Gotchas 
 
+- Months are indexed as 0-11 instead of 1-12. This is different from Unix `cron` and is planned to updated to match Unix `cron` in v3.0.0 of `node-cron`.
 - Millisecond level granularity in JS `Date` or Luxon `DateTime` objects: Because computers take time to do things, there may be some delay in execution. This should be on the order of milliseconds. This module doesn't allow MS level granularity for the regular cron syntax, but _does_ allow you to specify a real date of execution in either a javascript `Date` object or a Luxon `DateTime` object. When this happens you may find that you aren't able to execute a job that _should_ run in the future like with `new Date().setMilliseconds(new Date().getMilliseconds() + 1)`. This is due to those cycles of execution above. This wont be the same for everyone because of compute speed. When we tried it locally we saw that somewhere around the 4-5 ms mark was where we got consistent ticks using real dates, but anything less than that would result in an exception. This could be really confusing. We could restrict the granularity for all dates to seconds, but felt that it wasn't a huge problem so long as you were made aware. If this becomes more of an issue, We can revisit it.
 - Arrow Functions for `onTick`: Arrow functions get their `this` context from their parent scope. Thus, if you use them, you will not get the `this` context of the cronjob. You can read a little more in issue [GH-47](https://github.com/kelektiv/node-cron/issues/47#issuecomment-459762775) 
 
@@ -93,7 +94,7 @@ Parameter Based
         - `onTick` - [REQUIRED] - The function to fire at the specified time. If an `onComplete` callback was provided, `onTick` will receive it as an argument. `onTick` may call `onComplete` when it has finished its work.
         - `onComplete` - [OPTIONAL] - A function that will fire when the job is stopped with `job.stop()`, and may also be called by `onTick` at the end of each run.
         - `start` - [OPTIONAL] - Specifies whether to start the job just before exiting the constructor. By default this is set to false. If left at default you will need to call `job.start()` in order to start the job (assuming `job` is the variable you set the cronjob to). This does not immediately fire your `onTick` function, it just gives you more control over the behavior of your jobs.
-        - `timeZone` - [OPTIONAL] - Specify the time zone for the execution. This will modify the actual time relative to your time zone. If the time zone is invalid, an error is thrown. By default (if this is omitted) the local time zone will be used You can check all time zones available at [Moment Timezone Website](http://momentjs.com/timezone/). Probably don't use both `timeZone` and `utcOffset` together or weird things may happen.
+        - `timeZone` - [OPTIONAL] - Specify the time zone for the execution. This will modify the actual time relative to your time zone. If the time zone is invalid, an error is thrown. By default (if this is omitted) the local time zone will be used. You can check all time zones available at [Moment Timezone Website](http://momentjs.com/timezone/). Probably don't use both `timeZone` and `utcOffset` together or weird things may happen.
         - `context` - [OPTIONAL] - The context within which to execute the onTick method. This defaults to the cronjob itself allowing you to call `this.stop()`. However, if you change this you'll have access to the functions and values within your context object.
         - `runOnInit` - [OPTIONAL] - This will immediately fire your `onTick` function as soon as the requisite initialization has happened. This option is set to `false` by default for backwards compatibility.
         - `utcOffset` - [OPTIONAL] - This allows you to specify the offset of your time zone rather than using the `timeZone` param. This should be an integer amount representing the number of minutes offset (like `120` for +2 hours or `-90` for -1.5 hours) Probably don't use both `timeZone` and `utcOffset` together or weird things may happen.
