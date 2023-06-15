@@ -88,7 +88,7 @@ Parameter Based
 - `sendAt` - tells you when a `CronTime` will be run.
 - `timeout` - tells you when the next timeout is.
 - `CronJob`
-    - `constructor(cronTime, onTick, onComplete, start, timezone, context, runOnInit, utcOffset, unrefTimeout)` - Of note, the first parameter here can be a JSON object that has the below names and associated types (see examples above).
+    - `constructor(cronTime, onTick, onComplete, start, timeZone, context, runOnInit, utcOffset, unrefTimeout)` - Of note, the first parameter here can be a JSON object that has the below names and associated types (see examples above).
         - `cronTime` - [REQUIRED] - The time to fire off your job. This can be in the form of cron syntax or a JS [Date](https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Date) object.
         - `onTick` - [REQUIRED] - The function to fire at the specified time. If an `onComplete` callback was provided, `onTick` will receive it as an argument. `onTick` may call `onComplete` when it has finished its work.
         - `onComplete` - [OPTIONAL] - A function that will fire when the job is stopped with `job.stop()`, and may also be called by `onTick` at the end of each run.
