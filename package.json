@@ -15,6 +15,7 @@
 		"lint": "eslint {lib,tests}/*.js",
 		"test": "jest --coverage",
 		"test:watch": "jest --watch --coverage",
+		"prepare": "husky install",
 		"release": "semantic-release"
 	},
 	"types": "types/index.d.ts",
@@ -22,7 +23,9 @@
 		"luxon": "^3.2.1"
 	},
 	"devDependencies": {
-		"@insurgentlab/conventional-changelog-preset": "~5.0.1",
+		"@commitlint/cli": "~17.6.6",
+		"@insurgentlab/commitlint-config": "^18.1.0",
+		"@insurgentlab/conventional-changelog-preset": "~6.0.3",
 		"@semantic-release/changelog": "~6.0.x",
 		"@semantic-release/commit-analyzer": "~9.0.x",
 		"@semantic-release/git": "~10.0.x",
@@ -38,6 +41,7 @@
 		"eslint-plugin-n": "~15.6.x",
 		"eslint-plugin-prettier": "~4.2.x",
 		"eslint-plugin-promise": "~6.1.x",
+		"husky": "^8.0.3",
 		"jest": "~29.5.x",
 		"prettier": "~2.8.x",
 		"semantic-release": "~21.0.x",
