@@ -1,7 +1,7 @@
 {
 	"repositoryUrl": "git@github.com:kelektiv/node-cron.git",
 	"branches": [
-		"master",
+		"main",
 		{
 			"name": "beta",
 			"prerelease": true
