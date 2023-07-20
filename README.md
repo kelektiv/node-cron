@@ -49,7 +49,7 @@ var job = new CronJob(
 
 Note - In the example above, the 4th parameter of `CronJob()` automatically starts the job on initialization. If this parameter is falsy or not provided, the job needs to be explicitly started using `job.start()`.
 
-There are more examples available in this repository at: [/examples](https://github.com/kelektiv/node-cron/tree/master/examples) 
+There are more examples available in this repository at: [/examples](https://github.com/kelektiv/node-cron/tree/main/examples) 
 
 ## Available Cron patterns
 

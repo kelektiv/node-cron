@@ -4,7 +4,7 @@ on:
   workflow_call:
   pull_request:
     branches:
-      - master
+      - main
       - beta
       - '+([0-9])?(.{+([0-9]),x}).x'
 
