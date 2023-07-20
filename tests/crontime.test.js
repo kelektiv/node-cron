@@ -64,9 +64,9 @@ describe('crontime', () => {
 		}).not.toThrow();
 	});
 
-	it('should test all hyphens (0-10 0-10 1-10 1-10 0-6 0-1)', () => {
+	it('should test all hyphens (0-10 0-10 1-10 1-10 1-7 0-1)', () => {
 		expect(() => {
-			new cron.CronTime('0-10 0-10 1-10 1-10 0-6 0-1');
+			new cron.CronTime('0-10 0-10 1-10 1-10 1-7 0-1');
 		}).not.toThrow();
 	});
 
@@ -88,9 +88,9 @@ describe('crontime', () => {
 		}).not.toThrow();
 	});
 
-	it('should test all commas (0,10 0,10 1,10 1,10 0,6 0,1)', () => {
+	it('should test all commas (0,10 0,10 1,10 1,10 1,7 0,1)', () => {
 		expect(() => {
-			new cron.CronTime('0,10 0,10 1,10 1,10 0,6 0,1');
+			new cron.CronTime('0,10 0,10 1,10 1,10 1,7 0,1');
 		}).not.toThrow();
 	});
 
@@ -124,6 +124,12 @@ describe('crontime', () => {
 		}).toThrow();
 	});
 
+	it('should be case-insensitive for aliases (* * * * JAN,FEB MON,TUE)', () => {
+		expect(() => {
+			new cron.CronTime('* * * * JAN,FEB MON,TUE', null, null);
+		}).not.toThrow();
+	});
+
 	it('should test too few fields', () => {
 		expect(() => {
 			new cron.CronTime('* * * *', null, null);
@@ -136,10 +142,59 @@ describe('crontime', () => {
 		}).toThrow();
 	});
 
-	it('should test out of range values', () => {
-		expect(() => {
-			new cron.CronTime('* * * * 1234', null, null);
-		}).toThrow();
+	it('should return the same object with 0 & 7 as Sunday (except "source" prop)', () => {
+		const sunday0 = new cron.CronTime('* * * * 0', null, null);
+		const sunday7 = new cron.CronTime('* * * * 7', null, null);
+		delete sunday0.source;
+		delete sunday7.source;
+		expect(sunday7).toEqual(sunday0);
+	});
+
+	describe('should test out of range values', () => {
+		it('should test out of range minute', () => {
+			expect(() => {
+				new cron.CronTime('-1 * * * *', null, null);
+			}).toThrow();
+			expect(() => {
+				new cron.CronTime('60 * * * *', null, null);
+			}).toThrow();
+		});
+
+		it('should test out of range hour', () => {
+			expect(() => {
+				new cron.CronTime('* -1 * * *', null, null);
+			}).toThrow();
+			expect(() => {
+				new cron.CronTime('* 24 * * *', null, null);
+			}).toThrow();
+		});
+
+		it('should test out of range day-of-month', () => {
+			expect(() => {
+				new cron.CronTime('* * 0 * *', null, null);
+			}).toThrow();
+			expect(() => {
+				new cron.CronTime('* * 32 * *', null, null);
+			}).toThrow();
+		});
+
+		it('should test out of range month', () => {
+			expect(() => {
+				new cron.CronTime('* * * 0 *', null, null);
+			}).toThrow();
+			expect(() => {
+				new cron.CronTime('* * * 13 *', null, null);
+			}).toThrow();
+		});
+
+		it('should test out of range day-of-week', () => {
+			expect(() => {
+				new cron.CronTime('* * * * -1', null, null);
+			}).toThrow();
+			expect(() => {
+				new cron.CronTime('* * * * 8', null, null);
+			}).toThrow();
+		});
 	});
 
 	it('should test invalid wildcard expression', () => {
@@ -271,7 +326,7 @@ describe('crontime', () => {
 
 		it('should parse @yearly', () => {
 			const cronTime = new cron.CronTime('@yearly');
-			expect(cronTime.toString()).toEqual('0 0 0 1 0 *');
+			expect(cronTime.toString()).toEqual('0 0 0 1 1 *');
 		});
 	});
 
@@ -578,8 +633,8 @@ describe('crontime', () => {
 			currentDate = nextDate;
 		}
 	});
-	it('should test valid range of months (*/15 * * 6-11 *)', () => {
-		const cronTime = new cron.CronTime('*/15 * * 6-11 *');
+	it('should test valid range of months (*/15 * * 7-12 *)', () => {
+		const cronTime = new cron.CronTime('*/15 * * 7-12 *');
 		const previousDate1 = new Date(Date.UTC(2018, 3, 0, 0, 0));
 		const nextDate1 = cronTime._getNextDateFrom(previousDate1, 'UTC');
 		expect(new Date(nextDate1).toUTCString()).toEqual(
