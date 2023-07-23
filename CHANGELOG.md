@@ -1,3 +1,25 @@
+## [3.0.0-beta.1](https://github.com/kelektiv/node-cron/compare/v2.3.1...v3.0.0-beta.1) (2023-07-23)
+
+
+### ⚠ Breaking changes
+
+* UNIX standard alignments (#667)
+
+### ✨ Features
+
+* UNIX standard alignments ([#667](https://github.com/kelektiv/node-cron/issues/667)) ([96ef954](https://github.com/kelektiv/node-cron/commit/96ef954998f9c109cc2a969296568b1b56bbbd79))
+
+
+### ⚙️ Continuous Integrations
+
+* add support for beta & maintenance releases ([#677](https://github.com/kelektiv/node-cron/issues/677)) ([c6fc842](https://github.com/kelektiv/node-cron/commit/c6fc8429e905b38b05ba428e0df4a0fea273614a))
+* setup conventional commits & release automation ([#673](https://github.com/kelektiv/node-cron/issues/673)) ([c6f39ff](https://github.com/kelektiv/node-cron/commit/c6f39ff384041b7f91566fc935a9b961d453dd14))
+
+
+### ♻️ Chores
+
+* update default branch name ([#678](https://github.com/kelektiv/node-cron/issues/678)) ([7471e95](https://github.com/kelektiv/node-cron/commit/7471e95cb7433b4f29cfa68da0a652ec8cf630b6))
+
 ## [v2.3.1](https://github.com/kelektiv/node-cron/compare/v2.3.0...v2.3.1) (2023-05-25)
 
 ### Added
