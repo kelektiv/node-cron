@@ -1,0 +1,2 @@
+This is a simple text
+Second line is created
