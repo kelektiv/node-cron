@@ -1,0 +1,37 @@
+{
+	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
+	"extends": [
+		"config:base",
+		":dependencyDashboard",
+		":disableRateLimiting",
+		":pinOnlyDevDependencies",
+		"npm:unpublishSafe",
+		"docker:pinDigests",
+		"helpers:pinGitHubActionDigests"
+	],
+	"schedule": ["before 5am every weekday", "every weekend"],
+	"lockFileMaintenance": { "enabled": true, "automerge": true },
+	"labels": ["dependencies"],
+	"packageRules": [
+		{
+			"extends": ["packages:linters"],
+			"groupName": "linters",
+			"addLabels": ["linters"]
+		},
+		{
+			"extends": ["packages:test"],
+			"groupName": "tests",
+			"addLabels": ["tests"]
+		},
+		{
+			"matchDepTypes": ["devDependencies"],
+			"matchUpdateTypes": ["minor", "patch"],
+			"automerge": true
+		},
+		{
+			"matchDepTypes": ["action"],
+			"semanticCommitType": "ci",
+			"semanticCommitScope": "action"
+		}
+	]
+}
