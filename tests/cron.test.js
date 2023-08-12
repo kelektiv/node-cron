@@ -799,6 +799,39 @@ describe('cron', () => {
 			expect(callback).toHaveBeenCalledTimes(1);
 		});
 
+		it('should run a job using cron syntax with numeric format utcOffset with minute', () => {
+			const clock = sinon.useFakeTimers();
+			const callback = jest.fn();
+
+			const luxon = require('luxon');
+			// Current time
+			const t = luxon.DateTime.local();
+			// UTC Offset decreased by 45 minutes
+			const utcOffset = t.offset - 45;
+
+			const job = new cron.CronJob(
+				t.second + ' ' + t.minute + ' ' + t.hour + ' * * *',
+				callback,
+				null,
+				true,
+				null,
+				null,
+				null,
+				utcOffset
+			);
+			// tick to 1s before 45 minutes
+			clock.tick(1000 * 60 * 45 - 1000);
+			expect(callback).toHaveBeenCalledTimes(0);
+
+			//tick 1s
+			clock.tick(1000);
+			expect(callback).toHaveBeenCalledTimes(1);
+
+			clock.restore();
+
+			job.stop();
+		});
+
 		it('should run a job using cron syntax with string format utcOffset', () => {
 			const clock = sinon.useFakeTimers();
 			const callback = jest.fn();
@@ -832,6 +865,42 @@ describe('cron', () => {
 			clock.restore();
 			job.stop();
 			expect(callback).toHaveBeenCalledTimes(1);
+		});
+
+		it('should run a job using cron syntax with string format utcOffset with minute', () => {
+			const clock = sinon.useFakeTimers();
+			const callback = jest.fn();
+			const luxon = require('luxon');
+			// Current time
+			const t = luxon.DateTime.local();
+			// UTC Offset decreased by an 45 minutes (string format '(+/-)HH:mm')
+			const utcOffset = t.offset - 45;
+			let utcOffsetString = utcOffset > 0 ? '+' : '-';
+			utcOffsetString += ('0' + Math.floor(Math.abs(utcOffset) / 60)).slice(-2);
+			utcOffsetString += ':';
+			utcOffsetString += ('0' + (utcOffset % 60)).slice(-2);
+
+			const job = new cron.CronJob(
+				t.second + ' ' + t.minute + ' ' + t.hour + ' * * *',
+				callback,
+				null,
+				true,
+				null,
+				null,
+				null,
+				utcOffset
+			);
+			// tick to 1s before 45 minutes
+			clock.tick(1000 * 60 * 45 - 1000);
+			expect(callback).toHaveBeenCalledTimes(0);
+
+			//tick 1s
+			clock.tick(1000);
+			expect(callback).toHaveBeenCalledTimes(1);
+
+			clock.restore();
+
+			job.stop();
 		});
 
 		it('should run a job using cron syntax with number format utcOffset that is 0', () => {
