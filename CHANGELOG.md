@@ -1,3 +1,15 @@
+## [2.4.1](https://github.com/kelektiv/node-cron/compare/v2.4.0...v2.4.1) (2023-08-14)
+
+
+### 🐛 Bug Fixes
+
+* replace loop timeout by max match date ([#686](https://github.com/kelektiv/node-cron/issues/686)) ([c685c63](https://github.com/kelektiv/node-cron/commit/c685c63a6d7fa86d6c8afca29b536b9da24e824b))
+
+
+### ⚙️ Continuous Integrations
+
+* **renovate:** configure renovate ([#683](https://github.com/kelektiv/node-cron/issues/683)) ([9dbe962](https://github.com/kelektiv/node-cron/commit/9dbe962fad1c8b1b020441bce84ab91b1a7b4415))
+
 ## [2.4.0](https://github.com/kelektiv/node-cron/compare/v2.3.0...v2.4.0) (2023-07-24)
 
 
