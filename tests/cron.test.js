@@ -963,32 +963,44 @@ describe('cron', () => {
 		});
 	});
 
-	it('should give the next date to run at', () => {
-		const callback = jest.fn();
-		const clock = sinon.useFakeTimers();
-		const job = new cron.CronJob('* * * * * *', callback);
-		const d = Date.now();
+	describe('nextDate(s)', () => {
+		it('should give the next date to run at', () => {
+			const callback = jest.fn();
+			const clock = sinon.useFakeTimers();
+			const job = new cron.CronJob('* * * * * *', callback);
+			const d = Date.now();
 
-		expect(job.nextDate().toMillis()).toEqual(d + 1000);
+			expect(job.nextDate().toMillis()).toEqual(d + 1000);
 
-		clock.restore();
-	});
+			clock.restore();
+		});
 
-	it('should give the next dates to run at', () => {
-		const callback = jest.fn();
-		const clock = sinon.useFakeTimers();
-		const job = new cron.CronJob('* * * * * *', callback);
-		const d = Date.now();
+		it('should give the next 5 dates to run at', () => {
+			const callback = jest.fn();
+			const clock = sinon.useFakeTimers();
+			const job = new cron.CronJob('* * * * * *', callback);
+			const d = Date.now();
 
-		expect(job.nextDates(5).map(d => d.toMillis())).toEqual([
-			d + 1000,
-			d + 2000,
-			d + 3000,
-			d + 4000,
-			d + 5000
-		]);
+			expect(job.nextDates(5).map(d => d.toMillis())).toEqual([
+				d + 1000,
+				d + 2000,
+				d + 3000,
+				d + 4000,
+				d + 5000
+			]);
 
-		clock.restore();
+			clock.restore();
+		});
+
+		it('should give an empty array when called without argument', () => {
+			const callback = jest.fn();
+			const clock = sinon.useFakeTimers();
+			const job = new cron.CronJob('* * * * * *', callback);
+
+			expect(job.nextDates()).toHaveLength(0);
+
+			clock.restore();
+		});
 	});
 
 	it('should automatically setup a new timeout if we roll past the max timeout delay', () => {
