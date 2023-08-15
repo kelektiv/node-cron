@@ -9,6 +9,41 @@
 
 * UNIX standard alignments ([#667](https://github.com/kelektiv/node-cron/issues/667)) ([96ef954](https://github.com/kelektiv/node-cron/commit/96ef954998f9c109cc2a969296568b1b56bbbd79))
 
+## [2.4.1](https://github.com/kelektiv/node-cron/compare/v2.4.0...v2.4.1) (2023-08-14)
+
+
+### 🐛 Bug Fixes
+
+* replace loop timeout by max match date ([#686](https://github.com/kelektiv/node-cron/issues/686)) ([c685c63](https://github.com/kelektiv/node-cron/commit/c685c63a6d7fa86d6c8afca29b536b9da24e824b))
+
+
+### ⚙️ Continuous Integrations
+
+* **renovate:** configure renovate ([#683](https://github.com/kelektiv/node-cron/issues/683)) ([9dbe962](https://github.com/kelektiv/node-cron/commit/9dbe962fad1c8b1b020441bce84ab91b1a7b4415))
+
+## [2.4.0](https://github.com/kelektiv/node-cron/compare/v2.3.0...v2.4.0) (2023-07-24)
+
+
+### ✨ Features
+
+* import type definitions from [@types](https://github.com/types)/cron ([d8a2f14](https://github.com/kelektiv/node-cron/commit/d8a2f140b59f063897dd20b7bb4dc7f599d2435b))
+
+
+### 🐛 Bug Fixes
+
+* don't start job in setTime if it wasn't running ([7e26c23](https://github.com/kelektiv/node-cron/commit/7e26c23e06277bfeb04525c71b67703392dbb8b2))
+
+
+### 🛠 Builds
+
+* **npm:** ship type definitions with releases ([0b663a8](https://github.com/kelektiv/node-cron/commit/0b663a8584f87cbec63042a4c217f43f38869fc4))
+
+
+### 🚨 Tests
+
+* add test case for [#598](https://github.com/kelektiv/node-cron/issues/598) fix ([4322ef2](https://github.com/kelektiv/node-cron/commit/4322ef29fa8af201aed5cdf8b829d411311fe025))
+* don't stop/start job before using setTime ([f0d5d3f](https://github.com/kelektiv/node-cron/commit/f0d5d3f32eddb8fd77b84438fe471fd374b34566))
+
 
 ### ⚙️ Continuous Integrations
 
@@ -19,6 +54,7 @@
 ### ♻️ Chores
 
 * update default branch name ([#678](https://github.com/kelektiv/node-cron/issues/678)) ([7471e95](https://github.com/kelektiv/node-cron/commit/7471e95cb7433b4f29cfa68da0a652ec8cf630b6))
+* wrap setTime tests in describe and move down ([31989e0](https://github.com/kelektiv/node-cron/commit/31989e06f939bf1e9dbc6c0b6fc62c0a7144b9eb))
 
 ## [v2.3.1](https://github.com/kelektiv/node-cron/compare/v2.3.0...v2.3.1) (2023-05-25)
 

@@ -379,7 +379,7 @@ describe('cron', () => {
 			const clock = sinon.useFakeTimers();
 			const callback = jest.fn();
 
-			var job = cron.job({
+			const job = cron.job({
 				cronTime: '* * * * * *',
 				onTick: callback,
 				runOnInit: true
@@ -763,6 +763,35 @@ describe('cron', () => {
 		const minute = 60 * 1000;
 		clock.tick(minute);
 		expect(callback).toHaveBeenCalledTimes(1);
+		clock.restore();
+		job.stop();
+		expect(callback).toHaveBeenCalledTimes(1);
+	});
+
+	/**
+	 * maximum match interval is 8 years:
+	 * crontab has '* * 29 2 *' and we are on 1 March 2096:
+	 * next matching time will be 29 February 2104
+	 * source: https://github.com/cronie-crond/cronie/blob/0d669551680f733a4bdd6bab082a0b3d6d7f089c/src/cronnext.c#L401-L403
+	 */
+	it('should work correctly for max match interval', () => {
+		const callback = jest.fn();
+		const d = new Date(2096, 2, 1);
+		const clock = sinon.useFakeTimers(d.getTime());
+
+		const job = new cron.CronJob({
+			cronTime: ' * * 29 1 *',
+			onTick: callback,
+			start: true
+		});
+
+		// 7 years, 11 months and 27 days
+		const almostEightYears = 2919 * 24 * 60 * 60 * 1000;
+		clock.tick(almostEightYears);
+		expect(callback).toHaveBeenCalledTimes(0);
+
+		// tick by 1 day
+		clock.tick(24 * 60 * 60 * 1000);
 		clock.restore();
 		job.stop();
 		expect(callback).toHaveBeenCalledTimes(1);
