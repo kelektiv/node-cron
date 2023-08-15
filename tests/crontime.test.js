@@ -152,6 +152,14 @@ describe('crontime', () => {
 		expect(() => {
 			new cron.CronTime('* 2-1 * * *');
 		}).toThrow();
+
+		expect(() => {
+			new cron.CronTime('* 2-0 * * *');
+		}).toThrow();
+
+		expect(() => {
+			new cron.CronTime('* 2- * * *');
+		}).toThrow();
 	});
 
 	it('should test Date', () => {
