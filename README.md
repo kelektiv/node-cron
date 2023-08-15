@@ -52,7 +52,7 @@ As goes with semver, breaking backwards compatibility should be explicit in the 
 var CronJob = require('cron').CronJob;
 var job = new CronJob(
     '* * * * * *',
-    function() {
+    function () {
         console.log('You will see this message every second');
     },
     null,
@@ -125,6 +125,7 @@ Parameter Based
     - `stop` - Stops your job.
     - `setTime` - Stops and changes the time for the `CronJob`. Param must be a `CronTime`.
     - `lastDate` - Tells you the last execution date.
+    - `nextDate` - Provides the next date that will trigger an `onTick`.
     - `nextDates` - Provides an array of the next set of dates that will trigger an `onTick`.
     - `fireOnTick` - Allows you to override the `onTick` calling behavior. This matters so only do this if you have a really good reason to do so.
     - `addCallback` - Allows you to add `onTick` callbacks.
