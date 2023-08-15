@@ -840,7 +840,9 @@ describe('cron', () => {
 			const t = luxon.DateTime.local();
 			// UTC Offset decreased by an hour (string format '(+/-)HH:mm')
 			const utcOffset = t.offset - 60;
-			const utcOffsetString = `${utcOffset > 0 ? '+' : '-'}${('0' + Math.floor(Math.abs(utcOffset) / 60)).slice(-2)}:${('0' + (utcOffset % 60)).slice(-2)}`;
+			const utcOffsetString = `${utcOffset > 0 ? '+' : '-'}${(
+				'0' + Math.floor(Math.abs(utcOffset) / 60)
+			).slice(-2)}:${('0' + (utcOffset % 60)).slice(-2)}`;
 
 			const job = new cron.CronJob(
 				t.second + ' ' + t.minute + ' ' + t.hour + ' * * *',
@@ -874,7 +876,9 @@ describe('cron', () => {
 			// UTC Offset decreased by 45 minutes (string format '(+/-)HH:mm')
 			const utcOffset = t.offset - 45;
 
-			const utcOffsetString = `${utcOffset > 0 ? '+' : '-'}${('0' + Math.floor(Math.abs(utcOffset) / 60)).slice(-2)}:${('0' + (utcOffset % 60)).slice(-2)}`;
+			const utcOffsetString = `${utcOffset > 0 ? '+' : '-'}${(
+				'0' + Math.floor(Math.abs(utcOffset) / 60)
+			).slice(-2)}:${('0' + (utcOffset % 60)).slice(-2)}`;
 
 			const job = new cron.CronJob(
 				t.second + ' ' + t.minute + ' ' + t.hour + ' * * *',
