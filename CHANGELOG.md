@@ -1,3 +1,14 @@
+## [3.0.0-beta.3](https://github.com/kelektiv/node-cron/compare/v3.0.0-beta.2...v3.0.0-beta.3) (2023-08-15)
+
+
+### ⚠ Breaking changes
+
+* return empty array from nextDates when called without argument (#519)
+
+### 🐛 Bug Fixes
+
+* return empty array from nextDates when called without argument ([#519](https://github.com/kelektiv/node-cron/issues/519)) ([e65c3dc](https://github.com/kelektiv/node-cron/commit/e65c3dc6c334b8d4df0da317b75494d78cd5d52b))
+
 ## [3.0.0-beta.2](https://github.com/kelektiv/node-cron/compare/v3.0.0-beta.1...v3.0.0-beta.2) (2023-08-15)
 
 
