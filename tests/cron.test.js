@@ -820,7 +820,7 @@ describe('cron', () => {
 		const clock = sinon.useFakeTimers(d.getTime());
 
 		const job = new cron.CronJob({
-			cronTime: ' * * 29 1 *',
+			cronTime: ' * * 29 2 *',
 			onTick: callback,
 			start: true
 		});
