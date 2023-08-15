@@ -1,3 +1,20 @@
+## [3.0.0-beta.2](https://github.com/kelektiv/node-cron/compare/v3.0.0-beta.1...v3.0.0-beta.2) (2023-08-15)
+
+
+### 🐛 Bug Fixes
+
+* replace loop timeout by max match date ([#686](https://github.com/kelektiv/node-cron/issues/686)) ([c685c63](https://github.com/kelektiv/node-cron/commit/c685c63a6d7fa86d6c8afca29b536b9da24e824b))
+
+
+### 🚨 Tests
+
+* update new test for cron standard alignments ([ea56fc1](https://github.com/kelektiv/node-cron/commit/ea56fc1c32905d711b160823fc09f39169dd3efd))
+
+
+### ⚙️ Continuous Integrations
+
+* **renovate:** configure renovate ([#683](https://github.com/kelektiv/node-cron/issues/683)) ([9dbe962](https://github.com/kelektiv/node-cron/commit/9dbe962fad1c8b1b020441bce84ab91b1a7b4415))
+
 ## [3.0.0-beta.1](https://github.com/kelektiv/node-cron/compare/v2.3.1...v3.0.0-beta.1) (2023-07-23)
 
 
