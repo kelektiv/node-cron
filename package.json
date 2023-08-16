@@ -20,7 +20,8 @@
 	},
 	"types": "types/index.d.ts",
 	"dependencies": {
-		"luxon": "^3.2.1"
+		"@types/luxon": "~3.3.0",
+		"luxon": "~3.3.0"
 	},
 	"devDependencies": {
 		"@commitlint/cli": "~17.6.6",
