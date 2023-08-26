@@ -15,6 +15,7 @@
 		"lint": "eslint {lib,tests}/*.js",
 		"test": "jest --coverage",
 		"test:watch": "jest --watch --coverage",
+		"test:types": "tsd",
 		"prepare": "husky install",
 		"release": "semantic-release"
 	},
@@ -46,7 +47,8 @@
 		"jest": "~29.5.x",
 		"prettier": "~2.8.x",
 		"semantic-release": "~21.0.x",
-		"sinon": "^15.0.x"
+		"sinon": "^15.0.x",
+		"tsd": "^0.28.1"
 	},
 	"keywords": [
 		"cron",

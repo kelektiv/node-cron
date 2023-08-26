@@ -27,7 +27,7 @@ jobs:
         run: npm ci
       - name: Check codestyle compliance
         run: npm run lint
+      - name: Check TS types
+        run: npm run test:types
       - name: Run tests
         run: npm run test
-        env:
-          CI: true
