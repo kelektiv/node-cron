@@ -70,6 +70,12 @@ describe('crontime', () => {
 		}).not.toThrow();
 	});
 
+	it('should accept all valid ranges (0-59 0-59 1-23 1-31 0-12 0-6)', () => {
+		expect(() => {
+			new cron.CronTime('0-59 0-59 1-23 1-31 0-11 0-6');
+		}).not.toThrow();
+	});
+
 	it('should test comma (0,10 * * * * *)', () => {
 		expect(() => {
 			new cron.CronTime('0,10 * * * * *');
@@ -151,6 +157,14 @@ describe('crontime', () => {
 	it('should test invalid range', () => {
 		expect(() => {
 			new cron.CronTime('* 2-1 * * *');
+		}).toThrow();
+
+		expect(() => {
+			new cron.CronTime('* 2-0 * * *');
+		}).toThrow();
+
+		expect(() => {
+			new cron.CronTime('* 2- * * *');
 		}).toThrow();
 	});
 
