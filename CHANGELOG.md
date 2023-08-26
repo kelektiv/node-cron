@@ -1,3 +1,15 @@
+## [2.4.3](https://github.com/kelektiv/node-cron/compare/v2.4.2...v2.4.3) (2023-08-26)
+
+
+### 🐛 Bug Fixes
+
+* fix range parsing when upper limit = 0 ([#687](https://github.com/kelektiv/node-cron/issues/687)) ([d96746f](https://github.com/kelektiv/node-cron/commit/d96746f7b8f357e565d1fad48c9f70d3d646da64))
+
+
+### 🚨 Tests
+
+* add TS types check ([#690](https://github.com/kelektiv/node-cron/issues/690)) ([f046016](https://github.com/kelektiv/node-cron/commit/f046016dc64438c4a12a4615a919b046d3a846de))
+
 ## [2.4.2](https://github.com/kelektiv/node-cron/compare/v2.4.1...v2.4.2) (2023-08-26)
 
 
