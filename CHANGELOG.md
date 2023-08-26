@@ -1,3 +1,10 @@
+## [2.4.2](https://github.com/kelektiv/node-cron/compare/v2.4.1...v2.4.2) (2023-08-26)
+
+
+### 🐛 Bug Fixes
+
+* **deps:** update dependency luxon to v3.3.0 & add [@types](https://github.com/types)/luxon ([#689](https://github.com/kelektiv/node-cron/issues/689)) ([c95a449](https://github.com/kelektiv/node-cron/commit/c95a449121e440b82d391fc11f8dc148748f93ec)), closes [#688](https://github.com/kelektiv/node-cron/issues/688)
+
 ## [2.4.1](https://github.com/kelektiv/node-cron/compare/v2.4.0...v2.4.1) (2023-08-14)
 
 
