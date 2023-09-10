@@ -151,7 +151,10 @@ Because we can't magically know what you are doing to expose an issue, it is bes
 
 ### Acknowledgements
 
-This is a community effort project. In the truest sense, this project started as an open source project from [cron.js](http://github.com/padolsey/cron.js) and grew into something else. Other people have contributed code, time, and oversight to the project. At this point there are too many to name here so We'll just say thanks. 
+This is a community effort project. In the truest sense, this project started as an open source project from [cron.js](http://github.com/padolsey/cron.js) and grew into something else. Other people have contributed code, time, and oversight to the project. At this point there are too many to name here so we'll just say thanks. 
+
+Special thanks to [Hiroki Horiuchi](https://github.com/horiuchi), [Lundarl Gholoi](https://github.com/winup) and [koooge](https://github.com/koooge) for their work on the [DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped) typings before they were imported in v2.4.0.
+
 
 ## License 
 

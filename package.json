@@ -12,6 +12,7 @@
 	},
 	"main": "src/cron",
 	"scripts": {
+		"build": "tsc -b",
 		"lint": "eslint {src,tests}/*.js",
 		"test": "jest --coverage",
 		"test:watch": "jest --watch --coverage",
@@ -19,7 +20,6 @@
 		"prepare": "husky install",
 		"release": "semantic-release"
 	},
-	"types": "types/index.d.ts",
 	"dependencies": {
 		"@types/luxon": "~3.3.0",
 		"luxon": "~3.3.0"
@@ -34,6 +34,7 @@
 		"@semantic-release/github": "~8.1.x",
 		"@semantic-release/npm": "~10.0.x",
 		"@semantic-release/release-notes-generator": "~11.0.x",
+		"@types/node": "^20.6.0",
 		"chai": "~4.2.x",
 		"eslint": "~8.36.x",
 		"eslint-config-prettier": "^8.7.x",
@@ -48,7 +49,8 @@
 		"prettier": "~2.8.x",
 		"semantic-release": "~21.0.x",
 		"sinon": "^15.0.x",
-		"tsd": "^0.28.1"
+		"tsd": "^0.28.1",
+		"typescript": "^5.2.2"
 	},
 	"keywords": [
 		"cron",
@@ -79,9 +81,6 @@
 	],
 	"jest": {
 		"collectCoverage": true,
-		"collectCoverageFrom": [
-			"src/*.js"
-		],
 		"coverageThreshold": {
 			"global": {
 				"statements": 80,
@@ -93,7 +92,6 @@
 	},
 	"files": [
 		"src",
-		"types",
 		"CHANGELOG.md",
 		"LICENSE",
 		"README.md"
