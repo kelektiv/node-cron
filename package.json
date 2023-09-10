@@ -16,7 +16,6 @@
 		"lint": "eslint {src,tests}/*.js",
 		"test": "jest --coverage",
 		"test:watch": "jest --watch --coverage",
-		"test:types": "tsd",
 		"prepare": "husky install",
 		"release": "semantic-release"
 	},
@@ -49,7 +48,6 @@
 		"prettier": "~2.8.x",
 		"semantic-release": "~21.0.x",
 		"sinon": "^15.0.x",
-		"tsd": "^0.28.1",
 		"typescript": "^5.2.2"
 	},
 	"keywords": [
