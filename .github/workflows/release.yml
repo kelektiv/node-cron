@@ -30,6 +30,8 @@ jobs:
           node-version: ${{ env.node-version }}
       - name: Install packages
         run: npm ci
+      - name: Build project
+        run: npm run build
       - name: Run Semantic Release
         run: npm run release
         env:
