@@ -1,55 +1,43 @@
-(function (root, factory) {
-	if (typeof define === 'function' && define.amd) {
-		define(['luxon'], factory);
-	} else if (typeof exports === 'object') {
-		module.exports = factory(require('luxon'), require('child_process'));
-	} else {
-		root.Cron = factory(root.luxon);
-	}
-})(this, function (luxon, childProcess) {
-	const exports = {};
-	const spawn = childProcess && childProcess.spawn;
-	const CronTime = require('./time')(luxon);
-	const CronJob = require('./job')(CronTime, spawn);
+import { spawn } from 'child_process';
+import * as luxon from 'luxon';
+import { CronCommand } from 'types/interfaces';
 
-	/**
-	 * Extend Luxon DateTime
-	 */
-	luxon.DateTime.prototype.getWeekDay = function () {
-		return this.weekday === 7 ? 0 : this.weekday;
-	};
+export const CronTime = require('./time')(luxon);
+export const CronJob = require('./job')(CronTime, spawn);
 
-	exports.job = (
+/**
+ * Extend Luxon DateTime
+ */
+// TODO: move to private function in time.js (prototype mutation bad)
+luxon.DateTime.prototype['getWeekDay'] = function () {
+	return this.weekday === 7 ? 0 : this.weekday;
+};
+
+export const job = (
+	cronTime: string | Date | luxon.DateTime,
+	onTick: () => void,
+	onComplete?: CronCommand | null,
+	start?: boolean,
+	timeZone?: string,
+	context?: any,
+	runOnInit?: boolean,
+	utcOffset?: string | number,
+	unrefTimeout?: boolean
+): typeof CronJob =>
+	new CronJob(
 		cronTime,
 		onTick,
 		onComplete,
-		startNow,
+		start,
 		timeZone,
 		context,
 		runOnInit,
 		utcOffset,
 		unrefTimeout
-	) =>
-		new CronJob(
-			cronTime,
-			onTick,
-			onComplete,
-			startNow,
-			timeZone,
-			context,
-			runOnInit,
-			utcOffset,
-			unrefTimeout
-		);
+	);
 
-	exports.time = (cronTime, timeZone) => new CronTime(cronTime, timeZone);
+export const time = (cronTime, timeZone) => new CronTime(cronTime, timeZone);
 
-	exports.sendAt = cronTime => exports.time(cronTime).sendAt();
+export const sendAt = cronTime => exports.time(cronTime).sendAt();
 
-	exports.timeout = cronTime => exports.time(cronTime).getTimeout();
-
-	exports.CronJob = CronJob;
-	exports.CronTime = CronTime;
-
-	return exports;
-});
+export const timeout = cronTime => exports.time(cronTime).getTimeout();
