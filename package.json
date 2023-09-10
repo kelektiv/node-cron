@@ -10,9 +10,9 @@
 		"type": "git",
 		"url": "https://github.com/kelektiv/node-cron.git"
 	},
-	"main": "lib/cron",
+	"main": "src/cron",
 	"scripts": {
-		"lint": "eslint {lib,tests}/*.js",
+		"lint": "eslint {src,tests}/*.js",
 		"test": "jest --coverage",
 		"test:watch": "jest --watch --coverage",
 		"test:types": "tsd",
@@ -80,7 +80,7 @@
 	"jest": {
 		"collectCoverage": true,
 		"collectCoverageFrom": [
-			"lib/*.js"
+			"src/*.js"
 		],
 		"coverageThreshold": {
 			"global": {
@@ -92,7 +92,7 @@
 		}
 	},
 	"files": [
-		"lib",
+		"src",
 		"types",
 		"CHANGELOG.md",
 		"LICENSE",

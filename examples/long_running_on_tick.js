@@ -1,4 +1,4 @@
-const CronJob = require('../lib/cron.js').CronJob;
+const CronJob = require('../src/cron.js').CronJob;
 
 let isRunning = false;
 console.log('Before job instantiation');

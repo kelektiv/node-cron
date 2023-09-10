@@ -1,7 +1,7 @@
 /* eslint-disable no-new */
 const sinon = require('sinon');
 const luxon = require('luxon');
-const cron = require('../lib/cron');
+const cron = require('../src/cron');
 
 describe('crontime', () => {
 	it('should test stars (* * * * * *)', () => {

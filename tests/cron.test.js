@@ -1,6 +1,6 @@
 /* eslint-disable no-new */
 const sinon = require('sinon');
-const cron = require('../lib/cron');
+const cron = require('../src/cron');
 
 describe('cron', () => {
 	describe('with seconds', () => {

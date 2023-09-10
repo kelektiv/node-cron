@@ -1,7 +1,7 @@
-const CronJob = require('../lib/cron.js').CronJob;
+const CronJob = require('../src/cron.js').CronJob;
 
 console.log('Before job instantiation');
-const job = new CronJob('* * * * * *', function() {
+const job = new CronJob('* * * * * *', function () {
 	const d = new Date();
 	console.log('Every second:', d);
 });
