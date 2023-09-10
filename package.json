@@ -10,7 +10,7 @@
 		"type": "git",
 		"url": "https://github.com/kelektiv/node-cron.git"
 	},
-	"main": "src/cron",
+	"main": "dist/index",
 	"scripts": {
 		"build": "tsc -b",
 		"lint": "eslint {src,tests}/*.js",
@@ -89,7 +89,7 @@
 		}
 	},
 	"files": [
-		"src",
+		"dist",
 		"CHANGELOG.md",
 		"LICENSE",
 		"README.md"

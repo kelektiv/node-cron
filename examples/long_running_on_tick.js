@@ -1,15 +1,15 @@
-const CronJob = require('../src/cron.js').CronJob;
+const CronJob = require('../dist').CronJob;
 
 let isRunning = false;
 console.log('Before job instantiation');
-const job = new CronJob('* * * * * *', function() {
+const job = new CronJob('* * * * * *', function () {
 	const d = new Date();
 	console.log('Check every second:', d, ', isRunning: ', isRunning);
 
 	if (!isRunning) {
 		isRunning = true;
 
-		setTimeout(function() {
+		setTimeout(function () {
 			console.log('Long running onTick complete:', new Date());
 			isRunning = false;
 		}, 3000);

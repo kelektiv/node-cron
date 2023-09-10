@@ -13,7 +13,7 @@
 		"Jordan Abderrachid<jabderrachid@gmail.com>"
 	],
 	"description": "js cron handler",
-	"main": ["src/cron.js"],
+	"main": ["dist/index.js"],
 	"keywords": ["cron", "js"],
 	"license": "MIT",
 	"ignore": ["**/.*", "node_modules", "bower_components", "test", "tests"]

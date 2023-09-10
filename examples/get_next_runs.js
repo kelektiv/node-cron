@@ -1,4 +1,4 @@
-const CronJob = require('../src/cron.js').CronJob;
+const CronJob = require('../dist').CronJob;
 
 const job = new CronJob(
 	'0 * * * * *',
