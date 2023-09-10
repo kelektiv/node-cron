@@ -25,6 +25,8 @@ jobs:
           node-version: ${{ matrix.node }}
       - name: Install packages
         run: npm ci
+      - name: Build project
+        run: npm run build
       - name: Check codestyle compliance
         run: npm run lint
       - name: Check TS types
