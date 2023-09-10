@@ -1,3 +1,22 @@
+## [2.4.3](https://github.com/kelektiv/node-cron/compare/v2.4.2...v2.4.3) (2023-08-26)
+
+
+### 🐛 Bug Fixes
+
+* fix range parsing when upper limit = 0 ([#687](https://github.com/kelektiv/node-cron/issues/687)) ([d96746f](https://github.com/kelektiv/node-cron/commit/d96746f7b8f357e565d1fad48c9f70d3d646da64))
+
+
+### 🚨 Tests
+
+* add TS types check ([#690](https://github.com/kelektiv/node-cron/issues/690)) ([f046016](https://github.com/kelektiv/node-cron/commit/f046016dc64438c4a12a4615a919b046d3a846de))
+
+## [2.4.2](https://github.com/kelektiv/node-cron/compare/v2.4.1...v2.4.2) (2023-08-26)
+
+
+### 🐛 Bug Fixes
+
+* **deps:** update dependency luxon to v3.3.0 & add [@types](https://github.com/types)/luxon ([#689](https://github.com/kelektiv/node-cron/issues/689)) ([c95a449](https://github.com/kelektiv/node-cron/commit/c95a449121e440b82d391fc11f8dc148748f93ec)), closes [#688](https://github.com/kelektiv/node-cron/issues/688)
+
 ## [3.0.0-beta.3](https://github.com/kelektiv/node-cron/compare/v3.0.0-beta.2...v3.0.0-beta.3) (2023-08-15)
 
 
@@ -25,17 +44,6 @@
 ### ⚙️ Continuous Integrations
 
 * **renovate:** configure renovate ([#683](https://github.com/kelektiv/node-cron/issues/683)) ([9dbe962](https://github.com/kelektiv/node-cron/commit/9dbe962fad1c8b1b020441bce84ab91b1a7b4415))
-
-## [3.0.0-beta.1](https://github.com/kelektiv/node-cron/compare/v2.3.1...v3.0.0-beta.1) (2023-07-23)
-
-
-### ⚠ Breaking changes
-
-* UNIX standard alignments (#667)
-
-### ✨ Features
-
-* UNIX standard alignments ([#667](https://github.com/kelektiv/node-cron/issues/667)) ([96ef954](https://github.com/kelektiv/node-cron/commit/96ef954998f9c109cc2a969296568b1b56bbbd79))
 
 ## [2.4.1](https://github.com/kelektiv/node-cron/compare/v2.4.0...v2.4.1) (2023-08-14)
 
@@ -83,6 +91,17 @@
 
 * update default branch name ([#678](https://github.com/kelektiv/node-cron/issues/678)) ([7471e95](https://github.com/kelektiv/node-cron/commit/7471e95cb7433b4f29cfa68da0a652ec8cf630b6))
 * wrap setTime tests in describe and move down ([31989e0](https://github.com/kelektiv/node-cron/commit/31989e06f939bf1e9dbc6c0b6fc62c0a7144b9eb))
+
+## [3.0.0-beta.1](https://github.com/kelektiv/node-cron/compare/v2.3.1...v3.0.0-beta.1) (2023-07-23)
+
+
+### ⚠ Breaking changes
+
+* UNIX standard alignments (#667)
+
+### ✨ Features
+
+* UNIX standard alignments ([#667](https://github.com/kelektiv/node-cron/issues/667)) ([96ef954](https://github.com/kelektiv/node-cron/commit/96ef954998f9c109cc2a969296568b1b56bbbd79))
 
 ## [v2.3.1](https://github.com/kelektiv/node-cron/compare/v2.3.0...v2.3.1) (2023-05-25)
 
