@@ -69,10 +69,10 @@ const RE_WILDCARDS = /\*/g;
 const RE_RANGE = /^(\d+)(?:-(\d+))?(?:\/(\d+))?$/g;
 
 export class CronTime {
-	private source: string | Date | DateTime;
-	private zone?: string;
-	private utcOffset?: number;
-	private realDate: boolean = false;
+	source: string | Date | DateTime;
+	zone?: string;
+	utcOffset?: number;
+	realDate: boolean = false;
 
 	private second: Record<number, boolean>;
 	private minute: Record<number, boolean>;
@@ -729,6 +729,10 @@ export class CronTime {
 	 *   - Parse the value.
 	 */
 	private _parse(source) {
+		if (typeof source !== 'string') {
+			console.debug(typeof source);
+			console.debug(source);
+		}
 		source = source.toLowerCase();
 
 		if (source in PRESETS) {

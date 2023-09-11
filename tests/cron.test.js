@@ -171,7 +171,7 @@ describe('cron', () => {
 		it('should run every second (* * * * * *) using the object constructor', () => {
 			const clock = sinon.useFakeTimers();
 			const callback = jest.fn();
-			const job = new cron.CronJob({
+			const job = cron.CronJob.from({
 				cronTime: '* * * * * *',
 				onTick: callback,
 				start: true
@@ -185,7 +185,7 @@ describe('cron', () => {
 		it('should run every second with oncomplete (* * * * * *) using the object constructor', done => {
 			const clock = sinon.useFakeTimers();
 			const callback = jest.fn();
-			const job = new cron.CronJob({
+			const job = cron.CronJob.from({
 				cronTime: '* * * * * *',
 				onTick: callback,
 				onComplete: () => {
@@ -342,7 +342,7 @@ describe('cron', () => {
 
 			const d = new Date().getTime() + 31 * 86400 * 1000;
 
-			const job = cron.job(new Date(d), callback);
+			const job = new cron.CronJob(new Date(d), callback);
 			job.start();
 
 			clock.tick(1000);
@@ -358,7 +358,7 @@ describe('cron', () => {
 
 			const d = new Date().getTime() + 31 * 86400 * 1000;
 
-			const job = cron.job({
+			const job = cron.CronJob.from({
 				cronTime: new Date(d),
 				onTick: callback,
 				runOnInit: true
@@ -379,7 +379,7 @@ describe('cron', () => {
 			const clock = sinon.useFakeTimers();
 			const callback = jest.fn();
 
-			const job = cron.job({
+			const job = cron.CronJob.from({
 				cronTime: '* * * * * *',
 				onTick: callback,
 				runOnInit: true
@@ -504,7 +504,7 @@ describe('cron', () => {
 		it('should test if timezone is valid.', () => {
 			expect(() => {
 				// eslint-disable-next-line no-new
-				new cron.CronJob({
+				cron.CronJob.from({
 					cronTime: '* * * * * *',
 					onTick: () => {},
 					timeZone: 'fake/timezone'
@@ -556,7 +556,7 @@ describe('cron', () => {
 	it('should scope onTick to object within constructor object', () => {
 		const clock = sinon.useFakeTimers();
 
-		const job = new cron.CronJob({
+		const job = cron.CronJob.from({
 			cronTime: '* * * * * *',
 			onTick: function () {
 				expect(this.hello).toEqual('world');
@@ -642,7 +642,7 @@ describe('cron', () => {
 		d.setHours(23);
 		const clock = sinon.useFakeTimers(d.getTime());
 
-		const job = new cron.CronJob({
+		const job = cron.CronJob.from({
 			cronTime: '59 59 3 * * *',
 			onTick: callback,
 			start: true,
@@ -665,7 +665,7 @@ describe('cron', () => {
 		d.setHours(0);
 		const clock = sinon.useFakeTimers(d.getTime());
 
-		const job = new cron.CronJob({
+		const job = cron.CronJob.from({
 			cronTime: '0 2-6/2 * * * *',
 			onTick: callback,
 			start: true
@@ -692,7 +692,7 @@ describe('cron', () => {
 		d.setHours(0);
 		const clock = sinon.useFakeTimers(d.getTime());
 
-		const job = new cron.CronJob({
+		const job = cron.CronJob.from({
 			cronTime: '00 * * * * *',
 			onTick: callback,
 			start: true
@@ -716,7 +716,7 @@ describe('cron', () => {
 		d.setHours(0);
 		const clock = sinon.useFakeTimers(d.getTime());
 
-		const job = new cron.CronJob({
+		const job = cron.CronJob.from({
 			cronTime: '00 30 00 * * *',
 			onTick: callback,
 			start: true
@@ -744,7 +744,7 @@ describe('cron', () => {
 		d.setHours(23);
 		const clock = sinon.useFakeTimers(d.getTime());
 
-		const job = new cron.CronJob({
+		const job = cron.CronJob.from({
 			cronTime: '00 * * * * *',
 			onTick: callback,
 			start: true,
@@ -767,7 +767,7 @@ describe('cron', () => {
 		d.setHours(0);
 		const clock = sinon.useFakeTimers(d.getTime());
 
-		const job = new cron.CronJob({
+		const job = cron.CronJob.from({
 			cronTime: '00 30 00 * * *',
 			onTick: callback,
 			start: true,
@@ -794,7 +794,7 @@ describe('cron', () => {
 		const d = new Date(2015, 1, 1, 1, 1, 41, 0);
 		const clock = sinon.useFakeTimers(d.getTime());
 
-		const job = new cron.CronJob({
+		const job = cron.CronJob.from({
 			cronTime: '* * * * *',
 			onTick: callback,
 			start: true
@@ -819,7 +819,7 @@ describe('cron', () => {
 		const d = new Date(2096, 2, 1);
 		const clock = sinon.useFakeTimers(d.getTime());
 
-		const job = new cron.CronJob({
+		const job = cron.CronJob.from({
 			cronTime: ' * * 29 2 *',
 			onTick: callback,
 			start: true

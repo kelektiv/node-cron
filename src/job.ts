@@ -1,16 +1,83 @@
-function CronJob(CronTime, spawn) {
-	function fnWrap(cmd) {
-		let command;
-		let args;
+import { spawn } from 'child_process';
+import { CronTime } from './time';
+import { CronCommand, CronJobParams } from './types/interfaces';
+
+export class CronJob {
+	cronTime: CronTime;
+	running: boolean = false;
+	unrefTimeout: boolean = false;
+	lastExecution: Date | null = null;
+	runOnce: boolean = false;
+
+	context: any;
+	onComplete: any;
+
+	private _timeout: NodeJS.Timeout;
+	private _callbacks: ((...args: any) => any)[] = [];
+
+	constructor(
+		cronTime: CronJobParams['cronTime'],
+		onTick?: CronJobParams['onTick'],
+		onComplete?: CronJobParams['onComplete'],
+		start?: CronJobParams['start'],
+		timeZone?: CronJobParams['timeZone'],
+		context?: CronJobParams['context'],
+		runOnInit?: CronJobParams['runOnInit'],
+		utcOffset?: CronJobParams['utcOffset'],
+		unrefTimeout?: CronJobParams['unrefTimeout']
+	) {
+		let argCount = 0;
+		for (let i = 0; i < arguments.length; i++) {
+			if (arguments[i] !== undefined) {
+				argCount++;
+			}
+		}
+
+		this.context = context || this;
+		this.onComplete = this._fnWrap(onComplete);
+		this.cronTime = new CronTime(cronTime, timeZone, utcOffset);
+		this.unrefTimeout = unrefTimeout;
+
+		if (this.cronTime.realDate) {
+			this.runOnce = true;
+		}
+
+		this.addCallback(this._fnWrap(onTick));
+
+		if (runOnInit) {
+			this.lastExecution = new Date();
+			this.fireOnTick();
+		}
+
+		if (start) this.start();
+	}
+
+	static from(params: CronJobParams) {
+		return new CronJob(
+			params.cronTime,
+			params.onTick,
+			params.onComplete,
+			params.start,
+			params.timeZone,
+			params.context,
+			params.runOnInit,
+			params.utcOffset,
+			params.unrefTimeout
+		);
+	}
+
+	private _fnWrap(cmd: CronCommand | string) {
+		let command: string;
+		let args: ReadonlyArray<string>;
 
 		switch (typeof cmd) {
-			case 'string':
-				args = cmd.split(' ');
-				command = args.shift();
+			case 'string': {
+				[command, ...args] = cmd.split(' ');
 
 				return spawn.bind(undefined, command, args);
+			}
 
-			case 'object':
+			case 'object': {
 				command = cmd && cmd.command;
 				if (command) {
 					args = cmd.args;
@@ -19,71 +86,19 @@ function CronJob(CronTime, spawn) {
 					return spawn.bind(undefined, command, args, options);
 				}
 				break;
+			}
 		}
 
 		return cmd;
 	}
 
-	function CJ(
-		cronTime,
-		onTick,
-		onComplete,
-		startNow,
-		timeZone,
-		context,
-		runOnInit,
-		utcOffset,
-		unrefTimeout
-	) {
-		let _cronTime = cronTime;
-		let argCount = 0;
-		for (let i = 0; i < arguments.length; i++) {
-			if (arguments[i] !== undefined) {
-				argCount++;
-			}
-		}
-
-		if (typeof cronTime !== 'string' && argCount === 1) {
-			// crontime is an object...
-			onTick = cronTime.onTick;
-			onComplete = cronTime.onComplete;
-			context = cronTime.context;
-			startNow = cronTime.start || cronTime.startNow || cronTime.startJob;
-			timeZone = cronTime.timeZone;
-			runOnInit = cronTime.runOnInit;
-			_cronTime = cronTime.cronTime;
-			utcOffset = cronTime.utcOffset;
-			unrefTimeout = cronTime.unrefTimeout;
-		}
-
-		this.context = context || this;
-		this._callbacks = [];
-		this.onComplete = fnWrap(onComplete);
-		this.cronTime = new CronTime(_cronTime, timeZone, utcOffset);
-		this.unrefTimeout = unrefTimeout;
-
-		addCallback.call(this, fnWrap(onTick));
-
-		if (runOnInit) {
-			this.lastExecution = new Date();
-			fireOnTick.call(this);
-		}
-
-		if (startNow) {
-			start.call(this);
-		}
-
-		return this;
-	}
-
-	const addCallback = function (callback) {
+	addCallback(callback) {
 		if (typeof callback === 'function') {
 			this._callbacks.push(callback);
 		}
-	};
-	CJ.prototype.addCallback = addCallback;
+	}
 
-	CJ.prototype.setTime = function (time) {
+	setTime(time) {
 		if (typeof time !== 'object') {
 			// crontime is an object...
 			throw new Error('time must be an instance of CronTime.');
@@ -92,53 +107,47 @@ function CronJob(CronTime, spawn) {
 		this.stop();
 		this.cronTime = time;
 		if (wasRunning) this.start();
-	};
+	}
 
-	CJ.prototype.nextDate = function () {
+	nextDate() {
 		return this.cronTime.sendAt();
-	};
+	}
 
-	const fireOnTick = function () {
+	fireOnTick() {
 		for (let i = this._callbacks.length - 1; i >= 0; i--) {
 			this._callbacks[i].call(this.context, this.onComplete);
 		}
-	};
-	CJ.prototype.fireOnTick = fireOnTick;
+	}
 
-	CJ.prototype.nextDates = function (i) {
+	nextDates(i) {
 		return this.cronTime.sendAt(i || 0);
-	};
+	}
 
-	const start = function () {
+	start() {
 		if (this.running) {
 			return;
 		}
 
 		const MAXDELAY = 2147483647; // The maximum number of milliseconds setTimeout will wait.
-		const self = this;
 		let timeout = this.cronTime.getTimeout();
 		let remaining = 0;
 		let startTime;
 
-		if (this.cronTime.realDate) {
-			this.runOnce = true;
-		}
-
-		function _setTimeout(timeout) {
+		const _setTimeout = timeout => {
 			startTime = Date.now();
-			self._timeout = setTimeout(callbackWrapper, timeout);
-			if (self.unrefTimeout && typeof self._timeout.unref === 'function') {
-				self._timeout.unref();
+			this._timeout = setTimeout(callbackWrapper, timeout);
+			if (this.unrefTimeout && typeof this._timeout.unref === 'function') {
+				this._timeout.unref();
 			}
-		}
+		};
 
 		// The callback wrapper checks if it needs to sleep another period or not
 		// and does the real callback logic when it's time.
-		function callbackWrapper() {
+		const callbackWrapper = () => {
 			const diff = startTime + timeout - Date.now();
 
 			if (diff > 0) {
-				let newTimeout = self.cronTime.getTimeout();
+				let newTimeout = this.cronTime.getTimeout();
 
 				if (newTimeout > diff) {
 					newTimeout = diff;
@@ -151,7 +160,7 @@ function CronJob(CronTime, spawn) {
 			// again. This processing might make us miss the deadline by a few ms
 			// times the number of sleep sessions. Given a MAXDELAY of almost a
 			// month, this should be no issue.
-			self.lastExecution = new Date();
+			this.lastExecution = new Date();
 			if (remaining) {
 				if (remaining > MAXDELAY) {
 					remaining -= MAXDELAY;
@@ -165,16 +174,16 @@ function CronJob(CronTime, spawn) {
 			} else {
 				// We have arrived at the correct point in time.
 
-				self.running = false;
+				this.running = false;
 
 				// start before calling back so the callbacks have the ability to stop the cron job
-				if (!self.runOnce) {
-					self.start();
+				if (!this.runOnce) {
+					this.start();
 				}
 
-				self.fireOnTick();
+				this.fireOnTick();
 			}
-		}
+		};
 
 		if (timeout >= 0) {
 			this.running = true;
@@ -190,26 +199,20 @@ function CronJob(CronTime, spawn) {
 		} else {
 			this.stop();
 		}
-	};
+	}
 
-	CJ.prototype.start = start;
-
-	CJ.prototype.lastDate = function () {
+	lastDate() {
 		return this.lastExecution;
-	};
+	}
 
 	/**
 	 * Stop the cronjob.
 	 */
-	CJ.prototype.stop = function () {
+	stop() {
 		if (this._timeout) clearTimeout(this._timeout);
 		this.running = false;
 		if (typeof this.onComplete === 'function') {
 			this.onComplete();
 		}
-	};
-
-	return CJ;
+	}
 }
-
-module.exports = CronJob;
