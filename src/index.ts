@@ -1,17 +1,10 @@
 import { spawn } from 'child_process';
 import * as luxon from 'luxon';
-import { CronCommand } from 'types/interfaces';
+import { CronTime } from './time';
+import { CronCommand } from './types/interfaces';
 
-export const CronTime = require('./time')(luxon);
+export { CronTime } from './time';
 export const CronJob = require('./job')(CronTime, spawn);
-
-/**
- * Extend Luxon DateTime
- */
-// TODO: move to private function in time.js (prototype mutation bad)
-luxon.DateTime.prototype['getWeekDay'] = function () {
-	return this.weekday === 7 ? 0 : this.weekday;
-};
 
 export const job = (
 	cronTime: string | Date | luxon.DateTime,
