@@ -109,14 +109,14 @@ function CronTime(luxon) {
 			let ok = false;
 
 			/* if a dayOfMonth is not found in all months, we only need to fix the last
-                 wrong month  to prevent infinite loop */
+				 wrong month  to prevent infinite loop */
 			let lastWrongMonth = NaN;
 			for (let i = 0; i < months.length; i++) {
-				const m = months[i];
-				const con = MONTH_CONSTRAINTS[parseInt(m, 10) - 1];
+				const m = parseInt(months[i], 10);
+				const con = MONTH_CONSTRAINTS[m - 1];
 
 				for (let j = 0; j < dom.length; j++) {
-					const day = dom[j];
+					const day = parseInt(dom[j]);
 					if (day <= con) {
 						ok = true;
 					}
@@ -131,9 +131,9 @@ function CronTime(luxon) {
 
 			// infinite loop detected (dayOfMonth is not found in all months)
 			if (!ok) {
-				const notOkCon = MONTH_CONSTRAINTS[parseInt(lastWrongMonth, 10) - 1];
+				const notOkCon = MONTH_CONSTRAINTS[lastWrongMonth - 1];
 				for (let k = 0; k < dom.length; k++) {
-					const notOkDay = dom[k];
+					const notOkDay = parseInt(dom[k]);
 					if (notOkDay > notOkCon) {
 						delete this.dayOfMonth[notOkDay];
 						const fixedDay = Number(notOkDay) % notOkCon;
