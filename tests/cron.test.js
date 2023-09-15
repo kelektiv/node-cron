@@ -799,17 +799,15 @@ describe('cron', () => {
 			expect(callback).toHaveBeenCalledTimes(1);
 		});
 
-		it('should run a job using cron syntax with numeric format utcOffset, accounting for special offset behavior', () => {
+		it('should run a job using cron syntax with number format with minute support', () => {
 			const clock = sinon.useFakeTimers();
 			const callback = jest.fn();
-
 			const luxon = require('luxon');
 			// Current time
 			const t = luxon.DateTime.local();
 
-			const testMinutes = 45;
-			// Adjust the UTC offset
-			const adjustedOffset = t.offset - testMinutes;
+			// UTC Offset decreased by 80 minutes
+			const utcOffset = t.offset - 80;
 
 			const job = new cron.CronJob(
 				t.second + ' ' + t.minute + ' ' + t.hour + ' * * *',
@@ -819,28 +817,17 @@ describe('cron', () => {
 				null,
 				null,
 				null,
-				adjustedOffset
+				utcOffset
 			);
 
-			let tickAmount;
-			// Special handling for the offset
-			if (adjustedOffset < 60 && adjustedOffset > -60) {
-				tickAmount = 1000 * 60 * 60 * testMinutes; // treat offset as hours
-			} else {
-				tickAmount = 1000 * 60 * testMinutes; // treat offset as minutes
-			}
-
-			// Tick the clock to just before the expected execution
-			clock.tick(tickAmount - 1);
+			// tick 1 sec before 80 minutes
+			clock.tick(1000 * 80 * 60 - 1);
 			expect(callback).toHaveBeenCalledTimes(0);
 
-			// Tick the clock 1s to reach the expected execution
 			clock.tick(1);
-			expect(callback).toHaveBeenCalledTimes(1);
-
 			clock.restore();
-
 			job.stop();
+			expect(callback).toHaveBeenCalledTimes(1);
 		});
 
 		it('should run a job using cron syntax with string format utcOffset', () => {
