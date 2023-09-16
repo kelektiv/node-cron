@@ -871,8 +871,8 @@ describe('cron', () => {
 			const luxon = require('luxon');
 			// Current time
 			const t = luxon.DateTime.local();
-			// UTC Offset decreased by 45 minutes (string format '(+/-)HH:mm')
-			const utcOffset = t.offset - 45;
+			// UTC Offset decreased by 80 minutes (string format '(+/-)HH:mm')
+			const utcOffset = t.offset - 80;
 
 			const utcOffsetString = `${utcOffset > 0 ? '+' : '-'}${(
 				'0' + Math.floor(Math.abs(utcOffset) / 60)
@@ -888,8 +888,8 @@ describe('cron', () => {
 				null,
 				utcOffsetString
 			);
-			// tick to 1s before 45 minutes
-			clock.tick(1000 * 60 * 45 - 1000);
+			// tick to 1s before 80 minutes
+			clock.tick(1000 * 60 * 80 - 1000);
 			expect(callback).toHaveBeenCalledTimes(0);
 
 			// tick 1s
