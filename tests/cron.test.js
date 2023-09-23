@@ -398,7 +398,7 @@ describe('cron', () => {
 	});
 
 	describe('with timezone', () => {
-		it('should run a job using cron syntax', () => {
+		it('should run a job using cron syntax with a timezone', () => {
 			const clock = sinon.useFakeTimers();
 			const callback = jest.fn();
 			const luxon = require('luxon');
@@ -414,6 +414,46 @@ describe('cron', () => {
 				t = t.setZone(zone);
 			}
 			expect(d.hour).not.toBe(t.hour);
+
+			// If t = 59s12m then t.setSeconds(60)
+			// becomes 00s13m so we're fine just doing
+			// this and no testRun callback.
+			t = t.plus({ seconds: 1 });
+			// Run a job designed to be executed at a given
+			// time in `zone`, making sure that it is a different
+			// hour than local time.
+			const job = new cron.CronJob(
+				t.second + ' ' + t.minute + ' ' + t.hour + ' * * *',
+				callback,
+				null,
+				true,
+				zone
+			);
+
+			clock.tick(1000);
+			clock.restore();
+			job.stop();
+			expect(callback).toHaveBeenCalledTimes(1);
+		});
+
+		it('should run a job using cron syntax with a "UTC+HH:mm" offset as timezone', () => {
+			const clock = sinon.useFakeTimers();
+			const callback = jest.fn();
+			const luxon = require('luxon');
+
+			// Current time
+			const d = luxon.DateTime.local();
+
+			// Current time with zone offset
+			let zone = 'UTC+5:30';
+			let t = luxon.DateTime.local().setZone(zone);
+
+			// If current offset is UTC+5:30, switch to UTC+6:30..
+			if (t.hour === d.hour && t.minute === d.minute) {
+				zone = 'UTC+6:30';
+				t = t.setZone(zone);
+			}
+			expect(`${d.hour}:${d.minute}`).not.toBe(`${t.hour}:${t.minute}`);
 
 			// If t = 59s12m then t.setSeconds(60)
 			// becomes 00s13m so we're fine just doing
