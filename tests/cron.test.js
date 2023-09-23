@@ -799,15 +799,23 @@ describe('cron', () => {
 			expect(callback).toHaveBeenCalledTimes(1);
 		});
 
-		it('should run a job using cron syntax with number format with minute support', () => {
+		it('should run a job using cron syntax with numeric format utcOffset with minute support', () => {
 			const clock = sinon.useFakeTimers();
 			const callback = jest.fn();
 			const luxon = require('luxon');
 			// Current time
 			const t = luxon.DateTime.local();
 
-			// UTC Offset decreased by 80 minutes
-			const utcOffset = t.offset - 80;
+			/**
+			 * in order to avoid the minute offset being treated as hours (when `-60 < utcOffset < 60`) regardless of the local timezone,
+			 * and the maximum possible offset being +14:00, we simply add 80 minutes to that offset.
+			 * this implicit & undocumented behavior is planned to be removed in V3 anyway:
+			 * https://github.com/kelektiv/node-cron/pull/685#issuecomment-1676394391
+			 */
+			const minutesOffset = 14 * 60 + 80; // 920
+
+			// UTC Offset decreased by minutesOffset
+			const utcOffset = t.offset - minutesOffset;
 
 			const job = new cron.CronJob(
 				t.second + ' ' + t.minute + ' ' + t.hour + ' * * *',
@@ -820,8 +828,8 @@ describe('cron', () => {
 				utcOffset
 			);
 
-			// tick 1 sec before 80 minutes
-			clock.tick(1000 * 80 * 60 - 1);
+			// tick 1 sec before minutesOffset
+			clock.tick(1000 * minutesOffset * 60 - 1);
 			expect(callback).toHaveBeenCalledTimes(0);
 
 			clock.tick(1);
@@ -864,15 +872,23 @@ describe('cron', () => {
 			expect(callback).toHaveBeenCalledTimes(1);
 		});
 
-		it('should run a job using cron syntax with string format utcOffset with minute', () => {
+		it('should run a job using cron syntax with string format utcOffset with minute support', () => {
 			const clock = sinon.useFakeTimers();
 			const callback = jest.fn();
 
 			const luxon = require('luxon');
 			// Current time
 			const t = luxon.DateTime.local();
-			// UTC Offset decreased by 80 minutes (string format '(+/-)HH:mm')
-			const utcOffset = t.offset - 80;
+			/**
+			 * in order to avoid the minute offset being treated as hours (when `-60 < utcOffset < 60`) regardless of the local timezone,
+			 * and the maximum possible offset being +14:00, we simply add 80 minutes to that offset.
+			 * this implicit & undocumented behavior is planned to be removed in V3 anyway:
+			 * https://github.com/kelektiv/node-cron/pull/685#issuecomment-1676394391
+			 */
+			const minutesOffset = 14 * 60 + 80; // 920
+
+			// UTC Offset decreased by minutesOffset (string format '(+/-)HH:mm')
+			const utcOffset = t.offset - minutesOffset;
 
 			const utcOffsetString = `${utcOffset > 0 ? '+' : '-'}${(
 				'0' + Math.floor(Math.abs(utcOffset) / 60)
@@ -888,8 +904,8 @@ describe('cron', () => {
 				null,
 				utcOffsetString
 			);
-			// tick to 1s before 80 minutes
-			clock.tick(1000 * 60 * 80 - 1000);
+			// tick to 1s before minutesOffset
+			clock.tick(1000 * 60 * minutesOffset - 1000);
 			expect(callback).toHaveBeenCalledTimes(0);
 
 			// tick 1s
