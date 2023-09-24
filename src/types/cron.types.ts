@@ -34,6 +34,10 @@ export type CronCommand =
 
 export type TimeUnit = (typeof TIME_UNITS_MAP)[keyof typeof TIME_UNITS_MAP];
 
+export type TimeUnitField<T extends TimeUnit> = Partial<
+	Record<Ranges[T], boolean>
+>;
+
 export type Ranges = {
 	second: SecondRange;
 	minute: MinuteRange;

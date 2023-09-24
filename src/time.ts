@@ -16,25 +16,10 @@ import {
 	DayOfMonthRange,
 	MonthRange,
 	Ranges,
-	TimeUnit
+	TimeUnit,
+	TimeUnitField
 } from './types/cron.types';
-import { IntRange } from './types/utils';
 import { getRecordKeys } from './utils';
-
-const generateRecord = <L extends number, U extends number>([
-	lower,
-	upper
-]: readonly [L, U]): Record<IntRange<L, U>, false> => {
-	const record: Record<IntRange<L, U>, false> = {};
-
-	for (let i = lower; i < upper; i++) {
-		record[i as IntRange<L, U>] = false;
-	}
-
-	return record;
-
-	// return Object.assign({},...Object.keys(enumX).map(x=>({[x]:defaultValue})))
-};
 
 export class CronTime {
 	source: string | Date | DateTime;
@@ -42,24 +27,12 @@ export class CronTime {
 	utcOffset?: number;
 	realDate: boolean = false;
 
-	private second: Record<Ranges['second'], boolean> = generateRecord(
-		CONSTRAINTS['second']
-	);
-	private minute: Record<Ranges['minute'], boolean> = generateRecord(
-		CONSTRAINTS['minute']
-	);
-	private hour: Record<Ranges['hour'], boolean> = generateRecord(
-		CONSTRAINTS['hour']
-	);
-	private dayOfMonth: Record<Ranges['dayOfMonth'], boolean> = generateRecord(
-		CONSTRAINTS['dayOfMonth']
-	);
-	private month: Record<Ranges['month'], boolean> = generateRecord(
-		CONSTRAINTS['month']
-	);
-	private dayOfWeek: Record<Ranges['dayOfWeek'], boolean> = generateRecord(
-		CONSTRAINTS['dayOfWeek']
-	);
+	private second: TimeUnitField<'second'> = {};
+	private minute: TimeUnitField<'minute'> = {};
+	private hour: TimeUnitField<'hour'> = {};
+	private dayOfMonth: TimeUnitField<'dayOfMonth'> = {};
+	private month: TimeUnitField<'month'> = {};
+	private dayOfWeek: TimeUnitField<'dayOfWeek'> = {};
 
 	constructor(
 		source: string | Date | DateTime,
@@ -757,7 +730,7 @@ export class CronTime {
 	 */
 
 	private _parseField(value: string, unit: TimeUnit) {
-		const typeObj = this[unit] as Record<Ranges[typeof unit], boolean>;
+		const typeObj = this[unit] as TimeUnitField<typeof unit>;
 		let pointer: Ranges[typeof unit];
 
 		const constraints = CONSTRAINTS[unit];
@@ -779,22 +752,17 @@ export class CronTime {
 		const allRanges = value.split(',');
 
 		for (let range of allRanges) {
-			const match = range.match(RE_RANGE);
-			if (
-				match &&
-				match[1] !== undefined &&
-				match[2] !== undefined &&
-				match[3] !== undefined
-			) {
+			const match = [...range.matchAll(RE_RANGE)][0];
+			if (match !== undefined && match[1] !== undefined) {
 				let [_, _lower, _upper, _step] = match;
 				let lower = parseInt(_lower, 10);
 				let upper = _upper !== undefined ? parseInt(_upper, 10) : undefined;
 
-				const wasStepDefined = !isNaN(parseInt(_step, 10));
+				const wasStepDefined = _step !== undefined;
 				if (_step === '0') {
 					throw new Error(`Field (${unit}) has a step of zero`);
 				}
-				const step = parseInt(_step, 10) || 1;
+				const step = parseInt(_step ?? '1', 10);
 
 				if (upper !== undefined && lower > upper) {
 					throw new Error(`Field (${unit}) has an invalid range`);
@@ -830,17 +798,12 @@ export class CronTime {
 					pointer += step;
 				} while (pointer <= upper);
 
-				/**
-				 * TODO:
-				 * find alternative solution because now `*` won't be rendered correctly when
-				 * exporting the cron string since not all keys equals true
-				 */
 				// merge day 7 into day 0 (both Sunday), and remove day 7
 				// since we work with day-of-week 0-6 under the hood
-				// if (unit === 'dayOfWeek') {
-				// 	if (!typeObj[0] && !!typeObj[7]) typeObj[0] = typeObj[7];
-				// 	delete typeObj[7];
-				// }
+				if (unit === 'dayOfWeek') {
+					if (!typeObj[0] && !!typeObj[7]) typeObj[0] = typeObj[7];
+					delete typeObj[7];
+				}
 			} else {
 				throw new Error(`Field (${unit}) cannot be parsed`);
 			}

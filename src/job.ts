@@ -1,6 +1,6 @@
 import { spawn } from 'child_process';
 import { CronTime } from './time';
-import { CronCommand, CronJobParams } from './types/interfaces';
+import { CronCommand, CronJobParams } from './types/cron.types';
 
 export class CronJob {
 	cronTime: CronTime;
@@ -10,14 +10,14 @@ export class CronJob {
 	runOnce: boolean = false;
 
 	context: any;
-	onComplete: any;
+	onComplete?: (...args: any) => any;
 
-	private _timeout: NodeJS.Timeout;
+	private _timeout?: NodeJS.Timeout;
 	private _callbacks: ((...args: any) => any)[] = [];
 
 	constructor(
 		cronTime: CronJobParams['cronTime'],
-		onTick?: CronJobParams['onTick'],
+		onTick: CronJobParams['onTick'],
 		onComplete?: CronJobParams['onComplete'],
 		start?: CronJobParams['start'],
 		timeZone?: CronJobParams['timeZone'],
@@ -34,9 +34,15 @@ export class CronJob {
 		}
 
 		this.context = context || this;
-		this.onComplete = this._fnWrap(onComplete);
 		this.cronTime = new CronTime(cronTime, timeZone, utcOffset);
-		this.unrefTimeout = unrefTimeout;
+
+		if (unrefTimeout !== undefined) {
+			this.unrefTimeout = unrefTimeout;
+		}
+
+		if (onComplete !== null && onComplete !== undefined) {
+			this.onComplete = this._fnWrap(onComplete);
+		}
 
 		if (this.cronTime.realDate) {
 			this.runOnce = true;
@@ -67,40 +73,36 @@ export class CronJob {
 	}
 
 	private _fnWrap(cmd: CronCommand | string) {
-		let command: string;
-		let args: ReadonlyArray<string>;
-
 		switch (typeof cmd) {
-			case 'string': {
-				[command, ...args] = cmd.split(' ');
+			case 'function': {
+				return cmd;
+			}
 
-				return spawn.bind(undefined, command, args);
+			case 'string': {
+				const [command, ...args] = cmd.split(' ');
+
+				return spawn.bind(undefined, command ?? cmd, args);
 			}
 
 			case 'object': {
-				command = cmd && cmd.command;
-				if (command) {
-					args = cmd.args;
-					const options = cmd.options;
+				const command = cmd && cmd.command;
 
-					return spawn.bind(undefined, command, args, options);
-				}
-				break;
+				const args = cmd.args;
+				const options = cmd.options;
+
+				return spawn.bind(undefined, command, args ?? [], options ?? {});
 			}
 		}
-
-		return cmd;
 	}
 
-	addCallback(callback) {
+	addCallback(callback: (...args: any) => any) {
 		if (typeof callback === 'function') {
 			this._callbacks.push(callback);
 		}
 	}
 
-	setTime(time) {
-		if (typeof time !== 'object') {
-			// crontime is an object...
+	setTime(time: CronTime) {
+		if (!(time instanceof CronTime)) {
 			throw new Error('time must be an instance of CronTime.');
 		}
 		const wasRunning = this.running;
@@ -114,12 +116,12 @@ export class CronJob {
 	}
 
 	fireOnTick() {
-		for (let i = this._callbacks.length - 1; i >= 0; i--) {
-			this._callbacks[i].call(this.context, this.onComplete);
+		for (let callback of this._callbacks) {
+			callback.call(this.context, this.onComplete);
 		}
 	}
 
-	nextDates(i) {
+	nextDates(i: number) {
 		return this.cronTime.sendAt(i || 0);
 	}
 
@@ -131,11 +133,11 @@ export class CronJob {
 		const MAXDELAY = 2147483647; // The maximum number of milliseconds setTimeout will wait.
 		let timeout = this.cronTime.getTimeout();
 		let remaining = 0;
-		let startTime;
+		let startTime: number;
 
-		const _setTimeout = timeout => {
+		const _setTimeout = (t: number) => {
 			startTime = Date.now();
-			this._timeout = setTimeout(callbackWrapper, timeout);
+			this._timeout = setTimeout(callbackWrapper, t);
 			if (this.unrefTimeout && typeof this._timeout.unref === 'function') {
 				this._timeout.unref();
 			}
