@@ -2,9 +2,9 @@
 	"compilerOptions": {
 		"target": "ES2015",
 		"module": "commonjs",
-		"baseUrl": "./src",
 		"outDir": "./dist",
 		"incremental": true,
+		"declaration": true,
 		"removeComments": true,
 		"esModuleInterop": true,
 		"allowSyntheticDefaultImports": true,
@@ -15,29 +15,19 @@
 		/**
 		 * strictest Typescript possible
 		 */
-		// "strict": true,
-		// "forceConsistentCasingInFileNames": true,
-		// "noFallthroughCasesInSwitch": true,
-		// "noImplicitReturns": true,
-		// "noPropertyAccessFromIndexSignature": true,
-		// "noImplicitOverride": true,
-		// "exactOptionalPropertyTypes": true,
-		// "noUncheckedIndexedAccess": true,
-		// "allowUnusedLabels": false,
-		// "allowUnreachableCode": false,
-		// "noUnusedLocals": true,
-		// "noUnusedParameters": true,
-		// "strictPropertyInitialization": true,
-
-		/**
-		 * to enable after migration
-		 */
-		// "declaration": true,
-
-		/**
-		 * to remove after migration
-		 */
-		"allowJs": true
+		"strict": true,
+		"forceConsistentCasingInFileNames": true,
+		"noFallthroughCasesInSwitch": true,
+		"noImplicitReturns": true,
+		"noPropertyAccessFromIndexSignature": true,
+		"noImplicitOverride": true,
+		"exactOptionalPropertyTypes": true,
+		"noUncheckedIndexedAccess": true,
+		"allowUnusedLabels": false,
+		"allowUnreachableCode": false,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"strictPropertyInitialization": true
 	},
 	"include": ["./src/**/*"],
 	"exclude": ["node_modules", "tests", "dist", "**/*spec.ts"]
