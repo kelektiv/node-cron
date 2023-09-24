@@ -25,7 +25,7 @@ export class CronTime {
 	source: string | Date | DateTime;
 	zone?: string;
 	utcOffset?: number;
-	realDate: boolean = false;
+	realDate = false;
 
 	private second: TimeUnitField<'second'> = {};
 	private minute: TimeUnitField<'minute'> = {};
@@ -77,21 +77,23 @@ export class CronTime {
 		const months = getRecordKeys(this.month);
 		const daysOfMonth = getRecordKeys(this.dayOfMonth);
 
-		let ok = false;
+		let isOk = false;
 
-		/* if a dayOfMonth is not found in all months, we only need to fix the last
-				 wrong month  to prevent infinite loop */
+		/**
+		 * if a dayOfMonth is not found in all months, we only need to fix the last
+		 * wrong month to prevent infinite loop
+		 */
 		let lastWrongMonth: MonthRange | null = null;
-		for (let m of months) {
+		for (const m of months) {
 			const con = MONTH_CONSTRAINTS[m];
 
-			for (let day of daysOfMonth) {
+			for (const day of daysOfMonth) {
 				if (day <= con) {
-					ok = true;
+					isOk = true;
 				}
 			}
 
-			if (!ok) {
+			if (!isOk) {
 				// save the month in order to be fixed if all months fails (infinite loop)
 				lastWrongMonth = m;
 				console.warn(`Month '${m}' is limited to '${con}' days.`);
@@ -99,10 +101,12 @@ export class CronTime {
 		}
 
 		// infinite loop detected (dayOfMonth is not found in all months)
-		if (!ok && lastWrongMonth !== null) {
+		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+		if (!isOk && lastWrongMonth !== null) {
 			const notOkCon = MONTH_CONSTRAINTS[lastWrongMonth];
-			for (let notOkDay of daysOfMonth) {
+			for (const notOkDay of daysOfMonth) {
 				if (notOkDay > notOkCon) {
+					// eslint-disable-next-line @typescript-eslint/no-dynamic-delete
 					delete this.dayOfMonth[notOkDay];
 					const fixedDay = (notOkDay % notOkCon) as DayOfMonthRange;
 					this.dayOfMonth[fixedDay] = true;
@@ -126,7 +130,7 @@ export class CronTime {
 		}
 
 		if (typeof this.utcOffset !== 'undefined') {
-			let offsetHours =
+			const offsetHours =
 				this.utcOffset >= 60 || this.utcOffset <= -60
 					? this.utcOffset / 60
 					: this.utcOffset;
@@ -192,9 +196,8 @@ export class CronTime {
 	 * Json representation of the parsed cron syntax.
 	 */
 	toJSON() {
-		const self = this;
-		return TIME_UNITS.map(function (timeName) {
-			return self._wcOrAll(timeName);
+		return TIME_UNITS.map(unit => {
+			return this._wcOrAll(unit);
 		});
 	}
 
@@ -243,6 +246,7 @@ export class CronTime {
 		const maxMatch = DateTime.now().plus({ years: 8 });
 
 		// determine next date
+		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 		while (true) {
 			const diff = date.toMillis() - start.toMillis();
 
@@ -251,8 +255,11 @@ export class CronTime {
 				throw new Error(
 					`Something went wrong. No execution date was found in the next 8 years.
 							Please provide the following string if you would like to help debug:
-							Time Zone: ${zone || '""'} - Cron String: ${this} - UTC offset: ${date.offset}
-							- current Date: ${DateTime.local().toString()}`
+							Time Zone: ${
+								zone?.toString() ?? '""'
+							} - Cron String: ${this.source.toString()} - UTC offset: ${
+						date.offset
+					} - current Date: ${DateTime.local().toString()}`
 				);
 			}
 
@@ -264,9 +271,9 @@ export class CronTime {
 				date = date.set({ day: 1, hour: 0, minute: 0, second: 0 });
 
 				if (this._forwardDSTJump(0, 0, date)) {
-					const [done, newDate] = this._findPreviousDSTJump(date);
+					const [isDone, newDate] = this._findPreviousDSTJump(date);
 					date = newDate;
-					if (done) break;
+					if (isDone) break;
 				}
 				continue;
 			}
@@ -283,9 +290,9 @@ export class CronTime {
 				date = date.set({ hour: 0, minute: 0, second: 0 });
 
 				if (this._forwardDSTJump(0, 0, date)) {
-					const [done, newDate] = this._findPreviousDSTJump(date);
+					const [isDone, newDate] = this._findPreviousDSTJump(date);
 					date = newDate;
-					if (done) break;
+					if (isDone) break;
 				}
 				continue;
 			}
@@ -301,9 +308,9 @@ export class CronTime {
 				date = date.plus({ days: 1 });
 				date = date.set({ hour: 0, minute: 0, second: 0 });
 				if (this._forwardDSTJump(0, 0, date)) {
-					const [done, newDate] = this._findPreviousDSTJump(date);
+					const [isDone, newDate] = this._findPreviousDSTJump(date);
 					date = newDate;
-					if (done) break;
+					if (isDone) break;
 				}
 				continue;
 			}
@@ -321,9 +328,9 @@ export class CronTime {
 				// When this happens, the job should be scheduled to execute as though the time has come when the jump is made.
 				// Therefore, the job should be scheduled on the first tick after the forward jump.
 				if (this._forwardDSTJump(expectedHour, expectedMinute, date)) {
-					const [done, newDate] = this._findPreviousDSTJump(date);
+					const [isDone, newDate] = this._findPreviousDSTJump(date);
 					date = newDate;
-					if (done) break;
+					if (isDone) break;
 				}
 				// backwards jumps do not seem to have any problems (i.e. double activations),
 				// so they need not be handled in a similar way.
@@ -345,9 +352,9 @@ export class CronTime {
 				// Same case as with hours: DST forward jump.
 				// This must be accounted for if a minute increment pushed us to a jumping point.
 				if (this._forwardDSTJump(expectedHour, expectedMinute, date)) {
-					const [done, newDate] = this._findPreviousDSTJump(date);
+					const [isDone, newDate] = this._findPreviousDSTJump(date);
 					date = newDate;
-					if (done) break;
+					if (isDone) break;
 				}
 
 				continue;
@@ -366,9 +373,9 @@ export class CronTime {
 
 				// Seconds can cause it too, imagine 21:59:59 -> 23:00:00.
 				if (this._forwardDSTJump(expectedHour, expectedMinute, date)) {
-					const [done, newDate] = this._findPreviousDSTJump(date);
+					const [isDone, newDate] = this._findPreviousDSTJump(date);
 					date = newDate;
-					if (done) break;
+					if (isDone) break;
 				}
 
 				continue;
@@ -383,9 +390,9 @@ export class CronTime {
 
 				// Same as always.
 				if (this._forwardDSTJump(expectedHour, expectedMinute, date)) {
-					const [done, newDate] = this._findPreviousDSTJump(date);
+					const [isDone, newDate] = this._findPreviousDSTJump(date);
 					date = newDate;
-					if (done) break;
+					if (isDone) break;
 				}
 
 				continue;
@@ -421,7 +428,9 @@ export class CronTime {
 		do {
 			if (++iteration > iterationLimit) {
 				throw new Error(
-					`ERROR: This DST checking related function assumes the input DateTime (${date.toISO()}) is within 24 hours of a DST jump.`
+					`ERROR: This DST checking related function assumes the input DateTime (${
+						date.toISO() ?? date.toMillis()
+					}) is within 24 hours of a DST jump.`
 				);
 			}
 
@@ -632,10 +641,10 @@ export class CronTime {
 		const actualHour = actualDate.hour;
 		const actualMinute = actualDate.minute;
 
-		const hoursJumped = expectedHour % 24 < actualHour;
-		const minutesJumped = expectedMinute % 60 < actualMinute;
+		const didHoursJumped = expectedHour % 24 < actualHour;
+		const didMinutesJumped = expectedMinute % 60 < actualMinute;
 
-		return hoursJumped || minutesJumped;
+		return didHoursJumped || didMinutesJumped;
 	}
 
 	/**
@@ -707,7 +716,7 @@ export class CronTime {
 		}
 
 		const unitsLen = units.length;
-		for (let unit of TIME_UNITS) {
+		for (const unit of TIME_UNITS) {
 			const i = TIME_UNITS.indexOf(unit);
 			// If the split source string doesn't contain all digits,
 			// assume defaults for first n missing digits.
@@ -751,29 +760,29 @@ export class CronTime {
 		// commas separate information, so split based on those
 		const allRanges = value.split(',');
 
-		for (let range of allRanges) {
+		for (const range of allRanges) {
 			const match = [...range.matchAll(RE_RANGE)][0];
-			if (match !== undefined && match[1] !== undefined) {
-				let [_, _lower, _upper, _step] = match;
-				let lower = parseInt(_lower, 10);
-				let upper = _upper !== undefined ? parseInt(_upper, 10) : undefined;
+			if (match?.[1] !== undefined) {
+				const [, mLower, mUpper, mStep] = match;
+				let lower = parseInt(mLower, 10);
+				let upper = mUpper !== undefined ? parseInt(mUpper, 10) : undefined;
 
-				const wasStepDefined = _step !== undefined;
-				if (_step === '0') {
+				const wasStepDefined = mStep !== undefined;
+				if (mStep === '0') {
 					throw new Error(`Field (${unit}) has a step of zero`);
 				}
-				const step = parseInt(_step ?? '1', 10);
+				const step = parseInt(mStep ?? '1', 10);
 
 				if (upper !== undefined && lower > upper) {
 					throw new Error(`Field (${unit}) has an invalid range`);
 				}
 
-				const outOfRangeError =
+				const isOutOfRange =
 					lower < low ||
 					(upper !== undefined && upper > high) ||
 					(upper === undefined && lower > high);
 
-				if (outOfRangeError) {
+				if (isOutOfRange) {
 					throw new Error(`Field value (${value}) is out of range`);
 				}
 

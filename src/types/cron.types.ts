@@ -13,7 +13,7 @@ export interface CronJobParams {
 	onComplete?: CronCommand | null | undefined;
 	start?: boolean | undefined;
 	timeZone?: string | undefined;
-	context?: any;
+	context?: unknown;
 	runOnInit?: boolean | undefined;
 	utcOffset?: string | number | undefined;
 	unrefTimeout?: boolean | undefined;
@@ -24,7 +24,7 @@ export type CronCommand =
 	| string
 	| {
 			command: string;
-			args?: ReadonlyArray<string> | undefined;
+			args?: readonly string[] | undefined;
 			options?: SpawnOptions | undefined;
 	  };
 
@@ -38,14 +38,14 @@ export type TimeUnitField<T extends TimeUnit> = Partial<
 	Record<Ranges[T], boolean>
 >;
 
-export type Ranges = {
+export interface Ranges {
 	second: SecondRange;
 	minute: MinuteRange;
 	hour: HourRange;
 	dayOfMonth: DayOfMonthRange;
 	month: MonthRange;
 	dayOfWeek: DayOfWeekRange;
-};
+}
 
 export type SecondRange = IntRange<
 	(typeof CONSTRAINTS)['second'][0],

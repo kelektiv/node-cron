@@ -4,16 +4,17 @@ import { CronCommand, CronJobParams } from './types/cron.types';
 
 export class CronJob {
 	cronTime: CronTime;
-	running: boolean = false;
-	unrefTimeout: boolean = false;
+	running = false;
+	unrefTimeout = false;
 	lastExecution: Date | null = null;
-	runOnce: boolean = false;
-
-	context: any;
-	onComplete?: (...args: any) => any;
+	runOnce = false;
+	context: unknown;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	onComplete?: (...args: any) => void;
 
 	private _timeout?: NodeJS.Timeout;
-	private _callbacks: ((...args: any) => any)[] = [];
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	private _callbacks: ((...args: any) => void)[] = [];
 
 	constructor(
 		cronTime: CronJobParams['cronTime'],
@@ -26,13 +27,6 @@ export class CronJob {
 		utcOffset?: CronJobParams['utcOffset'],
 		unrefTimeout?: CronJobParams['unrefTimeout']
 	) {
-		let argCount = 0;
-		for (let i = 0; i < arguments.length; i++) {
-			if (arguments[i] !== undefined) {
-				argCount++;
-			}
-		}
-
 		this.context = context || this;
 		this.cronTime = new CronTime(cronTime, timeZone, utcOffset);
 
@@ -85,17 +79,18 @@ export class CronJob {
 			}
 
 			case 'object': {
-				const command = cmd && cmd.command;
-
-				const args = cmd.args;
-				const options = cmd.options;
-
-				return spawn.bind(undefined, command, args ?? [], options ?? {});
+				return spawn.bind(
+					undefined,
+					cmd.command,
+					cmd.args ?? [],
+					cmd.options ?? {}
+				);
 			}
 		}
 	}
 
-	addCallback(callback: (...args: any) => any) {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	addCallback(callback: (...args: any) => void) {
 		if (typeof callback === 'function') {
 			this._callbacks.push(callback);
 		}
@@ -116,7 +111,7 @@ export class CronJob {
 	}
 
 	fireOnTick() {
-		for (let callback of this._callbacks) {
+		for (const callback of this._callbacks) {
 			callback.call(this.context, this.onComplete);
 		}
 	}
@@ -135,7 +130,7 @@ export class CronJob {
 		let remaining = 0;
 		let startTime: number;
 
-		const _setTimeout = (t: number) => {
+		const setCronTimeout = (t: number) => {
 			startTime = Date.now();
 			this._timeout = setTimeout(callbackWrapper, t);
 			if (this.unrefTimeout && typeof this._timeout.unref === 'function') {
@@ -172,7 +167,7 @@ export class CronJob {
 					remaining = 0;
 				}
 
-				_setTimeout(timeout);
+				setCronTimeout(timeout);
 			} else {
 				// We have arrived at the correct point in time.
 
@@ -197,7 +192,7 @@ export class CronJob {
 				timeout = MAXDELAY;
 			}
 
-			_setTimeout(timeout);
+			setCronTimeout(timeout);
 		} else {
 			this.stop();
 		}

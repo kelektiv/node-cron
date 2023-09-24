@@ -11,7 +11,7 @@ export const time = (
 ): CronTime => new CronTime(source, zone, utcOffset);
 
 export const sendAt = (cronTime: string | Date | DateTime): DateTime =>
-	exports.time(cronTime).sendAt();
+	time(cronTime).sendAt();
 
 export const timeout = (cronTime: string | Date | DateTime): number =>
-	exports.time(cronTime).getTimeout();
+	time(cronTime).getTimeout();
