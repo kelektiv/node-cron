@@ -235,7 +235,7 @@ describe('crontime', () => {
 
 		for (let hr = 0; hr < numHours; hr++) {
 			const start = new Date(2012, 3, 16, hr, 30, 30);
-			const next = ct._getNextDateFrom(start);
+			const next = ct.getNextDateFrom(start);
 			expect(next - start).toBeLessThan(24 * 60 * 60 * 1000);
 			expect(next.toMillis()).toBeGreaterThan(start.getTime());
 		}
@@ -252,7 +252,7 @@ describe('crontime', () => {
 
 		const nextDate = new Date();
 		nextDate.setHours(23);
-		const nextdt = ct._getNextDateFrom(nextDate);
+		const nextdt = ct.getNextDateFrom(nextDate);
 
 		expect(nextdt.toMillis()).toBeGreaterThan(nextDate.getTime());
 		expect(nextdt.hour % 4).toEqual(0);
@@ -263,7 +263,7 @@ describe('crontime', () => {
 		const nextDate = new Date('My invalid date string');
 
 		expect(() => {
-			ct._getNextDateFrom(nextDate);
+			ct.getNextDateFrom(nextDate);
 		}).toThrow('ERROR: You specified an invalid date.');
 	});
 
@@ -346,7 +346,7 @@ describe('crontime', () => {
 
 	it('should strip off millisecond', () => {
 		const cronTime = new cron.CronTime('0 */10 * * * *');
-		const x = cronTime._getNextDateFrom(new Date('2018-08-10T02:20:00.999Z'));
+		const x = cronTime.getNextDateFrom(new Date('2018-08-10T02:20:00.999Z'));
 		expect(x.toMillis()).toEqual(
 			new Date('2018-08-10T02:30:00.000Z').getTime()
 		);
@@ -354,21 +354,21 @@ describe('crontime', () => {
 
 	it('should strip off millisecond (2)', () => {
 		const cronTime = new cron.CronTime('0 */10 * * * *');
-		const x = cronTime._getNextDateFrom(new Date('2018-08-10T02:19:59.999Z'));
+		const x = cronTime.getNextDateFrom(new Date('2018-08-10T02:19:59.999Z'));
 		expect(x.toMillis()).toEqual(
 			new Date('2018-08-10T02:20:00.000Z').getTime()
 		);
 	});
 
-	it('should expose _getNextDateFrom as a public function', () => {
+	it('should expose getNextDateFrom as a public function', () => {
 		const cronTime = new cron.CronTime('0 */10 * * * *');
-		cronTime._getNextDateFrom = jest.fn();
+		cronTime.getNextDateFrom = jest.fn();
 
 		const testDate = new Date('2018-08-10T02:19:59.999Z');
 		const testTimezone = 'Asia/Amman';
 		cronTime.getNextDateFrom(testDate, testTimezone);
 
-		expect(cronTime._getNextDateFrom).toHaveBeenCalledWith(
+		expect(cronTime.getNextDateFrom).toHaveBeenCalledWith(
 			testDate,
 			testTimezone
 		);
@@ -379,7 +379,7 @@ describe('crontime', () => {
 		const min = 60000;
 		let previousDate = new Date(Date.UTC(2018, 5, 3, 0, 0));
 		for (let i = 0; i < 25; i++) {
-			const nextDate = cronTime._getNextDateFrom(previousDate);
+			const nextDate = cronTime.getNextDateFrom(previousDate);
 			expect(nextDate.valueOf()).toEqual(previousDate.valueOf() + min);
 			previousDate = nextDate;
 		}
@@ -390,7 +390,7 @@ describe('crontime', () => {
 		const min = 60000 * 15;
 		let previousDate = new Date(Date.UTC(2016, 6, 3, 0, 0));
 		for (let i = 0; i < 25; i++) {
-			const nextDate = cronTime._getNextDateFrom(previousDate);
+			const nextDate = cronTime.getNextDateFrom(previousDate);
 			expect(nextDate.valueOf()).toEqual(previousDate.valueOf() + min);
 			previousDate = nextDate;
 		}
@@ -399,7 +399,7 @@ describe('crontime', () => {
 		const d = new Date('10-7-2018');
 		// America/Sao_Paulo has a time zone change around NOV 3 2018.
 		const cronTime = new cron.CronTime('0 0 9 4 * *');
-		const nextDate = cronTime._getNextDateFrom(d, 'America/Sao_Paulo');
+		const nextDate = cronTime.getNextDateFrom(d, 'America/Sao_Paulo');
 		expect(nextDate.valueOf()).toEqual(
 			luxon.DateTime.fromISO('2018-11-04T09:00:00.000-02:00').valueOf()
 		);
@@ -410,7 +410,7 @@ describe('crontime', () => {
 			zone: 'Asia/Amman'
 		});
 		const cronTime = new cron.CronTime('0 0 * * *');
-		const nextDate = cronTime._getNextDateFrom(currentDate, 'Asia/Amman');
+		const nextDate = cronTime.getNextDateFrom(currentDate, 'Asia/Amman');
 		const expectedDate = luxon.DateTime.fromISO('2018-10-26T00:00+03:00', {
 			zone: 'Asia/Amman'
 		});
@@ -423,7 +423,7 @@ describe('crontime', () => {
 		});
 		const cronTime = new cron.CronTime('* * * * *');
 		for (let i = 0; i < 100; i++) {
-			const nextDate = cronTime._getNextDateFrom(currentDate, 'Asia/Amman');
+			const nextDate = cronTime.getNextDateFrom(currentDate, 'Asia/Amman');
 			expect(nextDate - currentDate).toEqual(1000 * 60);
 			currentDate = nextDate;
 		}
@@ -433,15 +433,15 @@ describe('crontime', () => {
 			zone: 'Asia/Amman'
 		});
 		const cronTime = new cron.CronTime('30 0 * * 5'); // the next 0:30 is March 30th, but it will jump from 0:00 to 1:00.
-		let nextDate = cronTime._getNextDateFrom(currentDate, 'Asia/Amman');
+		let nextDate = cronTime.getNextDateFrom(currentDate, 'Asia/Amman');
 		expect(nextDate - currentDate).toEqual(1000 * 60 * 45); // 45 minutes is 30T00:00, which jumps to 1:00 which is past the trigger of 0:30.
 		// the next one should just be at 0:30 again. i.e. a week minus 30 minutes.
 		currentDate = nextDate;
-		nextDate = cronTime._getNextDateFrom(currentDate);
+		nextDate = cronTime.getNextDateFrom(currentDate);
 		expect(nextDate - currentDate).toEqual(3600000 * 24 * 7 - 60000 * 30);
 		// the next one is again at 0:30, but now we're 'back to normal' with weekly offsets.
 		currentDate = nextDate;
-		nextDate = cronTime._getNextDateFrom(currentDate);
+		nextDate = cronTime.getNextDateFrom(currentDate);
 		expect(nextDate - currentDate).toEqual(1000 * 3600 * 24 * 7);
 	});
 	it('Should schedule jobs inside time zone changes that shifts the time forward to the end of the shift, for daily jobs', () => {
@@ -449,15 +449,15 @@ describe('crontime', () => {
 			zone: 'Asia/Amman'
 		});
 		const cronTime = new cron.CronTime('30 0 * * *'); // the next 0:30 is March 30th, but it will jump from 0:00 to 1:00.
-		let nextDate = cronTime._getNextDateFrom(currentDate, 'Asia/Amman');
+		let nextDate = cronTime.getNextDateFrom(currentDate, 'Asia/Amman');
 		expect(nextDate - currentDate).toEqual(1000 * 60 * 15); // 15 minutes is 30T00:00, which jumps to 1:00 which is past the trigger of 0:30.
 		// the next one is tomorrow at 0:30, so 23h30m.
 		currentDate = nextDate;
-		nextDate = cronTime._getNextDateFrom(currentDate);
+		nextDate = cronTime.getNextDateFrom(currentDate);
 		expect(nextDate - currentDate).toEqual(1000 * 3600 * 24 - 1000 * 60 * 30);
 		// back to normal.
 		currentDate = nextDate;
-		nextDate = cronTime._getNextDateFrom(currentDate);
+		nextDate = cronTime.getNextDateFrom(currentDate);
 		expect(nextDate - currentDate).toEqual(1000 * 3600 * 24);
 	});
 	it('Should schedule jobs inside time zone changes that shifts the time forward to the end of the shift, for hourly jobs', () => {
@@ -465,15 +465,15 @@ describe('crontime', () => {
 			zone: 'Asia/Amman'
 		});
 		const cronTime = new cron.CronTime('30 * * * *'); // the next 0:30 is March 30th, but it will jump from 0:00 to 1:00.
-		let nextDate = cronTime._getNextDateFrom(currentDate, 'Asia/Amman');
+		let nextDate = cronTime.getNextDateFrom(currentDate, 'Asia/Amman');
 		expect(nextDate - currentDate).toEqual(1000 * 60 * 15); // 15 minutes is 30T00:00, which jumps to 1:00 which is past the trigger of 0:30.
 		// the next one is at 1:30, so 30m.
 		currentDate = nextDate;
-		nextDate = cronTime._getNextDateFrom(currentDate);
+		nextDate = cronTime.getNextDateFrom(currentDate);
 		expect(nextDate - currentDate).toEqual(1000 * 60 * 30);
 		// back to normal.
 		currentDate = nextDate;
-		nextDate = cronTime._getNextDateFrom(currentDate);
+		nextDate = cronTime.getNextDateFrom(currentDate);
 		expect(nextDate - currentDate).toEqual(1000 * 3600);
 	});
 	it('Should schedule jobs inside time zone changes that shifts the time forward to the end of the shift, for minutely jobs', () => {
@@ -481,11 +481,11 @@ describe('crontime', () => {
 			zone: 'Asia/Amman'
 		});
 		const cronTime = new cron.CronTime('* * * * *'); // the next minute is 0:00 is March 30th, but it will jump from 0:00 to 1:00.
-		let nextDate = cronTime._getNextDateFrom(currentDate, 'Asia/Amman');
+		let nextDate = cronTime.getNextDateFrom(currentDate, 'Asia/Amman');
 		expect(nextDate - currentDate).toEqual(1000 * 60);
 		// the next one is at 1:01:00, this should still be 60 seconds in the future.
 		currentDate = nextDate;
-		nextDate = cronTime._getNextDateFrom(currentDate);
+		nextDate = cronTime.getNextDateFrom(currentDate);
 		expect(nextDate - currentDate).toEqual(1000 * 60);
 	});
 	// Do not think a similar test for secondly job is necessary, the minutely one already ensured no double hits in the overlap zone.
@@ -589,7 +589,7 @@ describe('crontime', () => {
 		const cronTime = new cron.CronTime('* * * * *');
 		let currentDate = luxon.DateTime.local().set({ second: 0, millisecond: 0 });
 		for (let i = 0; i < 100; i++) {
-			const nextDate = cronTime._getNextDateFrom(currentDate);
+			const nextDate = cronTime.getNextDateFrom(currentDate);
 			expect(nextDate - currentDate).toEqual(1000 * 60);
 			currentDate = nextDate;
 		}
@@ -600,7 +600,7 @@ describe('crontime', () => {
 			.setZone('utc')
 			.set({ hour: 9, minute: 0, second: 0, millisecond: 0 });
 		for (let i = 0; i < 100; i++) {
-			const nextDate = cronTime._getNextDateFrom(currentDate);
+			const nextDate = cronTime.getNextDateFrom(currentDate);
 			expect(nextDate - currentDate).toEqual(1000 * 60 * 60 * 24);
 			currentDate = nextDate;
 		}
@@ -611,7 +611,7 @@ describe('crontime', () => {
 			zone: 'America/Sao_Paulo'
 		}).set({ second: 0, millisecond: 0 });
 		for (let i = 0; i < 25; i++) {
-			const nextDate = cronTime._getNextDateFrom(
+			const nextDate = cronTime.getNextDateFrom(
 				currentDate,
 				'America/Sao_Paulo'
 			);
@@ -625,7 +625,7 @@ describe('crontime', () => {
 			zone: 'America/Sao_Paulo'
 		}).set({ second: 0, millisecond: 0 });
 		for (let i = 0; i < 25; i++) {
-			const nextDate = cronTime._getNextDateFrom(
+			const nextDate = cronTime.getNextDateFrom(
 				currentDate,
 				'America/Sao_Paulo'
 			);
@@ -636,12 +636,12 @@ describe('crontime', () => {
 	it('should test valid range of months (*/15 * * 7-12 *)', () => {
 		const cronTime = new cron.CronTime('*/15 * * 7-12 *');
 		const previousDate1 = new Date(Date.UTC(2018, 3, 0, 0, 0));
-		const nextDate1 = cronTime._getNextDateFrom(previousDate1, 'UTC');
+		const nextDate1 = cronTime.getNextDateFrom(previousDate1, 'UTC');
 		expect(new Date(nextDate1).toUTCString()).toEqual(
 			new Date(Date.UTC(2018, 6, 1, 0, 0)).toUTCString()
 		);
 		const previousDate2 = new Date(Date.UTC(2018, 8, 0, 0, 0));
-		const nextDate2 = cronTime._getNextDateFrom(previousDate2, 'UTC');
+		const nextDate2 = cronTime.getNextDateFrom(previousDate2, 'UTC');
 		expect(new Date(nextDate2).toUTCString()).toEqual(
 			new Date(Date.UTC(2018, 8, 0, 0, 15)).toUTCString()
 		);
@@ -649,7 +649,7 @@ describe('crontime', () => {
 	it('should generate the right next day when cron is set to every 15 min in Feb', () => {
 		const cronTime = new cron.CronTime('*/15 * * FEB *');
 		const previousDate = new Date(Date.UTC(2018, 3, 0, 0, 0));
-		const nextDate = cronTime._getNextDateFrom(previousDate, 'UTC');
+		const nextDate = cronTime.getNextDateFrom(previousDate, 'UTC');
 		expect(nextDate.valueOf()).toEqual(
 			new Date(Date.UTC(2019, 1, 1, 0, 0)).valueOf()
 		);
@@ -657,7 +657,7 @@ describe('crontime', () => {
 	it('should generate the right next day when cron is set to both day of the month and day of the week (1)', () => {
 		const cronTime = new cron.CronTime('0 8 1 * 4');
 		const previousDate = new Date(Date.UTC(2019, 3, 21, 0, 0));
-		const nextDate = cronTime._getNextDateFrom(previousDate, 'UTC');
+		const nextDate = cronTime.getNextDateFrom(previousDate, 'UTC');
 		expect(nextDate.toMillis()).toEqual(
 			new Date(Date.UTC(2019, 3, 25, 8, 0)).getTime()
 		);
@@ -665,7 +665,7 @@ describe('crontime', () => {
 	it('should generate the right next day when cron is set to both day of the month and day of the week (2)', () => {
 		const cronTime = new cron.CronTime('0 8 1 * 4');
 		const previousDate = new Date(Date.UTC(2019, 3, 26, 0, 0));
-		const nextDate = cronTime._getNextDateFrom(previousDate, 'UTC');
+		const nextDate = cronTime.getNextDateFrom(previousDate, 'UTC');
 		expect(nextDate.toMillis()).toEqual(
 			new Date(Date.UTC(2019, 4, 1, 8, 0)).getTime()
 		);
@@ -673,7 +673,7 @@ describe('crontime', () => {
 	it('should generate the right next day when cron is set to both day of the month and day of the week (3)', () => {
 		const cronTime = new cron.CronTime('0 8 1 * 4');
 		const previousDate = new Date(Date.UTC(2019, 7, 1, 7, 59));
-		const nextDate = cronTime._getNextDateFrom(previousDate, 'UTC');
+		const nextDate = cronTime.getNextDateFrom(previousDate, 'UTC');
 		expect(nextDate.valueOf()).toEqual(
 			new Date(Date.UTC(2019, 7, 1, 8, 0)).valueOf()
 		);

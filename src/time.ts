@@ -1,72 +1,40 @@
 import { DateTime, Zone } from 'luxon';
 
-const CONSTRAINTS = [
-	[0, 59],
-	[0, 59],
-	[0, 23],
-	[1, 31],
-	[1, 12],
-	[0, 7]
-];
-const MONTH_CONSTRAINTS = [
-	31,
-	29, // support leap year...not perfect
-	31,
-	30,
-	31,
-	30,
-	31,
-	31,
-	30,
-	31,
-	30,
-	31
-];
-const PARSE_DEFAULTS = ['0', '*', '*', '*', '*', '*'];
-const ALIASES = {
-	jan: 1,
-	feb: 2,
-	mar: 3,
-	apr: 4,
-	may: 5,
-	jun: 6,
-	jul: 7,
-	aug: 8,
-	sep: 9,
-	oct: 10,
-	nov: 11,
-	dec: 12,
-	sun: 0,
-	mon: 1,
-	tue: 2,
-	wed: 3,
-	thu: 4,
-	fri: 5,
-	sat: 6
+import {
+	ALIASES,
+	CONSTRAINTS,
+	MONTH_CONSTRAINTS,
+	PARSE_DEFAULTS,
+	PRESETS,
+	RE_RANGE,
+	RE_WILDCARDS,
+	TIME_UNITS,
+	TIME_UNITS_LEN,
+	TIME_UNITS_MAP
+} from './constants';
+import {
+	DayOfMonthRange,
+	MonthRange,
+	Ranges,
+	TimeUnit
+} from './types/cron.types';
+import { IntRange } from './types/utils';
+import { getRecordKeys } from './utils';
+
+const generateRecord = <L extends number, U extends number>([
+	lower,
+	upper
+]: readonly [L, U]): Record<IntRange<L, U>, false> => {
+	const record: Record<IntRange<L, U>, false> = {};
+
+	for (let i = lower; i < upper; i++) {
+		record[i as IntRange<L, U>] = false;
+	}
+
+	return record;
+
+	// return Object.assign({},...Object.keys(enumX).map(x=>({[x]:defaultValue})))
 };
-const TIME_UNITS_MAP = {
-	SECOND: 'second',
-	MINUTE: 'minute',
-	HOUR: 'hour',
-	DAY_OF_MONTH: 'dayOfMonth',
-	MONTH: 'month',
-	DAY_OF_WEEK: 'dayOfWeek'
-};
-const TIME_UNITS = Object.values(TIME_UNITS_MAP);
-const TIME_UNITS_LEN = TIME_UNITS.length;
-const PRESETS = {
-	'@yearly': '0 0 0 1 1 *',
-	'@monthly': '0 0 0 1 * *',
-	'@weekly': '0 0 0 * * 0',
-	'@daily': '0 0 0 * * *',
-	'@hourly': '0 0 * * * *',
-	'@minutely': '0 * * * * *',
-	'@secondly': '* * * * * *',
-	'@weekdays': '0 0 0 * * 1-5',
-	'@weekends': '0 0 0 * * 0,6'
-};
-const RE_WILDCARDS = /\*/g;
-const RE_RANGE = /^(\d+)(?:-(\d+))?(?:\/(\d+))?$/g;
 
 export class CronTime {
 	source: string | Date | DateTime;
@@ -74,12 +42,24 @@ export class CronTime {
 	utcOffset?: number;
 	realDate: boolean = false;
 
-	private second: Record<number, boolean>;
-	private minute: Record<number, boolean>;
-	private hour: Record<number, boolean>;
-	private dayOfMonth: Record<number, boolean>;
-	private month: Record<number, boolean>;
-	private dayOfWeek: Record<number, boolean>;
+	private second: Record<Ranges['second'], boolean> = generateRecord(
+		CONSTRAINTS['second']
+	);
+	private minute: Record<Ranges['minute'], boolean> = generateRecord(
+		CONSTRAINTS['minute']
+	);
+	private hour: Record<Ranges['hour'], boolean> = generateRecord(
+		CONSTRAINTS['hour']
+	);
+	private dayOfMonth: Record<Ranges['dayOfMonth'], boolean> = generateRecord(
+		CONSTRAINTS['dayOfMonth']
+	);
+	private month: Record<Ranges['month'], boolean> = generateRecord(
+		CONSTRAINTS['month']
+	);
+	private dayOfWeek: Record<Ranges['dayOfWeek'], boolean> = generateRecord(
+		CONSTRAINTS['dayOfWeek']
+	);
 
 	constructor(
 		source: string | Date | DateTime,
@@ -102,11 +82,6 @@ export class CronTime {
 				typeof utcOffset === 'string' ? parseInt(utcOffset) : utcOffset;
 		}
 
-		const that = this;
-		TIME_UNITS.forEach(timeUnit => {
-			that[timeUnit] = {};
-		});
-
 		if (this.source instanceof Date || this.source instanceof DateTime) {
 			if (this.source instanceof Date) {
 				this.source = DateTime.fromJSDate(this.source);
@@ -126,19 +101,18 @@ export class CronTime {
 	 * Ensure that the syntax parsed correctly and correct the specified values if needed.
 	 */
 	private _verifyParse() {
-		const months = Object.keys(this.month);
-		const dom = Object.keys(this.dayOfMonth);
+		const months = getRecordKeys(this.month);
+		const daysOfMonth = getRecordKeys(this.dayOfMonth);
+
 		let ok = false;
 
 		/* if a dayOfMonth is not found in all months, we only need to fix the last
 				 wrong month  to prevent infinite loop */
-		let lastWrongMonth = NaN;
-		for (let i = 0; i < months.length; i++) {
-			const m = parseInt(months[i], 10);
-			const con = MONTH_CONSTRAINTS[m - 1];
+		let lastWrongMonth: MonthRange | null = null;
+		for (let m of months) {
+			const con = MONTH_CONSTRAINTS[m];
 
-			for (let j = 0; j < dom.length; j++) {
-				const day = parseInt(dom[j]);
+			for (let day of daysOfMonth) {
 				if (day <= con) {
 					ok = true;
 				}
@@ -152,13 +126,12 @@ export class CronTime {
 		}
 
 		// infinite loop detected (dayOfMonth is not found in all months)
-		if (!ok) {
-			const notOkCon = MONTH_CONSTRAINTS[lastWrongMonth - 1];
-			for (let k = 0; k < dom.length; k++) {
-				const notOkDay = parseInt(dom[k]);
+		if (!ok && lastWrongMonth !== null) {
+			const notOkCon = MONTH_CONSTRAINTS[lastWrongMonth];
+			for (let notOkDay of daysOfMonth) {
 				if (notOkDay > notOkCon) {
 					delete this.dayOfMonth[notOkDay];
-					const fixedDay = Number(notOkDay) % notOkCon;
+					const fixedDay = (notOkDay % notOkCon) as DayOfMonthRange;
 					this.dayOfMonth[fixedDay] = true;
 				}
 			}
@@ -213,14 +186,14 @@ export class CronTime {
 			return date;
 		}
 
-		if (isNaN(i) || i < 0) {
+		if (i === undefined || isNaN(i) || i < 0) {
 			// just get the next scheduled time
-			return this._getNextDateFrom(date);
+			return this.getNextDateFrom(date);
 		} else {
 			// return the next schedule times
 			const dates: DateTime[] = [];
 			for (; i > 0; i--) {
-				date = this._getNextDateFrom(date);
+				date = this.getNextDateFrom(date);
 				dates.push(date);
 			}
 
@@ -252,10 +225,6 @@ export class CronTime {
 		});
 	}
 
-	getNextDateFrom(start, zone) {
-		return this._getNextDateFrom(start, zone);
-	}
-
 	/**
 	 * Get next date matching the specified cron time.
 	 *
@@ -273,7 +242,7 @@ export class CronTime {
 	 *   - Check that the chosen time does not equal the current execution.
 	 * - Return the selected date object.
 	 */
-	private _getNextDateFrom(start: Date | DateTime, zone?: string | Zone) {
+	getNextDateFrom(start: Date | DateTime, zone?: string | Zone) {
 		if (start instanceof Date) {
 			start = DateTime.fromJSDate(start);
 		}
@@ -467,7 +436,7 @@ export class CronTime {
 	 * @param date
 	 * @return [boolean, DateTime]
 	 */
-	private _findPreviousDSTJump(date) {
+	private _findPreviousDSTJump(date: DateTime): [boolean, DateTime] {
 		/** @type number */
 		let expectedMinute, expectedHour, actualMinute, actualHour;
 		/** @type DateTime */
@@ -502,7 +471,7 @@ export class CronTime {
 		// Secondly, this DateTime may be used for scheduling jobs, if there existed a job in the skipped range.
 		const afterJumpingPoint = maybeJumpingPoint
 			.plus({ minute: 1 }) // back to the first minute _after_ the jump
-			.set({ seconds: 0, millisecond: 0 });
+			.set({ second: 0, millisecond: 0 });
 
 		// Get the lower bound of the range to check as well. This only has to be accurate down to minutes.
 		const beforeJumpingPoint = afterJumpingPoint.minus({ second: 1 });
@@ -540,11 +509,14 @@ export class CronTime {
 	 * @param {DateTime} afterJumpingPoint
 	 * @returns {boolean}
 	 */
-	private _checkTimeInSkippedRange(beforeJumpingPoint, afterJumpingPoint) {
+	private _checkTimeInSkippedRange(
+		beforeJumpingPoint: DateTime,
+		afterJumpingPoint: DateTime
+	) {
 		// start by getting the first minute & hour inside the skipped range.
 		const startingMinute = (beforeJumpingPoint.minute + 1) % 60;
 		const startingHour =
-			(beforeJumpingPoint.hour + (startingMinute === 0)) % 24;
+			(beforeJumpingPoint.hour + (startingMinute === 0 ? 1 : 0)) % 24;
 
 		const hourRangeSize = afterJumpingPoint.hour - startingHour + 1;
 		const isHourJump = startingMinute === 0 && afterJumpingPoint.minute === 0;
@@ -587,7 +559,10 @@ export class CronTime {
 	 * This is done by checking if any minute in startMinute - endMinute is valid, excluding endMinute.
 	 * For endMinute, there is only a match if the 0th second is a valid time.
 	 */
-	private _checkTimeInSkippedRangeSingleHour(startMinute, endMinute) {
+	private _checkTimeInSkippedRangeSingleHour(
+		startMinute: number,
+		endMinute: number
+	) {
 		for (let minute = startMinute; minute < endMinute; ++minute) {
 			if (minute in this.minute) return true;
 		}
@@ -614,10 +589,10 @@ export class CronTime {
 	 * @param endMinute {number}
 	 */
 	private _checkTimeInSkippedRangeMultiHour(
-		startHour,
-		startMinute,
-		endHour,
-		endMinute
+		startHour: number,
+		startMinute: number,
+		endHour: number,
+		endMinute: number
 	) {
 		if (startHour >= endHour) {
 			throw new Error(
@@ -636,7 +611,7 @@ export class CronTime {
 		const middleHourMinuteRange = Array.from({ length: 60 }, (_, k) => k);
 
 		/** @type (number) => number[] */
-		const selectRange = forHour => {
+		const selectRange = (forHour: number) => {
 			if (forHour === startHour) {
 				return firstHourMinuteRange;
 			} else if (forHour === endHour) {
@@ -676,7 +651,11 @@ export class CronTime {
 	 * @param expectedMinute
 	 * @param {DateTime} actualDate
 	 */
-	private _forwardDSTJump(expectedHour, expectedMinute, actualDate) {
+	private _forwardDSTJump(
+		expectedHour: number,
+		expectedMinute: number,
+		actualDate: DateTime
+	) {
 		const actualHour = actualDate.hour;
 		const actualMinute = actualDate.minute;
 
@@ -689,27 +668,27 @@ export class CronTime {
 	/**
 	 * wildcard, or all params in array (for to string)
 	 */
-	private _wcOrAll(type) {
-		if (this._hasAll(type)) {
+	private _wcOrAll(unit: TimeUnit) {
+		if (this._hasAll(unit)) {
 			return '*';
 		}
 
 		const all = [];
-		for (const time in this[type]) {
+		for (const time in this[unit]) {
 			all.push(time);
 		}
 
 		return all.join(',');
 	}
 
-	private _hasAll(type) {
-		const constraints = CONSTRAINTS[TIME_UNITS.indexOf(type)];
+	private _hasAll(unit: TimeUnit) {
+		const constraints = CONSTRAINTS[unit];
 		const low = constraints[0];
 		const high =
-			type === TIME_UNITS_MAP.DAY_OF_WEEK ? constraints[1] - 1 : constraints[1];
+			unit === TIME_UNITS_MAP.DAY_OF_WEEK ? constraints[1] - 1 : constraints[1];
 
 		for (let i = low, n = high; i < n; i++) {
-			if (!(i in this[type])) {
+			if (!(i in this[unit])) {
 				return false;
 			}
 		}
@@ -728,20 +707,16 @@ export class CronTime {
 	 *   - Get the value (or default) in the current position.
 	 *   - Parse the value.
 	 */
-	private _parse(source) {
-		if (typeof source !== 'string') {
-			console.debug(typeof source);
-			console.debug(source);
-		}
+	private _parse(source: string) {
 		source = source.toLowerCase();
 
-		if (source in PRESETS) {
-			source = PRESETS[source];
+		if (Object.keys(PRESETS).includes(source)) {
+			source = PRESETS[source as keyof typeof PRESETS];
 		}
 
-		source = source.replace(/[a-z]{1,3}/gi, alias => {
-			if (alias in ALIASES) {
-				return ALIASES[alias];
+		source = source.replace(/[a-z]{1,3}/gi, (alias: string) => {
+			if (Object.keys(ALIASES).includes(alias)) {
+				return ALIASES[alias as keyof typeof ALIASES].toString();
 			}
 
 			throw new Error(`Unknown alias: ${alias}`);
@@ -759,12 +734,14 @@ export class CronTime {
 		}
 
 		const unitsLen = units.length;
-		for (let i = 0; i < TIME_UNITS_LEN; i++) {
+		for (let unit of TIME_UNITS) {
+			const i = TIME_UNITS.indexOf(unit);
 			// If the split source string doesn't contain all digits,
 			// assume defaults for first n missing digits.
 			// This adds support for 5-digit standard cron syntax
-			const cur = units[i - (TIME_UNITS_LEN - unitsLen)] || PARSE_DEFAULTS[i];
-			this._parseField(cur, TIME_UNITS[i], CONSTRAINTS[i]);
+			const cur =
+				units[i - (TIME_UNITS_LEN - unitsLen)] ?? PARSE_DEFAULTS[unit];
+			this._parseField(cur, unit);
 		}
 	}
 
@@ -778,9 +755,12 @@ export class CronTime {
 	 *   - If range matches pattern then map over matches using replace (to parse the range by the regex pattern)
 	 *   - Starting with the lower bounds of the range iterate by step up to the upper bounds and toggle the CronTime field value flag on.
 	 */
-	private _parseField(value, type, constraints) {
-		const typeObj = this[type];
-		let pointer;
+
+	private _parseField(value: string, unit: TimeUnit) {
+		const typeObj = this[unit] as Record<Ranges[typeof unit], boolean>;
+		let pointer: Ranges[typeof unit];
+
+		const constraints = CONSTRAINTS[unit];
 		const low = constraints[0];
 		const high = constraints[1];
 
@@ -798,59 +778,71 @@ export class CronTime {
 		// commas separate information, so split based on those
 		const allRanges = value.split(',');
 
-		for (let i = 0; i < allRanges.length; i++) {
-			if (allRanges[i].match(RE_RANGE)) {
-				allRanges[i].replace(RE_RANGE, ($0, lower, upper, step) => {
-					lower = parseInt(lower, 10);
-					upper = upper !== undefined ? parseInt(upper, 10) : undefined;
+		for (let range of allRanges) {
+			const match = range.match(RE_RANGE);
+			if (
+				match &&
+				match[1] !== undefined &&
+				match[2] !== undefined &&
+				match[3] !== undefined
+			) {
+				let [_, _lower, _upper, _step] = match;
+				let lower = parseInt(_lower, 10);
+				let upper = _upper !== undefined ? parseInt(_upper, 10) : undefined;
 
-					const wasStepDefined = !isNaN(parseInt(step, 10));
-					if (step === '0') {
-						throw new Error(`Field (${type}) has a step of zero`);
-					}
-					step = parseInt(step, 10) || 1;
+				const wasStepDefined = !isNaN(parseInt(_step, 10));
+				if (_step === '0') {
+					throw new Error(`Field (${unit}) has a step of zero`);
+				}
+				const step = parseInt(_step, 10) || 1;
 
-					if (upper !== undefined && lower > upper) {
-						throw new Error(`Field (${type}) has an invalid range`);
-					}
+				if (upper !== undefined && lower > upper) {
+					throw new Error(`Field (${unit}) has an invalid range`);
+				}
 
-					const outOfRangeError =
-						lower < low ||
-						(upper !== undefined && upper > high) ||
-						(upper === undefined && lower > high);
+				const outOfRangeError =
+					lower < low ||
+					(upper !== undefined && upper > high) ||
+					(upper === undefined && lower > high);
 
-					if (outOfRangeError) {
-						throw new Error(`Field value (${value}) is out of range`);
-					}
+				if (outOfRangeError) {
+					throw new Error(`Field value (${value}) is out of range`);
+				}
 
-					// Positive integer higher than constraints[0]
-					lower = Math.min(Math.max(low, ~~Math.abs(lower)), high);
+				// Positive integer higher than constraints[0]
+				lower = Math.min(Math.max(low, ~~Math.abs(lower)), high);
 
-					// Positive integer lower than constraints[1]
-					if (upper !== undefined) {
-						upper = Math.min(high, ~~Math.abs(upper));
-					} else {
-						// If step is provided, the default upper range is the highest value
-						upper = wasStepDefined ? high : lower;
-					}
+				// Positive integer lower than constraints[1]
+				if (upper !== undefined) {
+					upper = Math.min(high, ~~Math.abs(upper));
+				} else {
+					// If step is provided, the default upper range is the highest value
+					upper = wasStepDefined ? high : lower;
+				}
 
-					// Count from the lower barrier to the upper
-					pointer = lower;
+				// Count from the lower barrier to the upper
+				// forcing type cast here since we checked above that
+				// we are between constraint bounds
+				pointer = lower as typeof pointer;
 
-					do {
-						typeObj[pointer] = true; // mutates the field objects values inside CronTime
-						pointer += step;
-					} while (pointer <= upper);
+				do {
+					typeObj[pointer] = true; // mutates the field objects values inside CronTime
+					pointer += step;
+				} while (pointer <= upper);
 
-					// merge day 7 into day 0 (both Sunday), and remove day 7
-					// since we work with day-of-week 0-6 under the hood
-					if (type === 'dayOfWeek') {
-						if (!typeObj[0] && !!typeObj[7]) typeObj[0] = typeObj[7];
-						delete typeObj[7];
-					}
-				});
+				/**
+				 * TODO:
+				 * find alternative solution because now `*` won't be rendered correctly when
+				 * exporting the cron string since not all keys equals true
+				 */
+				// merge day 7 into day 0 (both Sunday), and remove day 7
+				// since we work with day-of-week 0-6 under the hood
+				// if (unit === 'dayOfWeek') {
+				// 	if (!typeObj[0] && !!typeObj[7]) typeObj[0] = typeObj[7];
+				// 	delete typeObj[7];
+				// }
 			} else {
-				throw new Error(`Field (${type}) cannot be parsed`);
+				throw new Error(`Field (${unit}) cannot be parsed`);
 			}
 		}
 	}
