@@ -30,11 +30,11 @@ export class CronJob {
 		this.context = context || this;
 		this.cronTime = new CronTime(cronTime, timeZone, utcOffset);
 
-		if (unrefTimeout !== undefined) {
+		if (unrefTimeout != null) {
 			this.unrefTimeout = unrefTimeout;
 		}
 
-		if (onComplete !== null && onComplete !== undefined) {
+		if (onComplete != null) {
 			this.onComplete = this._fnWrap(onComplete);
 		}
 
@@ -116,8 +116,8 @@ export class CronJob {
 		}
 	}
 
-	nextDates(i: number) {
-		return this.cronTime.sendAt(i || 0);
+	nextDates(i?: number) {
+		return this.cronTime.sendAt(i ?? 0);
 	}
 
 	start() {

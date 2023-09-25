@@ -1,6 +1,5 @@
-/* eslint-disable no-new */
-const sinon = require('sinon');
-const cron = require('../dist');
+import sinon from 'sinon';
+import * as cron from '../src';
 
 describe('cron', () => {
 	describe('with seconds', () => {
@@ -204,7 +203,7 @@ describe('cron', () => {
 		it('should fire every 60 min', () => {
 			const clock = sinon.useFakeTimers();
 			const m60 = 60 * 60 * 1000;
-			const l = [];
+			const l: number[] = [];
 			const job = new cron.CronJob(
 				'00 30 * * * *',
 				() => {
@@ -577,7 +576,7 @@ describe('cron', () => {
 			new cron.CronJob(
 				'* 60 * * * *',
 				() => {
-					expect.ok(true);
+					expect(true).toBe(true);
 				},
 				null,
 				true
@@ -588,7 +587,7 @@ describe('cron', () => {
 			new cron.CronJob(
 				'* * 24 * * *',
 				() => {
-					expect.ok(true);
+					expect(true).toBe(true);
 				},
 				null,
 				true
@@ -1024,6 +1023,7 @@ describe('cron', () => {
 			const callback = jest.fn();
 			const job = new cron.CronJob('* * * * * *', callback);
 			expect(() => {
+				// @ts-expect-error
 				job.setTime(undefined);
 			}).toThrow();
 		});
@@ -1040,6 +1040,7 @@ describe('cron', () => {
 			clock.tick(1000);
 
 			expect(() => {
+				// @ts-expect-error
 				job.setTime(time);
 			}).toThrow();
 
@@ -1111,7 +1112,7 @@ describe('cron', () => {
 		job.start();
 		clock.tick(1000);
 		expect(callback).toHaveBeenCalledTimes(1);
-		expect(job.lastDate().getTime()).toEqual(1000);
+		expect(job.lastDate()?.getTime()).toEqual(1000);
 		job.stop();
 		clock.restore();
 	});

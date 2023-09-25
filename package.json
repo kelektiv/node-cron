@@ -36,7 +36,9 @@
 		"@semantic-release/github": "~8.1.x",
 		"@semantic-release/npm": "~10.0.x",
 		"@semantic-release/release-notes-generator": "~11.0.x",
+		"@types/jest": "^29.5.5",
 		"@types/node": "^20.6.0",
+		"@types/sinon": "^10.0.16",
 		"@typescript-eslint/eslint-plugin": "^5.62.0",
 		"chai": "~4.2.x",
 		"eslint": "~8.36.x",
@@ -47,6 +49,7 @@
 		"prettier": "~2.8.x",
 		"semantic-release": "~21.0.x",
 		"sinon": "^15.0.x",
+		"ts-jest": "^29.1.1",
 		"typescript": "~5.1.6"
 	},
 	"keywords": [
@@ -76,17 +79,6 @@
 		"Masakazu Matsushita <matsukaz@gmail.com> (matsukaz)",
 		"Christopher Lunt <me@kirisu.co.uk> (https://github.com/kirisu)"
 	],
-	"jest": {
-		"collectCoverage": true,
-		"coverageThreshold": {
-			"global": {
-				"statements": 80,
-				"branches": 80,
-				"functions": 70,
-				"lines": 80
-			}
-		}
-	},
 	"files": [
 		"dist/**/*.js",
 		"dist/**/*.d.ts",

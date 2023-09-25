@@ -1,36 +1,35 @@
 import { SpawnOptions } from 'child_process';
 import { DateTime } from 'luxon';
 import { CONSTRAINTS, TIME_UNITS_MAP } from '../constants';
+import { CronJob } from '../job';
 import { IntRange } from './utils';
-
-/**
- * Main interfaces / types
- */
 
 export interface CronJobParams {
 	cronTime: string | Date | DateTime;
 	onTick: CronCommand;
-	onComplete?: CronCommand | null | undefined;
-	start?: boolean | undefined;
-	timeZone?: string | undefined;
-	context?: unknown;
-	runOnInit?: boolean | undefined;
-	utcOffset?: string | number | undefined;
-	unrefTimeout?: boolean | undefined;
+	onComplete?: CronCommand | null;
+	start?: boolean | null;
+	timeZone?: string | null;
+	context?: unknown | null;
+	runOnInit?: boolean | null;
+	utcOffset?: string | number | null;
+	unrefTimeout?: boolean | null;
 }
 
 export type CronCommand =
-	| (() => void)
+	/**
+	 * TODO: find out how to type the context correctly, based on
+	 * if the "context" was provided to the CronJob constructor
+	 * leaving "any" for now...
+	 */
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	| ((this: CronJob | any) => void)
 	| string
 	| {
 			command: string;
-			args?: readonly string[] | undefined;
-			options?: SpawnOptions | undefined;
+			args?: readonly string[] | null;
+			options?: SpawnOptions | null;
 	  };
-
-/**
- * Time units & Ranges
- */
 
 export type TimeUnit = (typeof TIME_UNITS_MAP)[keyof typeof TIME_UNITS_MAP];
 

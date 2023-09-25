@@ -22,7 +22,7 @@ import {
 import { getRecordKeys } from './utils';
 
 export class CronTime {
-	source: string | Date | DateTime;
+	source: string | DateTime;
 	zone?: string;
 	utcOffset?: number;
 	realDate = false;
@@ -36,11 +36,9 @@ export class CronTime {
 
 	constructor(
 		source: string | Date | DateTime,
-		zone?: string,
-		utcOffset?: string | number
+		zone?: string | null,
+		utcOffset?: string | number | null
 	) {
-		this.source = source;
-
 		if (zone) {
 			const dt = DateTime.fromObject({}, { zone });
 			if (!dt.isValid) {
@@ -50,17 +48,17 @@ export class CronTime {
 			this.zone = zone;
 		}
 
-		if (typeof utcOffset !== 'undefined') {
+		if (utcOffset != null) {
 			this.utcOffset =
 				typeof utcOffset === 'string' ? parseInt(utcOffset) : utcOffset;
 		}
 
-		if (this.source instanceof Date || this.source instanceof DateTime) {
-			if (this.source instanceof Date) {
-				this.source = DateTime.fromJSDate(this.source);
-			}
+		if (source instanceof Date || source instanceof DateTime) {
+			this.source =
+				source instanceof Date ? DateTime.fromJSDate(source) : source;
 			this.realDate = true;
 		} else {
+			this.source = source;
 			this._parse(this.source);
 			this._verifyParse();
 		}
