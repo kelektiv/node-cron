@@ -1,3 +1,10 @@
+## [3.0.0-beta.5](https://github.com/kelektiv/node-cron/compare/v3.0.0-beta.4...v3.0.0-beta.5) (2023-09-25)
+
+
+### 🐛 Bug Fixes
+
+* added fractional offset support ([#685](https://github.com/kelektiv/node-cron/issues/685)) ([ce78478](https://github.com/kelektiv/node-cron/commit/ce784784575b65bd75b8b1a4adda3d8fd42fe1c0))
+
 ## [2.4.4](https://github.com/kelektiv/node-cron/compare/v2.4.3...v2.4.4) (2023-09-25)
 
 
