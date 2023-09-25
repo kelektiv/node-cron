@@ -17,8 +17,8 @@
 Cron is a tool that allows you to execute _something_ on a schedule. This is typically done using the cron syntax. We allow you to:
 
 - execute a function whenever your scheduled job triggers
-- execute a job external to the javascript process using `child_process`
-- use a Date object instead of cron syntax as the trigger for your callback
+- execute a job external to the javascript process (like a system command) using `child_process`
+- use a Date or Luxon DateTime object instead of cron syntax as the trigger for your callback
 - use an additional slot for seconds (leaving it off will default to 0 and match the Unix behavior)
 
 ## Installation
@@ -29,7 +29,7 @@ npm install cron
 
 ## Migrating from v2 to v3
 
-In version 3 of this library, we aligned our format for the cron patterns with the UNIX format. See below for the changes you need to make when upgrading:
+In version 3 of this library, we migrated to TypeScript, aligned our cron patterns format with the UNIX standard, and released some other breaking changes. See below for the changes you need to make when upgrading:
 
 <details>
   <summary>Migrating from v2 to v3</summary>
@@ -39,6 +39,17 @@ In version 3 of this library, we aligned our format for the cron patterns with t
 **Month indexing went from `0-11` to `1-12`. So you need to increment all numeric months by 1.**
 
 For day-of-week indexing, we only added support for `7` as Sunday, so you don't need to change anything !
+
+### CronJob changes
+
+- **constructor no longer accepts an object as its first and only params. Use `CronJob.from(argsObject)` instead.**
+- **callbacks are now called in the order they were registered.**
+
+### Removed methods
+
+- **removed `job()` method in favor of `new CronJob(...args)` / `CronJob.from(argsObject)`**
+
+- **removed `time()` method in favor of `new CronTime()`**
 
 </details>
 
@@ -106,12 +117,10 @@ day of week    0-7 (0 or 7 is Sunday, or use names)
 
 Parameter Based
 
-- `job` - shortcut to `new cron.CronJob()`.
-- `time` - shortcut to `new cron.CronTime()`.
 - `sendAt` - tells you when a `CronTime` will be run.
 - `timeout` - tells you when the next timeout is.
 - `CronJob`
-  - `constructor(cronTime, onTick, onComplete, start, timeZone, context, runOnInit, utcOffset, unrefTimeout)` - Of note, the first parameter here can be a JSON object that has the below names and associated types (see examples above).
+  - `constructor(cronTime, onTick, onComplete, start, timeZone, context, runOnInit, utcOffset, unrefTimeout)`
     - `cronTime` - [REQUIRED] - The time to fire off your job. This can be in the form of cron syntax or a JS [Date](https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Date) object.
     - `onTick` - [REQUIRED] - The function to fire at the specified time. If an `onComplete` callback was provided, `onTick` will receive it as an argument. `onTick` may call `onComplete` when it has finished its work.
     - `onComplete` - [OPTIONAL] - A function that will fire when the job is stopped with `job.stop()`, and may also be called by `onTick` at the end of each run.
@@ -121,6 +130,7 @@ Parameter Based
     - `runOnInit` - [OPTIONAL] - This will immediately fire your `onTick` function as soon as the requisite initialization has happened. This option is set to `false` by default for backwards compatibility.
     - `utcOffset` - [OPTIONAL] - This allows you to specify the offset of your time zone rather than using the `timeZone` param. This should be an integer representing the number of minutes offset (like `120` for +2 hours or `-90` for -1.5 hours). **Warning**: Minutes offsets < 60 and >-60 will be treated as an offset in hours. This means a minute offset of `30` means an offset of +30 hours. Use the `timeZone` param in this case. This behavior [is planned to be removed in V3](https://github.com/kelektiv/node-cron/pull/685#issuecomment-1676417917). **Warning**: Probably don't use both `timeZone` and `utcOffset` together or weird things may happen.
     - `unrefTimeout` - [OPTIONAL] - If you have code that keeps the event loop running and want to stop the node process when that finishes regardless of the state of your cronjob, you can do so making use of this parameter. This is off by default and cron will run as if it needs to control the event loop. For more information take a look at [timers#timers_timeout_unref](https://nodejs.org/api/timers.html#timers_timeout_unref) from the NodeJS docs.
+  - `from` (static) - Create a new CronJob object providing arguments as an object. See argument names and descriptions above.
   - `start` - Runs your job.
   - `stop` - Stops your job.
   - `setTime` - Stops and changes the time for the `CronJob`. Param must be a `CronTime`.
@@ -128,10 +138,12 @@ Parameter Based
   - `nextDate` - Provides the next date that will trigger an `onTick`.
   - `nextDates` - Provides an array of the next set of dates that will trigger an `onTick`.
   - `fireOnTick` - Allows you to override the `onTick` calling behavior. This matters so only do this if you have a really good reason to do so.
-  - `addCallback` - Allows you to add `onTick` callbacks.
+  - `addCallback` - Allows you to add `onTick` callbacks. Callbacks are run in the order they are registered.
 - `CronTime`
-  - `constructor(time)`
+  - `constructor(time, zone, utcOffset)`
     - `time` - [REQUIRED] - The time to fire off your job. This can be in the form of cron syntax or a JS [Date](https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Date) object.
+    - `zone` - [OPTIONAL] - Same as `timeZone` from `CronJob` parameters.
+    - `utcOffset` - [OPTIONAL] - Same as `utcOffset` from `CronJob` parameters.
 
 ## Community
 
