@@ -24,7 +24,7 @@ import { getRecordKeys } from './utils';
 export class CronTime {
 	source: string | DateTime;
 	zone?: string;
-	utcOffset?: number;
+	utcOffset?: number | string;
 	realDate = false;
 
 	private second: TimeUnitField<'second'> = {};
@@ -49,8 +49,7 @@ export class CronTime {
 		}
 
 		if (utcOffset != null) {
-			this.utcOffset =
-				typeof utcOffset === 'string' ? parseInt(utcOffset) : utcOffset;
+			this.utcOffset = utcOffset;
 		}
 
 		if (source instanceof Date || source instanceof DateTime) {
@@ -127,20 +126,27 @@ export class CronTime {
 			date = date.setZone(this.zone);
 		}
 
-		if (typeof this.utcOffset !== 'undefined') {
-			const offsetHours =
+		if (this.utcOffset != null) {
+			const offsetHours = parseInt(
+				// @ts-expect-error old undocumented behavior going to be removed in V3
 				this.utcOffset >= 60 || this.utcOffset <= -60
-					? this.utcOffset / 60
-					: this.utcOffset;
+					? // @ts-expect-error old undocumented behavior going to be removed in V3
+					  this.utcOffset / 60
+					: this.utcOffset
+			);
+
 			const offsetMins =
+				// @ts-expect-error old undocumented behavior going to be removed in V3
 				this.utcOffset >= 60 || this.utcOffset <= -60
-					? Math.abs(this.utcOffset - offsetHours * 60)
+					? // @ts-expect-error old undocumented behavior going to be removed in V3
+					  Math.abs(this.utcOffset - offsetHours * 60)
 					: 0;
-			const offsetMinsStr = offsetMins >= 10 ? offsetMins : '0' + offsetMins;
+			const offsetMinsStr = offsetMins >= 10 ? offsetMins : `0${offsetMins}`;
 
 			let utcZone = 'UTC';
 
-			if (this.utcOffset < 0) {
+			// @ts-expect-error old undocumented behavior going to be removed in V3
+			if (parseInt(this.utcOffset) < 0) {
 				utcZone += `${offsetHours === 0 ? '-0' : offsetHours}:${offsetMinsStr}`;
 			} else {
 				utcZone += `+${offsetHours}:${offsetMinsStr}`;

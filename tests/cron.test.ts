@@ -438,14 +438,13 @@ describe('cron', () => {
 		it('should run a job using cron syntax with a "UTC+HH:mm" offset as timezone', () => {
 			const clock = sinon.useFakeTimers();
 			const callback = jest.fn();
-			const luxon = require('luxon');
 
 			// Current time
-			const d = luxon.DateTime.local();
+			const d = DateTime.local();
 
 			// Current time with zone offset
 			let zone = 'UTC+5:30';
-			let t = luxon.DateTime.local().setZone(zone);
+			let t = DateTime.local().setZone(zone);
 
 			// If current offset is UTC+5:30, switch to UTC+6:30..
 			if (t.hour === d.hour && t.minute === d.minute) {
@@ -461,8 +460,8 @@ describe('cron', () => {
 			// Run a job designed to be executed at a given
 			// time in `zone`, making sure that it is a different
 			// hour than local time.
-			const job = new cron.CronJob(
-				t.second + ' ' + t.minute + ' ' + t.hour + ' * * *',
+			const job = new CronJob(
+				`${t.second} ${t.minute} ${t.hour} * * *`,
 				callback,
 				null,
 				true,
@@ -868,9 +867,8 @@ describe('cron', () => {
 		it('should run a job using cron syntax with numeric format utcOffset with minute support', () => {
 			const clock = sinon.useFakeTimers();
 			const callback = jest.fn();
-			const luxon = require('luxon');
 			// Current time
-			const t = luxon.DateTime.local();
+			const t = DateTime.local();
 
 			/**
 			 * in order to avoid the minute offset being treated as hours (when `-60 < utcOffset < 60`) regardless of the local timezone,
@@ -883,8 +881,8 @@ describe('cron', () => {
 			// UTC Offset decreased by minutesOffset
 			const utcOffset = t.offset - minutesOffset;
 
-			const job = new cron.CronJob(
-				t.second + ' ' + t.minute + ' ' + t.hour + ' * * *',
+			const job = new CronJob(
+				`${t.second} ${t.minute} ${t.hour} * * *`,
 				callback,
 				null,
 				true,
@@ -919,9 +917,9 @@ describe('cron', () => {
 			// We support only HH support in offset as we support string offset in Timezone.
 			const minutesOffset = t.offset - Math.floor((t.offset - 60) / 60) * 60;
 			const utcOffset = t.offset - minutesOffset;
-			const utcOffsetString = `${utcOffset > 0 ? '+' : '-'}${(
-				'0' + Math.floor(Math.abs(utcOffset) / 60)
-			).slice(-2)}:${('0' + (utcOffset % 60)).slice(-2)}`;
+			const utcOffsetString = `${utcOffset > 0 ? '+' : '-'}${`0${Math.floor(
+				Math.abs(utcOffset) / 60
+			)}`.slice(-2)}:${`0${utcOffset % 60}`.slice(-2)}`;
 
 			const job = new CronJob(
 				`${t.second} ${t.minute} ${t.hour} * * *`,
