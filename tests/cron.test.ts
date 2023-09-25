@@ -1,12 +1,13 @@
+import { DateTime } from 'luxon';
 import sinon from 'sinon';
-import * as cron from '../src';
+import { CronJob, CronTime } from '../src';
 
 describe('cron', () => {
 	describe('with seconds', () => {
 		it('should run every second (* * * * * *)', () => {
 			const clock = sinon.useFakeTimers();
 			const callback = jest.fn();
-			const job = new cron.CronJob('* * * * * *', callback, null, true);
+			const job = new CronJob('* * * * * *', callback, null, true);
 
 			expect(callback).not.toHaveBeenCalled();
 			clock.tick(1000);
@@ -19,7 +20,7 @@ describe('cron', () => {
 			const clock = sinon.useFakeTimers();
 			const callback = jest.fn();
 
-			const job = new cron.CronJob(
+			const job = new CronJob(
 				'* * * * * *',
 				callback,
 				() => {
@@ -37,7 +38,7 @@ describe('cron', () => {
 		it('should use standard cron no-seconds syntax (* * * * *)', () => {
 			const clock = sinon.useFakeTimers();
 			const callback = jest.fn();
-			const job = new cron.CronJob('* * * * *', callback, null, true);
+			const job = new CronJob('* * * * *', callback, null, true);
 
 			clock.tick(1000); // tick second
 
@@ -52,7 +53,7 @@ describe('cron', () => {
 		it('should run every second for 5 seconds (* * * * * *)', () => {
 			const clock = sinon.useFakeTimers();
 			const callback = jest.fn();
-			const job = new cron.CronJob('* * * * * *', callback, null, true);
+			const job = new CronJob('* * * * * *', callback, null, true);
 			for (let i = 0; i < 5; i++) clock.tick(1000);
 			job.stop();
 			clock.restore();
@@ -62,7 +63,7 @@ describe('cron', () => {
 		it('should run every second for 5 seconds with oncomplete (* * * * * *)', done => {
 			const callback = jest.fn();
 			const clock = sinon.useFakeTimers();
-			const job = new cron.CronJob(
+			const job = new CronJob(
 				'* * * * * *',
 				callback,
 				() => {
@@ -79,7 +80,7 @@ describe('cron', () => {
 		it('should run every second for 5 seconds (*/1 * * * * *)', () => {
 			const clock = sinon.useFakeTimers();
 			const callback = jest.fn();
-			const job = new cron.CronJob('*/1 * * * * *', callback, null, true);
+			const job = new CronJob('*/1 * * * * *', callback, null, true);
 			for (let i = 0; i < 5; i++) clock.tick(1000);
 			job.stop();
 			clock.restore();
@@ -89,7 +90,7 @@ describe('cron', () => {
 		it('should run every 2 seconds for 1 seconds (*/2 * * * * *)', () => {
 			const clock = sinon.useFakeTimers();
 			const callback = jest.fn();
-			const job = new cron.CronJob('*/2 * * * * *', callback, null, true);
+			const job = new CronJob('*/2 * * * * *', callback, null, true);
 			clock.tick(1000);
 			job.stop();
 			clock.restore();
@@ -99,7 +100,7 @@ describe('cron', () => {
 		it('should run every 2 seconds for 5 seconds (*/2 * * * * *)', () => {
 			const clock = sinon.useFakeTimers();
 			const callback = jest.fn();
-			const job = new cron.CronJob('*/2 * * * * *', callback, null, true);
+			const job = new CronJob('*/2 * * * * *', callback, null, true);
 			for (let i = 0; i < 5; i++) clock.tick(1000);
 			job.stop();
 			clock.restore();
@@ -109,7 +110,7 @@ describe('cron', () => {
 		it('should run every second for 5 seconds with oncomplete (*/1 * * * * *)', done => {
 			const clock = sinon.useFakeTimers();
 			const callback = jest.fn();
-			const job = new cron.CronJob(
+			const job = new CronJob(
 				'*/1 * * * * *',
 				callback,
 				() => {
@@ -126,7 +127,7 @@ describe('cron', () => {
 		it('should run every second for a range ([start]-[end] * * * * *)', () => {
 			const clock = sinon.useFakeTimers();
 			const callback = jest.fn();
-			const job = new cron.CronJob('0-8 * * * * *', callback, null, true);
+			const job = new CronJob('0-8 * * * * *', callback, null, true);
 			clock.tick(10000);
 			job.stop();
 			clock.restore();
@@ -136,7 +137,7 @@ describe('cron', () => {
 		it('should run every second for a range ([start]-[end] * * * * *) with onComplete', done => {
 			const clock = sinon.useFakeTimers();
 			const callback = jest.fn();
-			const job = new cron.CronJob(
+			const job = new CronJob(
 				'0-8 * * * * *',
 				callback,
 				() => {
@@ -153,7 +154,7 @@ describe('cron', () => {
 		it('should default to full range when upper range not provided (1/2 * * * * *)', done => {
 			const clock = sinon.useFakeTimers();
 			const callback = jest.fn();
-			const job = new cron.CronJob(
+			const job = new CronJob(
 				'1/2 * * * * *',
 				callback,
 				() => {
@@ -170,7 +171,7 @@ describe('cron', () => {
 		it('should run every second (* * * * * *) using the object constructor', () => {
 			const clock = sinon.useFakeTimers();
 			const callback = jest.fn();
-			const job = cron.CronJob.from({
+			const job = CronJob.from({
 				cronTime: '* * * * * *',
 				onTick: callback,
 				start: true
@@ -184,7 +185,7 @@ describe('cron', () => {
 		it('should run every second with oncomplete (* * * * * *) using the object constructor', done => {
 			const clock = sinon.useFakeTimers();
 			const callback = jest.fn();
-			const job = cron.CronJob.from({
+			const job = CronJob.from({
 				cronTime: '* * * * * *',
 				onTick: callback,
 				onComplete: () => {
@@ -204,7 +205,7 @@ describe('cron', () => {
 			const clock = sinon.useFakeTimers();
 			const m60 = 60 * 60 * 1000;
 			const l: number[] = [];
-			const job = new cron.CronJob(
+			const job = new CronJob(
 				'00 30 * * * *',
 				() => {
 					l.push(Math.floor(Date.now() / 60000));
@@ -225,7 +226,7 @@ describe('cron', () => {
 		it('should run every 45 minutes for 2 hours (0 */45 * * * *)', () => {
 			const clock = sinon.useFakeTimers();
 			const callback = jest.fn();
-			const job = new cron.CronJob('0 */45 * * * *', callback, null, true);
+			const job = new CronJob('0 */45 * * * *', callback, null, true);
 			for (let i = 0; i < 2; i++) clock.tick(60 * 60 * 1000);
 			job.stop();
 			clock.restore();
@@ -235,7 +236,7 @@ describe('cron', () => {
 		it('should run every 45 minutes for 2 hours (0 */45 * * * *) with onComplete', done => {
 			const clock = sinon.useFakeTimers();
 			const callback = jest.fn();
-			const job = new cron.CronJob(
+			const job = new CronJob(
 				'0 */45 * * * *',
 				callback,
 				() => {
@@ -253,7 +254,7 @@ describe('cron', () => {
 	it('should start and stop job from outside', done => {
 		const clock = sinon.useFakeTimers();
 		const callback = jest.fn();
-		const job = new cron.CronJob(
+		const job = new CronJob(
 			'* * * * * *',
 			function () {
 				callback();
@@ -272,11 +273,11 @@ describe('cron', () => {
 	it('should start and stop job from inside (default context)', done => {
 		const clock = sinon.useFakeTimers();
 		const callback = jest.fn();
-		new cron.CronJob(
+		new CronJob(
 			'* * * * * *',
 			function () {
 				callback();
-				this.stop();
+				(this as CronJob).stop();
 			},
 			() => {
 				expect(callback).toHaveBeenCalledTimes(1);
@@ -295,7 +296,7 @@ describe('cron', () => {
 			const s = d.getSeconds() + 1;
 			d.setSeconds(s);
 			const callback = jest.fn();
-			const job = new cron.CronJob(
+			const job = new CronJob(
 				d,
 				() => {
 					const t = new Date();
@@ -317,7 +318,7 @@ describe('cron', () => {
 			const s = d.getSeconds() + 1;
 			d.setSeconds(s);
 			const callback = jest.fn();
-			const job = new cron.CronJob(
+			const job = new CronJob(
 				d,
 				() => {
 					const t = new Date();
@@ -341,7 +342,7 @@ describe('cron', () => {
 
 			const d = new Date().getTime() + 31 * 86400 * 1000;
 
-			const job = new cron.CronJob(new Date(d), callback);
+			const job = new CronJob(new Date(d), callback);
 			job.start();
 
 			clock.tick(1000);
@@ -357,7 +358,7 @@ describe('cron', () => {
 
 			const d = new Date().getTime() + 31 * 86400 * 1000;
 
-			const job = cron.CronJob.from({
+			const job = CronJob.from({
 				cronTime: new Date(d),
 				onTick: callback,
 				runOnInit: true
@@ -378,7 +379,7 @@ describe('cron', () => {
 			const clock = sinon.useFakeTimers();
 			const callback = jest.fn();
 
-			const job = cron.CronJob.from({
+			const job = CronJob.from({
 				cronTime: '* * * * * *',
 				onTick: callback,
 				runOnInit: true
@@ -400,12 +401,11 @@ describe('cron', () => {
 		it('should run a job using cron syntax with a timezone', () => {
 			const clock = sinon.useFakeTimers();
 			const callback = jest.fn();
-			const luxon = require('luxon');
 			let zone = 'America/Chicago';
 			// New Orleans time
-			let t = luxon.DateTime.local().setZone(zone);
+			let t = DateTime.local().setZone(zone);
 			// Current time
-			const d = luxon.DateTime.local();
+			const d = DateTime.local();
 
 			// If current time is New Orleans time, switch to Los Angeles..
 			if (t.hour === d.hour) {
@@ -421,8 +421,8 @@ describe('cron', () => {
 			// Run a job designed to be executed at a given
 			// time in `zone`, making sure that it is a different
 			// hour than local time.
-			const job = new cron.CronJob(
-				t.second + ' ' + t.minute + ' ' + t.hour + ' * * *',
+			const job = new CronJob(
+				`${t.second} ${t.minute} ${t.hour} * * *`,
 				callback,
 				null,
 				true,
@@ -476,12 +476,11 @@ describe('cron', () => {
 		});
 
 		it('should run a job using a date', () => {
-			const luxon = require('luxon');
 			let zone = 'America/Chicago';
 			// New Orleans time
-			let t = luxon.DateTime.local().setZone(zone);
+			let t = DateTime.local().setZone(zone);
 			// Current time
-			let d = luxon.DateTime.local();
+			let d = DateTime.local();
 
 			// If current time is New Orleans time, switch to Los Angeles..
 			if (t.hour === d.hour) {
@@ -493,7 +492,7 @@ describe('cron', () => {
 			d = d.plus({ seconds: 1 });
 			const clock = sinon.useFakeTimers(d.valueOf());
 			const callback = jest.fn();
-			const job = new cron.CronJob(d.toJSDate(), callback, null, true, zone);
+			const job = new CronJob(d.toJSDate(), callback, null, true, zone);
 			clock.tick(1000);
 			clock.restore();
 			job.stop();
@@ -503,7 +502,7 @@ describe('cron', () => {
 		it('should test if timezone is valid.', () => {
 			expect(() => {
 				// eslint-disable-next-line no-new
-				cron.CronJob.from({
+				CronJob.from({
 					cronTime: '* * * * * *',
 					onTick: () => {},
 					timeZone: 'fake/timezone'
@@ -515,10 +514,10 @@ describe('cron', () => {
 	it('should scope onTick to running job', () => {
 		const clock = sinon.useFakeTimers();
 
-		const job = new cron.CronJob(
+		const job = new CronJob(
 			'* * * * * *',
 			function () {
-				expect(job).toBeInstanceOf(cron.CronJob);
+				expect(job).toBeInstanceOf(CronJob);
 				expect(job).toEqual(this);
 			},
 			null,
@@ -534,10 +533,10 @@ describe('cron', () => {
 	it('should scope onTick to object', () => {
 		const clock = sinon.useFakeTimers();
 
-		const job = new cron.CronJob(
+		const job = new CronJob(
 			'* * * * * *',
 			function () {
-				expect(this.hello).toEqual('world');
+				expect((this as { hello: string }).hello).toBe('world');
 				expect(job).not.toEqual(this);
 			},
 			null,
@@ -555,10 +554,10 @@ describe('cron', () => {
 	it('should scope onTick to object within constructor object', () => {
 		const clock = sinon.useFakeTimers();
 
-		const job = cron.CronJob.from({
+		const job = CronJob.from({
 			cronTime: '* * * * * *',
 			onTick: function () {
-				expect(this.hello).toEqual('world');
+				expect((this as { hello: string }).hello).toBe('world');
 				expect(job).not.toEqual(this);
 			},
 			start: true,
@@ -573,7 +572,7 @@ describe('cron', () => {
 
 	it('should not get into an infinite loop on invalid times', () => {
 		expect(() => {
-			new cron.CronJob(
+			new CronJob(
 				'* 60 * * * *',
 				() => {
 					expect(true).toBe(true);
@@ -584,7 +583,7 @@ describe('cron', () => {
 		}).toThrow();
 
 		expect(() => {
-			new cron.CronJob(
+			new CronJob(
 				'* * 24 * * *',
 				() => {
 					expect(true).toBe(true);
@@ -603,7 +602,7 @@ describe('cron', () => {
 		d.setHours(23);
 		const clock = sinon.useFakeTimers(d.getTime());
 
-		const job = new cron.CronJob('0 0 0 1 * *', callback, null, true);
+		const job = new CronJob('0 0 0 1 * *', callback, null, true);
 
 		clock.tick(1001);
 		expect(callback).toHaveBeenCalledTimes(1);
@@ -624,7 +623,7 @@ describe('cron', () => {
 			toFake: ['setTimeout']
 		});
 
-		const job = new cron.CronJob('0 * * * * *', callback, null, true);
+		const job = new CronJob('0 * * * * *', callback, null, true);
 
 		clock.tick(60000);
 		expect(callback).toHaveBeenCalledTimes(0);
@@ -641,7 +640,7 @@ describe('cron', () => {
 		d.setHours(23);
 		const clock = sinon.useFakeTimers(d.getTime());
 
-		const job = cron.CronJob.from({
+		const job = CronJob.from({
 			cronTime: '59 59 3 * * *',
 			onTick: callback,
 			start: true,
@@ -664,7 +663,7 @@ describe('cron', () => {
 		d.setHours(0);
 		const clock = sinon.useFakeTimers(d.getTime());
 
-		const job = cron.CronJob.from({
+		const job = CronJob.from({
 			cronTime: '0 2-6/2 * * * *',
 			onTick: callback,
 			start: true
@@ -691,7 +690,7 @@ describe('cron', () => {
 		d.setHours(0);
 		const clock = sinon.useFakeTimers(d.getTime());
 
-		const job = cron.CronJob.from({
+		const job = CronJob.from({
 			cronTime: '00 * * * * *',
 			onTick: callback,
 			start: true
@@ -715,7 +714,7 @@ describe('cron', () => {
 		d.setHours(0);
 		const clock = sinon.useFakeTimers(d.getTime());
 
-		const job = cron.CronJob.from({
+		const job = CronJob.from({
 			cronTime: '00 30 00 * * *',
 			onTick: callback,
 			start: true
@@ -743,7 +742,7 @@ describe('cron', () => {
 		d.setHours(23);
 		const clock = sinon.useFakeTimers(d.getTime());
 
-		const job = cron.CronJob.from({
+		const job = CronJob.from({
 			cronTime: '00 * * * * *',
 			onTick: callback,
 			start: true,
@@ -766,7 +765,7 @@ describe('cron', () => {
 		d.setHours(0);
 		const clock = sinon.useFakeTimers(d.getTime());
 
-		const job = cron.CronJob.from({
+		const job = CronJob.from({
 			cronTime: '00 30 00 * * *',
 			onTick: callback,
 			start: true,
@@ -793,7 +792,7 @@ describe('cron', () => {
 		const d = new Date(2015, 1, 1, 1, 1, 41, 0);
 		const clock = sinon.useFakeTimers(d.getTime());
 
-		const job = cron.CronJob.from({
+		const job = CronJob.from({
 			cronTime: '* * * * *',
 			onTick: callback,
 			start: true
@@ -818,7 +817,7 @@ describe('cron', () => {
 		const d = new Date(2096, 2, 1);
 		const clock = sinon.useFakeTimers(d.getTime());
 
-		const job = cron.CronJob.from({
+		const job = CronJob.from({
 			cronTime: ' * * 29 2 *',
 			onTick: callback,
 			start: true
@@ -840,14 +839,13 @@ describe('cron', () => {
 		it('should run a job using cron syntax with number format utcOffset', () => {
 			const clock = sinon.useFakeTimers();
 			const callback = jest.fn();
-			const luxon = require('luxon');
 			// Current time
-			const t = luxon.DateTime.local();
+			const t = DateTime.local();
 			// UTC Offset decreased by an hour
 			const utcOffset = t.offset - 60;
 
-			const job = new cron.CronJob(
-				t.second + ' ' + t.minute + ' ' + t.hour + ' * * *',
+			const job = new CronJob(
+				`${t.second} ${t.minute} ${t.hour} * * *`,
 				callback,
 				null,
 				true,
@@ -915,9 +913,8 @@ describe('cron', () => {
 		it('should run a job using cron syntax with string format utcOffset', () => {
 			const clock = sinon.useFakeTimers();
 			const callback = jest.fn();
-			const luxon = require('luxon');
 			// Current time
-			const t = luxon.DateTime.local();
+			const t = DateTime.local();
 			// UTC Offset decreased by an hour (string format '(+/-)HH:mm')
 			// We support only HH support in offset as we support string offset in Timezone.
 			const minutesOffset = t.offset - Math.floor((t.offset - 60) / 60) * 60;
@@ -926,8 +923,8 @@ describe('cron', () => {
 				'0' + Math.floor(Math.abs(utcOffset) / 60)
 			).slice(-2)}:${('0' + (utcOffset % 60)).slice(-2)}`;
 
-			const job = new cron.CronJob(
-				t.second + ' ' + t.minute + ' ' + t.hour + ' * * *',
+			const job = new CronJob(
+				`${t.second} ${t.minute} ${t.hour} * * *`,
 				callback,
 				null,
 				true,
@@ -952,7 +949,7 @@ describe('cron', () => {
 			const clock = sinon.useFakeTimers();
 			const callback = jest.fn();
 
-			const job = new cron.CronJob(
+			const job = new CronJob(
 				'* * * * * *',
 				callback,
 				null,
@@ -974,7 +971,7 @@ describe('cron', () => {
 
 		it('should be able to detect out of range days of month', () => {
 			expect(() => {
-				new cron.CronTime('* * 32 FEB *');
+				new CronTime('* * 32 FEB *');
 			}).toThrow();
 		});
 	});
@@ -984,12 +981,12 @@ describe('cron', () => {
 			const callback = jest.fn();
 			const clock = sinon.useFakeTimers();
 
-			const job = new cron.CronJob('* * * * * *', callback);
+			const job = new CronJob('* * * * * *', callback);
 
 			job.start();
 			clock.tick(1000);
 
-			const time = cron.time('*/2 * * * * *');
+			const time = new CronTime('*/2 * * * * *');
 			job.setTime(time);
 
 			clock.tick(4000);
@@ -1003,13 +1000,13 @@ describe('cron', () => {
 			const callback = jest.fn();
 			const clock = sinon.useFakeTimers();
 
-			const job = new cron.CronJob('* * * * * *', callback);
+			const job = new CronJob('* * * * * *', callback);
 
 			job.start();
 			clock.tick(1000);
 
 			job.stop();
-			const time = cron.time('*/2 * * * * *');
+			const time = new CronTime('*/2 * * * * *');
 			job.setTime(time);
 
 			clock.tick(4000);
@@ -1021,9 +1018,9 @@ describe('cron', () => {
 
 		it('should setTime with invalid object', () => {
 			const callback = jest.fn();
-			const job = new cron.CronJob('* * * * * *', callback);
+			const job = new CronJob('* * * * * *', callback);
 			expect(() => {
-				// @ts-expect-error
+				// @ts-expect-error time parameter cannot be undefined
 				job.setTime(undefined);
 			}).toThrow();
 		});
@@ -1032,7 +1029,7 @@ describe('cron', () => {
 			const callback = jest.fn();
 			const clock = sinon.useFakeTimers();
 
-			const job = new cron.CronJob('* * * * * *', callback);
+			const job = new CronJob('* * * * * *', callback);
 
 			const time = new Date();
 			job.start();
@@ -1040,7 +1037,7 @@ describe('cron', () => {
 			clock.tick(1000);
 
 			expect(() => {
-				// @ts-expect-error
+				// @ts-expect-error time parameter but be an instance of CronTime
 				job.setTime(time);
 			}).toThrow();
 
@@ -1054,7 +1051,7 @@ describe('cron', () => {
 		it('should give the next date to run at', () => {
 			const callback = jest.fn();
 			const clock = sinon.useFakeTimers();
-			const job = new cron.CronJob('* * * * * *', callback);
+			const job = new CronJob('* * * * * *', callback);
 			const d = Date.now();
 
 			expect(job.nextDate().toMillis()).toEqual(d + 1000);
@@ -1065,7 +1062,7 @@ describe('cron', () => {
 		it('should give the next 5 dates to run at', () => {
 			const callback = jest.fn();
 			const clock = sinon.useFakeTimers();
-			const job = new cron.CronJob('* * * * * *', callback);
+			const job = new CronJob('* * * * * *', callback);
 			const d = Date.now();
 
 			expect(job.nextDates(5).map(d => d.toMillis())).toEqual([
@@ -1082,7 +1079,7 @@ describe('cron', () => {
 		it('should give an empty array when called without argument', () => {
 			const callback = jest.fn();
 			const clock = sinon.useFakeTimers();
-			const job = new cron.CronJob('* * * * * *', callback);
+			const job = new CronJob('* * * * * *', callback);
 
 			expect(job.nextDates()).toHaveLength(0);
 
@@ -1095,7 +1092,7 @@ describe('cron', () => {
 		const clock = sinon.useFakeTimers();
 		const d = new Date();
 		d.setMilliseconds(2147485647 * 2); // MAXDELAY in `job.js` + 2000.
-		const job = new cron.CronJob(d, callback);
+		const job = new CronJob(d, callback);
 		job.start();
 		clock.tick(2147483648);
 		expect(callback).toHaveBeenCalledTimes(0);
@@ -1108,11 +1105,11 @@ describe('cron', () => {
 	it('should give the last execution date', () => {
 		const callback = jest.fn();
 		const clock = sinon.useFakeTimers();
-		const job = new cron.CronJob('* * * * * *', callback);
+		const job = new CronJob('* * * * * *', callback);
 		job.start();
 		clock.tick(1000);
 		expect(callback).toHaveBeenCalledTimes(1);
-		expect(job.lastDate()?.getTime()).toEqual(1000);
+		expect(job.lastDate()?.getTime()).toBe(1000);
 		job.stop();
 		clock.restore();
 	});

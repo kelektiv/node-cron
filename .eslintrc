@@ -44,5 +44,17 @@
 				"prefix": ["is", "should", "has", "can", "did", "was", "will"]
 			}
 		]
-	}
+	},
+	"overrides": [
+		{
+			"files": ["tests/**/*.ts"],
+			"plugins": ["jest"],
+			"extends": ["plugin:jest/recommended", "plugin:jest/style"],
+			"rules": {
+				"@typescript-eslint/no-empty-function": "off",
+				"@typescript-eslint/unbound-method": "off",
+				"jest/no-done-callback": "off"
+			}
+		}
+	]
 }

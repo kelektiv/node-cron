@@ -12,8 +12,8 @@
 	},
 	"main": "dist/index",
 	"scripts": {
-		"build": "tsc -b",
-		"lint:eslint": "eslint src/ --ext .ts",
+		"build": "tsc -b --project tsconfig.build.json",
+		"lint:eslint": "eslint src/ tests/ --ext .ts",
 		"lint:prettier": "prettier ./**/*.{json,md,yml} --check",
 		"lint": "npm run lint:eslint && npm run lint:prettier",
 		"lint:fix": "npm run lint:eslint -- --fix && npm run lint:prettier -- --write",
@@ -43,6 +43,7 @@
 		"chai": "~4.2.x",
 		"eslint": "~8.36.x",
 		"eslint-config-prettier": "^8.7.x",
+		"eslint-plugin-jest": "^27.4.0",
 		"eslint-plugin-prettier": "~4.2.x",
 		"husky": "^8.0.3",
 		"jest": "~29.5.x",

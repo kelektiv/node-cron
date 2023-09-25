@@ -28,7 +28,5 @@
 		"noUnusedLocals": true,
 		"noUnusedParameters": true,
 		"strictPropertyInitialization": true
-	},
-	"include": ["./src/**/*"],
-	"exclude": ["node_modules", "tests", "dist", "**/*spec.ts"]
+	}
 }
