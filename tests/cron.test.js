@@ -398,7 +398,7 @@ describe('cron', () => {
 	});
 
 	describe('with timezone', () => {
-		it('should run a job using cron syntax', () => {
+		it('should run a job using cron syntax with a timezone', () => {
 			const clock = sinon.useFakeTimers();
 			const callback = jest.fn();
 			const luxon = require('luxon');
@@ -414,6 +414,46 @@ describe('cron', () => {
 				t = t.setZone(zone);
 			}
 			expect(d.hour).not.toBe(t.hour);
+
+			// If t = 59s12m then t.setSeconds(60)
+			// becomes 00s13m so we're fine just doing
+			// this and no testRun callback.
+			t = t.plus({ seconds: 1 });
+			// Run a job designed to be executed at a given
+			// time in `zone`, making sure that it is a different
+			// hour than local time.
+			const job = new cron.CronJob(
+				t.second + ' ' + t.minute + ' ' + t.hour + ' * * *',
+				callback,
+				null,
+				true,
+				zone
+			);
+
+			clock.tick(1000);
+			clock.restore();
+			job.stop();
+			expect(callback).toHaveBeenCalledTimes(1);
+		});
+
+		it('should run a job using cron syntax with a "UTC+HH:mm" offset as timezone', () => {
+			const clock = sinon.useFakeTimers();
+			const callback = jest.fn();
+			const luxon = require('luxon');
+
+			// Current time
+			const d = luxon.DateTime.local();
+
+			// Current time with zone offset
+			let zone = 'UTC+5:30';
+			let t = luxon.DateTime.local().setZone(zone);
+
+			// If current offset is UTC+5:30, switch to UTC+6:30..
+			if (t.hour === d.hour && t.minute === d.minute) {
+				zone = 'UTC+6:30';
+				t = t.setZone(zone);
+			}
+			expect(`${d.hour}:${d.minute}`).not.toBe(`${t.hour}:${t.minute}`);
 
 			// If t = 59s12m then t.setSeconds(60)
 			// becomes 00s13m so we're fine just doing
@@ -828,6 +868,51 @@ describe('cron', () => {
 			expect(callback).toHaveBeenCalledTimes(1);
 		});
 
+		it('should run a job using cron syntax with numeric format utcOffset with minute support', () => {
+			const clock = sinon.useFakeTimers();
+			const callback = jest.fn();
+			const luxon = require('luxon');
+			// Current time
+			const t = luxon.DateTime.local();
+
+			/**
+			 * in order to avoid the minute offset being treated as hours (when `-60 < utcOffset < 60`) regardless of the local timezone,
+			 * and the maximum possible offset being +14:00, we simply add 80 minutes to that offset.
+			 * this implicit & undocumented behavior is planned to be removed in V3 anyway:
+			 * https://github.com/kelektiv/node-cron/pull/685#issuecomment-1676417917
+			 */
+			const minutesOffset = 14 * 60 + 80; // 920
+
+			// UTC Offset decreased by minutesOffset
+			const utcOffset = t.offset - minutesOffset;
+
+			const job = new cron.CronJob(
+				t.second + ' ' + t.minute + ' ' + t.hour + ' * * *',
+				callback,
+				null,
+				true,
+				null,
+				null,
+				null,
+				utcOffset
+			);
+
+			// tick 1 sec before minutesOffset
+			clock.tick(1000 * minutesOffset * 60 - 1);
+			expect(callback).toHaveBeenCalledTimes(0);
+
+			clock.tick(1);
+			clock.restore();
+			job.stop();
+			expect(callback).toHaveBeenCalledTimes(1);
+		});
+
+		/**
+		 * this still works implicitly (without minute support) because the string conversion
+		 * to integer removes everything after the colon, i.e. '(+/-)HH:mm' becomes (+/-)HH,
+		 * but this is an undocumented behavior that will be removed in V3:
+		 * https://github.com/kelektiv/node-cron/pull/685#issuecomment-1676394391
+		 */
 		it('should run a job using cron syntax with string format utcOffset', () => {
 			const clock = sinon.useFakeTimers();
 			const callback = jest.fn();
@@ -835,11 +920,12 @@ describe('cron', () => {
 			// Current time
 			const t = luxon.DateTime.local();
 			// UTC Offset decreased by an hour (string format '(+/-)HH:mm')
-			const utcOffset = t.offset - 60;
-			let utcOffsetString = utcOffset > 0 ? '+' : '-';
-			utcOffsetString += ('0' + Math.floor(Math.abs(utcOffset) / 60)).slice(-2);
-			utcOffsetString += ':';
-			utcOffsetString += ('0' + (utcOffset % 60)).slice(-2);
+			// We support only HH support in offset as we support string offset in Timezone.
+			const minutesOffset = t.offset - Math.floor((t.offset - 60) / 60) * 60;
+			const utcOffset = t.offset - minutesOffset;
+			const utcOffsetString = `${utcOffset > 0 ? '+' : '-'}${(
+				'0' + Math.floor(Math.abs(utcOffset) / 60)
+			).slice(-2)}:${('0' + (utcOffset % 60)).slice(-2)}`;
 
 			const job = new cron.CronJob(
 				t.second + ' ' + t.minute + ' ' + t.hour + ' * * *',
@@ -852,8 +938,8 @@ describe('cron', () => {
 				utcOffsetString
 			);
 
-			// tick 1 sec before an hour
-			clock.tick(1000 * 60 * 60 - 1);
+			// tick 1 sec before minutesOffset
+			clock.tick(1000 * 60 * minutesOffset - 1);
 			expect(callback).toHaveBeenCalledTimes(0);
 
 			// tick 1 sec

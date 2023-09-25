@@ -1,7 +1,12 @@
-## [3.0.0-beta.4](https://github.com/kelektiv/node-cron/compare/v3.0.0-beta.3...v3.0.0-beta.4) (2023-09-10)
+## [2.4.4](https://github.com/kelektiv/node-cron/compare/v2.4.3...v2.4.4) (2023-09-25)
 
 
 ### 🐛 Bug Fixes
+
+* added fractional offset support ([#685](https://github.com/kelektiv/node-cron/issues/685)) ([ce78478](https://github.com/kelektiv/node-cron/commit/ce784784575b65bd75b8b1a4adda3d8fd42fe1c0))
+
+## [3.0.0-beta.4](https://github.com/kelektiv/node-cron/compare/v3.0.0-beta.3...v3.0.0-beta.4) (2023-09-10)
+
 
 * **deps:** update dependency luxon to v3.3.0 & add [@types](https://github.com/types)/luxon ([#689](https://github.com/kelektiv/node-cron/issues/689)) ([c95a449](https://github.com/kelektiv/node-cron/commit/c95a449121e440b82d391fc11f8dc148748f93ec)), closes [#688](https://github.com/kelektiv/node-cron/issues/688)
 * fix range parsing when upper limit = 0 ([#687](https://github.com/kelektiv/node-cron/issues/687)) ([d96746f](https://github.com/kelektiv/node-cron/commit/d96746f7b8f357e565d1fad48c9f70d3d646da64))
