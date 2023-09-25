@@ -1,2 +1,3 @@
-dist/
 CHANGELOG.md
+dist/
+coverage/
