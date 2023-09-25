@@ -12,7 +12,7 @@
 	},
 	"main": "dist/index",
 	"scripts": {
-		"build": "tsc -b --project tsconfig.build.json",
+		"build": "tsc -b tsconfig.build.json",
 		"lint:eslint": "eslint src/ tests/ --ext .ts",
 		"lint:prettier": "prettier ./**/*.{json,md,yml} --check",
 		"lint": "npm run lint:eslint && npm run lint:prettier",
