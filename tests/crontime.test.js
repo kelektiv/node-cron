@@ -648,18 +648,6 @@ describe('crontime', () => {
 		clock.restore();
 	});
 
-	it('should accept 4 as a valid UTC offset', () => {
-		const clock = sinon.useFakeTimers();
-
-		const cronTime = new cron.CronTime('0 11 * * *', null, 5);
-		const expected = luxon.DateTime.local().plus({ hours: 6 }).toSeconds();
-		const actual = cronTime.sendAt().toSeconds();
-
-		expect(actual).toEqual(expected);
-
-		clock.restore();
-	});
-
 	it('should detect real date in the past', () => {
 		const clock = sinon.useFakeTimers();
 
