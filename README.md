@@ -23,7 +23,7 @@ Cron is a tool that allows you to execute _something_ on a schedule. This is typ
 
 ## Installation
 
-```
+```bash
 npm install cron
 ```
 
@@ -38,7 +38,7 @@ In version 3 of this library, we migrated to TypeScript, aligned our cron patter
 
 **Month indexing went from `0-11` to `1-12`. So you need to increment all numeric months by 1.**
 
-For day-of-week indexing, we only added support for `7` as Sunday, so you don't need to change anything !
+For day-of-week indexing, we only added support for `7` as Sunday, so you don't need to change anything!
 
 ### CronJob changes
 
@@ -53,15 +53,11 @@ For day-of-week indexing, we only added support for `7` as Sunday, so you don't 
 
 </details>
 
-## Versions and Backwards compatibility breaks
-
-As goes with semver, breaking backwards compatibility should be explicit in the versioning of your library. As such, we'll upgrade the version of this module in accordance with breaking changes (We're not always great about doing it this way so if you notice that there are breaking changes that haven't been bumped appropriately please let us know).
-
 ## Usage (basic cron usage)
 
 ```javascript
-var CronJob = require('cron').CronJob;
-var job = new CronJob(
+import { CronJob } from 'cron';
+const job = new CronJob(
 	'* * * * * *',
 	function () {
 		console.log('You will see this message every second');
@@ -109,7 +105,6 @@ day of week    0-7 (0 or 7 is Sunday, or use names)
 
 ## Gotchas
 
-- Months are indexed as 0-11 instead of 1-12. This is different from Unix `cron` and is planned to updated to match Unix `cron` in v3.0.0 of `node-cron`.
 - Millisecond level granularity in JS `Date` or Luxon `DateTime` objects: Because computers take time to do things, there may be some delay in execution. This should be on the order of milliseconds. This module doesn't allow MS level granularity for the regular cron syntax, but _does_ allow you to specify a real date of execution in either a javascript `Date` object or a Luxon `DateTime` object. When this happens you may find that you aren't able to execute a job that _should_ run in the future like with `new Date().setMilliseconds(new Date().getMilliseconds() + 1)`. This is due to those cycles of execution above. This wont be the same for everyone because of compute speed. When we tried it locally we saw that somewhere around the 4-5 ms mark was where we got consistent ticks using real dates, but anything less than that would result in an exception. This could be really confusing. We could restrict the granularity for all dates to seconds, but felt that it wasn't a huge problem so long as you were made aware. If this becomes more of an issue, We can revisit it.
 - Arrow Functions for `onTick`: Arrow functions get their `this` context from their parent scope. Thus, if you use them, you will not get the `this` context of the cronjob. You can read a little more in issue [GH-47](https://github.com/kelektiv/node-cron/issues/47#issuecomment-459762775)
 
