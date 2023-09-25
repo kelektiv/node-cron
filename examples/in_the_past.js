@@ -1,4 +1,4 @@
-const CronJob = require('../dist').CronJob;
+import { CronJob } from '../src';
 
 // XXX: SEE README GOTCHAS ABOUT WHY THIS COULD BE IN THE PAST!
 const d = new Date();

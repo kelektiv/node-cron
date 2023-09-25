@@ -1,4 +1,4 @@
-const CronJob = require('../dist').CronJob;
+import { CronJob } from '../src';
 
 console.log('Before job instantiation');
 const job = new CronJob('* 4-22 * * 1-5', function () {

@@ -1,4 +1,4 @@
-const CronJob = require('../dist').CronJob;
+import { CronJob } from '../src';
 
 const job = new CronJob(
 	'0 * * * * *',

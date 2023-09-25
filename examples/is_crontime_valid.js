@@ -1,4 +1,4 @@
-const CronJob = require('../dist').CronJob;
+import { CronJob } from '../src';
 
 try {
 	new CronJob('NOT VALID', () => {

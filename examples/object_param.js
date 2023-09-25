@@ -1,8 +1,8 @@
-const CronJob = require('../dist').CronJob;
+import { CronJob } from '../src';
 
 let isRunning = false;
 console.log('Before job instantiation');
-const job = new CronJob({
+const job = CronJob.from({
 	cronTime: '* * * * * *',
 	onTick: function () {
 		const d = new Date();

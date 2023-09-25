@@ -1,4 +1,4 @@
-const CronJob = require('../dist').CronJob;
+import { CronJob } from '../src';
 
 let isRunning = false;
 console.log('Before job instantiation');
