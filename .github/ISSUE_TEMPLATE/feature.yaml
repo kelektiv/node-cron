@@ -1,7 +1,6 @@
 name: Feature request
 description: Suggest features, propose improvements, discuss new ideas
-title: "[FEATURE] <description>"
-labels: ["⭐ goal: addition"]
+title: '[FEATURE] <description>'
 body:
   - type: textarea
     id: suggestion
@@ -28,4 +27,3 @@ body:
         Think about linking existing Issues here!
     validations:
       required: false
-  
