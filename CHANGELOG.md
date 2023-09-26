@@ -1,3 +1,10 @@
+## [3.0.0-beta.8](https://github.com/kelektiv/node-cron/compare/v3.0.0-beta.7...v3.0.0-beta.8) (2023-09-26)
+
+
+### ✨ Features
+
+* expose useful types ([6a1816d](https://github.com/kelektiv/node-cron/commit/6a1816dcefdfa456f1dc8ac744a32e8d879194a6))
+
 ## [3.0.0-beta.7](https://github.com/kelektiv/node-cron/compare/v3.0.0-beta.6...v3.0.0-beta.7) (2023-09-26)
 
 
