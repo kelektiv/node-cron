@@ -1,3 +1,10 @@
+## [3.0.0-beta.7](https://github.com/kelektiv/node-cron/compare/v3.0.0-beta.6...v3.0.0-beta.7) (2023-09-26)
+
+
+### 📚 Documentation
+
+* **readme:** remove outdated informations ([#695](https://github.com/kelektiv/node-cron/issues/695)) ([51d2bab](https://github.com/kelektiv/node-cron/commit/51d2bab4f1e6a0419f6592efbfdf72f17fa2fb07))
+
 ## [3.0.0-beta.6](https://github.com/kelektiv/node-cron/compare/v3.0.0-beta.5...v3.0.0-beta.6) (2023-09-26)
 
 
