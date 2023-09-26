@@ -10,16 +10,18 @@
 		"type": "git",
 		"url": "https://github.com/kelektiv/node-cron.git"
 	},
-	"main": "lib/cron",
+	"main": "dist/index",
 	"scripts": {
-		"lint": "eslint {lib,tests}/*.js",
+		"build": "tsc -b tsconfig.build.json",
+		"lint:eslint": "eslint src/ tests/ --ext .ts",
+		"lint:prettier": "prettier ./**/*.{json,md,yml} --check",
+		"lint": "npm run lint:eslint && npm run lint:prettier",
+		"lint:fix": "npm run lint:eslint -- --fix && npm run lint:prettier -- --write",
 		"test": "jest --coverage",
 		"test:watch": "jest --watch --coverage",
-		"test:types": "tsd",
 		"prepare": "husky install",
 		"release": "semantic-release"
 	},
-	"types": "types/index.d.ts",
 	"dependencies": {
 		"@types/luxon": "~3.3.0",
 		"luxon": "~3.3.0"
@@ -34,21 +36,22 @@
 		"@semantic-release/github": "~8.1.x",
 		"@semantic-release/npm": "~10.0.x",
 		"@semantic-release/release-notes-generator": "~11.0.x",
+		"@types/jest": "^29.5.5",
+		"@types/node": "^20.6.0",
+		"@types/sinon": "^10.0.16",
+		"@typescript-eslint/eslint-plugin": "^5.62.0",
 		"chai": "~4.2.x",
 		"eslint": "~8.36.x",
 		"eslint-config-prettier": "^8.7.x",
-		"eslint-config-standard": "~17.0.x",
-		"eslint-plugin-import": "~2.27.x",
-		"eslint-plugin-jest": "~27.2.x",
-		"eslint-plugin-n": "~15.6.x",
+		"eslint-plugin-jest": "^27.4.0",
 		"eslint-plugin-prettier": "~4.2.x",
-		"eslint-plugin-promise": "~6.1.x",
 		"husky": "^8.0.3",
 		"jest": "~29.5.x",
 		"prettier": "~2.8.x",
 		"semantic-release": "~21.0.x",
 		"sinon": "^15.0.x",
-		"tsd": "^0.28.1"
+		"ts-jest": "^29.1.1",
+		"typescript": "~5.1.6"
 	},
 	"keywords": [
 		"cron",
@@ -77,23 +80,9 @@
 		"Masakazu Matsushita <matsukaz@gmail.com> (matsukaz)",
 		"Christopher Lunt <me@kirisu.co.uk> (https://github.com/kirisu)"
 	],
-	"jest": {
-		"collectCoverage": true,
-		"collectCoverageFrom": [
-			"lib/*.js"
-		],
-		"coverageThreshold": {
-			"global": {
-				"statements": 80,
-				"branches": 80,
-				"functions": 70,
-				"lines": 80
-			}
-		}
-	},
 	"files": [
-		"lib",
-		"types",
+		"dist/**/*.js",
+		"dist/**/*.d.ts",
 		"CHANGELOG.md",
 		"LICENSE",
 		"README.md"

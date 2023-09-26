@@ -1,8 +1,8 @@
-const CronJob = require('../lib/cron.js').CronJob;
+import { CronJob } from '../src';
 
 const job = new CronJob(
 	'0 * * * * *',
-	function() {
+	function () {
 		console.log('Date: ', new Date());
 	},
 	null,
@@ -13,7 +13,7 @@ console.log('System TZ next 5: ', job.nextDates(5));
 
 const jobUTC = new CronJob(
 	'0 * * * * *',
-	function() {
+	function () {
 		console.log('Date: ', new Date());
 	},
 	null,
