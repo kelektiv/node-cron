@@ -1,4 +1,9 @@
-export type Enumerate<
+export type IntRange<F extends number, T extends number> = Exclude<
+	Enumerate<T>,
+	Enumerate<F, false>
+>;
+
+type Enumerate<
 	N extends number,
 	WithTail extends boolean = true,
 	Acc extends number[] = []
@@ -7,8 +12,3 @@ export type Enumerate<
 		? [...Acc, Acc['length']][number]
 		: Acc[number]
 	: Enumerate<N, WithTail, [...Acc, Acc['length']]>;
-
-export type IntRange<F extends number, T extends number> = Exclude<
-	Enumerate<T>,
-	Enumerate<F, false>
->;
