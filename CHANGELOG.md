@@ -1,3 +1,19 @@
+## [3.0.0-beta.6](https://github.com/kelektiv/node-cron/compare/v3.0.0-beta.5...v3.0.0-beta.6) (2023-09-26)
+
+
+### ⚠ Breaking changes
+
+* removed `cron.job()` method in favor of `new CronJob(...args)` /
+`CronJob.from(argsObject)`
+* removed `cron.time()` method in favor of `new CronTime()`
+* `CronJob`: constructor no longer accepts an object as its first and
+only params. Use `CronJob.from(argsObject)` instead.
+* `CronJob`: callbacks are now called in the order they were registered
+
+### 📦 Code Refactoring
+
+* migrate to TypeScript ([#694](https://github.com/kelektiv/node-cron/issues/694)) ([97a65e1](https://github.com/kelektiv/node-cron/commit/97a65e109d473cb037e2fb4690c18ac897d5316a))
+
 ## [3.0.0-beta.5](https://github.com/kelektiv/node-cron/compare/v3.0.0-beta.4...v3.0.0-beta.5) (2023-09-25)
 
 
