@@ -1,9 +1,9 @@
-const CronJob = require('../lib/cron.js').CronJob;
+import { CronJob } from '../src';
 
 try {
 	new CronJob('NOT VALID', () => {
-		console.log('shouldn\'t get printed');
+		console.log("shouldn't get printed");
 	});
-} catch(e) {
+} catch (e) {
 	console.log('omg err', e);
 }

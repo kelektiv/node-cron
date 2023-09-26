@@ -1,7 +1,7 @@
-const CronJob = require('../lib/cron.js').CronJob;
+import { CronJob } from '../src';
 
 // XXX: SEE README GOTCHAS ABOUT WHY THIS COULD BE IN THE PAST!
-let d = new Date();
+const d = new Date();
 d.setMilliseconds(d.getMilliseconds() + 1);
 
 console.log('Before job instantiation');
