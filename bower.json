@@ -1,29 +1,20 @@
 {
-    "name": "cronjs",
-    "homepage": "https://github.com/ncb000gt/node-cron",
-    "authors": [
-        "Romain Beauxis<toots@rastageeks.org>",
-        "James Padoulsey<@padolsey>",
-        "Craig Condon<craig@browsertap.com>",
-        "Finn Herpich",
-        "cliftonc",
-        "neyric",
-        "humanchimp",
-        "danhbear",
-        "Jordan Abderrachid<jabderrachid@gmail.com>"
-    ],
-    "description": "js cron handler",
-    "main": ["lib/cron.js"],
-    "keywords": [
-        "cron",
-        "js"
-    ],
-    "license": "MIT",
-    "ignore": [
-        "**/.*",
-        "node_modules",
-        "bower_components",
-        "test",
-        "tests"
-    ]
+	"name": "cronjs",
+	"homepage": "https://github.com/ncb000gt/node-cron",
+	"authors": [
+		"Romain Beauxis<toots@rastageeks.org>",
+		"James Padoulsey<@padolsey>",
+		"Craig Condon<craig@browsertap.com>",
+		"Finn Herpich",
+		"cliftonc",
+		"neyric",
+		"humanchimp",
+		"danhbear",
+		"Jordan Abderrachid<jabderrachid@gmail.com>"
+	],
+	"description": "js cron handler",
+	"main": ["dist/index.js"],
+	"keywords": ["cron", "js"],
+	"license": "MIT",
+	"ignore": ["**/.*", "node_modules", "bower_components", "test", "tests"]
 }

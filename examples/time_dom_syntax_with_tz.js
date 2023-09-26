@@ -1,9 +1,9 @@
-const CronJob = require('../lib/cron.js').CronJob;
+import { CronJob } from '../src';
 
 console.log('first');
 const job = new CronJob(
 	'0 0 9 4 * *',
-	function() {
+	function () {
 		console.log('message');
 	},
 	null,
