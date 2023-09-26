@@ -4,6 +4,13 @@ import { CronTime } from './time';
 export { CronJob } from './job';
 export { CronTime } from './time';
 
+export {
+	CronCommand,
+	CronJobParams,
+	Ranges,
+	TimeUnit
+} from './types/cron.types';
+
 export const sendAt = (cronTime: string | Date | DateTime): DateTime =>
 	new CronTime(cronTime).sendAt();
 
