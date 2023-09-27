@@ -146,17 +146,13 @@ Join the [Discord server](https://discord.gg/yyKns29zch)! Here you can discuss i
 
 ## Contributing
 
-### Looking for maintainers/contributors
-
-This project is looking for help! If you're interested in helping with the project please reach out to me (ncb000gt) on [Twitter](https://twitter.com/ncb000gt). We'd love for it to continue on, but it needs a lot of attention. You can also join the [Discord server](https://discord.gg/yyKns29zch) to learn more about what needs to be done.
+This project is looking for help! If you're interested in helping with the project, please take a look at our [contributing documentation](https://github.com/kelektiv/node-cron/blob/main/CONTRIBUTING.md).
 
 ### Submitting Bugs/Issues
 
-Before submitting a bug, please search the existing issues, [Discord](https://discord.gg/yyKns29zch) conversations, and the web to see if someone else has run into the same issue before.
+Please have a look at our [contributing documentation](https://github.com/kelektiv/node-cron/blob/main/CONTRIBUTING.md), it contains all the information you need to know before submitting an issue.
 
-Because we can't magically know what you are doing to expose an issue, it is best if you provide a snippet of code. This snippet need not include your secret sauce, but it must replicate the issue you are describing. The issues that get closed without resolution tend to be the ones without code examples. Thanks.
-
-### Acknowledgements
+## Acknowledgements
 
 This is a community effort project. In the truest sense, this project started as an open source project from [cron.js](http://github.com/padolsey/cron.js) and grew into something else. Other people have contributed code, time, and oversight to the project. At this point there are too many to name here so we'll just say thanks.
 

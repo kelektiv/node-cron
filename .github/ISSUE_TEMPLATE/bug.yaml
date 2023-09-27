@@ -1,0 +1,59 @@
+name: Bug
+description: Report a bug
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Provide a more detailed introduction to the issue itself, and why you consider it to be a bug
+    validations:
+      required: true
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Expected Behavior
+      description: Tell us what should happen
+    validations:
+      required: true
+  - type: textarea
+    id: actual-behavior
+    attributes:
+      label: Actual Behavior
+      description: Tell us what happens instead
+    validations:
+      required: true
+  - type: textarea
+    id: possible-fix
+    attributes:
+      label: Possible Fix
+      description: Not obligatory, but suggest a fix or reason for the bug
+  - type: textarea
+    id: reproducing
+    attributes:
+      label: Steps to Reproduce
+      description: Provide a link to a live example, or an unambiguous set of steps to reproduce this bug. Include code to reproduce, if relevant
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: How has this bug affected you? What were you trying to accomplish?
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Your Environment
+      description: Include as many relevant details about the environment you experienced the bug in
+      value: '- **`cron` version**:
+
+        - **NodeJS version**:
+
+        - **Operating System and version**:
+
+        - **TypeScript version (if applicable)**:
+
+        - **Link to your project (if applicable)**:'
+    validations:
+      required: true
