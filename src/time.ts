@@ -13,6 +13,7 @@ import {
 	TIME_UNITS_MAP
 } from './constants';
 import {
+	CronJobParams,
 	DayOfMonthRange,
 	MonthRange,
 	Ranges,
@@ -24,7 +25,7 @@ import { getRecordKeys } from './utils';
 export class CronTime {
 	source: string | DateTime;
 	zone?: string;
-	utcOffset?: number | string;
+	utcOffset?: number;
 	realDate = false;
 
 	private second: TimeUnitField<'second'> = {};
@@ -35,9 +36,9 @@ export class CronTime {
 	private dayOfWeek: TimeUnitField<'dayOfWeek'> = {};
 
 	constructor(
-		source: string | Date | DateTime,
-		zone?: string | null,
-		utcOffset?: string | number | null
+		source: CronJobParams['cronTime'],
+		zone?: CronJobParams['timeZone'],
+		utcOffset?: CronJobParams['utcOffset']
 	) {
 		if (zone) {
 			const dt = DateTime.fromObject({}, { zone });
@@ -126,27 +127,14 @@ export class CronTime {
 			date = date.setZone(this.zone);
 		}
 
-		if (this.utcOffset != null) {
-			const offsetHours = parseInt(
-				// @ts-expect-error old undocumented behavior going to be removed in V3
-				this.utcOffset >= 60 || this.utcOffset <= -60
-					? // @ts-expect-error old undocumented behavior going to be removed in V3
-					  this.utcOffset / 60
-					: this.utcOffset
-			);
+		if (this.utcOffset !== undefined) {
+			const offsetHours = Math.trunc(this.utcOffset / 60);
 
-			const offsetMins =
-				// @ts-expect-error old undocumented behavior going to be removed in V3
-				this.utcOffset >= 60 || this.utcOffset <= -60
-					? // @ts-expect-error old undocumented behavior going to be removed in V3
-					  Math.abs(this.utcOffset - offsetHours * 60)
-					: 0;
-			const offsetMinsStr = offsetMins >= 10 ? offsetMins : `0${offsetMins}`;
+			const offsetMins = Math.abs(this.utcOffset - offsetHours * 60);
+			const offsetMinsStr = `${offsetMins < 10 ? '0' : ''}${offsetMins}`;
 
 			let utcZone = 'UTC';
-
-			// @ts-expect-error old undocumented behavior going to be removed in V3
-			if (parseInt(this.utcOffset) < 0) {
+			if (this.utcOffset < 0) {
 				utcZone += `${offsetHours === 0 ? '-0' : offsetHours}:${offsetMinsStr}`;
 			} else {
 				utcZone += `+${offsetHours}:${offsetMinsStr}`;

@@ -12,7 +12,7 @@ export interface CronJobParams {
 	timeZone?: string | null;
 	context?: unknown | null;
 	runOnInit?: boolean | null;
-	utcOffset?: string | number | null;
+	utcOffset?: number | null;
 	unrefTimeout?: boolean | null;
 }
 
