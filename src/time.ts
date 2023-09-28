@@ -144,17 +144,15 @@ export class CronTime {
 		}
 
 		if (this.utcOffset !== undefined) {
+			const sign = this.utcOffset < 0 ? '-' : '+';
+
 			const offsetHours = Math.trunc(this.utcOffset / 60);
+			const offsetHoursStr = Math.abs(offsetHours);
 
 			const offsetMins = Math.abs(this.utcOffset - offsetHours * 60);
 			const offsetMinsStr = `${offsetMins < 10 ? '0' : ''}${offsetMins}`;
 
-			let utcZone = 'UTC';
-			if (this.utcOffset < 0) {
-				utcZone += `${offsetHours === 0 ? '-0' : offsetHours}:${offsetMinsStr}`;
-			} else {
-				utcZone += `+${offsetHours}:${offsetMinsStr}`;
-			}
+			const utcZone = `UTC${sign}${offsetHoursStr}:${offsetMinsStr}`;
 
 			date = date.setZone(utcZone);
 
