@@ -12,6 +12,7 @@ import {
 	TIME_UNITS_LEN,
 	TIME_UNITS_MAP
 } from './constants';
+import { ExclusiveParametersError } from './errors';
 import {
 	CronJobParams,
 	DayOfMonthRange,
@@ -24,7 +25,7 @@ import { getRecordKeys } from './utils';
 
 export class CronTime {
 	source: string | DateTime;
-	zone?: string;
+	timeZone?: string;
 	utcOffset?: number;
 	realDate = false;
 
@@ -37,16 +38,31 @@ export class CronTime {
 
 	constructor(
 		source: CronJobParams['cronTime'],
-		zone?: CronJobParams['timeZone'],
+		timeZone?: CronJobParams['timeZone'],
+		utcOffset?: null
+	);
+	constructor(
+		source: CronJobParams['cronTime'],
+		timeZone?: null,
+		utcOffset?: CronJobParams['utcOffset']
+	);
+	constructor(
+		source: CronJobParams['cronTime'],
+		timeZone?: CronJobParams['timeZone'],
 		utcOffset?: CronJobParams['utcOffset']
 	) {
-		if (zone) {
-			const dt = DateTime.fromObject({}, { zone });
+		// runtime check for JS users
+		if (timeZone != null && utcOffset != null) {
+			throw new ExclusiveParametersError('timeZone', 'utcOffset');
+		}
+
+		if (timeZone) {
+			const dt = DateTime.fromObject({}, { zone: timeZone });
 			if (!dt.isValid) {
 				throw new Error('Invalid timezone.');
 			}
 
-			this.zone = zone;
+			this.timeZone = timeZone;
 		}
 
 		if (utcOffset != null) {
@@ -123,8 +139,8 @@ export class CronTime {
 			this.realDate && this.source instanceof DateTime
 				? this.source
 				: DateTime.local();
-		if (this.zone) {
-			date = date.setZone(this.zone);
+		if (this.timeZone) {
+			date = date.setZone(this.timeZone);
 		}
 
 		if (this.utcOffset !== undefined) {
@@ -210,14 +226,14 @@ export class CronTime {
 	 *   - Check that the chosen time does not equal the current execution.
 	 * - Return the selected date object.
 	 */
-	getNextDateFrom(start: Date | DateTime, zone?: string | Zone) {
+	getNextDateFrom(start: Date | DateTime, timeZone?: string | Zone) {
 		if (start instanceof Date) {
 			start = DateTime.fromJSDate(start);
 		}
 		let date = start;
 		const firstDate = start.toMillis();
-		if (zone) {
-			date = date.setZone(zone);
+		if (timeZone) {
+			date = date.setZone(timeZone);
 		}
 		if (!this.realDate) {
 			if (date.millisecond > 0) {
@@ -248,7 +264,7 @@ export class CronTime {
 					`Something went wrong. No execution date was found in the next 8 years.
 							Please provide the following string if you would like to help debug:
 							Time Zone: ${
-								zone?.toString() ?? '""'
+								timeZone?.toString() ?? '""'
 							} - Cron String: ${this.source.toString()} - UTC offset: ${
 						date.offset
 					} - current Date: ${DateTime.local().toString()}`

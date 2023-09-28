@@ -757,4 +757,11 @@ describe('crontime', () => {
 		}).toThrow();
 		clock.restore();
 	});
+
+	it('should throw when providing both exclusive parameters timeZone and utcOffset', () => {
+		expect(() => {
+			// @ts-expect-error testing runtime exception
+			new CronTime('* * * * *', 'Asia/Amman', 120);
+		}).toThrow();
+	});
 });

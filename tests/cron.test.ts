@@ -1061,4 +1061,32 @@ describe('cron', () => {
 		job.stop();
 		clock.restore();
 	});
+
+	it('should throw when providing both exclusive parameters timeZone and utcOffset', () => {
+		expect(() => {
+			// @ts-expect-error testing runtime exception
+			new CronJob(
+				`* * * * *`,
+				function () {},
+				null,
+				true,
+				'America/Chicago',
+				null,
+				null,
+				120
+			);
+		}).toThrow();
+	});
+
+	it('should throw when providing both exclusive parameters timeZone and utcOffset using the object constructor', () => {
+		expect(() => {
+			// @ts-expect-error testing runtime exception
+			CronJob.from({
+				cronTime: '* * * * * *',
+				onTick: function () {},
+				timeZone: 'America/Chicago',
+				utcOffset: 120
+			});
+		}).toThrow();
+	});
 });
