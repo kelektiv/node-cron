@@ -1,4 +1,5 @@
 import { spawn } from 'child_process';
+import { ExclusiveParametersError } from './errors';
 import { CronTime } from './time';
 import { CronCommand, CronJobParams } from './types/cron.types';
 
@@ -24,11 +25,45 @@ export class CronJob {
 		timeZone?: CronJobParams['timeZone'],
 		context?: CronJobParams['context'],
 		runOnInit?: CronJobParams['runOnInit'],
+		utcOffset?: null,
+		unrefTimeout?: CronJobParams['unrefTimeout']
+	);
+	constructor(
+		cronTime: CronJobParams['cronTime'],
+		onTick: CronJobParams['onTick'],
+		onComplete?: CronJobParams['onComplete'],
+		start?: CronJobParams['start'],
+		timeZone?: null,
+		context?: CronJobParams['context'],
+		runOnInit?: CronJobParams['runOnInit'],
+		utcOffset?: CronJobParams['utcOffset'],
+		unrefTimeout?: CronJobParams['unrefTimeout']
+	);
+	constructor(
+		cronTime: CronJobParams['cronTime'],
+		onTick: CronJobParams['onTick'],
+		onComplete?: CronJobParams['onComplete'],
+		start?: CronJobParams['start'],
+		timeZone?: CronJobParams['timeZone'],
+		context?: CronJobParams['context'],
+		runOnInit?: CronJobParams['runOnInit'],
 		utcOffset?: CronJobParams['utcOffset'],
 		unrefTimeout?: CronJobParams['unrefTimeout']
 	) {
 		this.context = context || this;
-		this.cronTime = new CronTime(cronTime, timeZone, utcOffset);
+
+		// runtime check for JS users
+		if (timeZone != null && utcOffset != null) {
+			throw new ExclusiveParametersError('timeZone', 'utcOffset');
+		}
+
+		if (timeZone != null) {
+			this.cronTime = new CronTime(cronTime, timeZone, null);
+		} else if (utcOffset != null) {
+			this.cronTime = new CronTime(cronTime, null, utcOffset);
+		} else {
+			this.cronTime = new CronTime(cronTime, timeZone, utcOffset);
+		}
 
 		if (unrefTimeout != null) {
 			this.unrefTimeout = unrefTimeout;
@@ -53,17 +88,49 @@ export class CronJob {
 	}
 
 	static from(params: CronJobParams) {
-		return new CronJob(
-			params.cronTime,
-			params.onTick,
-			params.onComplete,
-			params.start,
-			params.timeZone,
-			params.context,
-			params.runOnInit,
-			params.utcOffset,
-			params.unrefTimeout
-		);
+		// runtime check for JS users
+		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+		if (params.timeZone != null && params.utcOffset != null) {
+			throw new ExclusiveParametersError('timeZone', 'utcOffset');
+		}
+
+		if (params.timeZone != null) {
+			return new CronJob(
+				params.cronTime,
+				params.onTick,
+				params.onComplete,
+				params.start,
+				params.timeZone,
+				params.context,
+				params.runOnInit,
+				params.utcOffset,
+				params.unrefTimeout
+			);
+		} else if (params.utcOffset != null) {
+			return new CronJob(
+				params.cronTime,
+				params.onTick,
+				params.onComplete,
+				params.start,
+				null,
+				params.context,
+				params.runOnInit,
+				params.utcOffset,
+				params.unrefTimeout
+			);
+		} else {
+			return new CronJob(
+				params.cronTime,
+				params.onTick,
+				params.onComplete,
+				params.start,
+				params.timeZone,
+				params.context,
+				params.runOnInit,
+				params.utcOffset,
+				params.unrefTimeout
+			);
+		}
 	}
 
 	private _fnWrap(cmd: CronCommand | string) {

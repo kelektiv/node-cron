@@ -4,17 +4,28 @@ import { CONSTRAINTS, TIME_UNITS_MAP } from '../constants';
 import { CronJob } from '../job';
 import { IntRange } from './utils';
 
-export interface CronJobParams {
+interface BaseCronJobParams {
 	cronTime: string | Date | DateTime;
 	onTick: CronCommand;
 	onComplete?: CronCommand | null;
 	start?: boolean | null;
-	timeZone?: string | null;
 	context?: unknown | null;
 	runOnInit?: boolean | null;
-	utcOffset?: string | number | null;
 	unrefTimeout?: boolean | null;
 }
+
+export type CronJobParams =
+	| BaseCronJobParams &
+			(
+				| {
+						timeZone?: string | null;
+						utcOffset?: never;
+				  }
+				| {
+						timeZone?: never;
+						utcOffset?: number | null;
+				  }
+			);
 
 export type CronCommand =
 	/**
