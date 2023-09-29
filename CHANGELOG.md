@@ -1,3 +1,28 @@
+## [3.0.0-beta.9](https://github.com/kelektiv/node-cron/compare/v3.0.0-beta.8...v3.0.0-beta.9) (2023-09-29)
+
+
+### ⚠ Breaking changes
+
+* `utcOffset` parameter no longer accepts a string
+* `utcOffset` values between -60 and 60 are no longer
+treated as hours
+* providing both `timeZone` and `utcOffset` parameters
+now throws an error
+
+### ✨ Features
+
+* rework utcOffset parameter ([#699](https://github.com/kelektiv/node-cron/issues/699)) ([72d3d36](https://github.com/kelektiv/node-cron/commit/72d3d36c47b037cf4ce489c6b57b0a8b4e000a04))
+
+
+### ♻️ Chores
+
+* improve GitHub community standards ([#698](https://github.com/kelektiv/node-cron/issues/698)) ([6bdef77](https://github.com/kelektiv/node-cron/commit/6bdef779b813ee84c03b7c708176410aa24a8cfe))
+
+
+### 💎 Styles
+
+* fix linting issues ([b48c1b2](https://github.com/kelektiv/node-cron/commit/b48c1b299a25bfd3aea418652235e4e6ec92f8cf))
+
 ## [3.0.0-beta.8](https://github.com/kelektiv/node-cron/compare/v3.0.0-beta.7...v3.0.0-beta.8) (2023-09-26)
 
 
