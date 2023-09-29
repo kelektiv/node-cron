@@ -12,7 +12,9 @@ import {
 	TIME_UNITS_LEN,
 	TIME_UNITS_MAP
 } from './constants';
+import { ExclusiveParametersError } from './errors';
 import {
+	CronJobParams,
 	DayOfMonthRange,
 	MonthRange,
 	Ranges,
@@ -23,8 +25,8 @@ import { getRecordKeys } from './utils';
 
 export class CronTime {
 	source: string | DateTime;
-	zone?: string;
-	utcOffset?: number | string;
+	timeZone?: string;
+	utcOffset?: number;
 	realDate = false;
 
 	private second: TimeUnitField<'second'> = {};
@@ -35,17 +37,32 @@ export class CronTime {
 	private dayOfWeek: TimeUnitField<'dayOfWeek'> = {};
 
 	constructor(
-		source: string | Date | DateTime,
-		zone?: string | null,
-		utcOffset?: string | number | null
+		source: CronJobParams['cronTime'],
+		timeZone?: CronJobParams['timeZone'],
+		utcOffset?: null
+	);
+	constructor(
+		source: CronJobParams['cronTime'],
+		timeZone?: null,
+		utcOffset?: CronJobParams['utcOffset']
+	);
+	constructor(
+		source: CronJobParams['cronTime'],
+		timeZone?: CronJobParams['timeZone'],
+		utcOffset?: CronJobParams['utcOffset']
 	) {
-		if (zone) {
-			const dt = DateTime.fromObject({}, { zone });
+		// runtime check for JS users
+		if (timeZone != null && utcOffset != null) {
+			throw new ExclusiveParametersError('timeZone', 'utcOffset');
+		}
+
+		if (timeZone) {
+			const dt = DateTime.fromObject({}, { zone: timeZone });
 			if (!dt.isValid) {
 				throw new Error('Invalid timezone.');
 			}
 
-			this.zone = zone;
+			this.timeZone = timeZone;
 		}
 
 		if (utcOffset != null) {
@@ -122,35 +139,20 @@ export class CronTime {
 			this.realDate && this.source instanceof DateTime
 				? this.source
 				: DateTime.local();
-		if (this.zone) {
-			date = date.setZone(this.zone);
+		if (this.timeZone) {
+			date = date.setZone(this.timeZone);
 		}
 
-		if (this.utcOffset != null) {
-			const offsetHours = parseInt(
-				// @ts-expect-error old undocumented behavior going to be removed in V3
-				this.utcOffset >= 60 || this.utcOffset <= -60
-					? // @ts-expect-error old undocumented behavior going to be removed in V3
-					  this.utcOffset / 60
-					: this.utcOffset
-			);
+		if (this.utcOffset !== undefined) {
+			const sign = this.utcOffset < 0 ? '-' : '+';
 
-			const offsetMins =
-				// @ts-expect-error old undocumented behavior going to be removed in V3
-				this.utcOffset >= 60 || this.utcOffset <= -60
-					? // @ts-expect-error old undocumented behavior going to be removed in V3
-					  Math.abs(this.utcOffset - offsetHours * 60)
-					: 0;
-			const offsetMinsStr = offsetMins >= 10 ? offsetMins : `0${offsetMins}`;
+			const offsetHours = Math.trunc(this.utcOffset / 60);
+			const offsetHoursStr = String(Math.abs(offsetHours)).padStart(2, '0');
 
-			let utcZone = 'UTC';
+			const offsetMins = Math.abs(this.utcOffset - offsetHours * 60);
+			const offsetMinsStr = String(offsetMins).padStart(2, '0');
 
-			// @ts-expect-error old undocumented behavior going to be removed in V3
-			if (parseInt(this.utcOffset) < 0) {
-				utcZone += `${offsetHours === 0 ? '-0' : offsetHours}:${offsetMinsStr}`;
-			} else {
-				utcZone += `+${offsetHours}:${offsetMinsStr}`;
-			}
+			const utcZone = `UTC${sign}${offsetHoursStr}:${offsetMinsStr}`;
 
 			date = date.setZone(utcZone);
 
@@ -222,14 +224,14 @@ export class CronTime {
 	 *   - Check that the chosen time does not equal the current execution.
 	 * - Return the selected date object.
 	 */
-	getNextDateFrom(start: Date | DateTime, zone?: string | Zone) {
+	getNextDateFrom(start: Date | DateTime, timeZone?: string | Zone) {
 		if (start instanceof Date) {
 			start = DateTime.fromJSDate(start);
 		}
 		let date = start;
 		const firstDate = start.toMillis();
-		if (zone) {
-			date = date.setZone(zone);
+		if (timeZone) {
+			date = date.setZone(timeZone);
 		}
 		if (!this.realDate) {
 			if (date.millisecond > 0) {
@@ -260,7 +262,7 @@ export class CronTime {
 					`Something went wrong. No execution date was found in the next 8 years.
 							Please provide the following string if you would like to help debug:
 							Time Zone: ${
-								zone?.toString() ?? '""'
+								timeZone?.toString() ?? '""'
 							} - Cron String: ${this.source.toString()} - UTC offset: ${
 						date.offset
 					} - current Date: ${DateTime.local().toString()}`
