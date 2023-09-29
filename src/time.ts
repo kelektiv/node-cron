@@ -147,10 +147,10 @@ export class CronTime {
 			const sign = this.utcOffset < 0 ? '-' : '+';
 
 			const offsetHours = Math.trunc(this.utcOffset / 60);
-			const offsetHoursStr = Math.abs(offsetHours);
+			const offsetHoursStr = String(Math.abs(offsetHours)).padStart(2, '0');
 
 			const offsetMins = Math.abs(this.utcOffset - offsetHours * 60);
-			const offsetMinsStr = `${offsetMins < 10 ? '0' : ''}${offsetMins}`;
+			const offsetMinsStr = String(offsetMins).padStart(2, '0');
 
 			const utcZone = `UTC${sign}${offsetHoursStr}:${offsetMinsStr}`;
 
