@@ -4,18 +4,18 @@ import { CONSTRAINTS, TIME_UNITS_MAP } from '../constants';
 import { CronJob } from '../job';
 import { IntRange } from './utils';
 
-interface BaseCronJobParams {
+interface BaseCronJobParams<C = null> {
 	cronTime: string | Date | DateTime;
-	onTick: CronCommand;
-	onComplete?: CronCommand | null;
+	onTick: CronCommand<C>;
+	onComplete?: CronCommand<C> | null;
 	start?: boolean | null;
-	context?: unknown | null;
+	context?: C;
 	runOnInit?: boolean | null;
 	unrefTimeout?: boolean | null;
 }
 
-export type CronJobParams =
-	| BaseCronJobParams &
+export type CronJobParams<C = null> =
+	| BaseCronJobParams<C> &
 			(
 				| {
 						timeZone?: string | null;
@@ -27,14 +27,12 @@ export type CronJobParams =
 				  }
 			);
 
-export type CronCommand =
-	/**
-	 * TODO: find out how to type the context correctly, based on
-	 * if the "context" was provided to the CronJob constructor
-	 * leaving "any" for now...
-	 */
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	| ((this: CronJob | any) => void)
+export type CronContext<C = null> = C extends null ? CronJob : NonNullable<C>;
+
+export type CronCallback<C = null> = (this: CronContext<C>) => void;
+
+export type CronCommand<C = null> =
+	| CronCallback<C>
 	| string
 	| {
 			command: string;

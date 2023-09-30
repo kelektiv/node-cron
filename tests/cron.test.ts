@@ -277,7 +277,7 @@ describe('cron', () => {
 			'* * * * * *',
 			function () {
 				callback();
-				(this as CronJob).stop();
+				this.stop();
 			},
 			() => {
 				expect(callback).toHaveBeenCalledTimes(1);
@@ -510,63 +510,83 @@ describe('cron', () => {
 		});
 	});
 
-	it('should scope onTick to running job', () => {
-		const clock = sinon.useFakeTimers();
+	describe('onTick scoping', () => {
+		it('should scope onTick to running job', () => {
+			const clock = sinon.useFakeTimers();
 
-		const job = new CronJob(
-			'* * * * * *',
-			function () {
-				expect(job).toBeInstanceOf(CronJob);
-				expect(job).toEqual(this);
-			},
-			null,
-			true
-		);
+			const job = new CronJob(
+				'* * * * * *',
+				function () {
+					expect(job).toBeInstanceOf(CronJob);
+					expect(job).toEqual(this);
+				},
+				null,
+				true
+			);
 
-		clock.tick(1000);
+			clock.tick(1000);
 
-		clock.restore();
-		job.stop();
-	});
-
-	it('should scope onTick to object', () => {
-		const clock = sinon.useFakeTimers();
-
-		const job = new CronJob(
-			'* * * * * *',
-			function () {
-				expect((this as { hello: string }).hello).toBe('world');
-				expect(job).not.toEqual(this);
-			},
-			null,
-			true,
-			null,
-			{ hello: 'world' }
-		);
-
-		clock.tick(1000);
-
-		clock.restore();
-		job.stop();
-	});
-
-	it('should scope onTick to object within constructor object', () => {
-		const clock = sinon.useFakeTimers();
-
-		const job = CronJob.from({
-			cronTime: '* * * * * *',
-			onTick: function () {
-				expect((this as { hello: string }).hello).toBe('world');
-				expect(job).not.toEqual(this);
-			},
-			start: true,
-			context: { hello: 'world' }
+			clock.restore();
+			job.stop();
 		});
 
-		clock.tick(1000);
+		it('should scope onTick to running job using the object constructor', () => {
+			const clock = sinon.useFakeTimers();
 
-		clock.restore();
-		job.stop();
+			const job = CronJob.from({
+				cronTime: '* * * * * *',
+				onTick: function () {
+					expect(job).toBeInstanceOf(CronJob);
+					expect(job).toEqual(this);
+				},
+				start: true
+			});
+
+			clock.tick(1000);
+
+			clock.restore();
+			job.stop();
+		});
+
+		it('should scope onTick to object', () => {
+			const clock = sinon.useFakeTimers();
+
+			const job = new CronJob(
+				'* * * * * *',
+				function () {
+					expect(this.hello).toBe('world');
+					expect(job).not.toEqual(this);
+				},
+				null,
+				true,
+				null,
+				{ hello: 'world' }
+			);
+
+			clock.tick(1000);
+
+			clock.restore();
+			job.stop();
+		});
+
+		it('should scope onTick to object using the object constructor', () => {
+			const clock = sinon.useFakeTimers();
+
+			const job = CronJob.from({
+				cronTime: '* * * * * *',
+				onTick: function () {
+					expect(this.hello).toBe('world');
+					expect(job).not.toEqual(this);
+				},
+				start: true,
+				context: { hello: 'world' }
+			});
+
+			clock.tick(1000);
+
+			clock.restore();
+			job.stop();
+		});
 	});
 
 	it('should not get into an infinite loop on invalid times', () => {
