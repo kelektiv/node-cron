@@ -1,3 +1,59 @@
+## [3.0.0](https://github.com/kelektiv/node-cron/compare/v2.4.4...v3.0.0) (2023-09-30)
+
+
+### ⚠ Breaking changes
+
+* `utcOffset` parameter no longer accepts a string
+* `utcOffset` values between -60 and 60 are no longer
+treated as hours
+* providing both `timeZone` and `utcOffset` parameters
+now throws an error
+* removed `cron.job()` method in favor of `new CronJob(...args)` /
+`CronJob.from(argsObject)`
+* removed `cron.time()` method in favor of `new CronTime()`
+* `CronJob`: constructor no longer accepts an object as its first and
+only params. Use `CronJob.from(argsObject)` instead.
+* `CronJob`: callbacks are now called in the order they were registered
+* return empty array from nextDates when called without argument (#519)
+* UNIX standard alignments (#667)
+
+### ✨ Features
+
+* expose useful types ([737b344](https://github.com/kelektiv/node-cron/commit/737b34482c47033f9affab4426a3201681f42e97))
+* rework utcOffset parameter ([#699](https://github.com/kelektiv/node-cron/issues/699)) ([671e933](https://github.com/kelektiv/node-cron/commit/671e933d9107b1e4e1166ab681f9e14a8a3a7c16))
+* UNIX standard alignments ([#667](https://github.com/kelektiv/node-cron/issues/667)) ([ff615f1](https://github.com/kelektiv/node-cron/commit/ff615f1592287262b7ebc95312cdac0f9c59d272))
+
+
+### 🐛 Bug Fixes
+
+* return empty array from nextDates when called without argument ([#519](https://github.com/kelektiv/node-cron/issues/519)) ([c2891ba](https://github.com/kelektiv/node-cron/commit/c2891bacbc0d88616b69449fc6237f716dfe4faf))
+
+
+### 📦 Code Refactoring
+
+* migrate to TypeScript ([#694](https://github.com/kelektiv/node-cron/issues/694)) ([2d77894](https://github.com/kelektiv/node-cron/commit/2d778942c523f8480051216b4ced46c1d2651153))
+
+
+### 📚 Documentation
+
+* **readme:** remove outdated informations ([#695](https://github.com/kelektiv/node-cron/issues/695)) ([b5ceaf1](https://github.com/kelektiv/node-cron/commit/b5ceaf16913f78ca8d4037594a86df61f116d08e))
+
+
+### 🚨 Tests
+
+* update new test for cron standard alignments ([4a406c1](https://github.com/kelektiv/node-cron/commit/4a406c1f7e7b77ec9c7433c61a4929a341bfe300))
+
+
+### ♻️ Chores
+
+* improve GitHub community standards ([#698](https://github.com/kelektiv/node-cron/issues/698)) ([6bdef77](https://github.com/kelektiv/node-cron/commit/6bdef779b813ee84c03b7c708176410aa24a8cfe))
+* update contributors list ([dab3d69](https://github.com/kelektiv/node-cron/commit/dab3d6929ca47e22388a96eb92d43258b39b093a))
+
+
+### 💎 Styles
+
+* fix linting issues ([47e665f](https://github.com/kelektiv/node-cron/commit/47e665fb176addd0eb258d5aaff85c77e7f4b17f))
+
 ## [2.4.4](https://github.com/kelektiv/node-cron/compare/v2.4.3...v2.4.4) (2023-09-25)
 
 
