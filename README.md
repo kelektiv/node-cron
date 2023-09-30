@@ -44,6 +44,7 @@ For day-of-week indexing, we only added support for `7` as Sunday, so you don't 
 
 - **constructor no longer accepts an object as its first and only params. Use `CronJob.from(argsObject)` instead.**
 - **callbacks are now called in the order they were registered.**
+- **`nextDates(count?: number)` now always returns an array (empty if no argument is provided).instead.**
 
 ### Removed methods
 
@@ -132,6 +133,7 @@ Parameter Based
   - `lastDate` - Tells you the last execution date.
   - `nextDate` - Provides the next date that will trigger an `onTick`.
   - `nextDates` - Provides an array of the next set of dates that will trigger an `onTick`.
+    - `count` - [OPTIONAL] - The number of next dates to return. Defaults to 0, returning an empty array.
   - `fireOnTick` - Allows you to override the `onTick` calling behavior. This matters so only do this if you have a really good reason to do so.
   - `addCallback` - Allows you to add `onTick` callbacks. Callbacks are run in the order they are registered.
 - `CronTime`
