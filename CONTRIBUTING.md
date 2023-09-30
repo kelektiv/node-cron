@@ -46,7 +46,7 @@ A good bug report shouldn't leave others needing to chase you up for more inform
 
 - Make sure that you are using the latest version.
 - Determine if your bug is really a bug and not an error on your side e.g. using incompatible environment components/versions (Make sure that you have read the [documentation](https://github.com/kelektiv/node-cron#readme). If you are looking for support, you might want to check [this section](#i-have-a-question)).
-- To see if other users have experienced (and potentially already solved) the same issue you are having, check if there is not already a bug report existing for your bug or error in the [bug tracker](https://github.com/search?q=repo%3Akelektiv%2Fnode-cron++label%3Abug&type=issues).
+- Perform a [search](https://github.com/search?q=repo%3Akelektiv%2Fnode-cron++label%3Atype%3Abug&type=issues) to see if the bug/error has already been reported. If it has, add a comment to the existing issue instead of opening a new one.
 - Also make sure to search the internet (including Stack Overflow) to see if users outside of the GitHub community have discussed the issue.
 - Collect information about the bug:
   - Stack trace (Traceback)
@@ -78,7 +78,7 @@ This section guides you through submitting an enhancement suggestion for cron, *
 
 - Make sure that you are using the latest version.
 - Read the [documentation](https://github.com/kelektiv/node-cron#readme) carefully and find out if the functionality is already covered, maybe by an individual configuration.
-- Perform a [search](https://github.com/search?q=repo%3Akelektiv%2Fnode-cron++label%3Aenhancement&type=issues) to see if the enhancement has already been suggested. If it has, add a comment to the existing issue instead of opening a new one.
+- Perform a [search](https://github.com/search?q=repo%3Akelektiv%2Fnode-cron++label%3Atype%3Afeature&type=issues) to see if the enhancement has already been suggested. If it has, add a comment to the existing issue instead of opening a new one.
 - Find out whether your idea fits with the scope and aims of the project. It's up to you to make a strong case to convince the project's developers of the merits of this feature. Keep in mind that we want features that will be useful to the majority of our users and not just a small subset. If you're just targeting a minority of users, consider writing an add-on/plugin library.
 
 #### How Do I Submit a Good Enhancement Suggestion? <!-- omit in toc -->
