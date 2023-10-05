@@ -16,7 +16,7 @@ describe('cron', () => {
 			expect(callback).toHaveBeenCalledTimes(1);
 		});
 
-		it('should run second with oncomplete (* * * * * *)', done => {
+		it('should run second with onComplete (* * * * * *)', done => {
 			const clock = sinon.useFakeTimers();
 			const callback = jest.fn();
 
@@ -60,7 +60,7 @@ describe('cron', () => {
 			expect(callback).toHaveBeenCalledTimes(5);
 		});
 
-		it('should run every second for 5 seconds with oncomplete (* * * * * *)', done => {
+		it('should run every second for 5 seconds with onComplete (* * * * * *)', done => {
 			const callback = jest.fn();
 			const clock = sinon.useFakeTimers();
 			const job = new CronJob(
@@ -107,7 +107,7 @@ describe('cron', () => {
 			expect(callback).toHaveBeenCalledTimes(2);
 		});
 
-		it('should run every second for 5 seconds with oncomplete (*/1 * * * * *)', done => {
+		it('should run every second for 5 seconds with onComplete (*/1 * * * * *)', done => {
 			const clock = sinon.useFakeTimers();
 			const callback = jest.fn();
 			const job = new CronJob(
@@ -182,7 +182,7 @@ describe('cron', () => {
 			expect(callback).toHaveBeenCalledTimes(1);
 		});
 
-		it('should run every second with oncomplete (* * * * * *) using the object constructor', done => {
+		it('should run every second with onComplete (* * * * * *) using the object constructor', done => {
 			const clock = sinon.useFakeTimers();
 			const callback = jest.fn();
 			const job = CronJob.from({
@@ -312,28 +312,33 @@ describe('cron', () => {
 			expect(callback).toHaveBeenCalledTimes(1);
 		});
 
-		it('should run on a specific date with oncomplete', done => {
+		it('should run on a specific date and call onComplete from onTick', async () => {
 			const d = new Date();
 			const clock = sinon.useFakeTimers(d.getTime());
-			const s = d.getSeconds() + 1;
-			d.setSeconds(s);
+			d.setSeconds(d.getSeconds() + 1);
 			const callback = jest.fn();
-			const job = new CronJob(
-				d,
-				() => {
-					const t = new Date();
-					expect(t.getSeconds()).toBe(d.getSeconds());
-					callback();
-				},
-				() => {
-					expect(callback).toHaveBeenCalledTimes(1);
-					done();
-				},
-				true
-			);
-			clock.tick(1000);
-			clock.restore();
-			job.stop();
+
+			await new Promise<void>(resolve => {
+				const job = new CronJob(
+					d,
+					onComplete => {
+						const t = new Date();
+						expect(t.getSeconds()).toBe(d.getSeconds());
+						onComplete();
+					},
+					() => {
+						callback();
+						resolve();
+					},
+					true
+				);
+				clock.tick(1000);
+				clock.restore();
+				job.stop();
+			});
+
+			// onComplete is called 2 times: once in onTick() & once when calling job.stop()
+			expect(callback).toHaveBeenCalledTimes(2);
 		});
 
 		it('should wait and not fire immediately', () => {
