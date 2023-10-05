@@ -536,7 +536,6 @@ describe('cron', () => {
 
 		it('should test if timezone is valid.', () => {
 			expect(() => {
-				// eslint-disable-next-line no-new
 				CronJob.from({
 					cronTime: '* * * * * *',
 					onTick: () => {},

@@ -171,7 +171,6 @@ export class CronJob<OC extends CronOnCompleteCommand<C> | null, C = null> {
 		}
 	}
 
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	addCallback(callback: CronCallback<C, WithOnComplete<OC>>) {
 		if (typeof callback === 'function') {
 			this._callbacks.push(callback);
