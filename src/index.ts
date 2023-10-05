@@ -5,8 +5,12 @@ export { CronJob } from './job';
 export { CronTime } from './time';
 
 export {
+	CronCallback,
 	CronCommand,
+	CronContext,
 	CronJobParams,
+	CronOnCompleteCallback,
+	CronOnCompleteCommand,
 	Ranges,
 	TimeUnit
 } from './types/cron.types';
