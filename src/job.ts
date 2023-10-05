@@ -5,54 +5,58 @@ import {
 	CronCallback,
 	CronCommand,
 	CronContext,
-	CronJobParams
+	CronJobParams,
+	CronOnCompleteCallback,
+	CronOnCompleteCommand,
+	WithOnComplete
 } from './types/cron.types';
 
-export class CronJob<C = null> {
+export class CronJob<OC extends CronOnCompleteCommand<C> | null, C = null> {
 	cronTime: CronTime;
 	running = false;
 	unrefTimeout = false;
 	lastExecution: Date | null = null;
 	runOnce = false;
 	context: CronContext<C>;
-	onComplete?: CronCallback<C>;
+	onComplete?: WithOnComplete<OC> extends true
+		? CronOnCompleteCallback<C>
+		: undefined;
 
 	private _timeout?: NodeJS.Timeout;
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	private _callbacks: ((...args: any) => void)[] = [];
+	private _callbacks: CronCallback<C, WithOnComplete<OC>>[] = [];
 
 	constructor(
-		cronTime: CronJobParams<C>['cronTime'],
-		onTick: CronJobParams<C>['onTick'],
-		onComplete?: CronJobParams<C>['onComplete'],
-		start?: CronJobParams<C>['start'],
-		timeZone?: CronJobParams<C>['timeZone'],
-		context?: CronJobParams<C>['context'],
-		runOnInit?: CronJobParams<C>['runOnInit'],
+		cronTime: CronJobParams<OC, C>['cronTime'],
+		onTick: CronJobParams<OC, C>['onTick'],
+		onComplete?: CronJobParams<OC, C>['onComplete'],
+		start?: CronJobParams<OC, C>['start'],
+		timeZone?: CronJobParams<OC, C>['timeZone'],
+		context?: CronJobParams<OC, C>['context'],
+		runOnInit?: CronJobParams<OC, C>['runOnInit'],
 		utcOffset?: null,
-		unrefTimeout?: CronJobParams<C>['unrefTimeout']
+		unrefTimeout?: CronJobParams<OC, C>['unrefTimeout']
 	);
 	constructor(
-		cronTime: CronJobParams<C>['cronTime'],
-		onTick: CronJobParams<C>['onTick'],
-		onComplete?: CronJobParams<C>['onComplete'],
-		start?: CronJobParams<C>['start'],
+		cronTime: CronJobParams<OC, C>['cronTime'],
+		onTick: CronJobParams<OC, C>['onTick'],
+		onComplete?: CronJobParams<OC, C>['onComplete'],
+		start?: CronJobParams<OC, C>['start'],
 		timeZone?: null,
-		context?: CronJobParams<C>['context'],
-		runOnInit?: CronJobParams<C>['runOnInit'],
-		utcOffset?: CronJobParams<C>['utcOffset'],
-		unrefTimeout?: CronJobParams<C>['unrefTimeout']
+		context?: CronJobParams<OC, C>['context'],
+		runOnInit?: CronJobParams<OC, C>['runOnInit'],
+		utcOffset?: CronJobParams<OC, C>['utcOffset'],
+		unrefTimeout?: CronJobParams<OC, C>['unrefTimeout']
 	);
 	constructor(
-		cronTime: CronJobParams<C>['cronTime'],
-		onTick: CronJobParams<C>['onTick'],
-		onComplete?: CronJobParams<C>['onComplete'],
-		start?: CronJobParams<C>['start'],
-		timeZone?: CronJobParams<C>['timeZone'],
-		context?: CronJobParams<C>['context'],
-		runOnInit?: CronJobParams<C>['runOnInit'],
-		utcOffset?: CronJobParams<C>['utcOffset'],
-		unrefTimeout?: CronJobParams<C>['unrefTimeout']
+		cronTime: CronJobParams<OC, C>['cronTime'],
+		onTick: CronJobParams<OC, C>['onTick'],
+		onComplete?: CronJobParams<OC, C>['onComplete'],
+		start?: CronJobParams<OC, C>['start'],
+		timeZone?: CronJobParams<OC, C>['timeZone'],
+		context?: CronJobParams<OC, C>['context'],
+		runOnInit?: CronJobParams<OC, C>['runOnInit'],
+		utcOffset?: CronJobParams<OC, C>['utcOffset'],
+		unrefTimeout?: CronJobParams<OC, C>['unrefTimeout']
 	) {
 		this.context = (context ?? this) as CronContext<C>;
 
@@ -74,7 +78,12 @@ export class CronJob<C = null> {
 		}
 
 		if (onComplete != null) {
-			this.onComplete = this._fnWrap(onComplete);
+			// casting to the correct type since we just made sure that WithOnComplete<OC> = true
+			this.onComplete = this._fnWrap(
+				onComplete
+			) as WithOnComplete<OC> extends true
+				? CronOnCompleteCallback<C>
+				: undefined;
 		}
 
 		if (this.cronTime.realDate) {
@@ -91,7 +100,9 @@ export class CronJob<C = null> {
 		if (start) this.start();
 	}
 
-	static from<C = null>(params: CronJobParams<C>) {
+	static from<C = null, OC extends CronOnCompleteCommand<C> | null = null>(
+		params: CronJobParams<OC, C>
+	) {
 		// runtime check for JS users
 		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 		if (params.timeZone != null && params.utcOffset != null) {
@@ -99,7 +110,7 @@ export class CronJob<C = null> {
 		}
 
 		if (params.timeZone != null) {
-			return new CronJob<C>(
+			return new CronJob<OC, C>(
 				params.cronTime,
 				params.onTick,
 				params.onComplete,
@@ -111,7 +122,7 @@ export class CronJob<C = null> {
 				params.unrefTimeout
 			);
 		} else if (params.utcOffset != null) {
-			return new CronJob<C>(
+			return new CronJob<OC, C>(
 				params.cronTime,
 				params.onTick,
 				params.onComplete,
@@ -123,7 +134,7 @@ export class CronJob<C = null> {
 				params.unrefTimeout
 			);
 		} else {
-			return new CronJob<C>(
+			return new CronJob<OC, C>(
 				params.cronTime,
 				params.onTick,
 				params.onComplete,
@@ -137,7 +148,7 @@ export class CronJob<C = null> {
 		}
 	}
 
-	private _fnWrap(cmd: CronCommand<C>) {
+	private _fnWrap(cmd: CronCommand<C, boolean>): CronCallback<C, boolean> {
 		switch (typeof cmd) {
 			case 'function': {
 				return cmd;
@@ -161,7 +172,7 @@ export class CronJob<C = null> {
 	}
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	addCallback(callback: (...args: any) => void) {
+	addCallback(callback: CronCallback<C, WithOnComplete<OC>>) {
 		if (typeof callback === 'function') {
 			this._callbacks.push(callback);
 		}
@@ -183,7 +194,12 @@ export class CronJob<C = null> {
 
 	fireOnTick() {
 		for (const callback of this._callbacks) {
-			callback.call(this.context, this.onComplete);
+			callback.call(
+				this.context,
+				this.onComplete as WithOnComplete<OC> extends true
+					? CronOnCompleteCallback<C>
+					: never
+			);
 		}
 	}
 

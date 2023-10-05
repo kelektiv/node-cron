@@ -4,18 +4,24 @@ import { CONSTRAINTS, TIME_UNITS_MAP } from '../constants';
 import { CronJob } from '../job';
 import { IntRange } from './utils';
 
-interface BaseCronJobParams<C = null> {
+interface BaseCronJobParams<
+	OC extends CronOnCompleteCommand<C> | null,
+	C = null
+> {
 	cronTime: string | Date | DateTime;
-	onTick: CronCommand<C>;
-	onComplete?: CronCommand<C> | null;
+	onTick: CronCommand<C, WithOnComplete<OC>>;
+	onComplete?: OC;
 	start?: boolean | null;
 	context?: C;
 	runOnInit?: boolean | null;
 	unrefTimeout?: boolean | null;
 }
 
-export type CronJobParams<C = null> =
-	| BaseCronJobParams<C> &
+export type CronJobParams<
+	OC extends CronOnCompleteCommand<C> | null,
+	C = null
+> =
+	| BaseCronJobParams<OC, C> &
 			(
 				| {
 						timeZone?: string | null;
@@ -27,18 +33,34 @@ export type CronJobParams<C = null> =
 				  }
 			);
 
-export type CronContext<C = null> = C extends null ? CronJob : NonNullable<C>;
+export type CronContext<C> = C extends null ? CronJob<null> : NonNullable<C>;
 
-export type CronCallback<C = null> = (this: CronContext<C>) => void;
+export type CronCallback<C, WithOnCompleteBool extends boolean = false> = (
+	this: CronContext<C>,
+	onComplete: WithOnCompleteBool extends true
+		? OmitThisParameter<CronOnCompleteCallback<C>>
+		: never
+) => void;
 
-export type CronCommand<C = null> =
-	| CronCallback<C>
+export type CronOnCompleteCallback<C> = (this: CronContext<C>) => void;
+
+export type CronSystemCommand =
 	| string
 	| {
 			command: string;
 			args?: readonly string[] | null;
 			options?: SpawnOptions | null;
 	  };
+
+export type CronCommand<C, WithOnCompleteBool extends boolean = false> =
+	| CronCallback<C, WithOnCompleteBool>
+	| CronSystemCommand;
+
+export type CronOnCompleteCommand<C> =
+	| OmitThisParameter<CronOnCompleteCallback<C>>
+	| CronSystemCommand;
+
+export type WithOnComplete<OC> = OC extends null ? false : true;
 
 export type TimeUnit = (typeof TIME_UNITS_MAP)[keyof typeof TIME_UNITS_MAP];
 
