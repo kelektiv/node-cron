@@ -326,7 +326,7 @@ describe('cron', () => {
 						expect(t.getSeconds()).toBe(d.getSeconds());
 						onComplete();
 					},
-					() => {
+					function () {
 						callback();
 						resolve();
 					},
@@ -339,6 +339,37 @@ describe('cron', () => {
 
 			// onComplete is called 2 times: once in onTick() & once when calling job.stop()
 			expect(callback).toHaveBeenCalledTimes(2);
+		});
+
+		it("should not be able to call onComplete from onTick if if wasn't provided", () => {
+			expect.assertions(4);
+			const d = new Date();
+			const clock = sinon.useFakeTimers(d.getTime());
+			d.setSeconds(d.getSeconds() + 1);
+
+			const job = new CronJob(
+				d,
+				onComplete => {
+					const t = new Date();
+					expect(onComplete).toBeUndefined();
+					try {
+						// @ts-expect-error should be a TS warning and throw
+						onComplete();
+					} catch (e) {
+						// we make sure this isn't skipped with `expect.assertions()`
+						// at the beginning of the test
+						// eslint-disable-next-line jest/no-conditional-expect
+						expect(e).toBeInstanceOf(TypeError);
+					}
+					expect(onComplete).toBeUndefined();
+					expect(t.getSeconds()).toBe(d.getSeconds());
+				},
+				null,
+				true
+			);
+			clock.tick(1000);
+			job.stop();
+			clock.restore();
 		});
 
 		it('should wait and not fire immediately', () => {
