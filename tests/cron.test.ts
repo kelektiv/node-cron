@@ -344,6 +344,35 @@ describe('cron', () => {
 			expect(callback).toHaveBeenCalledTimes(2);
 		});
 
+		it('should run on a specific date and call onComplete from onTick using the object constructor', async () => {
+			const d = new Date();
+			const clock = sinon.useFakeTimers(d.getTime());
+			d.setSeconds(d.getSeconds() + 1);
+			const callback = jest.fn();
+
+			await new Promise<void>(resolve => {
+				const job = CronJob.from({
+					cronTime: d,
+					onTick: onComplete => {
+						const t = new Date();
+						expect(t.getSeconds()).toBe(d.getSeconds());
+						onComplete();
+					},
+					onComplete: function () {
+						callback();
+						resolve();
+					},
+					start: true
+				});
+				clock.tick(1000);
+				clock.restore();
+				job.stop();
+			});
+
+			// onComplete is called 2 times: once in onTick() & once when calling job.stop()
+			expect(callback).toHaveBeenCalledTimes(2);
+		});
+
 		it("should not be able to call onComplete from onTick if if wasn't provided", () => {
 			expect.assertions(4);
 			const d = new Date();
