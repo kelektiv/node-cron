@@ -100,7 +100,7 @@ export class CronJob<OC extends CronOnCompleteCommand<C> | null, C = null> {
 		if (start) this.start();
 	}
 
-	static from<C = null, OC extends CronOnCompleteCommand<C> | null = null>(
+	static from<OC extends CronOnCompleteCommand<C> | null, C = null>(
 		params: CronJobParams<OC, C>
 	) {
 		// runtime check for JS users
