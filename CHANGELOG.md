@@ -1,3 +1,21 @@
+## [3.1.0](https://github.com/kelektiv/node-cron/compare/v3.0.0...v3.1.0) (2023-10-09)
+
+
+### ✨ Features
+
+* improve context, onTick & onComplete typings ([#705](https://github.com/kelektiv/node-cron/issues/705)) ([82c78d7](https://github.com/kelektiv/node-cron/commit/82c78d79594c2d1c1e36baa67ecd76c033a171e4))
+
+
+### 🚨 Tests
+
+* check at runtime that all tests call expect ([#706](https://github.com/kelektiv/node-cron/issues/706)) [skip ci] ([cc4e62f](https://github.com/kelektiv/node-cron/commit/cc4e62fd1fd713d4c8a324ba36c0caa8b0c364e9))
+
+
+### ♻️ Chores
+
+* **deps:** update semantic-release related packages ([#709](https://github.com/kelektiv/node-cron/issues/709)) [skip ci] ([b94a48a](https://github.com/kelektiv/node-cron/commit/b94a48a6b24e20c1f3a9c5109158ff359d048bac))
+* reflect repository label changes ([#708](https://github.com/kelektiv/node-cron/issues/708)) ([85c9e18](https://github.com/kelektiv/node-cron/commit/85c9e18023aea907c10ca77bc92db7a8086f1b6b))
+
 ## [3.0.0](https://github.com/kelektiv/node-cron/compare/v2.4.4...v3.0.0) (2023-09-30)
 
 
