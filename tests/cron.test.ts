@@ -19,7 +19,7 @@ describe('cron', () => {
 			expect(callback).toHaveBeenCalledTimes(1);
 		});
 
-		it('should run second with oncomplete (* * * * * *)', done => {
+		it('should run second with onComplete (* * * * * *)', done => {
 			const clock = sinon.useFakeTimers();
 			const callback = jest.fn();
 
@@ -63,7 +63,7 @@ describe('cron', () => {
 			expect(callback).toHaveBeenCalledTimes(5);
 		});
 
-		it('should run every second for 5 seconds with oncomplete (* * * * * *)', done => {
+		it('should run every second for 5 seconds with onComplete (* * * * * *)', done => {
 			const callback = jest.fn();
 			const clock = sinon.useFakeTimers();
 			const job = new CronJob(
@@ -110,7 +110,7 @@ describe('cron', () => {
 			expect(callback).toHaveBeenCalledTimes(2);
 		});
 
-		it('should run every second for 5 seconds with oncomplete (*/1 * * * * *)', done => {
+		it('should run every second for 5 seconds with onComplete (*/1 * * * * *)', done => {
 			const clock = sinon.useFakeTimers();
 			const callback = jest.fn();
 			const job = new CronJob(
@@ -185,7 +185,7 @@ describe('cron', () => {
 			expect(callback).toHaveBeenCalledTimes(1);
 		});
 
-		it('should run every second with oncomplete (* * * * * *) using the object constructor', done => {
+		it('should run every second with onComplete (* * * * * *) using the object constructor', done => {
 			const clock = sinon.useFakeTimers();
 			const callback = jest.fn();
 			const job = CronJob.from({
@@ -280,7 +280,7 @@ describe('cron', () => {
 			'* * * * * *',
 			function () {
 				callback();
-				(this as CronJob).stop();
+				this.stop();
 			},
 			() => {
 				expect(callback).toHaveBeenCalledTimes(1);
@@ -315,28 +315,64 @@ describe('cron', () => {
 			expect(callback).toHaveBeenCalledTimes(1);
 		});
 
-		it('should run on a specific date with oncomplete', done => {
+		it('should run on a specific date and call onComplete from onTick', async () => {
 			const d = new Date();
 			const clock = sinon.useFakeTimers(d.getTime());
-			const s = d.getSeconds() + 1;
-			d.setSeconds(s);
+			d.setSeconds(d.getSeconds() + 1);
 			const callback = jest.fn();
+
+			await new Promise<void>(resolve => {
+				const job = new CronJob(
+					d,
+					onComplete => {
+						const t = new Date();
+						expect(t.getSeconds()).toBe(d.getSeconds());
+						onComplete();
+					},
+					function () {
+						callback();
+						resolve();
+					},
+					true
+				);
+				clock.tick(1000);
+				clock.restore();
+				job.stop();
+			});
+
+			// onComplete is called 2 times: once in onTick() & once when calling job.stop()
+			expect(callback).toHaveBeenCalledTimes(2);
+		});
+
+		it("should not be able to call onComplete from onTick if if wasn't provided", () => {
+			expect.assertions(4);
+			const d = new Date();
+			const clock = sinon.useFakeTimers(d.getTime());
+			d.setSeconds(d.getSeconds() + 1);
+
 			const job = new CronJob(
 				d,
-				() => {
+				onComplete => {
 					const t = new Date();
+					expect(onComplete).toBeUndefined();
+					try {
+						// @ts-expect-error should be a TS warning and throw
+						onComplete();
+					} catch (e) {
+						// we make sure this isn't skipped with `expect.assertions()`
+						// at the beginning of the test
+						// eslint-disable-next-line jest/no-conditional-expect
+						expect(e).toBeInstanceOf(TypeError);
+					}
+					expect(onComplete).toBeUndefined();
 					expect(t.getSeconds()).toBe(d.getSeconds());
-					callback();
 				},
-				() => {
-					expect(callback).toHaveBeenCalledTimes(1);
-					done();
-				},
+				null,
 				true
 			);
 			clock.tick(1000);
-			clock.restore();
 			job.stop();
+			clock.restore();
 		});
 
 		it('should wait and not fire immediately', () => {
@@ -503,7 +539,6 @@ describe('cron', () => {
 
 		it('should test if timezone is valid.', () => {
 			expect(() => {
-				// eslint-disable-next-line no-new
 				CronJob.from({
 					cronTime: '* * * * * *',
 					onTick: () => {},
@@ -513,63 +548,83 @@ describe('cron', () => {
 		});
 	});
 
-	it('should scope onTick to running job', () => {
-		const clock = sinon.useFakeTimers();
+	describe('onTick scoping', () => {
+		it('should scope onTick to running job', () => {
+			const clock = sinon.useFakeTimers();
 
-		const job = new CronJob(
-			'* * * * * *',
-			function () {
-				expect(job).toBeInstanceOf(CronJob);
-				expect(job).toEqual(this);
-			},
-			null,
-			true
-		);
+			const job = new CronJob(
+				'* * * * * *',
+				function () {
+					expect(job).toBeInstanceOf(CronJob);
+					expect(job).toEqual(this);
+				},
+				null,
+				true
+			);
 
-		clock.tick(1000);
+			clock.tick(1000);
 
-		clock.restore();
-		job.stop();
-	});
-
-	it('should scope onTick to object', () => {
-		const clock = sinon.useFakeTimers();
-
-		const job = new CronJob(
-			'* * * * * *',
-			function () {
-				expect((this as { hello: string }).hello).toBe('world');
-				expect(job).not.toEqual(this);
-			},
-			null,
-			true,
-			null,
-			{ hello: 'world' }
-		);
-
-		clock.tick(1000);
-
-		clock.restore();
-		job.stop();
-	});
-
-	it('should scope onTick to object within constructor object', () => {
-		const clock = sinon.useFakeTimers();
-
-		const job = CronJob.from({
-			cronTime: '* * * * * *',
-			onTick: function () {
-				expect((this as { hello: string }).hello).toBe('world');
-				expect(job).not.toEqual(this);
-			},
-			start: true,
-			context: { hello: 'world' }
+			clock.restore();
+			job.stop();
 		});
 
-		clock.tick(1000);
+		it('should scope onTick to running job using the object constructor', () => {
+			const clock = sinon.useFakeTimers();
 
-		clock.restore();
-		job.stop();
+			const job = CronJob.from({
+				cronTime: '* * * * * *',
+				onTick: function () {
+					expect(job).toBeInstanceOf(CronJob);
+					expect(job).toEqual(this);
+				},
+				start: true
+			});
+
+			clock.tick(1000);
+
+			clock.restore();
+			job.stop();
+		});
+
+		it('should scope onTick to object', () => {
+			const clock = sinon.useFakeTimers();
+
+			const job = new CronJob(
+				'* * * * * *',
+				function () {
+					expect(this.hello).toBe('world');
+					expect(job).not.toEqual(this);
+				},
+				null,
+				true,
+				null,
+				{ hello: 'world' }
+			);
+
+			clock.tick(1000);
+
+			clock.restore();
+			job.stop();
+		});
+
+		it('should scope onTick to object using the object constructor', () => {
+			const clock = sinon.useFakeTimers();
+
+			const job = CronJob.from({
+				cronTime: '* * * * * *',
+				onTick: function () {
+					expect(this.hello).toBe('world');
+					expect(job).not.toEqual(this);
+				},
+				start: true,
+				context: { hello: 'world' }
+			});
+
+			clock.tick(1000);
+
+			clock.restore();
+			job.stop();
+		});
 	});
 
 	it('should not get into an infinite loop on invalid times', () => {

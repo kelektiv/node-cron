@@ -4,18 +4,24 @@ import { CONSTRAINTS, TIME_UNITS_MAP } from '../constants';
 import { CronJob } from '../job';
 import { IntRange } from './utils';
 
-interface BaseCronJobParams {
+interface BaseCronJobParams<
+	OC extends CronOnCompleteCommand<C> | null,
+	C = null
+> {
 	cronTime: string | Date | DateTime;
-	onTick: CronCommand;
-	onComplete?: CronCommand | null;
+	onTick: CronCommand<C, WithOnComplete<OC>>;
+	onComplete?: OC;
 	start?: boolean | null;
-	context?: unknown | null;
+	context?: C;
 	runOnInit?: boolean | null;
 	unrefTimeout?: boolean | null;
 }
 
-export type CronJobParams =
-	| BaseCronJobParams &
+export type CronJobParams<
+	OC extends CronOnCompleteCommand<C> | null,
+	C = null
+> =
+	| BaseCronJobParams<OC, C> &
 			(
 				| {
 						timeZone?: string | null;
@@ -27,20 +33,34 @@ export type CronJobParams =
 				  }
 			);
 
-export type CronCommand =
-	/**
-	 * TODO: find out how to type the context correctly, based on
-	 * if the "context" was provided to the CronJob constructor
-	 * leaving "any" for now...
-	 */
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	| ((this: CronJob | any) => void)
+export type CronContext<C> = C extends null ? CronJob<null> : NonNullable<C>;
+
+export type CronCallback<C, WithOnCompleteBool extends boolean = false> = (
+	this: CronContext<C>,
+	onComplete: WithOnCompleteBool extends true
+		? OmitThisParameter<CronOnCompleteCallback<C>>
+		: never
+) => void;
+
+export type CronOnCompleteCallback<C> = (this: CronContext<C>) => void;
+
+export type CronSystemCommand =
 	| string
 	| {
 			command: string;
 			args?: readonly string[] | null;
 			options?: SpawnOptions | null;
 	  };
+
+export type CronCommand<C, WithOnCompleteBool extends boolean = false> =
+	| CronCallback<C, WithOnCompleteBool>
+	| CronSystemCommand;
+
+export type CronOnCompleteCommand<C> =
+	| OmitThisParameter<CronOnCompleteCallback<C>>
+	| CronSystemCommand;
+
+export type WithOnComplete<OC> = OC extends null ? false : true;
 
 export type TimeUnit = (typeof TIME_UNITS_MAP)[keyof typeof TIME_UNITS_MAP];
 
