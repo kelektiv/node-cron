@@ -329,7 +329,7 @@ describe('cron', () => {
 						expect(t.getSeconds()).toBe(d.getSeconds());
 						onComplete();
 					},
-					function () {
+					() => {
 						callback();
 						resolve();
 					},
@@ -361,7 +361,7 @@ describe('cron', () => {
 					onComplete: function () {
 						callback();
 						resolve();
-					},
+					} as () => void,
 					start: true
 				});
 				clock.tick(1000);
