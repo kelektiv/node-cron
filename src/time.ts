@@ -37,19 +37,19 @@ export class CronTime {
 	private dayOfWeek: TimeUnitField<'dayOfWeek'> = {};
 
 	constructor(
-		source: CronJobParams<null>['cronTime'],
-		timeZone?: CronJobParams<null>['timeZone'],
+		source: CronJobParams['cronTime'],
+		timeZone?: CronJobParams['timeZone'],
 		utcOffset?: null
 	);
 	constructor(
-		source: CronJobParams<null>['cronTime'],
+		source: CronJobParams['cronTime'],
 		timeZone?: null,
-		utcOffset?: CronJobParams<null>['utcOffset']
+		utcOffset?: CronJobParams['utcOffset']
 	);
 	constructor(
-		source: CronJobParams<null>['cronTime'],
-		timeZone?: CronJobParams<null>['timeZone'],
-		utcOffset?: CronJobParams<null>['utcOffset']
+		source: CronJobParams['cronTime'],
+		timeZone?: CronJobParams['timeZone'],
+		utcOffset?: CronJobParams['utcOffset']
 	) {
 		// runtime check for JS users
 		if (timeZone != null && utcOffset != null) {

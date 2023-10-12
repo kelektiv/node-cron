@@ -11,7 +11,7 @@ import {
 	WithOnComplete
 } from './types/cron.types';
 
-export class CronJob<OC extends CronOnCompleteCommand<C> | null, C = null> {
+export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 	cronTime: CronTime;
 	running = false;
 	unrefTimeout = false;
@@ -19,7 +19,7 @@ export class CronJob<OC extends CronOnCompleteCommand<C> | null, C = null> {
 	runOnce = false;
 	context: CronContext<C>;
 	onComplete?: WithOnComplete<OC> extends true
-		? CronOnCompleteCallback<C>
+		? CronOnCompleteCallback
 		: undefined;
 
 	private _timeout?: NodeJS.Timeout;
@@ -81,9 +81,7 @@ export class CronJob<OC extends CronOnCompleteCommand<C> | null, C = null> {
 			// casting to the correct type since we just made sure that WithOnComplete<OC> = true
 			this.onComplete = this._fnWrap(
 				onComplete
-			) as WithOnComplete<OC> extends true
-				? CronOnCompleteCallback<C>
-				: undefined;
+			) as WithOnComplete<OC> extends true ? CronOnCompleteCallback : undefined;
 		}
 
 		if (this.cronTime.realDate) {
@@ -100,7 +98,7 @@ export class CronJob<OC extends CronOnCompleteCommand<C> | null, C = null> {
 		if (start) this.start();
 	}
 
-	static from<C = null, OC extends CronOnCompleteCommand<C> | null = null>(
+	static from<OC extends CronOnCompleteCommand | null = null, C = null>(
 		params: CronJobParams<OC, C>
 	) {
 		// runtime check for JS users
@@ -196,7 +194,7 @@ export class CronJob<OC extends CronOnCompleteCommand<C> | null, C = null> {
 			callback.call(
 				this.context,
 				this.onComplete as WithOnComplete<OC> extends true
-					? CronOnCompleteCallback<C>
+					? CronOnCompleteCallback
 					: never
 			);
 		}

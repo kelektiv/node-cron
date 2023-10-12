@@ -5,7 +5,7 @@ import { CronJob } from '../job';
 import { IntRange } from './utils';
 
 interface BaseCronJobParams<
-	OC extends CronOnCompleteCommand<C> | null,
+	OC extends CronOnCompleteCommand | null = null,
 	C = null
 > {
 	cronTime: string | Date | DateTime;
@@ -18,7 +18,7 @@ interface BaseCronJobParams<
 }
 
 export type CronJobParams<
-	OC extends CronOnCompleteCommand<C> | null,
+	OC extends CronOnCompleteCommand | null = null,
 	C = null
 > =
 	| BaseCronJobParams<OC, C> &
@@ -33,16 +33,14 @@ export type CronJobParams<
 				  }
 			);
 
-export type CronContext<C> = C extends null ? CronJob<null> : NonNullable<C>;
+export type CronContext<C> = C extends null ? CronJob : NonNullable<C>;
 
 export type CronCallback<C, WithOnCompleteBool extends boolean = false> = (
 	this: CronContext<C>,
-	onComplete: WithOnCompleteBool extends true
-		? OmitThisParameter<CronOnCompleteCallback<C>>
-		: never
+	onComplete: WithOnCompleteBool extends true ? CronOnCompleteCallback : never
 ) => void;
 
-export type CronOnCompleteCallback<C> = (this: CronContext<C>) => void;
+export type CronOnCompleteCallback = () => void;
 
 export type CronSystemCommand =
 	| string
@@ -56,9 +54,7 @@ export type CronCommand<C, WithOnCompleteBool extends boolean = false> =
 	| CronCallback<C, WithOnCompleteBool>
 	| CronSystemCommand;
 
-export type CronOnCompleteCommand<C> =
-	| OmitThisParameter<CronOnCompleteCallback<C>>
-	| CronSystemCommand;
+export type CronOnCompleteCommand = CronOnCompleteCallback | CronSystemCommand;
 
 export type WithOnComplete<OC> = OC extends null ? false : true;
 
