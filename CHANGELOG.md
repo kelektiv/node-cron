@@ -1,3 +1,16 @@
+## [3.1.1](https://github.com/kelektiv/node-cron/compare/v3.1.0...v3.1.1) (2023-10-12)
+
+
+### 🐛 Bug Fixes
+
+* fix lastDate() value for intervals > 25 days ([#711](https://github.com/kelektiv/node-cron/issues/711)) ([141aa00](https://github.com/kelektiv/node-cron/commit/141aa00f55fa105d89df7e257d82c94ad2bb2b3a))
+* fix object constructor typings & make OC generic type optional ([#712](https://github.com/kelektiv/node-cron/issues/712)) ([6536084](https://github.com/kelektiv/node-cron/commit/653608451caecd51f50884d83563c03c6c27bc54))
+
+
+### 📚 Documentation
+
+* **readme:** update nextDates documentation ([#702](https://github.com/kelektiv/node-cron/issues/702)) ([1ad2e22](https://github.com/kelektiv/node-cron/commit/1ad2e228f75bcaab3eb97a27665c06b7892678c5))
+
 ## [3.1.0](https://github.com/kelektiv/node-cron/compare/v3.0.0...v3.1.0) (2023-10-09)
 
 
