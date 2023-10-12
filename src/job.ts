@@ -241,7 +241,6 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 			// again. This processing might make us miss the deadline by a few ms
 			// times the number of sleep sessions. Given a MAXDELAY of almost a
 			// month, this should be no issue.
-			this.lastExecution = new Date();
 			if (remaining) {
 				if (remaining > MAXDELAY) {
 					remaining -= MAXDELAY;
@@ -254,6 +253,7 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 				setCronTimeout(timeout);
 			} else {
 				// We have arrived at the correct point in time.
+				this.lastExecution = new Date();
 
 				this.running = false;
 

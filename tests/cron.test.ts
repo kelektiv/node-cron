@@ -1137,7 +1137,7 @@ describe('cron', () => {
 		clock.restore();
 	});
 
-	it('should give the last execution date', () => {
+	it('should give the correct last execution date', () => {
 		const callback = jest.fn();
 		const clock = sinon.useFakeTimers();
 		const job = new CronJob('* * * * * *', callback);
@@ -1145,6 +1145,23 @@ describe('cron', () => {
 		clock.tick(1000);
 		expect(callback).toHaveBeenCalledTimes(1);
 		expect(job.lastDate()?.getTime()).toBe(1000);
+		job.stop();
+		clock.restore();
+	});
+
+	it('should give the correct last execution date for intervals greater than 25 days (#710)', () => {
+		const callback = jest.fn();
+		const clock = sinon.useFakeTimers();
+
+		const job = new CronJob('0 0 0 1 * *', callback); // At 00:00 on day-of-month 1.
+		job.start();
+
+		// tick one tick before nextDate()
+		clock.tick(job.nextDate().toMillis() - 1);
+
+		expect(callback).toHaveBeenCalledTimes(0);
+		expect(job.lastDate()?.getTime()).toBeUndefined();
+
 		job.stop();
 		clock.restore();
 	});
