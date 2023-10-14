@@ -6,7 +6,6 @@
 
 **node-cron** is a robust tool for running jobs (functions or commands) on schedules defined using the cron syntax. Perfect for tasks like data backups, notifications, and many more!
 
-
 [![Version](https://badgen.net/npm/v/cron?icon=npm)](https://badgen.net/npm/v/cron)
 [![Build Status](https://badgen.net/github/status/kelektiv/node-cron?icon=github)](https://badgen.net/github/status/kelektiv/node-cron)
 [![Build Checks](https://badgen.net/github/checks/kelektiv/node-cron?icon=github)](https://badgen.net/github/checks/kelektiv/node-cron)
@@ -17,8 +16,8 @@
 [![Minzipped size](https://badgen.net/bundlephobia/minzip/cron)](https://badgen.net/bundlephobia/minzip/cron)
 [![monthly downloads](https://badgen.net/npm/dm/cron?icon=npm)](https://badgen.net/npm/dm/cron)
 
-Table of Contents
------------------
+## Table of Contents
+
 1. [Introduction](#node-cron)
    - [Logo](#node-cron)
    - [Overview](#node-cron)
@@ -58,8 +57,6 @@ Table of Contents
 - execute a job external to the javascript process (like a system command) using `child_process`
 - use a Date or Luxon DateTime object instead of cron syntax as the trigger for your callback
 - use an additional slot for seconds (leaving it off will default to 0 and match the Unix behavior)
-
-
 
 ## 🚀 Installation
 
@@ -112,11 +109,10 @@ const job = new CronJob(
 
 > **Note:** In the example above, the fourth parameter to `CronJob()` starts the job automatically. If not provided or set to falsy, you must explicitly start the job using `job.start()`.
 
-
 For more advanced examples, check the [examples directory](https://github.com/kelektiv/node-cron/tree/main/examples).
 
-
 ## Cron Patterns
+
 Cron patterns are the backbone of this library. Familiarize yourself with the syntax:
 
 ```
@@ -127,11 +123,9 @@ Cron patterns are the backbone of this library. Familiarize yourself with the sy
 
 Detailed patterns and explanations are available at [crontab.org](http://crontab.org). This library provides second-level granularity unlike many other cron libraries. Tools like [crontab.guru](https://crontab.guru/) can help in constructing patterns but remember to account for the seconds field.
 
-
 ### Supported Ranges
 
 Here's a quick reference to the UNIX Cron format this library uses, plus an added second field:
-
 
 ```
 field          allowed values
@@ -158,15 +152,16 @@ day of week    0-7 (0 or 7 is Sunday, or use names)
 ### General Parameters
 
 - `sendAt`: Indicates when a `CronTime` will execute.
+
   ```
-  Example: 
+  Example:
   let time = cron.sendAt('0 0 * * *');
   console.log(`The job will run at: ${time}`);
   ```
 
 - `timeout`: Indicates when the next timeout occurs.
   ```
-  Example: 
+  Example:
   let timeLeft = cron.timeout();
   console.log(`The next timeout is in: ${timeLeft}ms`);
   ```
@@ -177,40 +172,41 @@ day of week    0-7 (0 or 7 is Sunday, or use names)
 
 `constructor(cronTime, onTick, onComplete, start, timeZone, context, runOnInit, utcOffset, unrefTimeout)`:
 
-  - `cronTime`: [REQUIRED] - The time to fire off your job. Can be cron syntax or a JS [Date](https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Date) object.
-    ```
-    Example:
-    const job = new CronJob('0 0 * * *', () => {
-      console.log('Job executed!');
-    });
-    ```
+- `cronTime`: [REQUIRED] - The time to fire off your job. Can be cron syntax or a JS [Date](https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Date) object.
 
-  - `onTick`: [REQUIRED] - Function to execute at the specified time. If provided, `onTick` can also receive an `onComplete` callback and might invoke it after its execution.
-    ```
-    Example:
-    const onTickFunction = () => { console.log('Tick!'); };
-    ```
+  ```
+  Example:
+  const job = new CronJob('0 0 * * *', () => {
+    console.log('Job executed!');
+  });
+  ```
 
-  - `onComplete`: [OPTIONAL] - Invoked when the job is halted with `job.stop()`. It might also be triggered by `onTick` post its run.
+- `onTick`: [REQUIRED] - Function to execute at the specified time. If provided, `onTick` can also receive an `onComplete` callback and might invoke it after its execution.
 
-  - `start`: [OPTIONAL] - Determines if the job should commence before constructor exit. Default is `false`.
+  ```
+  Example:
+  const onTickFunction = () => { console.log('Tick!'); };
+  ```
 
-  - `timeZone`: [OPTIONAL] - Sets the execution time zone. Default is local time. Check valid formats in the [Luxon documentation](https://github.com/moment/luxon/blob/master/docs/zones.md#specifying-a-zone).
+- `onComplete`: [OPTIONAL] - Invoked when the job is halted with `job.stop()`. It might also be triggered by `onTick` post its run.
 
-  - `context`: [OPTIONAL] - Execution context for the onTick method.
+- `start`: [OPTIONAL] - Determines if the job should commence before constructor exit. Default is `false`.
 
-  - `runOnInit`: [OPTIONAL] - Instantly triggers the `onTick` function post initialization. Default is `false`.
+- `timeZone`: [OPTIONAL] - Sets the execution time zone. Default is local time. Check valid formats in the [Luxon documentation](https://github.com/moment/luxon/blob/master/docs/zones.md#specifying-a-zone).
 
-  - `utcOffset`: [OPTIONAL] - Specifies time zone offset in minutes. Cannot co-exist with `timeZone`.
+- `context`: [OPTIONAL] - Execution context for the onTick method.
 
-  - `unrefTimeout`: [OPTIONAL] - Useful for controlling event loop behavior. More details [here](https://nodejs.org/api/timers.html#timers_timeout_unref).
+- `runOnInit`: [OPTIONAL] - Instantly triggers the `onTick` function post initialization. Default is `false`.
+
+- `utcOffset`: [OPTIONAL] - Specifies time zone offset in minutes. Cannot co-exist with `timeZone`.
+
+- `unrefTimeout`: [OPTIONAL] - Useful for controlling event loop behavior. More details [here](https://nodejs.org/api/timers.html#timers_timeout_unref).
 
 #### Methods
 
 - `from` (static): Create a new CronJob object providing arguments as an object.
 
 - `start`: Initiates the job.
-  
 - `stop`: Halts the job.
 
 - `setTime`: Modifies the time for the `CronJob`. Parameter must be a `CronTime`.
@@ -231,13 +227,11 @@ day of week    0-7 (0 or 7 is Sunday, or use names)
 
 `constructor(time, zone, utcOffset)`:
 
-  - `time`: [REQUIRED] - The time to initiate your job. Accepts cron syntax or a JS [Date](https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Date) object.
+- `time`: [REQUIRED] - The time to initiate your job. Accepts cron syntax or a JS [Date](https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Date) object.
 
-  - `zone`: [OPTIONAL] - Equivalent to `timeZone` from `CronJob` parameters.
+- `zone`: [OPTIONAL] - Equivalent to `timeZone` from `CronJob` parameters.
 
-  - `utcOffset`: [OPTIONAL] - Analogous to `utcOffset` from `CronJob` parameters.
-
-
+- `utcOffset`: [OPTIONAL] - Analogous to `utcOffset` from `CronJob` parameters.
 
 ## 🤝 Community
 
