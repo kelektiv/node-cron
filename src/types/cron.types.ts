@@ -20,18 +20,17 @@ interface BaseCronJobParams<
 export type CronJobParams<
 	OC extends CronOnCompleteCommand | null = null,
 	C = null
-> =
-	| BaseCronJobParams<OC, C> &
-			(
-				| {
-						timeZone?: string | null;
-						utcOffset?: never;
-				  }
-				| {
-						timeZone?: never;
-						utcOffset?: number | null;
-				  }
-			);
+> = BaseCronJobParams<OC, C> &
+	(
+		| {
+				timeZone?: string | null;
+				utcOffset?: never;
+		  }
+		| {
+				timeZone?: never;
+				utcOffset?: number | null;
+		  }
+	);
 
 export type CronContext<C> = C extends null ? CronJob : NonNullable<C>;
 

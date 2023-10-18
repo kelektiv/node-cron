@@ -264,8 +264,8 @@ export class CronTime {
 							Time Zone: ${
 								timeZone?.toString() ?? '""'
 							} - Cron String: ${this.source.toString()} - UTC offset: ${
-						date.offset
-					} - current Date: ${DateTime.local().toString()}`
+								date.offset
+							} - current Date: ${DateTime.local().toString()}`
 				);
 			}
 
