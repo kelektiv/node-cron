@@ -37,9 +37,9 @@ export type CronContext<C> = C extends null ? CronJob : NonNullable<C>;
 export type CronCallback<C, WithOnCompleteBool extends boolean = false> = (
 	this: CronContext<C>,
 	onComplete: WithOnCompleteBool extends true ? CronOnCompleteCallback : never
-) => void;
+) => void | Promise<void>;
 
-export type CronOnCompleteCallback = () => void;
+export type CronOnCompleteCallback = () => void | Promise<void>;
 
 export type CronSystemCommand =
 	| string

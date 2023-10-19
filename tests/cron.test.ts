@@ -327,7 +327,7 @@ describe('cron', () => {
 					onComplete => {
 						const t = new Date();
 						expect(t.getSeconds()).toBe(d.getSeconds());
-						onComplete();
+						void onComplete();
 					},
 					() => {
 						callback();
@@ -356,7 +356,7 @@ describe('cron', () => {
 					onTick: onComplete => {
 						const t = new Date();
 						expect(t.getSeconds()).toBe(d.getSeconds());
-						onComplete();
+						void onComplete();
 					},
 					onComplete: function () {
 						callback();
@@ -1192,5 +1192,27 @@ describe('cron', () => {
 				utcOffset: 120
 			});
 		}).toThrow();
+	});
+
+	it('should support async callback', () => {
+		const clock = sinon.useFakeTimers();
+		const callback = jest.fn();
+		const job = new CronJob(
+			'* * * * * *',
+			async function () {
+				await new Promise<void>(resolve => {
+					setTimeout(() => {
+						callback();
+						resolve();
+					}, 500);
+				});
+			},
+			null,
+			true
+		);
+		clock.tick(1500);
+		job.stop();
+		clock.restore();
+		expect(callback).toHaveBeenCalledTimes(1);
 	});
 });
