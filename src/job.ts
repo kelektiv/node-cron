@@ -155,7 +155,7 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 			case 'string': {
 				const [command, ...args] = cmd.split(' ');
 
-				return spawn.bind(undefined, command ?? cmd, args, {});
+				return spawn.bind(undefined, command ?? cmd, args, {}) as () => void;
 			}
 
 			case 'object': {
@@ -164,7 +164,7 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 					cmd.command,
 					cmd.args ?? [],
 					cmd.options ?? {}
-				);
+				) as () => void;
 			}
 		}
 	}
@@ -191,7 +191,7 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 
 	fireOnTick() {
 		for (const callback of this._callbacks) {
-			callback.call(
+			void callback.call(
 				this.context,
 				this.onComplete as WithOnComplete<OC> extends true
 					? CronOnCompleteCallback
@@ -293,7 +293,7 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 		if (this._timeout) clearTimeout(this._timeout);
 		this.running = false;
 		if (typeof this.onComplete === 'function') {
-			this.onComplete.call(this.context);
+			void this.onComplete.call(this.context);
 		}
 	}
 }
