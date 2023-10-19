@@ -1,3 +1,25 @@
+## [3.1.2](https://github.com/kelektiv/node-cron/compare/v3.1.1...v3.1.2) (2023-10-19)
+
+
+### 🛠 Builds
+
+* **deps:** update dependency luxon to ~3.4.0 ([#730](https://github.com/kelektiv/node-cron/issues/730)) ([c3806c5](https://github.com/kelektiv/node-cron/commit/c3806c54574d2f1886272f0b6fc0742b84dcba03))
+
+
+### ♻️ Chores
+
+* **deps:** lock file maintenance ([#731](https://github.com/kelektiv/node-cron/issues/731)) ([b6bc715](https://github.com/kelektiv/node-cron/commit/b6bc715e20f48550b4265b90bd5a21b635ece14c))
+* **deps:** pin dependencies ([#719](https://github.com/kelektiv/node-cron/issues/719)) [skip ci] ([5003745](https://github.com/kelektiv/node-cron/commit/5003745208f2312bfc41dd88b68520c00d72cf5c))
+* **deps:** pin dependencies ([#720](https://github.com/kelektiv/node-cron/issues/720)) [skip ci] ([4f977ef](https://github.com/kelektiv/node-cron/commit/4f977efb245d0c8a4113ef979e92c90c4ce6b0ee))
+* **deps:** pin dependencies ([#721](https://github.com/kelektiv/node-cron/issues/721)) [skip ci] ([60fbf7f](https://github.com/kelektiv/node-cron/commit/60fbf7fa9f34cb1a214673eb556aa62eab3b848b))
+* **deps:** update dependency [@commitlint](https://github.com/commitlint)/cli to v17.8.0 ([#723](https://github.com/kelektiv/node-cron/issues/723)) [skip ci] ([a7a18cb](https://github.com/kelektiv/node-cron/commit/a7a18cbd8d550214377ff5c8d77f29952d2b91c7))
+* **deps:** update dependency [@types](https://github.com/types)/node to v20.8.6 ([#724](https://github.com/kelektiv/node-cron/issues/724)) [skip ci] ([b5e4c9f](https://github.com/kelektiv/node-cron/commit/b5e4c9f463543f6d1ba2bc9eebbd5eb6f3d1b5ea))
+* **deps:** update dependency sinon to v16 ([#726](https://github.com/kelektiv/node-cron/issues/726)) [skip ci] ([d114a12](https://github.com/kelektiv/node-cron/commit/d114a1291d4257a899150468e4736c594b542355))
+* **deps:** update dependency typescript to v5.2.2 ([#729](https://github.com/kelektiv/node-cron/issues/729)) [skip ci] ([d1b267e](https://github.com/kelektiv/node-cron/commit/d1b267e6490347786e9aa77be6a1016598b968ea))
+* **deps:** update linters ([#728](https://github.com/kelektiv/node-cron/issues/728)) [skip ci] ([9ab00e8](https://github.com/kelektiv/node-cron/commit/9ab00e8e2adac547017bfbe5b6d97d7bc9c6fb28))
+* **deps:** update linters (major) ([#727](https://github.com/kelektiv/node-cron/issues/727)) [skip ci] ([a75418a](https://github.com/kelektiv/node-cron/commit/a75418aca0f51b98625979087aa86e166ac17c56))
+* **deps:** update tests ([#722](https://github.com/kelektiv/node-cron/issues/722)) [skip ci] ([6b4c6fa](https://github.com/kelektiv/node-cron/commit/6b4c6fae750d005c3e30f12b868e4f01a3b99a68))
+
 ## [3.1.1](https://github.com/kelektiv/node-cron/compare/v3.1.0...v3.1.1) (2023-10-12)
 
 
