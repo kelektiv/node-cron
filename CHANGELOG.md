@@ -1,3 +1,15 @@
+## [3.1.3](https://github.com/kelektiv/node-cron/compare/v3.1.2...v3.1.3) (2023-10-19)
+
+
+### 🐛 Bug Fixes
+
+* allow callbacks to return a promise ([#733](https://github.com/kelektiv/node-cron/issues/733)) ([8dd8b75](https://github.com/kelektiv/node-cron/commit/8dd8b754b69e2cbe503f344f2346a035cf5a3ec6))
+
+
+### ⚙️ Continuous Integrations
+
+* **renovate:** update configuration ([#732](https://github.com/kelektiv/node-cron/issues/732)) [skip ci] ([2ff9c6e](https://github.com/kelektiv/node-cron/commit/2ff9c6eb94fbc833c6a7fff30242e2b4b8367dc6))
+
 ## [3.1.2](https://github.com/kelektiv/node-cron/compare/v3.1.1...v3.1.2) (2023-10-19)
 
 
