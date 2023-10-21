@@ -1,55 +1,20 @@
 <p align="center">
-  <img src="logo.svg" alt="Node Cron Alarm Clock Star Logo" width="150">
+  <img src="logo.svg" alt="cron for Node.js logo" height="150">
+  <br />
+  <b>cron</b> is a robust tool for running jobs (functions or commands) on schedules defined using the cron syntax.
+  <br />
+  Perfect for tasks like data backups, notifications, and many more!
 </p>
 
-# node-cron
+# cron for Node.js
 
-**node-cron** is a robust tool for running jobs (functions or commands) on schedules defined using the cron syntax. Perfect for tasks like data backups, notifications, and many more!
-
-[![Version](https://badgen.net/npm/v/cron?icon=npm)](https://badgen.net/npm/v/cron)
-[![Build Status](https://badgen.net/github/status/kelektiv/node-cron?icon=github)](https://badgen.net/github/status/kelektiv/node-cron)
-[![Build Checks](https://badgen.net/github/checks/kelektiv/node-cron?icon=github)](https://badgen.net/github/checks/kelektiv/node-cron)
-[![Dependency Status](https://badgen.net/david/dep/kelektiv/node-cron)](https://badgen.net/david/dev/kelektiv/node-cron)
-[![Code Coverage](https://badgen.net/codecov/c/github/kelektiv/node-cron?icon=codecov)](https://badgen.net/codecov/c/github/kelektiv/node-cron)
-[![Known Vulnerabilities](https://snyk.io/test/github/kelektiv/node-cron/badge.svg)](https://snyk.io/test/github/kelektiv/node-cron)
-[![Minified size](https://badgen.net/bundlephobia/min/cron)](https://badgen.net/bundlephobia/min/cron)
-[![Minzipped size](https://badgen.net/bundlephobia/minzip/cron)](https://badgen.net/bundlephobia/minzip/cron)
-[![monthly downloads](https://badgen.net/npm/dm/cron?icon=npm)](https://badgen.net/npm/dm/cron)
-
-## Table of Contents
-
-1. [Introduction](#node-cron)
-   - [Logo](#node-cron)
-   - [Overview](#node-cron)
-   - [Badges](#node-cron)
-2. [Features](#-features)
-   - [Overview](#-features)
-3. [Installation](#-installation)
-4. [Migration](#-migrating-from-v2-to-v3)
-   - [Migrating from v2 to v3](#-migrating-from-v2-to-v3)
-5. [Basic Usage](#-basic-usage)
-   - [Code Example](#-basic-usage)
-   - [Note](#-basic-usage)
-6. [Cron Patterns](#cron-patterns)
-   - [Cron Syntax Overview](#cron-patterns)
-   - [Supported Ranges](#supported-ranges)
-7. [Gotchas](#gotchas)
-8. [API](#api)
-   - [General Parameters](#general-parameters)
-   - [CronJob Class](#cronjob-class)
-     - [Constructor](#constructor)
-     - [Methods](#methods)
-   - [CronTime Class](#crontime-class)
-     - [Constructor](#constructor)
-9. [Community](#-community)
-   - [Join the Community](#-community)
-10. [Contributing](#-contributing)
-    - [General Contribution](#-contributing)
-    - [Submitting Bugs/Issues](#-submitting-bugsissues)
-11. [Acknowledgements](#-acknowledgements)
-    - [Community Effort](#-acknowledgements)
-    - [Special Thanks](#-acknowledgements)
-12. [License](#license)
+[![Version](https://img.shields.io/npm/v/cron?label=version&logo=npm)](https://www.npmjs.com/package/cron)
+[![Monthly Downloads](https://img.shields.io/npm/dm/cron?logo=npm)](https://www.npmjs.com/package/cron)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/kelektiv/node-cron/release.yml?logo=github)](https://github.com/kelektiv/node-cron/actions/workflows/release.yml)
+[![CodeQL Status](https://img.shields.io/github/actions/workflow/status/kelektiv/node-cron/codeql.yml?logo=github&label=CodeQL)](https://github.com/kelektiv/node-cron/actions/workflows/codeql.yml)
+[![Coverage](https://img.shields.io/codecov/c/gh/kelektiv/node-cron?logo=codecov)](https://app.codecov.io/gh/kelektiv/node-cron)
+[![OpenSSF Scorecard](https://img.shields.io/ossf-scorecard/github.com/kelektiv/node-cron?label=openssf%20scorecard)](https://securityscorecards.dev/viewer/?uri=github.com/kelektiv/node-cron)
+[![Discord](https://img.shields.io/discord/1075597081017851934?logo=discord)](https://discord.gg/yyKns29zch)
 
 ## 🌟 Features
 
@@ -63,6 +28,28 @@
 ```bash
 npm install cron
 ```
+
+## Table of Contents
+
+1. [Features](#-features)
+2. [Installation](#-installation)
+3. [Migrating from v2 to v3](#-migrating-from-v2-to-v3)
+4. [Basic Usage](#-basic-usage)
+5. [Cron Patterns](#cron-patterns)
+   - [Cron Syntax Overview](#cron-patterns)
+   - [Supported Ranges](#supported-ranges)
+6. [Gotchas](#gotchas)
+7. [API](#api)
+   - [Standalone Functions](#standalone-functions)
+   - [CronJob Class](#cronjob-class)
+   - [CronTime Class](#crontime-class)
+8. [Community](#-community)
+   - [Join the Community](#-community)
+9. [Contributing](#-contributing)
+   - [General Contribution](#-contributing)
+   - [Submitting Bugs/Issues](#-submitting-bugsissues)
+10. [Acknowledgements](#-acknowledgements)
+11. [License](#license)
 
 ## 🔄 Migrating from v2 to v3
 
@@ -95,19 +82,32 @@ With the introduction of TypeScript in version 3 and alignment with UNIX cron pa
 
 ```javascript
 import { CronJob } from 'cron';
+
 const job = new CronJob(
-	'* * * * * *',
+	'* * * * * *', // cronTime
 	function () {
 		console.log('You will see this message every second');
-	},
-	null,
-	true,
-	'America/Los_Angeles'
+	}, // onTick
+	null, // onComplete
+	true, // start
+	'America/Los_Angeles' // timeZone
 );
 // job.start() is optional here because of the fourth parameter set to true.
 ```
 
-> **Note:** In the example above, the fourth parameter to `CronJob()` starts the job automatically. If not provided or set to falsy, you must explicitly start the job using `job.start()`.
+```javascript
+// equivalent job using the "from" static method, providing parameters as an object
+const job = CronJob.from({
+	cronTime: '* * * * * *',
+	onTick: function () {
+		console.log('You will see this message every second');
+	},
+	start: true,
+	timeZone: 'America/Los_Angeles'
+});
+```
+
+> **Note:** In the first example above, the fourth parameter to `CronJob()` starts the job automatically. If not provided or set to falsy, you must explicitly start the job using `job.start()`.
 
 For more advanced examples, check the [examples directory](https://github.com/kelektiv/node-cron/tree/main/examples).
 
@@ -145,25 +145,28 @@ day of week    0-7 (0 or 7 is Sunday, or use names)
 
 - Both JS `Date` and Luxon `DateTime` objects don't guarantee millisecond precision due to computation delays. This module excludes millisecond precision for standard cron syntax but allows execution date specification through JS `Date` or Luxon `DateTime` objects. However, specifying a precise future execution time, such as adding a millisecond to the current time, may not always work due to these computation delays. It's observed that delays less than 4-5 ms might lead to inconsistencies. While we could limit all date granularity to seconds, we've chosen to allow greater precision but advise users of potential issues.
 
-- Using arrow functions for `onTick` binds them to the parent's `this` context. As a result, they won't have access to the cronjob's `this` context. You can read a little more in issue [GH-47](https://github.com/kelektiv/node-cron/issues/47#issuecomment-459762775)
+- Using arrow functions for `onTick` binds them to the parent's `this` context. As a result, they won't have access to the cronjob's `this` context. You can read a little more in issue [#47 (comment)](https://github.com/kelektiv/node-cron/issues/47#issuecomment-459762775).
 
 ## API
 
-### General Parameters
+### Standalone Functions
 
-- `sendAt`: Indicates when a `CronTime` will execute.
+- `sendAt`: Indicates when a `CronTime` will execute (returns a Luxon `DateTime` object).
 
-  ```
-  Example:
-  let time = cron.sendAt('0 0 * * *');
-  console.log(`The job will run at: ${time}`);
+  ```javascript
+  import * as cron from 'cron';
+
+  const dt = cron.sendAt('0 0 * * *');
+  console.log(`The job would run at: ${dt.toISO()}`);
   ```
 
-- `timeout`: Indicates when the next timeout occurs.
-  ```
-  Example:
-  let timeLeft = cron.timeout();
-  console.log(`The next timeout is in: ${timeLeft}ms`);
+- `timeout`: Indicates the number of milliseconds in the future at which a `CronTime` will execute (returns a number).
+
+  ```javascript
+  import * as cron from 'cron';
+
+  const timeout = cron.timeout('0 0 * * *');
+  console.log(`The job would run in ${timeout}ms`);
   ```
 
 ### CronJob Class
@@ -172,21 +175,9 @@ day of week    0-7 (0 or 7 is Sunday, or use names)
 
 `constructor(cronTime, onTick, onComplete, start, timeZone, context, runOnInit, utcOffset, unrefTimeout)`:
 
-- `cronTime`: [REQUIRED] - The time to fire off your job. Can be cron syntax or a JS [Date](https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Date) object.
+- `cronTime`: [REQUIRED] - The time to fire off your job. Can be cron syntax, a JS [`Date`](https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Date) object or a Luxon [`DateTime`](https://moment.github.io/luxon/api-docs/index.html#datetime) object.
 
-  ```
-  Example:
-  const job = new CronJob('0 0 * * *', () => {
-    console.log('Job executed!');
-  });
-  ```
-
-- `onTick`: [REQUIRED] - Function to execute at the specified time. If provided, `onTick` can also receive an `onComplete` callback and might invoke it after its execution.
-
-  ```
-  Example:
-  const onTickFunction = () => { console.log('Tick!'); };
-  ```
+- `onTick`: [REQUIRED] - Function to execute at the specified time. If an `onComplete` callback was provided, `onTick` will receive it as an argument.
 
 - `onComplete`: [OPTIONAL] - Invoked when the job is halted with `job.stop()`. It might also be triggered by `onTick` post its run.
 
@@ -204,9 +195,10 @@ day of week    0-7 (0 or 7 is Sunday, or use names)
 
 #### Methods
 
-- `from` (static): Create a new CronJob object providing arguments as an object.
+- `from` (static): Create a new CronJob object providing arguments as an object. See argument names and descriptions above.
 
 - `start`: Initiates the job.
+
 - `stop`: Halts the job.
 
 - `setTime`: Modifies the time for the `CronJob`. Parameter must be a `CronTime`.
