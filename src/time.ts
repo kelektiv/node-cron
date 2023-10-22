@@ -684,7 +684,7 @@ export class CronTime {
 		return true;
 	}
 
-	/*
+	/**
 	 * Parse the cron syntax into something useful for selecting the next execution time.
 	 *
 	 * Algorithm:
@@ -733,7 +733,7 @@ export class CronTime {
 		}
 	}
 
-	/*
+	/**
 	 * Parse individual field from the cron syntax provided.
 	 *
 	 * Algorithm:
