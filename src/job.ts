@@ -181,7 +181,12 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 		}
 		const wasRunning = this.running;
 		this.stop();
+
 		this.cronTime = time;
+		if (this.cronTime.realDate) {
+			this.runOnce = true;
+		}
+
 		if (wasRunning) this.start();
 	}
 
