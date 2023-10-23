@@ -774,10 +774,10 @@ export class CronTime {
 				let upper = mUpper !== undefined ? parseInt(mUpper, 10) : undefined;
 
 				const wasStepDefined = mStep !== undefined;
-				if (mStep === '0') {
+				const step = parseInt(mStep ?? '1', 10);
+				if (step === 0) {
 					throw new Error(`Field (${unit}) has a step of zero`);
 				}
-				const step = parseInt(mStep ?? '1', 10);
 
 				if (upper !== undefined && lower > upper) {
 					throw new Error(`Field (${unit}) has an invalid range`);
