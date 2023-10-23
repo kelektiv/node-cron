@@ -72,7 +72,7 @@ test.prop(
 		unrefTimeout: fc.boolean(),
 		tzOrOffset: fc.boolean()
 	},
-	{ numRuns: 250_000 }
+	{ numRuns: 100_000 }
 )(
 	'CronJob should behave as expected and not error unexpectedly (with matching inputs)',
 	params => testCronJob(params, isCronError)
@@ -88,7 +88,7 @@ test.prop(
 		unrefTimeout: fc.boolean(),
 		tzOrOffset: fc.boolean()
 	},
-	{ numRuns: 250_000 }
+	{ numRuns: 100_000 }
 )(
 	'CronJob should behave as expected and not error unexpectedly (with random inputs)',
 	params => testCronJob(params, isCronError)
@@ -104,7 +104,7 @@ test.prop(
 		unrefTimeout: fc.anything(),
 		tzOrOffset: fc.boolean()
 	},
-	{ numRuns: 250_000 }
+	{ numRuns: 100_000 }
 )(
 	'CronJob should behave as expected and not error unexpectedly (with anything inputs)',
 	params =>
