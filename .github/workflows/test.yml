@@ -40,3 +40,5 @@ jobs:
         run: npm run lint
       - name: Run tests
         run: npm run test
+      - name: Run fuzz tests
+        run: npm run test:fuzz
