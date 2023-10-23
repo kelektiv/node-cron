@@ -213,6 +213,11 @@ describe('crontime', () => {
 		expect(() => {
 			new CronTime('* * * 1/0 *');
 		}).toThrow();
+
+		// infinite loop when providing two or more zeros as step (#742)
+		expect(() => {
+			new CronTime('* * * 1/00 *');
+		}).toThrow();
 	});
 
 	it('should test invalid range', () => {
