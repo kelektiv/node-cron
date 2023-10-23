@@ -19,7 +19,7 @@
 		"lint:fix": "npm run lint:eslint -- --fix && npm run lint:prettier -- --write",
 		"test": "jest --coverage",
 		"test:watch": "jest --watch --coverage",
-		"test:fuzz": "jest --testRegex='(\\.|/)fuzz\\.ts$' --coverage=false --testTimeout=120000",
+		"test:fuzz": "jest  --testMatch='**/*.fuzz.ts' --coverage=false --testTimeout=120000",
 		"prepare": "husky install",
 		"release": "semantic-release"
 	},
