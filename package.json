@@ -27,7 +27,7 @@
 		"luxon": "~3.4.0"
 	},
 	"devDependencies": {
-		"@commitlint/cli": "17.8.0",
+		"@commitlint/cli": "18.0.0",
 		"@insurgentlab/commitlint-config": "18.1.3",
 		"@insurgentlab/conventional-changelog-preset": "7.0.0",
 		"@semantic-release/changelog": "6.0.3",
