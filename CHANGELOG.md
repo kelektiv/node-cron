@@ -1,3 +1,24 @@
+## [3.1.4](https://github.com/kelektiv/node-cron/compare/v3.1.3...v3.1.4) (2023-10-24)
+
+
+### 🐛 Bug Fixes
+
+* run once when actual date is given to setTime ([#740](https://github.com/kelektiv/node-cron/issues/740)) ([ee54dd5](https://github.com/kelektiv/node-cron/commit/ee54dd52956a9a203a72d4a38673bf0268cd6487))
+
+
+### ⚙️ Continuous Integrations
+
+* **action:** update actions/checkout action to v4 ([#735](https://github.com/kelektiv/node-cron/issues/735)) ([144ba67](https://github.com/kelektiv/node-cron/commit/144ba677cbafc16e0c2e9d5372561589715de536))
+
+
+### ♻️ Chores
+
+* **deps:** lock file maintenance ([#741](https://github.com/kelektiv/node-cron/issues/741)) ([6d94742](https://github.com/kelektiv/node-cron/commit/6d94742fe1c7959569e7c3b922a0cfee4143ba0f))
+* **deps:** update dependency [@types](https://github.com/types)/jest to v29.5.6 ([#736](https://github.com/kelektiv/node-cron/issues/736)) ([57c0efa](https://github.com/kelektiv/node-cron/commit/57c0efafcd875fed2550d0bb7ee383ccd2fd4790))
+* **deps:** update dependency [@types](https://github.com/types)/node to v20.8.7 ([#737](https://github.com/kelektiv/node-cron/issues/737)) ([21c4065](https://github.com/kelektiv/node-cron/commit/21c4065399fb8eb8aa10a4cd1c14d42f175263eb))
+* **deps:** update dependency [@typescript-eslint](https://github.com/typescript-eslint)/eslint-plugin to v6.8.0 ([#734](https://github.com/kelektiv/node-cron/issues/734)) ([12e7487](https://github.com/kelektiv/node-cron/commit/12e7487496f9e76bc11ba48fcb99a40bcdd8674f))
+* **deps:** update tests ([#738](https://github.com/kelektiv/node-cron/issues/738)) ([3815e2a](https://github.com/kelektiv/node-cron/commit/3815e2a56560ec105322c9dee3b45027ea069c1b))
+
 ## [3.1.3](https://github.com/kelektiv/node-cron/compare/v3.1.2...v3.1.3) (2023-10-19)
 
 
