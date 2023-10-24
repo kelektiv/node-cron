@@ -1,4 +1,4 @@
-name: Test & Release
+name: Release
 
 on:
   push:
@@ -8,16 +8,13 @@ on:
       - '+([0-9])?(.{+([0-9]),x}).x'
 
 jobs:
-  lint-and-test:
+  test:
     uses: ./.github/workflows/test.yml
-    secrets: inherit
 
   release:
-    needs: lint-and-test
+    needs: test
 
     runs-on: ubuntu-latest
-    env:
-      node-version: 20.x
 
     steps:
       - name: Harden Runner
@@ -29,16 +26,24 @@ jobs:
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
         with:
           persist-credentials: false
-      - name: Use Node.js ${{ env.node-version }}
+
+      - name: Use Node.js LTS
         uses: actions/setup-node@8f152de45cc393bb48ce5d89d36b731f54556e65 # v4
         with:
-          node-version: ${{ env.node-version }}
+          node-version: 'lts/*'
+          cache: npm
+
       - name: Install packages
         run: npm ci
+
+      - name: Audit npm signatures
+        run: npm audit signatures
+
       - name: Build project
         run: npm run build
+
       - name: Run Semantic Release
-        run: npm run release
+        run: npx semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.CI_GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

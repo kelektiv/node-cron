@@ -16,7 +16,11 @@
 		"group:commitlintMonorepo"
 	],
 	"schedule": ["before 5am every weekday", "every weekend"],
-	"lockFileMaintenance": { "enabled": true, "automerge": true },
+	"lockFileMaintenance": {
+		"enabled": true,
+		"automerge": true,
+		"automergeType": "branch"
+	},
 	"labels": ["dependencies"],
 	"osvVulnerabilityAlerts": true,
 	"packageRules": [
@@ -67,7 +71,8 @@
 		{
 			"matchDepTypes": ["devDependencies"],
 			"matchUpdateTypes": ["minor", "patch"],
-			"automerge": true
+			"automerge": true,
+			"automergeType": "branch"
 		}
 	]
 }
