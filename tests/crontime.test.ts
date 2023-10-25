@@ -211,7 +211,15 @@ describe('crontime', () => {
 
 	it('should test invalid step', () => {
 		expect(() => {
+			new CronTime('* * * 1/ *');
+		}).toThrow();
+
+		expect(() => {
 			new CronTime('* * * 1/0 *');
+		}).toThrow();
+
+		expect(() => {
+			new CronTime('* * * 1/00 *');
 		}).toThrow();
 	});
 
