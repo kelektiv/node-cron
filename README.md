@@ -121,7 +121,7 @@ Cron patterns are the backbone of this library. Familiarize yourself with the sy
 - `*/2` Steps: Every two units
 ```
 
-Detailed patterns and explanations are available at [crontab.org](http://crontab.org). This library provides second-level granularity unlike many other cron libraries. Tools like [crontab.guru](https://crontab.guru/) can help in constructing patterns but remember to account for the seconds field.
+Detailed patterns and explanations are available at [crontab.org](http://crontab.org). The examples in the link have five fields, and 1 minute as the finest granularity, but our cron scheduling supports an enhanced format with six fields, allowing for second-level precision. Tools like [crontab.guru](https://crontab.guru/) can help in constructing patterns but remember to account for the seconds field.
 
 ### Supported Ranges
 
