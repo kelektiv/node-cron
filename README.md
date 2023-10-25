@@ -13,6 +13,7 @@
 [![Build Status](https://img.shields.io/github/actions/workflow/status/kelektiv/node-cron/release.yml?logo=github)](https://github.com/kelektiv/node-cron/actions/workflows/release.yml)
 [![CodeQL Status](https://img.shields.io/github/actions/workflow/status/kelektiv/node-cron/codeql.yml?logo=github&label=CodeQL)](https://github.com/kelektiv/node-cron/actions/workflows/codeql.yml)
 [![Coverage](https://img.shields.io/codecov/c/gh/kelektiv/node-cron?logo=codecov)](https://app.codecov.io/gh/kelektiv/node-cron)
+[![Renovate](https://img.shields.io/badge/renovate-enabled-green)](https://img.shields.io/badge/renovate-enabled-green)
 [![OpenSSF Scorecard](https://img.shields.io/ossf-scorecard/github.com/kelektiv/node-cron?label=openssf%20scorecard)](https://securityscorecards.dev/viewer/?uri=github.com/kelektiv/node-cron)
 [![Discord](https://img.shields.io/discord/1075597081017851934?logo=discord)](https://discord.gg/yyKns29zch)
 
