@@ -60,7 +60,7 @@ With the introduction of TypeScript in version 3 and alignment with UNIX cron pa
 
 ### Month & day-of-week indexing changes
 
-- **Month Indexing:** Changed from `0-11` to `1-12`. Increment all numeric months by 1.
+- **Month Indexing:** Changed from `0-11` to `1-12`. So you need to increment all numeric months by 1.
 
 - **Day-of-Week Indexing:** Support added for `7` as Sunday.
 
