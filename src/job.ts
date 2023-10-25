@@ -21,6 +21,10 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 		? CronOnCompleteCallback
 		: undefined;
 
+	get runOnce(): boolean {
+		return this.cronTime.realDate;
+	}
+
 	private _timeout?: NodeJS.Timeout;
 	private _callbacks: CronCallback<C, WithOnComplete<OC>>[] = [];
 
@@ -255,7 +259,7 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 				this.running = false;
 
 				// start before calling back so the callbacks have the ability to stop the cron job
-				if (!this.cronTime.realDate) {
+				if (!this.runOnce) {
 					this.start();
 				}
 
