@@ -19,6 +19,7 @@
 		"lint:fix": "npm run lint:eslint -- --fix && npm run lint:prettier -- --write",
 		"test": "jest --coverage",
 		"test:watch": "jest --watch --coverage",
+		"test:fuzz": "jest  --testMatch='**/*.fuzz.ts' --coverage=false --testTimeout=120000",
 		"prepare": "husky install",
 		"release": "semantic-release"
 	},
@@ -28,6 +29,7 @@
 	},
 	"devDependencies": {
 		"@commitlint/cli": "18.0.0",
+		"@fast-check/jest": "1.7.3",
 		"@insurgentlab/commitlint-config": "18.1.3",
 		"@insurgentlab/conventional-changelog-preset": "7.0.0",
 		"@semantic-release/changelog": "6.0.3",

@@ -12,7 +12,7 @@ import {
 	TIME_UNITS_LEN,
 	TIME_UNITS_MAP
 } from './constants';
-import { ExclusiveParametersError } from './errors';
+import { CronError, ExclusiveParametersError } from './errors';
 import {
 	CronJobParams,
 	DayOfMonthRange,
@@ -59,7 +59,7 @@ export class CronTime {
 		if (timeZone) {
 			const dt = DateTime.fromObject({}, { zone: timeZone });
 			if (!dt.isValid) {
-				throw new Error('Invalid timezone.');
+				throw new CronError('Invalid timezone.');
 			}
 
 			this.timeZone = timeZone;
@@ -157,13 +157,13 @@ export class CronTime {
 			date = date.setZone(utcZone);
 
 			if (!date.isValid) {
-				throw new Error('ERROR: You specified an invalid UTC offset.');
+				throw new CronError('ERROR: You specified an invalid UTC offset.');
 			}
 		}
 
 		if (this.realDate) {
 			if (DateTime.local() > date) {
-				throw new Error('WARNING: Date in past. Will never be fired.');
+				throw new CronError('WARNING: Date in past. Will never be fired.');
 			}
 
 			return date;
@@ -240,7 +240,7 @@ export class CronTime {
 		}
 
 		if (!date.isValid) {
-			throw new Error('ERROR: You specified an invalid date.');
+			throw new CronError('ERROR: You specified an invalid date.');
 		}
 
 		/**
@@ -258,7 +258,7 @@ export class CronTime {
 
 			// hard stop if the current date is after the maximum match interval
 			if (date > maxMatch) {
-				throw new Error(
+				throw new CronError(
 					`Something went wrong. No execution date was found in the next 8 years.
 							Please provide the following string if you would like to help debug:
 							Time Zone: ${
@@ -433,7 +433,7 @@ export class CronTime {
 		let iteration = 0;
 		do {
 			if (++iteration > iterationLimit) {
-				throw new Error(
+				throw new CronError(
 					`ERROR: This DST checking related function assumes the input DateTime (${
 						date.toISO() ?? date.toMillis()
 					}) is within 24 hours of a DST jump.`
@@ -583,7 +583,7 @@ export class CronTime {
 		endMinute: number
 	) {
 		if (startHour >= endHour) {
-			throw new Error(
+			throw new CronError(
 				`ERROR: This DST checking related function assumes the forward jump starting hour (${startHour}) is less than the end hour (${endHour})`
 			);
 		}
@@ -707,18 +707,18 @@ export class CronTime {
 				return ALIASES[alias as keyof typeof ALIASES].toString();
 			}
 
-			throw new Error(`Unknown alias: ${alias}`);
+			throw new CronError(`Unknown alias: ${alias}`);
 		});
 
 		const units = source.trim().split(/\s+/);
 
 		// seconds are optional
 		if (units.length < TIME_UNITS_LEN - 1) {
-			throw new Error('Too few fields');
+			throw new CronError('Too few fields');
 		}
 
 		if (units.length > TIME_UNITS_LEN) {
-			throw new Error('Too many fields');
+			throw new CronError('Too many fields');
 		}
 
 		const unitsLen = units.length;
@@ -756,7 +756,9 @@ export class CronTime {
 		fields.forEach(field => {
 			const wildcardIndex = field.indexOf('*');
 			if (wildcardIndex !== -1 && wildcardIndex !== 0) {
-				throw new Error(`Field (${field}) has an invalid wildcard expression`);
+				throw new CronError(
+					`Field (${field}) has an invalid wildcard expression`
+				);
 			}
 		});
 
@@ -776,11 +778,11 @@ export class CronTime {
 				const wasStepDefined = mStep !== undefined;
 				const step = parseInt(mStep ?? '1', 10);
 				if (step === 0) {
-					throw new Error(`Field (${unit}) has a step of zero`);
+					throw new CronError(`Field (${unit}) has a step of zero`);
 				}
 
 				if (upper !== undefined && lower > upper) {
-					throw new Error(`Field (${unit}) has an invalid range`);
+					throw new CronError(`Field (${unit}) has an invalid range`);
 				}
 
 				const isOutOfRange =
@@ -789,7 +791,7 @@ export class CronTime {
 					(upper === undefined && lower > high);
 
 				if (isOutOfRange) {
-					throw new Error(`Field value (${value}) is out of range`);
+					throw new CronError(`Field value (${value}) is out of range`);
 				}
 
 				// Positive integer higher than constraints[0]
@@ -820,7 +822,7 @@ export class CronTime {
 					delete typeObj[7];
 				}
 			} else {
-				throw new Error(`Field (${unit}) cannot be parsed`);
+				throw new CronError(`Field (${unit}) cannot be parsed`);
 			}
 		}
 	}
