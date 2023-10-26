@@ -1,3 +1,29 @@
+## [3.1.5](https://github.com/kelektiv/node-cron/compare/v3.1.4...v3.1.5) (2023-10-26)
+
+
+### 🐛 Bug Fixes
+
+* detect multiple zeros as an invalid step ([#743](https://github.com/kelektiv/node-cron/issues/743)) [skip ci] ([b0bf677](https://github.com/kelektiv/node-cron/commit/b0bf677ee7b7c322dbe2c9feb13257787edc4fb8))
+* re-add runOnce property to CronJob ([#751](https://github.com/kelektiv/node-cron/issues/751)) ([a61d8c9](https://github.com/kelektiv/node-cron/commit/a61d8c95057b6055a2fe0f18896a098f5d0266e0))
+
+
+### 📚 Documentation
+
+* **readme:** API documentation overhaul ([#716](https://github.com/kelektiv/node-cron/issues/716)) [skip ci] ([23fb0a3](https://github.com/kelektiv/node-cron/commit/23fb0a383fc5dea2f677d69638a1c34ec49b6425))
+
+
+### ⚙️ Continuous Integrations
+
+* **action:** update actions/setup-node action to v4 ([#749](https://github.com/kelektiv/node-cron/issues/749)) ([ef850f3](https://github.com/kelektiv/node-cron/commit/ef850f32f0b429825e2bea59fedbf53fa0053894))
+
+
+### ♻️ Chores
+
+* **deps:** update dependency [@commitlint](https://github.com/commitlint)/cli to v18 ([#747](https://github.com/kelektiv/node-cron/issues/747)) ([5ff1cf8](https://github.com/kelektiv/node-cron/commit/5ff1cf826b376b1c3a03003b771ce8ca96edfaf5))
+* **deps:** update dependency sinon to v17 ([#748](https://github.com/kelektiv/node-cron/issues/748)) ([9d61ff9](https://github.com/kelektiv/node-cron/commit/9d61ff976371ebf93bcfedf8386ba4fe426dcac5))
+* **deps:** update linters ([7bdc726](https://github.com/kelektiv/node-cron/commit/7bdc726e8960d89b489a648eb5918090c7ee01c9))
+* improve ossf scorecard's score ([#715](https://github.com/kelektiv/node-cron/issues/715)) [skip ci] ([1284df4](https://github.com/kelektiv/node-cron/commit/1284df476ec7bbcbc6493ab38af4cb4d3542580b))
+
 ## [3.1.4](https://github.com/kelektiv/node-cron/compare/v3.1.3...v3.1.4) (2023-10-24)
 
 
