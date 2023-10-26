@@ -1,5 +1,5 @@
 import { spawn } from 'child_process';
-import { ExclusiveParametersError } from './errors';
+import { CronError, ExclusiveParametersError } from './errors';
 import { CronTime } from './time';
 import {
 	CronCallback,
@@ -172,7 +172,7 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 
 	setTime(time: CronTime) {
 		if (!(time instanceof CronTime)) {
-			throw new Error('time must be an instance of CronTime.');
+			throw new CronError('time must be an instance of CronTime.');
 		}
 		const wasRunning = this.running;
 		this.stop();

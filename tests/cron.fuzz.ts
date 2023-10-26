@@ -1,7 +1,7 @@
 /* eslint-disable jest/no-standalone-expect */
 import { fc, test } from '@fast-check/jest';
 import { CronJob } from '../src';
-import { isCronError } from './helpers/is_cron_error';
+import { CronError } from '../src/errors';
 
 /**
  * fuzzing might result in an infinite loop in our code, so Jest will simply timeout.
@@ -55,7 +55,12 @@ function testCronJob(
 		expect(job.cronTime.source).toBe(cronTime);
 	} catch (error) {
 		const isOk = checkError(error);
-		if (!isOk) console.error(error);
+		if (!isOk) {
+			console.error(error);
+			console.error(
+				'Make sure the relevant code is using an instance of CronError (or derived) when throwing.'
+			);
+		}
 		expect(isOk).toBe(true);
 	}
 }
@@ -75,7 +80,7 @@ test.prop(
 	{ numRuns: 100_000 }
 )(
 	'CronJob should behave as expected and not error unexpectedly (with matching inputs)',
-	params => testCronJob(params, isCronError)
+	params => testCronJob(params, err => err instanceof CronError)
 );
 
 test.prop(
@@ -91,7 +96,7 @@ test.prop(
 	{ numRuns: 100_000 }
 )(
 	'CronJob should behave as expected and not error unexpectedly (with random inputs)',
-	params => testCronJob(params, isCronError)
+	params => testCronJob(params, err => err instanceof CronError)
 );
 
 test.prop(
@@ -111,6 +116,6 @@ test.prop(
 		testCronJob(
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-argument
 			params as any,
-			err => err instanceof TypeError || isCronError(err)
+			err => err instanceof CronError || err instanceof TypeError
 		)
 );
