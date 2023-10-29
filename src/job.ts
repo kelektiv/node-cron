@@ -16,14 +16,11 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 	running = false;
 	unrefTimeout = false;
 	lastExecution: Date | null = null;
+	runOnce = false;
 	context: CronContext<C>;
 	onComplete?: WithOnComplete<OC> extends true
 		? CronOnCompleteCallback
 		: undefined;
-
-	get runOnce(): boolean {
-		return this.cronTime.realDate;
-	}
 
 	private _timeout?: NodeJS.Timeout;
 	private _callbacks: CronCallback<C, WithOnComplete<OC>>[] = [];
@@ -85,6 +82,10 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 			this.onComplete = this._fnWrap(
 				onComplete
 			) as WithOnComplete<OC> extends true ? CronOnCompleteCallback : undefined;
+		}
+
+		if (this.cronTime.realDate) {
+			this.runOnce = true;
 		}
 
 		this.addCallback(this._fnWrap(onTick));
@@ -178,10 +179,12 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 		if (!(time instanceof CronTime)) {
 			throw new CronError('time must be an instance of CronTime.');
 		}
+
 		const wasRunning = this.running;
 		this.stop();
 
 		this.cronTime = time;
+		if (time.realDate) this.runOnce = true;
 
 		if (wasRunning) this.start();
 	}
