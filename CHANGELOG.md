@@ -1,3 +1,26 @@
+## [3.1.6](https://github.com/kelektiv/node-cron/compare/v3.1.5...v3.1.6) (2023-10-29)
+
+
+### 🐛 Bug Fixes
+
+* revert runOnce breaking changes ([#760](https://github.com/kelektiv/node-cron/issues/760)) ([7cb53ec](https://github.com/kelektiv/node-cron/commit/7cb53ec9944b19ed5ba92b2466e73fc158ef1d11))
+
+
+### ⚙️ Continuous Integrations
+
+* **action:** update actions/checkout action to v4 ([#755](https://github.com/kelektiv/node-cron/issues/755)) ([d0d70c6](https://github.com/kelektiv/node-cron/commit/d0d70c67532b9a2563ed7a4273901f85b314d1b9))
+* **action:** update github/codeql-action action to v2.22.4 ([#752](https://github.com/kelektiv/node-cron/issues/752)) ([04454c3](https://github.com/kelektiv/node-cron/commit/04454c34a5cbfcffb6938173393380840a7c8d75))
+* **action:** update github/codeql-action action to v2.22.5 ([#758](https://github.com/kelektiv/node-cron/issues/758)) ([2dff183](https://github.com/kelektiv/node-cron/commit/2dff1838a6b8ee400ad721c7a41065ee73a42b8a))
+* **action:** update ossf/scorecard-action action to v2.3.1 ([#754](https://github.com/kelektiv/node-cron/issues/754)) ([41d21f1](https://github.com/kelektiv/node-cron/commit/41d21f16b58dc76e48c81751c8782b6c6c1ac7ca))
+
+
+### ♻️ Chores
+
+* **deps:** update dependency [@commitlint](https://github.com/commitlint)/cli to v18.2.0 ([#759](https://github.com/kelektiv/node-cron/issues/759)) ([4cb466e](https://github.com/kelektiv/node-cron/commit/4cb466e183016861098cb4252b48cb54fb0ea96d))
+* **deps:** update dependency [@types](https://github.com/types)/node to v20.8.8 ([#756](https://github.com/kelektiv/node-cron/issues/756)) ([361728e](https://github.com/kelektiv/node-cron/commit/361728ebf8bc6a3202001fccaf6661e9417054a1))
+* **deps:** update dependency [@types](https://github.com/types)/node to v20.8.9 ([#757](https://github.com/kelektiv/node-cron/issues/757)) ([e2b1bac](https://github.com/kelektiv/node-cron/commit/e2b1bac21b59b9bd02a9000ec1c885961d07e121))
+* **deps:** update dependency [@typescript-eslint](https://github.com/typescript-eslint)/eslint-plugin to v6.9.0 ([#753](https://github.com/kelektiv/node-cron/issues/753)) ([9cec04f](https://github.com/kelektiv/node-cron/commit/9cec04f1578f26f50d3e338ad3a9053ef74bbb01))
+
 ## [3.1.5](https://github.com/kelektiv/node-cron/compare/v3.1.4...v3.1.5) (2023-10-26)
 
 
