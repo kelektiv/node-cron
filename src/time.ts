@@ -84,7 +84,7 @@ export class CronTime {
 		return date.weekday === 7 ? 0 : date.weekday;
 	}
 
-	/*
+	/**
 	 * Ensure that the syntax parsed correctly and correct the specified values if needed.
 	 */
 	private _verifyParse() {
@@ -684,7 +684,7 @@ export class CronTime {
 		return true;
 	}
 
-	/*
+	/**
 	 * Parse the cron syntax into something useful for selecting the next execution time.
 	 *
 	 * Algorithm:
@@ -733,7 +733,7 @@ export class CronTime {
 		}
 	}
 
-	/*
+	/**
 	 * Parse individual field from the cron syntax provided.
 	 *
 	 * Algorithm:
@@ -762,7 +762,7 @@ export class CronTime {
 			}
 		});
 
-		// * is a shortcut to [low-high] range for the field
+		// "*" is a shortcut to [low-high] range for the field
 		value = value.replace(RE_WILDCARDS, `${low}-${high}`);
 
 		// commas separate information, so split based on those
