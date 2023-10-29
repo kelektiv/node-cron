@@ -16,6 +16,7 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 	running = false;
 	unrefTimeout = false;
 	lastExecution: Date | null = null;
+	runOnce = false;
 	context: CronContext<C>;
 	onComplete?: WithOnComplete<OC> extends true
 		? CronOnCompleteCallback
@@ -81,6 +82,10 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 			this.onComplete = this._fnWrap(
 				onComplete
 			) as WithOnComplete<OC> extends true ? CronOnCompleteCallback : undefined;
+		}
+
+		if (this.cronTime.realDate) {
+			this.runOnce = true;
 		}
 
 		this.addCallback(this._fnWrap(onTick));
@@ -176,9 +181,7 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 		}
 		const wasRunning = this.running;
 		this.stop();
-
 		this.cronTime = time;
-
 		if (wasRunning) this.start();
 	}
 
@@ -255,7 +258,7 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 				this.running = false;
 
 				// start before calling back so the callbacks have the ability to stop the cron job
-				if (!this.cronTime.realDate) {
+				if (!this.runOnce) {
 					this.start();
 				}
 

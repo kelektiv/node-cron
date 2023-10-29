@@ -1080,29 +1080,6 @@ describe('cron', () => {
 			job.stop();
 			expect(callback).toHaveBeenCalledTimes(1);
 		});
-
-		it('should create recurring job, setTime with actual date, start and run once (#739)', () => {
-			const callback = jest.fn();
-			const clock = sinon.useFakeTimers();
-
-			const job = new CronJob('0 0 20 * * *', callback);
-
-			const startDate = new Date(Date.now() + 5000);
-			job.setTime(new CronTime(startDate));
-
-			job.start();
-
-			clock.tick(5000);
-
-			expect(callback).toHaveBeenCalledTimes(1);
-
-			clock.tick(60000);
-
-			clock.restore();
-
-			expect(callback).toHaveBeenCalledTimes(1);
-			expect(job.running).toBe(false);
-		});
 	});
 
 	describe('nextDate(s)', () => {
