@@ -179,9 +179,13 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 		if (!(time instanceof CronTime)) {
 			throw new CronError('time must be an instance of CronTime.');
 		}
+
 		const wasRunning = this.running;
 		this.stop();
+
 		this.cronTime = time;
+		if (time.realDate) this.runOnce = true;
+
 		if (wasRunning) this.start();
 	}
 
