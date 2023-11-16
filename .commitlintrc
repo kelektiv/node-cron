@@ -1,5 +1,5 @@
 {
 	"extends": [
-		"@insurgentlab/commitlint-config"
+		"@insurgent/commitlint-config"
 	]
 }
