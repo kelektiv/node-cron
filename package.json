@@ -30,7 +30,7 @@
 		"@commitlint/cli": "18.4.2",
 		"@fast-check/jest": "1.7.3",
 		"@insurgent/commitlint-config": "19.0.0",
-		"@insurgent/conventional-changelog-preset": "9.0.0",
+		"@insurgent/conventional-changelog-preset": "9.0.1",
 		"@semantic-release/changelog": "6.0.3",
 		"@semantic-release/commit-analyzer": "11.1.0",
 		"@semantic-release/git": "10.0.1",
