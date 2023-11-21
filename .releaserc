@@ -13,14 +13,14 @@
 		[
 			"@semantic-release/commit-analyzer",
 			{
-				"config": "@insurgentlab/conventional-changelog-preset",
-				"releaseRules": "@insurgentlab/conventional-changelog-preset/release-rules"
+				"config": "@insurgent/conventional-changelog-preset",
+				"releaseRules": "@insurgent/conventional-changelog-preset/release-rules"
 			}
 		],
 		[
 			"@semantic-release/release-notes-generator",
 			{
-				"config": "@insurgentlab/conventional-changelog-preset"
+				"config": "@insurgent/conventional-changelog-preset"
 			}
 		],
 		"@semantic-release/npm",
