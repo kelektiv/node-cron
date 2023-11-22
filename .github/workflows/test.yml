@@ -73,8 +73,10 @@ jobs:
   required_check:
     runs-on: ubuntu-latest
     needs:
+      - prevent-duplicate-checks
       - test_matrix
-    if: always()
+
+    if: ${{ !cancelled() && needs.prevent-duplicate-checks.outputs.should-run == 'true' }}
     steps:
       - name: All required jobs and matrix versions passed
         if: ${{ !(contains(needs.*.result, 'failure')) }}
