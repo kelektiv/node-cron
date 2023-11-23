@@ -28,7 +28,7 @@
 	},
 	"devDependencies": {
 		"@commitlint/cli": "18.4.2",
-		"@fast-check/jest": "1.7.3",
+		"@fast-check/jest": "1.8.0",
 		"@insurgent/commitlint-config": "19.0.0",
 		"@insurgent/conventional-changelog-preset": "9.0.1",
 		"@semantic-release/changelog": "6.0.3",
