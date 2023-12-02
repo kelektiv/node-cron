@@ -34,7 +34,7 @@
 		"@semantic-release/changelog": "6.0.3",
 		"@semantic-release/commit-analyzer": "11.1.0",
 		"@semantic-release/git": "10.0.1",
-		"@semantic-release/github": "9.2.3",
+		"@semantic-release/github": "9.2.4",
 		"@semantic-release/npm": "11.0.1",
 		"@semantic-release/release-notes-generator": "12.1.0",
 		"@types/jest": "29.5.10",
