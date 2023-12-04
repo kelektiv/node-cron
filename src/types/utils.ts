@@ -9,6 +9,10 @@ type Enumerate<
 	Acc extends number[] = []
 > = Acc['length'] extends N
 	? WithTail extends true
-		? [...Acc, Acc['length']][number]
-		: Acc[number]
+	? [...Acc, Acc['length']][number]
+	: Acc[number]
 	: Enumerate<N, WithTail, [...Acc, Acc['length']]>;
+
+export type ExclusiveTimezoneOrUtcOffset =
+	| { timeZone: string | null | undefined; utcOffset: undefined }
+	| { timeZone: undefined; utcOffset: number | null | undefined };

@@ -10,6 +10,7 @@ import {
 	CronOnCompleteCommand,
 	WithOnComplete
 } from './types/cron.types';
+import { getExclusiveTimezoneOrUtcOffset } from './utils';
 
 export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 	cronTime: CronTime;
@@ -60,18 +61,11 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 	) {
 		this.context = (context ?? this) as CronContext<C>;
 
-		// runtime check for JS users
-		if (timeZone != null && utcOffset != null) {
-			throw new ExclusiveParametersError('timeZone', 'utcOffset');
-		}
+		const exclusiveParams = getExclusiveTimezoneOrUtcOffset(timeZone, utcOffset);
 
-		if (timeZone != null) {
-			this.cronTime = new CronTime(cronTime, timeZone, null);
-		} else if (utcOffset != null) {
-			this.cronTime = new CronTime(cronTime, null, utcOffset);
-		} else {
-			this.cronTime = new CronTime(cronTime, timeZone, utcOffset);
-		}
+		this.cronTime = exclusiveParams.timeZone !== undefined
+			? new CronTime(cronTime, exclusiveParams.timeZone as string | undefined)
+			: new CronTime(cronTime, undefined, exclusiveParams.utcOffset as number | undefined);
 
 		if (unrefTimeout != null) {
 			this.unrefTimeout = unrefTimeout;
@@ -101,46 +95,31 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 	static from<OC extends CronOnCompleteCommand | null = null, C = null>(
 		params: CronJobParams<OC, C>
 	) {
-		// runtime check for JS users
-		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-		if (params.timeZone != null && params.utcOffset != null) {
-			throw new ExclusiveParametersError('timeZone', 'utcOffset');
-		}
+		const { timeZone, utcOffset } = getExclusiveTimezoneOrUtcOffset(params.timeZone, params.utcOffset);
 
-		if (params.timeZone != null) {
+		if (timeZone !== undefined) {
 			return new CronJob<OC, C>(
 				params.cronTime,
 				params.onTick,
 				params.onComplete,
 				params.start,
-				params.timeZone,
+				timeZone,
 				params.context,
 				params.runOnInit,
-				params.utcOffset,
-				params.unrefTimeout
-			);
-		} else if (params.utcOffset != null) {
-			return new CronJob<OC, C>(
-				params.cronTime,
-				params.onTick,
-				params.onComplete,
-				params.start,
-				null,
-				params.context,
-				params.runOnInit,
-				params.utcOffset,
+				null, 
 				params.unrefTimeout
 			);
 		} else {
+			// Only utcOffset is defined or both are undefined
 			return new CronJob<OC, C>(
 				params.cronTime,
 				params.onTick,
 				params.onComplete,
 				params.start,
-				params.timeZone,
+				null, 
 				params.context,
 				params.runOnInit,
-				params.utcOffset,
+				utcOffset,
 				params.unrefTimeout
 			);
 		}
@@ -198,8 +177,8 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 			void callback.call(
 				this.context,
 				this.onComplete as WithOnComplete<OC> extends true
-					? CronOnCompleteCallback
-					: never
+				? CronOnCompleteCallback
+				: never
 			);
 		}
 	}
