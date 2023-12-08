@@ -40,7 +40,7 @@
 		"@types/jest": "29.5.10",
 		"@types/node": "20.10.0",
 		"@types/sinon": "17.0.2",
-		"@typescript-eslint/eslint-plugin": "6.13.1",
+		"@typescript-eslint/eslint-plugin": "6.13.2",
 		"chai": "4.3.10",
 		"eslint": "8.55.0",
 		"eslint-config-prettier": "9.1.0",
