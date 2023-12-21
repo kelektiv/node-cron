@@ -38,7 +38,7 @@
 		"@semantic-release/npm": "11.0.1",
 		"@semantic-release/release-notes-generator": "12.1.0",
 		"@types/jest": "29.5.10",
-		"@types/node": "20.10.4",
+		"@types/node": "20.10.5",
 		"@types/sinon": "17.0.2",
 		"@typescript-eslint/eslint-plugin": "6.13.2",
 		"chai": "4.3.10",
