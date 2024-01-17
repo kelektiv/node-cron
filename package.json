@@ -41,7 +41,7 @@
 		"@types/node": "20.10.7",
 		"@types/sinon": "17.0.3",
 		"@typescript-eslint/eslint-plugin": "6.18.1",
-		"chai": "4.4.0",
+		"chai": "4.4.1",
 		"eslint": "8.56.0",
 		"eslint-config-prettier": "9.1.0",
 		"eslint-plugin-jest": "27.6.3",
