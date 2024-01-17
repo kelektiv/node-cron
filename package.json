@@ -23,7 +23,7 @@
 		"prepare": "husky install"
 	},
 	"dependencies": {
-		"@types/luxon": "~3.3.0",
+		"@types/luxon": "~3.4.0",
 		"luxon": "~3.4.0"
 	},
 	"devDependencies": {
