@@ -10,6 +10,7 @@ import {
 	CronOnCompleteCommand,
 	WithOnComplete
 } from './types/cron.types';
+import { getTimeZoneAndOffset } from './utils';
 
 export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 	cronTime: CronTime;
@@ -61,17 +62,12 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 		this.context = (context ?? this) as CronContext<C>;
 
 		// runtime check for JS users
-		if (timeZone != null && utcOffset != null) {
-			throw new ExclusiveParametersError('timeZone', 'utcOffset');
-		}
+		const { timeZone: tz, utcOffset: uo } = getTimeZoneAndOffset(
+			timeZone,
+			utcOffset
+		);
 
-		if (timeZone != null) {
-			this.cronTime = new CronTime(cronTime, timeZone, null);
-		} else if (utcOffset != null) {
-			this.cronTime = new CronTime(cronTime, null, utcOffset);
-		} else {
-			this.cronTime = new CronTime(cronTime, timeZone, utcOffset);
-		}
+		this.cronTime = new CronTime(cronTime, tz, uo as null | undefined);
 
 		if (unrefTimeout != null) {
 			this.unrefTimeout = unrefTimeout;
