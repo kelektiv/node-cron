@@ -38,7 +38,7 @@
 		"@semantic-release/npm": "11.0.2",
 		"@semantic-release/release-notes-generator": "12.1.0",
 		"@types/jest": "29.5.11",
-		"@types/node": "20.11.0",
+		"@types/node": "20.11.5",
 		"@types/sinon": "17.0.3",
 		"@typescript-eslint/eslint-plugin": "6.18.1",
 		"chai": "4.4.1",
@@ -51,7 +51,7 @@
 		"prettier": "3.2.2",
 		"semantic-release": "22.0.12",
 		"sinon": "17.0.1",
-		"ts-jest": "29.1.1",
+		"ts-jest": "29.1.2",
 		"typescript": "5.3.3"
 	},
 	"keywords": [
