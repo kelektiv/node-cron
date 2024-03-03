@@ -30,7 +30,9 @@ export type CronJobParams<
 				timeZone?: never;
 				utcOffset?: number | null;
 		  }
-	);
+	) & {
+		errorHandler?: (error: unknown) => void;
+	};
 
 export type CronContext<C> = C extends null ? CronJob : NonNullable<C>;
 
