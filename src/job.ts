@@ -234,7 +234,7 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 						? CronOnCompleteCallback
 						: never
 				);
-			} catch (error: any) {
+			} catch (error: unknown) {
 				if (this.errorHandler != null) this.errorHandler(error);
 				else throw error;
 			}
