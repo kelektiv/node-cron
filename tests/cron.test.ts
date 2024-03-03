@@ -1191,7 +1191,6 @@ describe('cron', () => {
 
 	it('should throw when providing both exclusive parameters timeZone and utcOffset', () => {
 		expect(() => {
-			// @ts-expect-error testing runtime exception
 			new CronJob(
 				`* * * * *`,
 				function () {},
@@ -1237,5 +1236,36 @@ describe('cron', () => {
 		job.stop();
 		clock.restore();
 		expect(callback).toHaveBeenCalledTimes(1);
+	});
+
+	it('should catch errors if errorhandler is provided', () => {
+		const clock = sinon.useFakeTimers();
+		const errorFunc = jest.fn().mockImplementationOnce(() => {
+			throw Error('Exception');
+		});
+		const handlerFunc = jest.fn();
+		const job = CronJob.from({
+			cronTime: '* * * * * *',
+			onTick: errorFunc,
+			errorHandler: handlerFunc,
+			runOnInit: true
+		});
+		clock.tick(1500);
+		job.stop();
+		clock.restore();
+		expect(handlerFunc).toHaveBeenCalled();
+	});
+
+	it('should throw errors if errorhandler is NOT provided', () => {
+		const errorFunc = jest.fn().mockImplementationOnce(() => {
+			throw Error('Exception');
+		});
+		expect(() => {
+			CronJob.from({
+				cronTime: '* * * * * *',
+				onTick: errorFunc,
+				runOnInit: true
+			});
+		}).toThrow('Exception');
 	});
 });
