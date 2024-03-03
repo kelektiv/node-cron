@@ -1238,9 +1238,9 @@ describe('cron', () => {
 		expect(callback).toHaveBeenCalledTimes(1);
 	});
 
-	it('should catch errors if errorhandler is provided', () => {
+	it('should catch errors everytime, if errorhandler is provided', () => {
 		const clock = sinon.useFakeTimers();
-		const errorFunc = jest.fn().mockImplementationOnce(() => {
+		const errorFunc = jest.fn().mockImplementation(() => {
 			throw Error('Exception');
 		});
 		const handlerFunc = jest.fn();
@@ -1248,16 +1248,21 @@ describe('cron', () => {
 			cronTime: '* * * * * *',
 			onTick: errorFunc,
 			errorHandler: handlerFunc,
-			runOnInit: true
+			start: true
 		});
-		clock.tick(1500);
+		clock.tick(1000);
+		expect(errorFunc).toHaveBeenCalledTimes(1);
+		expect(handlerFunc).toHaveBeenCalledTimes(1);
+		clock.tick(1000);
+		expect(errorFunc).toHaveBeenCalledTimes(2);
+		expect(handlerFunc).toHaveBeenCalledTimes(2);
+
 		job.stop();
 		clock.restore();
-		expect(handlerFunc).toHaveBeenCalled();
 	});
 
 	it('should throw errors if errorhandler is NOT provided', () => {
-		const errorFunc = jest.fn().mockImplementationOnce(() => {
+		const errorFunc = jest.fn().mockImplementation(() => {
 			throw Error('Exception');
 		});
 		expect(() => {
