@@ -19,7 +19,7 @@ jobs:
   prevent-duplicate-checks:
     runs-on: ubuntu-latest
     steps:
-      - uses: insurgent-lab/is-in-pr-action@3e01b38aa0d2a0e51bbc84540300303ec850e80d # v0.1.5
+      - uses: insurgent-lab/is-in-pr-action@129df59687402c4a9c81a9a9e88d7448cdbba541 # v0.2.0
         id: isInPR
     outputs:
       should-run: ${{ !(steps.isInPR.outputs.result == 'true' && startsWith(github.ref, 'refs/heads/renovate/')) }}
