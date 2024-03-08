@@ -1191,6 +1191,7 @@ describe('cron', () => {
 
 	it('should throw when providing both exclusive parameters timeZone and utcOffset', () => {
 		expect(() => {
+			// @ts-expect-error testing runtime exception
 			new CronJob(
 				`* * * * *`,
 				function () {},
