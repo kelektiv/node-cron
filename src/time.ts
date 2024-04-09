@@ -6,6 +6,7 @@ import {
 	MONTH_CONSTRAINTS,
 	PARSE_DEFAULTS,
 	PRESETS,
+	RE_L,
 	RE_QUESTIONMARK,
 	RE_RANGE,
 	RE_WILDCARDS,
@@ -766,6 +767,9 @@ export class CronTime {
 			}
 		});
 
+		// "L" is a shortcut for the last day of the month
+		value = value.replace(RE_L, this._getLastDayOf(now, unit));
+
 		// "?" will be replaced with current timestamp value
 		value = value.replace(RE_QUESTIONMARK, this._getTimeUnit(now, unit));
 
@@ -851,5 +855,10 @@ export class CronTime {
 			default:
 				throw new CronError('Invalid time unit');
 		}
+	}
+
+	private _getLastDayOf(now: DateTime, unit: TimeUnit) {
+		if (unit === 'dayOfMonth') return now.endOf('month').day.toString();
+		return '7';
 	}
 }

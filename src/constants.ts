@@ -47,7 +47,8 @@ export const ALIASES = Object.freeze({
 	wed: 3,
 	thu: 4,
 	fri: 5,
-	sat: 6
+	sat: 6,
+	l: 'l'
 } as const);
 export const TIME_UNITS_MAP = Object.freeze({
 	SECOND: 'second',
@@ -80,3 +81,4 @@ export const PRESETS = Object.freeze({
 export const RE_WILDCARDS = /\*/g;
 export const RE_RANGE = /^(\d+)(?:-(\d+))?(?:\/(\d+))?$/g;
 export const RE_QUESTIONMARK = /\?/g;
+export const RE_L = /[lL]/g;
