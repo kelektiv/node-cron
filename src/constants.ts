@@ -79,3 +79,4 @@ export const PRESETS = Object.freeze({
 } as const);
 export const RE_WILDCARDS = /\*/g;
 export const RE_RANGE = /^(\d+)(?:-(\d+))?(?:\/(\d+))?$/g;
+export const RE_QUESTIONMARK = /\?/g;

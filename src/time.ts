@@ -6,6 +6,7 @@ import {
 	MONTH_CONSTRAINTS,
 	PARSE_DEFAULTS,
 	PRESETS,
+	RE_QUESTIONMARK,
 	RE_RANGE,
 	RE_WILDCARDS,
 	TIME_UNITS,
@@ -721,6 +722,9 @@ export class CronTime {
 			throw new CronError('Too many fields');
 		}
 
+		//timestamp for eventual '?' substitution
+		const now = DateTime.local();
+
 		const unitsLen = units.length;
 		for (const unit of TIME_UNITS) {
 			const i = TIME_UNITS.indexOf(unit);
@@ -729,7 +733,7 @@ export class CronTime {
 			// This adds support for 5-digit standard cron syntax
 			const cur =
 				units[i - (TIME_UNITS_LEN - unitsLen)] ?? PARSE_DEFAULTS[unit];
-			this._parseField(cur, unit);
+			this._parseField(cur, unit, now);
 		}
 	}
 
@@ -744,7 +748,7 @@ export class CronTime {
 	 *   - Starting with the lower bounds of the range iterate by step up to the upper bounds and toggle the CronTime field value flag on.
 	 */
 
-	private _parseField(value: string, unit: TimeUnit) {
+	private _parseField(value: string, unit: TimeUnit, now: DateTime) {
 		const typeObj = this[unit] as TimeUnitField<typeof unit>;
 		let pointer: Ranges[typeof unit];
 
@@ -761,6 +765,9 @@ export class CronTime {
 				);
 			}
 		});
+
+		// "?" will be replaced with current timestamp value
+		value = value.replace(RE_QUESTIONMARK, this._getTimeUnit(now, unit));
 
 		// "*" is a shortcut to [low-high] range for the field
 		value = value.replace(RE_WILDCARDS, `${low}-${high}`);
@@ -824,6 +831,25 @@ export class CronTime {
 			} else {
 				throw new CronError(`Field (${unit}) cannot be parsed`);
 			}
+		}
+	}
+
+	private _getTimeUnit(now: DateTime, unit: TimeUnit) {
+		switch (unit) {
+			case 'second':
+				return now.second.toString();
+			case 'minute':
+				return now.minute.toString();
+			case 'hour':
+				return now.hour.toString();
+			case 'dayOfMonth':
+				return now.day.toString();
+			case 'month':
+				return now.month.toString();
+			case 'dayOfWeek':
+				return this._getWeekDay(now).toString();
+			default:
+				throw new CronError('Invalid time unit');
 		}
 	}
 }
