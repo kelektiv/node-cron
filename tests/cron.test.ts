@@ -829,7 +829,7 @@ describe('cron', () => {
 		const clock = sinon.useFakeTimers(d.getTime());
 
 		const job = CronJob.from({
-			cronTime: '00 * * * * *',
+			cronTime: '00 00 * * *',
 			onTick: callback,
 			start: true,
 			timeZone: 'UTC'
