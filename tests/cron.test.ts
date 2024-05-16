@@ -831,8 +831,7 @@ describe('cron', () => {
 		const job = CronJob.from({
 			cronTime: '00 00 * * *',
 			onTick: callback,
-			start: true,
-			timeZone: 'UTC'
+			start: true
 		});
 
 		clock.tick(1000); // move clock 1 second
@@ -843,12 +842,12 @@ describe('cron', () => {
 		expect(callback).toHaveBeenCalledTimes(1);
 	});
 
-	it('should run every day UTC', () => {
+	it('should run every day at 12:30 UTC', () => {
 		const callback = jest.fn();
 		const d = new Date('12/31/2014');
-		d.setSeconds(0);
-		d.setMinutes(0);
-		d.setHours(0);
+		d.setUTCSeconds(0);
+		d.setUTCMinutes(0);
+		d.setUTCHours(0);
 		const clock = sinon.useFakeTimers(d.getTime());
 
 		const job = CronJob.from({
