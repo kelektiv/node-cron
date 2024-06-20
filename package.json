@@ -51,7 +51,7 @@
 		"prettier": "3.3.2",
 		"semantic-release": "22.0.12",
 		"sinon": "17.0.2",
-		"ts-jest": "29.1.4",
+		"ts-jest": "29.1.5",
 		"typescript": "5.4.5"
 	},
 	"keywords": [
