@@ -52,7 +52,7 @@
 		"semantic-release": "22.0.12",
 		"sinon": "17.0.2",
 		"ts-jest": "29.2.3",
-		"typescript": "5.5.3"
+		"typescript": "5.5.4"
 	},
 	"keywords": [
 		"cron",
