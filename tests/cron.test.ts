@@ -3,8 +3,20 @@ import sinon from 'sinon';
 import { CronJob, CronTime } from '../src';
 
 describe('cron', () => {
-	// eslint-disable-next-line jest/no-standalone-expect
-	afterEach(() => expect.hasAssertions());
+	let callbackAsync: jest.Mock;
+	let onComplete: jest.Mock;
+
+	beforeEach(() => {
+		callbackAsync = jest.fn().mockImplementation(() => Promise.resolve());
+		onComplete = jest.fn();
+	});
+
+	afterAll(() => {
+		jest.clearAllMocks();
+		sinon.restore();
+	});
+
+	afterEach(() => sinon.restore());
 
 	describe('with seconds', () => {
 		it('should run every second (* * * * * *)', () => {
@@ -19,23 +31,19 @@ describe('cron', () => {
 			expect(callback).toHaveBeenCalledTimes(1);
 		});
 
-		it('should run second with onComplete (* * * * * *)', done => {
+		it('should run second with onComplete (* * * * * *)', async () => {
 			const clock = sinon.useFakeTimers();
 			const callback = jest.fn();
+			const onComplete = jest.fn();
 
-			const job = new CronJob(
-				'* * * * * *',
-				callback,
-				() => {
-					expect(callback).toHaveBeenCalledTimes(1);
-					done();
-				},
-				true
-			);
+			const job = new CronJob('* * * * * *', callback, onComplete, true);
 
-			clock.tick(1000);
+			await clock.tickAsync(1000);
 			job.stop();
 			clock.restore();
+
+			expect(callback).toHaveBeenCalledTimes(1);
+			expect(onComplete).toHaveBeenCalledTimes(1);
 		});
 
 		it('should use standard cron no-seconds syntax (* * * * *)', () => {
@@ -53,103 +61,108 @@ describe('cron', () => {
 			expect(callback).toHaveBeenCalledTimes(1);
 		});
 
-		it('should run every second for 5 seconds (* * * * * *)', () => {
+		it('should run every second for 5 seconds (* * * * * *)', async () => {
 			const clock = sinon.useFakeTimers();
-			const callback = jest.fn();
-			const job = new CronJob('* * * * * *', callback, null, true);
-			for (let i = 0; i < 5; i++) clock.tick(1000);
+			const job = new CronJob('* * * * * *', callbackAsync, null, true);
+			for (let i = 0; i < 5; i++) {
+				await clock.tickAsync(1000);
+				await Promise.resolve();
+			}
 			job.stop();
 			clock.restore();
-			expect(callback).toHaveBeenCalledTimes(5);
+			expect(callbackAsync).toHaveBeenCalledTimes(5);
 		});
 
-		it('should run every second for 5 seconds with onComplete (* * * * * *)', done => {
-			const callback = jest.fn();
+		it('should run every second for 5 seconds with onComplete (* * * * * *)', async () => {
 			const clock = sinon.useFakeTimers();
+
 			const job = new CronJob(
 				'* * * * * *',
-				callback,
+				callbackAsync,
 				() => {
-					expect(callback).toHaveBeenCalledTimes(5);
-					done();
+					expect(callbackAsync).toHaveBeenCalledTimes(5);
 				},
 				true
 			);
-			for (let i = 0; i < 5; i++) clock.tick(1000);
+
+			for (let i = 0; i < 5; i++) {
+				await clock.tickAsync(1000);
+				await Promise.resolve(); // 마이크로태스크 큐를 비우기 위해
+			}
+
 			job.stop();
 			clock.restore();
 		});
 
-		it('should run every second for 5 seconds (*/1 * * * * *)', () => {
+		it('should run every second for 5 seconds (*/1 * * * * *)', async () => {
 			const clock = sinon.useFakeTimers();
-			const callback = jest.fn();
-			const job = new CronJob('*/1 * * * * *', callback, null, true);
-			for (let i = 0; i < 5; i++) clock.tick(1000);
+			const job = new CronJob('*/1 * * * * *', callbackAsync, null, true);
+			for (let i = 0; i < 5; i++) {
+				await clock.tickAsync(1000);
+				await Promise.resolve();
+			}
 			job.stop();
 			clock.restore();
-			expect(callback).toHaveBeenCalledTimes(5);
+			expect(callbackAsync).toHaveBeenCalledTimes(5);
 		});
 
 		it('should run every 2 seconds for 1 seconds (*/2 * * * * *)', () => {
 			const clock = sinon.useFakeTimers();
-			const callback = jest.fn();
-			const job = new CronJob('*/2 * * * * *', callback, null, true);
+			const job = new CronJob('*/2 * * * * *', callbackAsync, null, true);
 			clock.tick(1000);
 			job.stop();
 			clock.restore();
-			expect(callback).toHaveBeenCalledTimes(0);
+			expect(callbackAsync).toHaveBeenCalledTimes(0);
 		});
 
-		it('should run every 2 seconds for 5 seconds (*/2 * * * * *)', () => {
+		it('should run every 2 seconds for 5 seconds (*/2 * * * * *)', async () => {
 			const clock = sinon.useFakeTimers();
-			const callback = jest.fn();
-			const job = new CronJob('*/2 * * * * *', callback, null, true);
-			for (let i = 0; i < 5; i++) clock.tick(1000);
+			const job = new CronJob('*/2 * * * * *', callbackAsync, null, true);
+			for (let i = 0; i < 5; i++) {
+				await clock.tickAsync(1000);
+				await Promise.resolve();
+			}
 			job.stop();
 			clock.restore();
-			expect(callback).toHaveBeenCalledTimes(2);
+			expect(callbackAsync).toHaveBeenCalledTimes(2);
 		});
 
-		it('should run every second for 5 seconds with onComplete (*/1 * * * * *)', done => {
+		it('should run every second for 5 seconds with onComplete (*/1 * * * * *)', async () => {
 			const clock = sinon.useFakeTimers();
-			const callback = jest.fn();
-			const job = new CronJob(
-				'*/1 * * * * *',
-				callback,
-				() => {
-					expect(callback).toHaveBeenCalledTimes(5);
-					done();
-				},
-				true
-			);
-			for (let i = 0; i < 5; i++) clock.tick(1000);
+			const job = new CronJob('*/1 * * * * *', callbackAsync, onComplete, true);
+			for (let i = 0; i < 5; i++) {
+				await clock.tickAsync(1000);
+				await Promise.resolve();
+			}
 			job.stop();
+			await Promise.resolve();
+
+			expect(callbackAsync).toHaveBeenCalledTimes(5);
+			expect(onComplete).toHaveBeenCalledTimes(1);
+
 			clock.restore();
 		});
 
-		it('should run every second for a range ([start]-[end] * * * * *)', () => {
+		it('should run every second for a range ([start]-[end] * * * * *)', async () => {
 			const clock = sinon.useFakeTimers();
-			const callback = jest.fn();
-			const job = new CronJob('0-8 * * * * *', callback, null, true);
-			clock.tick(10000);
+			const job = new CronJob('0-8 * * * * *', callbackAsync, null, true);
+			await clock.tickAsync(10000);
 			job.stop();
 			clock.restore();
-			expect(callback).toHaveBeenCalledTimes(8);
+			expect(callbackAsync).toHaveBeenCalledTimes(8);
 		});
 
-		it('should run every second for a range ([start]-[end] * * * * *) with onComplete', done => {
+		it('should run every second for a range ([start]-[end] * * * * *) with onComplete', async () => {
 			const clock = sinon.useFakeTimers();
-			const callback = jest.fn();
 			const job = new CronJob(
 				'0-8 * * * * *',
-				callback,
+				callbackAsync,
 				() => {
-					expect(callback).toHaveBeenCalledTimes(8);
-					done();
+					expect(callbackAsync).toHaveBeenCalledTimes(8);
 				},
 				true
 			);
-			clock.tick(10000);
+			await clock.tickAsync(10000);
 			job.stop();
 			clock.restore();
 		});

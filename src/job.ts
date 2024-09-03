@@ -21,6 +21,7 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 	onComplete?: WithOnComplete<OC> extends true
 		? CronOnCompleteCallback
 		: undefined;
+	isRunning = false;
 
 	private _timeout?: NodeJS.Timeout;
 	private _callbacks: CronCallback<C, WithOnComplete<OC>>[] = [];
@@ -92,7 +93,7 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 
 		if (runOnInit) {
 			this.lastExecution = new Date();
-			this.fireOnTick();
+			void this.fireOnTick();
 		}
 
 		if (start) this.start();
@@ -193,14 +194,27 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 		return this.cronTime.sendAt();
 	}
 
-	fireOnTick() {
-		for (const callback of this._callbacks) {
-			void callback.call(
-				this.context,
-				this.onComplete as WithOnComplete<OC> extends true
-					? CronOnCompleteCallback
-					: never
-			);
+	async fireOnTick() {
+		if (this.isRunning) {
+			console.debug('[Cron] job is already running');
+			return;
+		}
+
+		this.isRunning = true;
+
+		try {
+			for (const callback of this._callbacks) {
+				await callback.call(
+					this.context,
+					this.onComplete as WithOnComplete<OC> extends true
+						? CronOnCompleteCallback
+						: never
+				);
+			}
+		} catch (error) {
+			console.error('[Cron] error in callback', error);
+		} finally {
+			this.isRunning = false;
 		}
 	}
 
@@ -266,7 +280,7 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 					this.start();
 				}
 
-				this.fireOnTick();
+				void this.fireOnTick();
 			}
 		};
 
@@ -293,11 +307,27 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 	/**
 	 * Stop the cronjob.
 	 */
+	// stop() {
+	// 	if (this._timeout) clearTimeout(this._timeout);
+	// 	this.running = false;
+	// 	if (typeof this.onComplete === 'function') {
+	// 		void this.onComplete.call(this.context);
+	// 	}
+	// }
+
 	stop() {
 		if (this._timeout) clearTimeout(this._timeout);
 		this.running = false;
-		if (typeof this.onComplete === 'function') {
-			void this.onComplete.call(this.context);
-		}
+
+		const waitForCompletion = async () => {
+			while (this.isRunning) {
+				await new Promise(resolve => setTimeout(resolve, 100));
+			}
+			if (typeof this.onComplete === 'function') {
+				await this.onComplete.call(this.context);
+			}
+		};
+
+		void waitForCompletion();
 	}
 }
