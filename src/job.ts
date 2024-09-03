@@ -196,7 +196,6 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 
 	async fireOnTick() {
 		if (this.isRunning) {
-			console.debug('[Cron] job is already running');
 			return;
 		}
 
@@ -307,14 +306,6 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 	/**
 	 * Stop the cronjob.
 	 */
-	// stop() {
-	// 	if (this._timeout) clearTimeout(this._timeout);
-	// 	this.running = false;
-	// 	if (typeof this.onComplete === 'function') {
-	// 		void this.onComplete.call(this.context);
-	// 	}
-	// }
-
 	stop() {
 		if (this._timeout) clearTimeout(this._timeout);
 		this.running = false;
