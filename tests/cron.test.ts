@@ -23,7 +23,6 @@ describe('cron', () => {
 			expect(callback).not.toHaveBeenCalled();
 			clock.tick(1000);
 			job.stop();
-			clock.restore();
 			expect(callback).toHaveBeenCalledTimes(1);
 		});
 
@@ -41,7 +40,6 @@ describe('cron', () => {
 
 			await clock.tickAsync(1000);
 			job.stop();
-			clock.restore();
 		});
 
 		it('should use standard cron no-seconds syntax (* * * * *)', () => {
@@ -53,8 +51,6 @@ describe('cron', () => {
 			clock.tick(59 * 1000); // tick minute
 
 			job.stop();
-			clock.restore();
-
 			expect(callback).toHaveBeenCalledTimes(1);
 		});
 
@@ -66,7 +62,6 @@ describe('cron', () => {
 				await Promise.resolve();
 			}
 			job.stop();
-			clock.restore();
 			expect(callback).toHaveBeenCalledTimes(5);
 		});
 
@@ -87,18 +82,13 @@ describe('cron', () => {
 			}
 
 			job.stop();
-			clock.restore();
 		});
 
 		it('should run every second for 5 seconds (*/1 * * * * *)', async () => {
 			const clock = sinon.useFakeTimers();
 			const job = new CronJob('*/1 * * * * *', callback, null, true);
-			for (let i = 0; i < 5; i++) {
-				await clock.tickAsync(1000);
-				await Promise.resolve();
-			}
+			for (let i = 0; i < 5; i++) await clock.tickAsync(1000);
 			job.stop();
-			clock.restore();
 			expect(callback).toHaveBeenCalledTimes(5);
 		});
 
@@ -107,19 +97,14 @@ describe('cron', () => {
 			const job = new CronJob('*/2 * * * * *', callback, null, true);
 			clock.tick(1000);
 			job.stop();
-			clock.restore();
 			expect(callback).toHaveBeenCalledTimes(0);
 		});
 
 		it('should run every 2 seconds for 5 seconds (*/2 * * * * *)', async () => {
 			const clock = sinon.useFakeTimers();
 			const job = new CronJob('*/2 * * * * *', callback, null, true);
-			for (let i = 0; i < 5; i++) {
-				await clock.tickAsync(1000);
-				await Promise.resolve();
-			}
+			for (let i = 0; i < 5; i++) await clock.tickAsync(1000);
 			job.stop();
-			clock.restore();
 			expect(callback).toHaveBeenCalledTimes(2);
 		});
 
@@ -133,12 +118,8 @@ describe('cron', () => {
 				},
 				true
 			);
-			for (let i = 0; i < 5; i++) {
-				await clock.tickAsync(1000);
-			}
+			for (let i = 0; i < 5; i++) await clock.tickAsync(1000);
 			job.stop();
-
-			clock.restore();
 		});
 
 		it('should run every second for a range ([start]-[end] * * * * *)', async () => {
@@ -146,7 +127,6 @@ describe('cron', () => {
 			const job = new CronJob('0-8 * * * * *', callback, null, true);
 			await clock.tickAsync(10000);
 			job.stop();
-			clock.restore();
 			expect(callback).toHaveBeenCalledTimes(8);
 		});
 
@@ -162,7 +142,6 @@ describe('cron', () => {
 			);
 			await clock.tickAsync(10000);
 			job.stop();
-			clock.restore();
 		});
 
 		it('should default to full range when upper range not provided (1/2 * * * * *)', async () => {
@@ -177,7 +156,6 @@ describe('cron', () => {
 			);
 			await clock.tickAsync(1000 * 60);
 			job.stop();
-			clock.restore();
 		});
 
 		it('should run every second (* * * * * *) using the object constructor', () => {
@@ -189,7 +167,6 @@ describe('cron', () => {
 			});
 			clock.tick(1000);
 			job.stop();
-			clock.restore();
 			expect(callback).toHaveBeenCalledTimes(1);
 		});
 
@@ -205,7 +182,6 @@ describe('cron', () => {
 			});
 			await clock.tickAsync(1000);
 			job.stop();
-			clock.restore();
 		});
 	});
 
@@ -229,7 +205,6 @@ describe('cron', () => {
 			expect(l.every(i => i % 30 === 0)).toBe(true);
 
 			job.stop();
-			clock.restore();
 		});
 
 		it('should run every 45 minutes for 2 hours (0 */45 * * * *)', async () => {
@@ -237,7 +212,6 @@ describe('cron', () => {
 			const job = new CronJob('0 */45 * * * *', callback, null, true);
 			for (let i = 0; i < 2; i++) await clock.tickAsync(60 * 60 * 1000);
 			job.stop();
-			clock.restore();
 			expect(callback).toHaveBeenCalledTimes(4);
 		});
 
@@ -253,7 +227,6 @@ describe('cron', () => {
 			);
 			for (let i = 0; i < 2; i++) await clock.tickAsync(60 * 60 * 1000);
 			job.stop();
-			clock.restore();
 		});
 	});
 
@@ -266,7 +239,6 @@ describe('cron', () => {
 			},
 			() => {
 				expect(callback).toHaveBeenCalledTimes(1);
-				clock.restore();
 			},
 			true
 		);
@@ -284,7 +256,6 @@ describe('cron', () => {
 			},
 			() => {
 				expect(callback).toHaveBeenCalledTimes(1);
-				clock.restore();
 			},
 			true
 		);
@@ -308,7 +279,6 @@ describe('cron', () => {
 				true
 			);
 			clock.tick(1000);
-			clock.restore();
 			job.stop();
 			expect(callback).toHaveBeenCalledTimes(1);
 		});
@@ -333,7 +303,6 @@ describe('cron', () => {
 					true
 				);
 				clock.tick(1000);
-				clock.restore();
 				job.stop();
 			});
 
@@ -361,7 +330,6 @@ describe('cron', () => {
 					start: true
 				});
 				clock.tick(1000);
-				clock.restore();
 				job.stop();
 			});
 
@@ -397,7 +365,6 @@ describe('cron', () => {
 			);
 			clock.tick(1000);
 			job.stop();
-			clock.restore();
 		});
 
 		it('should wait and not fire immediately', () => {
@@ -410,7 +377,6 @@ describe('cron', () => {
 
 			clock.tick(1000);
 
-			clock.restore();
 			job.stop();
 			expect(callback).toHaveBeenCalledTimes(0);
 		});
@@ -432,7 +398,6 @@ describe('cron', () => {
 
 			clock.tick(1000);
 
-			clock.restore();
 			job.stop();
 			expect(callback).toHaveBeenCalledTimes(1);
 		});
@@ -452,7 +417,6 @@ describe('cron', () => {
 
 			await clock.tickAsync(3500);
 
-			clock.restore();
 			job.stop();
 			expect(callback).toHaveBeenCalledTimes(4);
 		});
@@ -490,7 +454,6 @@ describe('cron', () => {
 			);
 
 			clock.tick(1000);
-			clock.restore();
 			job.stop();
 			expect(callback).toHaveBeenCalledTimes(1);
 		});
@@ -528,7 +491,6 @@ describe('cron', () => {
 			);
 
 			clock.tick(1000);
-			clock.restore();
 			job.stop();
 			expect(callback).toHaveBeenCalledTimes(1);
 		});
@@ -551,7 +513,6 @@ describe('cron', () => {
 			const clock = sinon.useFakeTimers(d.valueOf());
 			const job = new CronJob(d.toJSDate(), callback, null, true, zone);
 			clock.tick(1000);
-			clock.restore();
 			job.stop();
 			expect(callback).toHaveBeenCalledTimes(1);
 		});
@@ -583,7 +544,6 @@ describe('cron', () => {
 
 			clock.tick(1000);
 
-			clock.restore();
 			job.stop();
 		});
 
@@ -601,7 +561,6 @@ describe('cron', () => {
 
 			clock.tick(1000);
 
-			clock.restore();
 			job.stop();
 		});
 
@@ -622,7 +581,6 @@ describe('cron', () => {
 
 			clock.tick(1000);
 
-			clock.restore();
 			job.stop();
 		});
 
@@ -641,7 +599,6 @@ describe('cron', () => {
 
 			clock.tick(1000);
 
-			clock.restore();
 			job.stop();
 		});
 	});
@@ -686,7 +643,6 @@ describe('cron', () => {
 		expect(callback).toHaveBeenCalledTimes(1);
 
 		await clock.tickAsync(2678400001); // jump over 2 firsts
-		clock.restore();
 		job.stop();
 
 		expect(callback).toHaveBeenCalledTimes(3);
@@ -702,7 +658,6 @@ describe('cron', () => {
 		clock.tick(60000);
 		expect(callback).toHaveBeenCalledTimes(0);
 
-		clock.restore();
 		job.stop();
 	});
 
@@ -724,7 +679,6 @@ describe('cron', () => {
 		const twoWeeks = 14 * 24 * 60 * 60 * 1000;
 		await clock.tickAsync(twoWeeks);
 
-		clock.restore();
 		job.stop();
 		expect(callback).toHaveBeenCalledTimes(14);
 	});
@@ -750,7 +704,6 @@ describe('cron', () => {
 		expect(callback).toHaveBeenCalledTimes(3);
 		await clock.tickAsync(2 * 60 * 1000);
 
-		clock.restore();
 		job.stop();
 		expect(callback).toHaveBeenCalledTimes(3);
 	});
@@ -773,7 +726,6 @@ describe('cron', () => {
 		await clock.tickAsync(60 * 1000);
 		expect(callback).toHaveBeenCalledTimes(2);
 
-		clock.restore();
 		job.stop();
 		expect(callback).toHaveBeenCalledTimes(2);
 	});
@@ -800,7 +752,6 @@ describe('cron', () => {
 		expect(callback).toHaveBeenCalledTimes(3);
 		await clock.tickAsync(5 * day);
 
-		clock.restore();
 		job.stop();
 		expect(callback).toHaveBeenCalledTimes(8);
 	});
@@ -822,7 +773,6 @@ describe('cron', () => {
 		clock.tick(1000); // move clock 1 second
 		expect(callback).toHaveBeenCalledTimes(1);
 
-		clock.restore();
 		job.stop();
 		expect(callback).toHaveBeenCalledTimes(1);
 	});
@@ -850,7 +800,6 @@ describe('cron', () => {
 		expect(callback).toHaveBeenCalledTimes(3);
 		await clock.tickAsync(5 * day);
 
-		clock.restore();
 		job.stop();
 		expect(callback).toHaveBeenCalledTimes(8);
 	});
@@ -869,7 +818,6 @@ describe('cron', () => {
 		const minute = 60 * 1000;
 		await clock.tickAsync(minute);
 		expect(callback).toHaveBeenCalledTimes(1);
-		clock.restore();
 		job.stop();
 		expect(callback).toHaveBeenCalledTimes(1);
 	});
@@ -897,7 +845,6 @@ describe('cron', () => {
 
 		// tick by 1 day
 		clock.tick(24 * 60 * 60 * 1000);
-		clock.restore();
 		job.stop();
 		expect(callback).toHaveBeenCalledTimes(1);
 	});
@@ -926,7 +873,6 @@ describe('cron', () => {
 			expect(callback).toHaveBeenCalledTimes(0);
 
 			clock.tick(1);
-			clock.restore();
 			job.stop();
 			expect(callback).toHaveBeenCalledTimes(1);
 		});
@@ -954,7 +900,6 @@ describe('cron', () => {
 			expect(callback).toHaveBeenCalledTimes(0);
 
 			clock.tick(1);
-			clock.restore();
 			job.stop();
 			expect(callback).toHaveBeenCalledTimes(1);
 		});
@@ -977,7 +922,6 @@ describe('cron', () => {
 			expect(callback).toHaveBeenCalledTimes(0);
 
 			clock.tick(1);
-			clock.restore();
 			job.stop();
 			expect(callback).toHaveBeenCalledTimes(1);
 		});
@@ -1003,7 +947,6 @@ describe('cron', () => {
 
 			await clock.tickAsync(4000);
 
-			clock.restore();
 			job.stop();
 			expect(callback).toHaveBeenCalledTimes(3);
 		});
@@ -1022,7 +965,6 @@ describe('cron', () => {
 
 			clock.tick(4000);
 
-			clock.restore();
 			job.stop();
 			expect(callback).toHaveBeenCalledTimes(1);
 		});
@@ -1050,7 +992,6 @@ describe('cron', () => {
 				job.setTime(time);
 			}).toThrow();
 
-			clock.restore();
 			job.stop();
 			expect(callback).toHaveBeenCalledTimes(1);
 		});
@@ -1070,8 +1011,6 @@ describe('cron', () => {
 			expect(callback).toHaveBeenCalledTimes(1);
 
 			clock.tick(60000);
-
-			clock.restore();
 
 			expect(callback).toHaveBeenCalledTimes(1);
 			expect(job.running).toBe(false);
@@ -1126,7 +1065,6 @@ describe('cron', () => {
 		clock.tick(2147489648);
 		expect(callback).toHaveBeenCalledTimes(1);
 		job.stop();
-		clock.restore();
 	});
 
 	it('should give the correct last execution date', () => {
@@ -1137,7 +1075,6 @@ describe('cron', () => {
 		expect(callback).toHaveBeenCalledTimes(1);
 		expect(job.lastDate()?.getTime()).toBe(1000);
 		job.stop();
-		clock.restore();
 	});
 
 	it('should give the correct last execution date for intervals greater than 25 days (#710)', () => {
@@ -1153,7 +1090,6 @@ describe('cron', () => {
 		expect(job.lastDate()?.getTime()).toBeUndefined();
 
 		job.stop();
-		clock.restore();
 	});
 
 	it('should throw when providing both exclusive parameters timeZone and utcOffset', () => {
@@ -1201,7 +1137,6 @@ describe('cron', () => {
 		);
 		clock.tick(1500);
 		job.stop();
-		clock.restore();
 		expect(callback).toHaveBeenCalledTimes(1);
 	});
 
@@ -1241,6 +1176,41 @@ describe('cron', () => {
 			await clock.tickAsync(1000);
 			job.stop();
 		});
+
+		it('should wait for running callback to complete before stopping', async () => {
+			const clock = sinon.useFakeTimers();
+			let isCallbackRunning = false;
+			let isCallbackCompleted = false;
+
+			const callback = jest.fn(async () => {
+				isCallbackRunning = true;
+				await clock.tickAsync(2000);
+				isCallbackCompleted = true;
+				isCallbackRunning = false;
+			});
+
+			const job = new CronJob('* * * * * *', callback, null, true);
+
+			// Start the job and trigger the callback
+			await clock.tickAsync(1000);
+			expect(isCallbackRunning).toBe(true);
+
+			// Call stop while the callback is still running
+			job.stop();
+
+			// The job should still be running at this point
+			expect(job.running).toBe(false);
+			expect(isCallbackRunning).toBe(true);
+			expect(isCallbackCompleted).toBe(false);
+
+			// Advance time to allow the callback to complete
+			await clock.tickAsync(2000);
+
+			// Now the job should be stopped and the callback should be completed
+			expect(job.running).toBe(false);
+			expect(isCallbackRunning).toBe(false);
+			expect(isCallbackCompleted).toBe(true);
+		});
 	});
 
 	describe('fireOnTick method', () => {
@@ -1259,15 +1229,12 @@ describe('cron', () => {
 			let isRunning = false;
 			let runCount = 0;
 
-			const sleep = (ms: number) =>
-				new Promise(resolve => setTimeout(resolve, ms));
-
 			const callback = jest.fn(async () => {
 				if (isRunning) {
 					throw new Error('Callback called while already running');
 				}
 				isRunning = true;
-				await sleep(5000);
+				await clock.tickAsync(5000);
 				runCount++;
 				isRunning = false;
 			});
@@ -1287,7 +1254,6 @@ describe('cron', () => {
 			await clock.tickAsync(5000);
 			expect(runCount).toBe(1);
 
-			clock.restore();
 			job.stop();
 		});
 	});
