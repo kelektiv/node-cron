@@ -1238,4 +1238,42 @@ describe('cron', () => {
 		clock.restore();
 		expect(callback).toHaveBeenCalledTimes(1);
 	});
+
+	it('should catch errors everytime, if errorHandler is provided', () => {
+		const clock = sinon.useFakeTimers();
+		const errorFunc = jest.fn().mockImplementation(() => {
+			throw Error('Exception');
+		});
+		const handlerFunc = jest.fn();
+		const job = CronJob.from({
+			cronTime: '* * * * * *',
+			onTick: errorFunc,
+			errorHandler: handlerFunc,
+			start: true
+		});
+		clock.tick(1000);
+		expect(errorFunc).toHaveBeenCalledTimes(1);
+		expect(handlerFunc).toHaveBeenCalledTimes(1);
+		expect(handlerFunc).toHaveBeenLastCalledWith(new Error('Exception'));
+		clock.tick(1000);
+		expect(errorFunc).toHaveBeenCalledTimes(2);
+		expect(handlerFunc).toHaveBeenCalledTimes(2);
+		expect(handlerFunc).toHaveBeenLastCalledWith(new Error('Exception'));
+
+		job.stop();
+		clock.restore();
+	});
+
+	it('should throw errors if errorHandler is NOT provided', () => {
+		const errorFunc = jest.fn().mockImplementation(() => {
+			throw Error('Exception');
+		});
+		expect(() => {
+			CronJob.from({
+				cronTime: '* * * * * *',
+				onTick: errorFunc,
+				runOnInit: true
+			});
+		}).toThrow('Exception');
+	});
 });
