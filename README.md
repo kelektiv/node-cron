@@ -194,6 +194,8 @@ day of week    0-7 (0 or 7 is Sunday, or use names)
 
 - `unrefTimeout`: [OPTIONAL] - Useful for controlling event loop behavior. More details [here](https://nodejs.org/api/timers.html#timers_timeout_unref).
 
+- `errorHandler`: [OPTIONAL] - Function to handle any exceptions that occur in the `onTick` method.
+
 #### Methods
 
 - `from` (static): Create a new CronJob object providing arguments as an object. See argument names and descriptions above.
