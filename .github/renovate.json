@@ -15,77 +15,45 @@
 		"group:semantic-releaseMonorepo",
 		"group:commitlintMonorepo"
 	],
-	"schedule": [
-		"before 5am every weekday",
-		"every weekend"
-	],
+	"schedule": ["before 5am every weekday", "every weekend"],
 	"lockFileMaintenance": {
 		"enabled": true,
 		"automerge": true,
 		"automergeType": "branch"
 	},
-	"labels": [
-		"dependencies"
-	],
+	"labels": ["dependencies"],
 	"osvVulnerabilityAlerts": true,
 	"packageRules": [
 		{
-			"matchPackagePatterns": [
-				"*"
-			],
+			"matchPackagePatterns": ["*"],
 			"semanticCommitType": "chore"
 		},
 		{
-			"matchDepTypes": [
-				"dependencies"
-			],
-			"matchUpdateTypes": [
-				"minor",
-				"patch"
-			],
+			"matchDepTypes": ["dependencies"],
+			"matchUpdateTypes": ["minor", "patch"],
 			"semanticCommitType": "build",
 			"automerge": true,
 			"automergeType": "branch"
 		},
 		{
-			"matchDepTypes": [
-				"dependencies"
-			],
-			"matchUpdateTypes": [
-				"major"
-			],
+			"matchDepTypes": ["dependencies"],
+			"matchUpdateTypes": ["major"],
 			"semanticCommitType": "build"
 		},
 		{
-			"matchDepTypes": [
-				"action"
-			],
+			"matchDepTypes": ["action"],
 			"semanticCommitType": "ci",
 			"semanticCommitScope": "action"
 		},
 		{
-			"extends": [
-				"monorepo:semantic-release"
-			],
+			"extends": ["monorepo:semantic-release"],
 			"groupName": "semantic-release related packages",
-			"matchUpdateTypes": [
-				"digest",
-				"patch",
-				"minor",
-				"major"
-			]
+			"matchUpdateTypes": ["digest", "patch", "minor", "major"]
 		},
 		{
-			"extends": [
-				"monorepo:commitlint"
-			],
+			"extends": ["monorepo:commitlint"],
 			"groupName": "semantic-release related packages",
-			"matchUpdateTypes": [
-				"digest",
-				"patch",
-				"minor",
-				"major"
-			]
+			"matchUpdateTypes": ["digest", "patch", "minor", "major"]
 		},
 		{
 			"matchPackagePatterns": [
@@ -93,39 +61,21 @@
 				"@insurgent/commitlint-config"
 			],
 			"groupName": "semantic-release related packages",
-			"matchUpdateTypes": [
-				"digest",
-				"patch",
-				"minor",
-				"major"
-			]
+			"matchUpdateTypes": ["digest", "patch", "minor", "major"]
 		},
 		{
-			"extends": [
-				"packages:linters"
-			],
+			"extends": ["packages:linters"],
 			"groupName": "linters",
-			"addLabels": [
-				"linters"
-			]
+			"addLabels": ["linters"]
 		},
 		{
-			"extends": [
-				"packages:test"
-			],
+			"extends": ["packages:test"],
 			"groupName": "tests",
-			"addLabels": [
-				"tests"
-			]
+			"addLabels": ["tests"]
 		},
 		{
-			"matchDepTypes": [
-				"devDependencies"
-			],
-			"matchUpdateTypes": [
-				"minor",
-				"patch"
-			],
+			"matchDepTypes": ["devDependencies"],
+			"matchUpdateTypes": ["minor", "patch"],
 			"automerge": true,
 			"automergeType": "branch"
 		}
