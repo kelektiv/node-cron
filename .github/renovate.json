@@ -30,6 +30,14 @@
 		},
 		{
 			"matchDepTypes": ["dependencies"],
+			"matchUpdateTypes": ["minor", "patch"],
+			"semanticCommitType": "build",
+			"automerge": true,
+			"automergeType": "branch"
+		},
+		{
+			"matchDepTypes": ["dependencies"],
+			"matchUpdateTypes": ["major"],
 			"semanticCommitType": "build"
 		},
 		{
@@ -37,7 +45,6 @@
 			"semanticCommitType": "ci",
 			"semanticCommitScope": "action"
 		},
-
 		{
 			"extends": ["monorepo:semantic-release"],
 			"groupName": "semantic-release related packages",
@@ -56,7 +63,6 @@
 			"groupName": "semantic-release related packages",
 			"matchUpdateTypes": ["digest", "patch", "minor", "major"]
 		},
-
 		{
 			"extends": ["packages:linters"],
 			"groupName": "linters",
@@ -67,7 +73,6 @@
 			"groupName": "tests",
 			"addLabels": ["tests"]
 		},
-
 		{
 			"matchDepTypes": ["devDependencies"],
 			"matchUpdateTypes": ["minor", "patch"],
