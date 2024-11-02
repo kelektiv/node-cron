@@ -13,7 +13,6 @@ import {
 
 export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 	cronTime: CronTime;
-	running = false;
 	unrefTimeout = false;
 	lastExecution: Date | null = null;
 	runOnce = false;
@@ -21,7 +20,12 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 	onComplete?: WithOnComplete<OC> extends true
 		? CronOnCompleteCallback
 		: undefined;
+	/** Indicates if the cron schedule is active */
+	running = false;
+	/** Indicates if a callback is currently executing */
 	isRunning = false;
+	/** Indicates if the cron job should wait for completion of the callbacks */
+	waitForCompletion = false;
 
 	private _timeout?: NodeJS.Timeout;
 	private _callbacks: CronCallback<C, WithOnComplete<OC>>[] = [];
@@ -35,7 +39,8 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 		context?: CronJobParams<OC, C>['context'],
 		runOnInit?: CronJobParams<OC, C>['runOnInit'],
 		utcOffset?: null,
-		unrefTimeout?: CronJobParams<OC, C>['unrefTimeout']
+		unrefTimeout?: CronJobParams<OC, C>['unrefTimeout'],
+		waitForCompletion?: CronJobParams<OC, C>['waitForCompletion']
 	);
 	constructor(
 		cronTime: CronJobParams<OC, C>['cronTime'],
@@ -46,7 +51,8 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 		context?: CronJobParams<OC, C>['context'],
 		runOnInit?: CronJobParams<OC, C>['runOnInit'],
 		utcOffset?: CronJobParams<OC, C>['utcOffset'],
-		unrefTimeout?: CronJobParams<OC, C>['unrefTimeout']
+		unrefTimeout?: CronJobParams<OC, C>['unrefTimeout'],
+		waitForCompletion?: CronJobParams<OC, C>['waitForCompletion']
 	);
 	constructor(
 		cronTime: CronJobParams<OC, C>['cronTime'],
@@ -57,9 +63,11 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 		context?: CronJobParams<OC, C>['context'],
 		runOnInit?: CronJobParams<OC, C>['runOnInit'],
 		utcOffset?: CronJobParams<OC, C>['utcOffset'],
-		unrefTimeout?: CronJobParams<OC, C>['unrefTimeout']
+		unrefTimeout?: CronJobParams<OC, C>['unrefTimeout'],
+		waitForCompletion?: CronJobParams<OC, C>['waitForCompletion']
 	) {
 		this.context = (context ?? this) as CronContext<C>;
+		this.waitForCompletion = waitForCompletion ?? false;
 
 		// runtime check for JS users
 		if (timeZone != null && utcOffset != null) {
@@ -118,7 +126,8 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 				params.context,
 				params.runOnInit,
 				params.utcOffset,
-				params.unrefTimeout
+				params.unrefTimeout,
+				params.waitForCompletion
 			);
 		} else if (params.utcOffset != null) {
 			return new CronJob<OC, C>(
@@ -130,7 +139,8 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 				params.context,
 				params.runOnInit,
 				params.utcOffset,
-				params.unrefTimeout
+				params.unrefTimeout,
+				params.waitForCompletion
 			);
 		} else {
 			return new CronJob<OC, C>(
@@ -142,7 +152,8 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 				params.context,
 				params.runOnInit,
 				params.utcOffset,
-				params.unrefTimeout
+				params.unrefTimeout,
+				params.waitForCompletion
 			);
 		}
 	}
@@ -195,21 +206,20 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 	}
 
 	async fireOnTick() {
-		if (this.isRunning) {
-			console.debug('[Cron] job is already running');
-			return;
-		}
+		if (!this.waitForCompletion && this.isRunning) return;
 
 		this.isRunning = true;
 
 		try {
 			for (const callback of this._callbacks) {
-				await callback.call(
+				const result = callback.call(
 					this.context,
 					this.onComplete as WithOnComplete<OC> extends true
 						? CronOnCompleteCallback
 						: never
 				);
+
+				if (this.waitForCompletion) await result;
 			}
 		} catch (error) {
 			console.error('[Cron] error in callback', error);
@@ -223,9 +233,7 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 	}
 
 	start() {
-		if (this.running) {
-			return;
-		}
+		if (this.running) return;
 
 		const MAXDELAY = 2147483647; // The maximum number of milliseconds setTimeout will wait.
 		let timeout = this.cronTime.getTimeout();
@@ -276,9 +284,7 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 				this.running = false;
 
 				// start before calling back so the callbacks have the ability to stop the cron job
-				if (!this.runOnce) {
-					this.start();
-				}
+				if (!this.runOnce) this.start();
 
 				void this.fireOnTick();
 			}
@@ -304,6 +310,22 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 		return this.lastExecution;
 	}
 
+	private async _executeOnComplete() {
+		if (typeof this.onComplete !== 'function') return;
+
+		try {
+			await this.onComplete.call(this.context);
+		} catch (error) {
+			console.error('[Cron] error in onComplete callback:', error);
+		}
+	}
+
+	private async _waitForJobCompletion() {
+		while (this.isRunning) {
+			await new Promise(resolve => setTimeout(resolve, 100));
+		}
+	}
+
 	/**
 	 * Stop the cronjob.
 	 */
@@ -311,15 +333,14 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 		if (this._timeout) clearTimeout(this._timeout);
 		this.running = false;
 
-		const waitForCompletion = async () => {
-			while (this.isRunning) {
-				await new Promise(resolve => setTimeout(resolve, 100));
-			}
-			if (typeof this.onComplete === 'function') {
-				await this.onComplete.call(this.context);
-			}
-		};
+		if (!this.waitForCompletion) {
+			void this._executeOnComplete();
+			return;
+		}
 
-		void waitForCompletion();
+		void Promise.resolve().then(async () => {
+			await this._waitForJobCompletion();
+			await this._executeOnComplete();
+		});
 	}
 }
