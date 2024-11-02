@@ -25,8 +25,8 @@
 	"osvVulnerabilityAlerts": true,
 	"packageRules": [
 		{
-			"matchPackagePatterns": ["*"],
-			"semanticCommitType": "chore"
+			"semanticCommitType": "chore",
+			"matchPackageNames": ["*"]
 		},
 		{
 			"matchDepTypes": ["dependencies"],
@@ -56,12 +56,12 @@
 			"matchUpdateTypes": ["digest", "patch", "minor", "major"]
 		},
 		{
-			"matchPackagePatterns": [
-				"@insurgent/conventional-changelog-preset",
-				"@insurgent/commitlint-config"
-			],
 			"groupName": "semantic-release related packages",
-			"matchUpdateTypes": ["digest", "patch", "minor", "major"]
+			"matchUpdateTypes": ["digest", "patch", "minor", "major"],
+			"matchPackageNames": [
+				"/@insurgent/conventional-changelog-preset/",
+				"/@insurgent/commitlint-config/"
+			]
 		},
 		{
 			"extends": ["packages:linters"],
