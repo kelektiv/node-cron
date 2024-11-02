@@ -4,19 +4,22 @@ import { CronJob, CronTime } from '../src';
 
 describe('cron', () => {
 	let callbackAsync: jest.Mock;
-	let onComplete: jest.Mock;
+	let callback: jest.Mock;
 
 	beforeEach(() => {
 		callbackAsync = jest.fn().mockImplementation(() => Promise.resolve());
-		onComplete = jest.fn();
+		callback = jest.fn();
 	});
 
 	afterAll(() => {
 		jest.clearAllMocks();
-		sinon.restore();
 	});
 
-	afterEach(() => sinon.restore());
+	afterEach(() => {
+		// eslint-disable-next-line jest/no-standalone-expect
+		expect.hasAssertions();
+		sinon.restore();
+	});
 
 	describe('with seconds', () => {
 		it('should run every second (* * * * * *)', () => {
@@ -30,24 +33,25 @@ describe('cron', () => {
 			expect(callback).toHaveBeenCalledTimes(1);
 		});
 
-		it('should run second with onComplete (* * * * * *)', async () => {
+		it('should run second with onComplete (* * * * * *)', done => {
 			const clock = sinon.useFakeTimers();
-			const callback = jest.fn();
-			const onComplete = jest.fn();
 
-			const job = new CronJob('* * * * * *', callback, onComplete, true);
+			const job = new CronJob(
+				'* * * * * *',
+				callback,
+				() => {
+					expect(callback).toHaveBeenCalledTimes(1);
+					done();
+				},
+				true
+			);
 
-			await clock.tickAsync(1000);
+			clock.tick(1000);
 			job.stop();
-			clock.restore();
-
-			expect(callback).toHaveBeenCalledTimes(1);
-			expect(onComplete).toHaveBeenCalledTimes(1);
 		});
 
 		it('should use standard cron no-seconds syntax (* * * * *)', () => {
 			const clock = sinon.useFakeTimers();
-			const callback = jest.fn();
 			const job = new CronJob('* * * * *', callback, null, true);
 
 			clock.tick(1000); // tick second
@@ -58,104 +62,97 @@ describe('cron', () => {
 			expect(callback).toHaveBeenCalledTimes(1);
 		});
 
-		it('should run every second for 5 seconds (* * * * * *)', async () => {
+		it('should run every second for 5 seconds (* * * * * *)', () => {
 			const clock = sinon.useFakeTimers();
-			const job = new CronJob('* * * * * *', callbackAsync, null, true);
+			const job = new CronJob('* * * * * *', callback, null, true);
 			for (let i = 0; i < 5; i++) {
-				await clock.tickAsync(1000);
-				await Promise.resolve();
+				clock.tick(1000);
 			}
 			job.stop();
-			expect(callbackAsync).toHaveBeenCalledTimes(5);
+			expect(callback).toHaveBeenCalledTimes(5);
 		});
 
-		it('should run every second for 5 seconds with onComplete (* * * * * *)', async () => {
+		it('should run every second for 5 seconds with onComplete (* * * * * *)', done => {
 			const clock = sinon.useFakeTimers();
 
 			const job = new CronJob(
 				'* * * * * *',
-				callbackAsync,
+				callback,
 				() => {
-					expect(callbackAsync).toHaveBeenCalledTimes(5);
+					expect(callback).toHaveBeenCalledTimes(5);
+					done();
 				},
 				true
 			);
 
-			for (let i = 0; i < 5; i++) {
-				await clock.tickAsync(1000);
-				await Promise.resolve(); // 마이크로태스크 큐를 비우기 위해
-			}
-
+			for (let i = 0; i < 5; i++) clock.tick(1000);
 			job.stop();
 		});
 
-		it('should run every second for 5 seconds (*/1 * * * * *)', async () => {
+		it('should run every second for 5 seconds (*/1 * * * * *)', () => {
 			const clock = sinon.useFakeTimers();
-			const job = new CronJob('*/1 * * * * *', callbackAsync, null, true);
-			for (let i = 0; i < 5; i++) {
-				await clock.tickAsync(1000);
-				await Promise.resolve();
-			}
+			const job = new CronJob('*/1 * * * * *', callback, null, true);
+			for (let i = 0; i < 5; i++) clock.tick(1000);
 			job.stop();
-			clock.restore();
-			expect(callbackAsync).toHaveBeenCalledTimes(5);
+			expect(callback).toHaveBeenCalledTimes(5);
 		});
 
 		it('should run every 2 seconds for 1 seconds (*/2 * * * * *)', () => {
 			const clock = sinon.useFakeTimers();
-			const job = new CronJob('*/2 * * * * *', callbackAsync, null, true);
+			const job = new CronJob('*/2 * * * * *', callback, null, true);
 			clock.tick(1000);
 			job.stop();
 			expect(callback).toHaveBeenCalledTimes(0);
 		});
 
-		it('should run every 2 seconds for 5 seconds (*/2 * * * * *)', async () => {
+		it('should run every 2 seconds for 5 seconds (*/2 * * * * *)', () => {
 			const clock = sinon.useFakeTimers();
 			const job = new CronJob('*/2 * * * * *', callback, null, true);
-			for (let i = 0; i < 5; i++) await clock.tickAsync(1000);
+			for (let i = 0; i < 5; i++) clock.tick(1000);
 			job.stop();
 			expect(callback).toHaveBeenCalledTimes(2);
 		});
 
-		it('should run every second for 5 seconds with onComplete (*/1 * * * * *)', async () => {
+		it('should run every second for 5 seconds with onComplete (*/1 * * * * *)', done => {
 			const clock = sinon.useFakeTimers();
 			const job = new CronJob(
 				'*/1 * * * * *',
 				callback,
 				() => {
 					expect(callback).toHaveBeenCalledTimes(5);
+					done();
 				},
 				true
 			);
-			for (let i = 0; i < 5; i++) await clock.tickAsync(1000);
+			for (let i = 0; i < 5; i++) clock.tick(1000);
 			job.stop();
 		});
 
-		it('should run every second for a range ([start]-[end] * * * * *)', async () => {
+		it('should run every second for a range ([start]-[end] * * * * *)', () => {
 			const clock = sinon.useFakeTimers();
-			const job = new CronJob('0-8 * * * * *', callbackAsync, null, true);
-			await clock.tickAsync(10000);
+			const job = new CronJob('0-8 * * * * *', callback, null, true);
+			clock.tick(10000);
 			job.stop();
 			expect(callback).toHaveBeenCalledTimes(8);
 		});
 
-		it('should run every second for a range ([start]-[end] * * * * *) with onComplete', async () => {
+		it('should run every second for a range ([start]-[end] * * * * *) with onComplete', done => {
 			const clock = sinon.useFakeTimers();
 			const job = new CronJob(
 				'0-8 * * * * *',
-				callbackAsync,
+				callback,
 				() => {
-					expect(callbackAsync).toHaveBeenCalledTimes(8);
+					expect(callback).toHaveBeenCalledTimes(8);
+					done();
 				},
 				true
 			);
-			await clock.tickAsync(10000);
+			clock.tick(10000);
 			job.stop();
 		});
 
 		it('should default to full range when upper range not provided (1/2 * * * * *)', done => {
 			const clock = sinon.useFakeTimers();
-			const callback = jest.fn();
 			const job = new CronJob(
 				'1/2 * * * * *',
 				callback,
@@ -171,7 +168,6 @@ describe('cron', () => {
 
 		it('should run every second (* * * * * *) using the object constructor', () => {
 			const clock = sinon.useFakeTimers();
-			const callback = jest.fn();
 			const job = CronJob.from({
 				cronTime: '* * * * * *',
 				onTick: callback,
@@ -184,7 +180,6 @@ describe('cron', () => {
 
 		it('should run every second with onComplete (* * * * * *) using the object constructor', done => {
 			const clock = sinon.useFakeTimers();
-			const callback = jest.fn();
 			const job = CronJob.from({
 				cronTime: '* * * * * *',
 				onTick: callback,
@@ -223,7 +218,6 @@ describe('cron', () => {
 
 		it('should run every 45 minutes for 2 hours (0 */45 * * * *)', () => {
 			const clock = sinon.useFakeTimers();
-			const callback = jest.fn();
 			const job = new CronJob('0 */45 * * * *', callback, null, true);
 			for (let i = 0; i < 2; i++) clock.tick(60 * 60 * 1000);
 			job.stop();
@@ -232,7 +226,6 @@ describe('cron', () => {
 
 		it('should run every 45 minutes for 2 hours (0 */45 * * * *) with onComplete', done => {
 			const clock = sinon.useFakeTimers();
-			const callback = jest.fn();
 			const job = new CronJob(
 				'0 */45 * * * *',
 				callback,
@@ -249,7 +242,6 @@ describe('cron', () => {
 
 	it('should start and stop job from outside', done => {
 		const clock = sinon.useFakeTimers();
-		const callback = jest.fn();
 		const job = new CronJob(
 			'* * * * * *',
 			function () {
@@ -268,7 +260,6 @@ describe('cron', () => {
 
 	it('should start and stop job from inside (default context)', done => {
 		const clock = sinon.useFakeTimers();
-		const callback = jest.fn();
 		new CronJob(
 			'* * * * * *',
 			function () {
@@ -454,7 +445,6 @@ describe('cron', () => {
 	describe('with timezone', () => {
 		it('should run a job using cron syntax with a timezone', () => {
 			const clock = sinon.useFakeTimers();
-			const callback = jest.fn();
 			let zone = 'America/Chicago';
 			// New Orleans time
 			let t = DateTime.local().setZone(zone);
@@ -490,7 +480,6 @@ describe('cron', () => {
 
 		it('should run a job using cron syntax with a "UTC+HH:mm" offset as timezone', () => {
 			const clock = sinon.useFakeTimers();
-			const callback = jest.fn();
 
 			// Current time
 			const d = DateTime.local();
