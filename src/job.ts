@@ -13,6 +13,7 @@ import {
 
 export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 	cronTime: CronTime;
+	running = false;
 	unrefTimeout = false;
 	lastExecution: Date | null = null;
 	runOnce = false;
@@ -20,15 +21,15 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 	onComplete?: WithOnComplete<OC> extends true
 		? CronOnCompleteCallback
 		: undefined;
-	/** Indicates if the cron schedule is active */
-	running = false;
-	/** Indicates if a callback is currently executing */
-	isRunning = false;
-	/** Indicates if the cron job should wait for completion of the callbacks */
 	waitForCompletion = false;
 
+	private _isRunning = false;
 	private _timeout?: NodeJS.Timeout;
 	private _callbacks: CronCallback<C, WithOnComplete<OC>>[] = [];
+
+	get isRunning() {
+		return this._isRunning;
+	}
 
 	constructor(
 		cronTime: CronJobParams<OC, C>['cronTime'],
@@ -206,9 +207,9 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 	}
 
 	async fireOnTick() {
-		if (!this.waitForCompletion && this.isRunning) return;
+		if (!this.waitForCompletion && this._isRunning) return;
 
-		this.isRunning = true;
+		this._isRunning = true;
 
 		try {
 			for (const callback of this._callbacks) {
@@ -224,7 +225,7 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 		} catch (error) {
 			console.error('[Cron] error in callback', error);
 		} finally {
-			this.isRunning = false;
+			this._isRunning = false;
 		}
 	}
 
@@ -321,7 +322,7 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 	}
 
 	private async _waitForJobCompletion() {
-		while (this.isRunning) {
+		while (this._isRunning) {
 			await new Promise(resolve => setTimeout(resolve, 100));
 		}
 	}
