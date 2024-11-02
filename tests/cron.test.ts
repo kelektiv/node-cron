@@ -3,11 +3,9 @@ import sinon from 'sinon';
 import { CronJob, CronTime } from '../src';
 
 describe('cron', () => {
-	let callbackAsync: jest.Mock;
 	let callback: jest.Mock;
 
 	beforeEach(() => {
-		callbackAsync = jest.fn().mockImplementation(() => Promise.resolve());
 		callback = jest.fn();
 	});
 
