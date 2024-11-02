@@ -67,7 +67,7 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 		waitForCompletion?: CronJobParams<OC, C>['waitForCompletion']
 	) {
 		this.context = (context ?? this) as CronContext<C>;
-		this.waitForCompletion = waitForCompletion ?? false;
+		this.waitForCompletion = Boolean(waitForCompletion);
 
 		// runtime check for JS users
 		if (timeZone != null && utcOffset != null) {
