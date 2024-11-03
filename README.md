@@ -218,19 +218,19 @@ day of week    0-7 (0 or 7 is Sunday, or use names)
 
 #### Properties
 
-- `isRunning`: [READ-ONLY] Indicates if a callback is currently executing. This is different from the `running` property which indicates if the cron schedule is active.
+- `isCallbackRunning`: [READ-ONLY] Indicates if a callback is currently executing.
 
   ```javascript
   const job = new CronJob('* * * * * *', async () => {
-    console.log(job.isRunning);  // true during callback execution
-    await someAsyncTask();
-    console.log(job.isRunning);  // still true until callback completes
+  	console.log(job.isCallbackRunning); // true during callback execution
+  	await someAsyncTask();
+  	console.log(job.isCallbackRunning); // still true until callback completes
   });
 
-  console.log(job.isRunning);    // false
+  console.log(job.isCallbackRunning); // false
   job.start();
-  console.log(job.running);      // true (schedule is active)
-  console.log(job.isRunning);    // false (no callback executing)
+  console.log(job.running); // true (schedule is active)
+  console.log(job.isCallbackRunning); // false (no callback executing)
   ```
 
 ### CronTime Class

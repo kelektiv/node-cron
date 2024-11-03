@@ -1159,7 +1159,7 @@ describe('cron', () => {
 			const job = new CronJob(
 				'*/2 * * * * *',
 				async () => {
-					expect(job.isRunning).toBe(true);
+					expect(job.isCallbackRunning).toBe(true);
 					await new Promise<void>(resolve => {
 						setTimeout(() => {
 							callback();
@@ -1178,20 +1178,20 @@ describe('cron', () => {
 				true // waitForCompletion: true
 			);
 
-			expect(job.isRunning).toBe(false);
+			expect(job.isCallbackRunning).toBe(false);
 
 			// First execution
 			await clock.tickAsync(2000);
-			expect(job.isRunning).toBe(true);
+			expect(job.isCallbackRunning).toBe(true);
 
 			// Wait for job completion
 			await clock.tickAsync(500);
 			expect(isJobCompleted).toBe(false);
-			expect(job.isRunning).toBe(true);
+			expect(job.isCallbackRunning).toBe(true);
 
 			await clock.tickAsync(1000);
 			expect(isJobCompleted).toBe(true);
-			expect(job.isRunning).toBe(false);
+			expect(job.isCallbackRunning).toBe(false);
 
 			job.stop();
 		});
@@ -1218,12 +1218,12 @@ describe('cron', () => {
 				false // waitForCompletion: false
 			);
 
-			expect(job.isRunning).toBe(false);
+			expect(job.isCallbackRunning).toBe(false);
 
 			// First execution
 			clock.tick(1000);
 			expect(isJobCompleted).toBe(false);
-			expect(job.isRunning).toBe(false);
+			expect(job.isCallbackRunning).toBe(false);
 
 			job.stop();
 		});
@@ -1286,13 +1286,13 @@ describe('cron', () => {
 			);
 
 			await clock.tickAsync(1000);
-			expect(job.isRunning).toBe(true);
+			expect(job.isCallbackRunning).toBe(true);
 
 			job.stop();
 			await clock.tickAsync(500);
 
 			expect(isJobCompleted).toBe(true);
-			expect(job.isRunning).toBe(false);
+			expect(job.isCallbackRunning).toBe(false);
 			expect(job.running).toBe(false);
 		});
 	});

@@ -23,12 +23,12 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 		: undefined;
 	waitForCompletion = false;
 
-	private _isRunning = false;
+	private _isCallbackRunning = false;
 	private _timeout?: NodeJS.Timeout;
 	private _callbacks: CronCallback<C, WithOnComplete<OC>>[] = [];
 
-	get isRunning() {
-		return this._isRunning;
+	get isCallbackRunning() {
+		return this._isCallbackRunning;
 	}
 
 	constructor(
@@ -207,9 +207,9 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 	}
 
 	async fireOnTick() {
-		if (!this.waitForCompletion && this._isRunning) return;
+		if (!this.waitForCompletion && this._isCallbackRunning) return;
 
-		this._isRunning = true;
+		this._isCallbackRunning = true;
 
 		try {
 			for (const callback of this._callbacks) {
@@ -225,7 +225,7 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 		} catch (error) {
 			console.error('[Cron] error in callback', error);
 		} finally {
-			this._isRunning = false;
+			this._isCallbackRunning = false;
 		}
 	}
 
@@ -322,7 +322,7 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 	}
 
 	private async _waitForJobCompletion() {
-		while (this._isRunning) {
+		while (this._isCallbackRunning) {
 			await new Promise(resolve => setTimeout(resolve, 100));
 		}
 	}
