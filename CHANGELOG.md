@@ -1,3 +1,29 @@
+## [3.1.9](https://github.com/kelektiv/node-cron/compare/v3.1.8...v3.1.9) (2024-11-04)
+
+### 🛠 Builds
+
+* **typescript:** add missing "types" property to package.json ([#908](https://github.com/kelektiv/node-cron/issues/908)) ([1953c97](https://github.com/kelektiv/node-cron/commit/1953c973652175cd751beeb12a57e640f1abb958))
+
+### 📚 Documentation
+
+* Add .nvmrc with recommended Node version for development ([#904](https://github.com/kelektiv/node-cron/issues/904)) ([91848e9](https://github.com/kelektiv/node-cron/commit/91848e9267dd8a05acba6b8d705930ddd5c5196e))
+
+### ⚙️ Continuous Integrations
+
+* **action:** update github/codeql-action action to v3.27.0 ([#866](https://github.com/kelektiv/node-cron/issues/866)) ([a6dd871](https://github.com/kelektiv/node-cron/commit/a6dd8710279662a67f7c3ec0cef2f61553bb605b))
+* **action:** update ossf/scorecard-action action to v2.4.0 ([#883](https://github.com/kelektiv/node-cron/issues/883)) ([e0880a1](https://github.com/kelektiv/node-cron/commit/e0880a1fd6722e87d134035ecd4f4232a8e303dd))
+
+### ♻️ Chores
+
+* **config:** migrate renovate config ([#903](https://github.com/kelektiv/node-cron/issues/903)) ([5ce34f4](https://github.com/kelektiv/node-cron/commit/5ce34f4cfa01341a453283b7d8599d1b6380f2aa))
+* **deps:** lock file maintenance ([be77f4a](https://github.com/kelektiv/node-cron/commit/be77f4ad329cd2988be470db51e9750ee34a3fe6))
+* **deps:** update dependency [@fast-check](https://github.com/fast-check)/jest to v2 ([#891](https://github.com/kelektiv/node-cron/issues/891)) ([20c448b](https://github.com/kelektiv/node-cron/commit/20c448bd569efb954a03591ac479d927f9e6bc5f))
+* **deps:** update dependency [@types](https://github.com/types)/node to v20.17.2 ([24fa266](https://github.com/kelektiv/node-cron/commit/24fa266d30e4e377d549cf3c230257a3fb0d0621))
+* **deps:** update dependency [@types](https://github.com/types)/node to v20.17.3 ([5bd340e](https://github.com/kelektiv/node-cron/commit/5bd340e3bab6dd340153804667a58ea829948e17))
+* **deps:** update dependency [@types](https://github.com/types)/node to v20.17.4 ([1ce42a4](https://github.com/kelektiv/node-cron/commit/1ce42a483b78506cfdb542bf0a3e6f9c71d6efe3))
+* **deps:** update dependency [@types](https://github.com/types)/node to v20.17.5 ([767c430](https://github.com/kelektiv/node-cron/commit/767c43072a669a6c3ea808185cc8a424293bd7bc))
+* **deps:** update semantic-release related packages (major) ([#835](https://github.com/kelektiv/node-cron/issues/835)) ([73a8d37](https://github.com/kelektiv/node-cron/commit/73a8d3714e0b8e817f882f5ae090320d313c914d))
+
 ## [3.1.8](https://github.com/kelektiv/node-cron/compare/v3.1.7...v3.1.8) (2024-10-29)
 
 
