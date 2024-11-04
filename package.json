@@ -10,7 +10,8 @@
 		"type": "git",
 		"url": "https://github.com/kelektiv/node-cron.git"
 	},
-	"main": "dist/index",
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
 	"scripts": {
 		"build": "tsc -b tsconfig.build.json",
 		"lint:eslint": "eslint src/ tests/ --ext .ts",
