@@ -21,7 +21,7 @@
 		"test": "jest --coverage",
 		"test:watch": "jest --watch --coverage",
 		"test:fuzz": "jest  --testMatch='**/*.fuzz.ts' --coverage=false --testTimeout=120000",
-		"prepare": "husky install"
+		"prepare": "husky"
 	},
 	"dependencies": {
 		"@types/luxon": "~3.4.0",
