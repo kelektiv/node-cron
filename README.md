@@ -247,3 +247,5 @@ Special thanks to [Hiroki Horiuchi](https://github.com/horiuchi), [Lundarl Gholo
 ## License
 
 MIT
+
+##Comentario de la clase del 5 de noviembre de 2024
