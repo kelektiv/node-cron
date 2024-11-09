@@ -14,7 +14,7 @@
 	"types": "dist/index.d.ts",
 	"scripts": {
 		"build": "tsc -b tsconfig.build.json",
-		"lint:eslint": "eslint src/ tests/ --ext .ts",
+		"lint:eslint": "eslint src/ tests/ --ext .js,.ts",
 		"lint:prettier": "prettier ./**/*.{json,md,yml} --check",
 		"lint": "npm run lint:eslint && npm run lint:prettier",
 		"lint:fix": "npm run lint:eslint -- --fix && npm run lint:prettier -- --write",
