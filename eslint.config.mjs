@@ -1,30 +1,32 @@
-import typescriptEslintEslintPlugin from '@typescript-eslint/eslint-plugin';
+import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
+import tseslint from 'typescript-eslint';
 import globals from 'globals';
 import tsParser from '@typescript-eslint/parser';
 import jest from 'eslint-plugin-jest';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import js from '@eslint/js';
-import { FlatCompat } from '@eslint/eslintrc';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const compat = new FlatCompat({
-	baseDirectory: __dirname,
-	recommendedConfig: js.configs.recommended,
-	allConfig: js.configs.all
-});
 
 export default [
-	...compat.extends(
-		'plugin:@typescript-eslint/recommended',
-		'plugin:@typescript-eslint/recommended-requiring-type-checking',
-		'plugin:@typescript-eslint/strict',
-		'plugin:prettier/recommended'
-	),
+	// using .mjs for module support as TypeScript Eslint configs are still experimental
 	{
+		name: 'Eslint config file',
+		files: ['eslint.config.mjs'],
+		// ...tseslint.configs.disableTypeChecked,
+		// ...js.configs.recommended,
+
+		languageOptions: {
+			sourceType: 'module',
+			parserOptions: {
+				// project: 'package.json'
+			}
+		}
+	},
+
+	{
+		name: 'general project rules',
+		files: ['**/*.ts'],
+
 		plugins: {
-			'@typescript-eslint': typescriptEslintEslintPlugin
+			'@typescript-eslint': tseslint.plugin
 		},
 
 		languageOptions: {
@@ -42,6 +44,8 @@ export default [
 		},
 
 		rules: {
+			// contains all of recommended, recommended-type-checked, and strict
+			...tseslint.configs.strictTypeChecked.rules,
 			'@typescript-eslint/no-unused-vars': [
 				'warn',
 				{
@@ -70,17 +74,18 @@ export default [
 					format: ['PascalCase'],
 					prefix: ['is', 'should', 'has', 'can', 'did', 'was', 'will']
 				}
-			]
+			],
+			// this is set to warn because it wasn't caught before the eslint migration in 11/2024
+			'@typescript-eslint/restrict-template-expressions': 'warn'
 		}
 	},
-	...compat
-		.extends('plugin:jest/recommended', 'plugin:jest/style')
-		.map(config => ({
-			...config,
-			files: ['tests/**/*.ts']
-		})),
+
 	{
+		name: 'test rules',
 		files: ['tests/**/*.ts'],
+
+		...jest.configs['flat/recommended'],
+		...jest.configs['flat/style'],
 
 		plugins: {
 			jest
@@ -91,5 +96,8 @@ export default [
 			'@typescript-eslint/unbound-method': 'off',
 			'jest/no-done-callback': 'off'
 		}
-	}
+	},
+
+	// Prettier plugin which should be last
+	eslintPluginPrettierRecommended
 ];
