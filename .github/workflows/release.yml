@@ -47,3 +47,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.CI_GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          HUSKY: 0
