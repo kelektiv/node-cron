@@ -4,7 +4,9 @@ import { CronTime } from '../src';
 
 describe('crontime', () => {
 	// eslint-disable-next-line jest/no-standalone-expect
-	afterEach(() => expect.hasAssertions());
+	afterEach(() => {
+		expect.hasAssertions();
+	});
 
 	it('should test stars (* * * * * *)', () => {
 		expect(() => {
