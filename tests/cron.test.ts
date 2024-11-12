@@ -4,7 +4,9 @@ import { CronJob, CronTime } from '../src';
 
 describe('cron', () => {
 	// eslint-disable-next-line jest/no-standalone-expect
-	afterEach(() => expect.hasAssertions());
+	afterEach(() => {
+		expect.hasAssertions();
+	});
 
 	describe('with seconds', () => {
 		it('should run every second (* * * * * *)', () => {

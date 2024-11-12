@@ -14,7 +14,7 @@
 	"types": "dist/index.d.ts",
 	"scripts": {
 		"build": "tsc -b tsconfig.build.json",
-		"lint:eslint": "eslint src/ tests/ --ext .ts",
+		"lint:eslint": "eslint src/ tests/",
 		"lint:prettier": "prettier ./**/*.{json,md,yml} --check",
 		"lint": "npm run lint:eslint && npm run lint:prettier",
 		"lint:fix": "npm run lint:eslint -- --fix && npm run lint:prettier -- --write",
@@ -29,6 +29,7 @@
 	},
 	"devDependencies": {
 		"@commitlint/cli": "19.5.0",
+		"@eslint/js": "^9.14.0",
 		"@fast-check/jest": "2.0.3",
 		"@insurgent/commitlint-config": "20.0.0",
 		"@insurgent/conventional-changelog-preset": "10.0.0",
@@ -41,7 +42,6 @@
 		"@types/jest": "29.5.14",
 		"@types/node": "20.17.6",
 		"@types/sinon": "17.0.3",
-		"@typescript-eslint/eslint-plugin": "6.21.0",
 		"chai": "4.5.0",
 		"eslint": "8.57.1",
 		"eslint-config-prettier": "9.1.0",
@@ -54,7 +54,8 @@
 		"semantic-release": "24.2.0",
 		"sinon": "17.0.2",
 		"ts-jest": "29.2.5",
-		"typescript": "5.6.3"
+		"typescript": "5.6.3",
+		"typescript-eslint": "^7.2.0"
 	},
 	"keywords": [
 		"cron",
