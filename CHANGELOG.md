@@ -1,3 +1,25 @@
+## [3.2.0](https://github.com/kelektiv/node-cron/compare/v3.1.9...v3.2.0) (2024-11-12)
+
+### ✨ Features
+
+* add support for Node v22 ([#914](https://github.com/kelektiv/node-cron/issues/914)) ([9147b20](https://github.com/kelektiv/node-cron/commit/9147b20de6f243a1ab82c86ac836221462ff7695))
+
+### ⚙️ Continuous Integrations
+
+* **action:** update actions/checkout action to v4.2.2 ([#880](https://github.com/kelektiv/node-cron/issues/880)) ([293f54a](https://github.com/kelektiv/node-cron/commit/293f54a3dbd832153ecd995bb77f754d56f03156))
+* **action:** update actions/checkout digest to 11bd719 ([#879](https://github.com/kelektiv/node-cron/issues/879)) ([0287c69](https://github.com/kelektiv/node-cron/commit/0287c69400122a98689c86785bade332875ddd35))
+* **action:** update actions/setup-node digest to 39370e3 ([#889](https://github.com/kelektiv/node-cron/issues/889)) ([0f7a3aa](https://github.com/kelektiv/node-cron/commit/0f7a3aab6825c491ca3475d95fb3c381f96391f6))
+* **action:** update actions/upload-artifact action to v4.4.3 ([#878](https://github.com/kelektiv/node-cron/issues/878)) ([226ad5b](https://github.com/kelektiv/node-cron/commit/226ad5bd3764b19b651f1fa46fbcf67a0e867576))
+* **action:** update step-security/harden-runner action to v2.10.1 ([#882](https://github.com/kelektiv/node-cron/issues/882)) ([b09438e](https://github.com/kelektiv/node-cron/commit/b09438ea8f7121d197685311edc16e6b665f4183))
+
+### ♻️ Chores
+
+* **deps:** lock file maintenance ([ad613cb](https://github.com/kelektiv/node-cron/commit/ad613cbf4dc6160c63107bae192f58b89b3252d2))
+* **deps:** update dependency [@fast-check](https://github.com/fast-check)/jest to v2.0.3 ([2d00739](https://github.com/kelektiv/node-cron/commit/2d00739e2cdc040f89f0c37e39a6d6f821130f79))
+* **deps:** update dependency [@semantic-release](https://github.com/semantic-release)/github to v11.0.1 ([a17bbdd](https://github.com/kelektiv/node-cron/commit/a17bbdd964d019c341480368542a143dbc8cb20a))
+* **deps:** update dependency [@types](https://github.com/types)/node to v20.17.6 ([4509c4d](https://github.com/kelektiv/node-cron/commit/4509c4d7e3dfaef03b1258a00a91cb7783ec3604))
+* **deps:** update dependency husky to v9 ([#844](https://github.com/kelektiv/node-cron/issues/844)) ([9ea2216](https://github.com/kelektiv/node-cron/commit/9ea22166bccce4967be732e3e56205059acafc90))
+
 ## [3.1.9](https://github.com/kelektiv/node-cron/compare/v3.1.8...v3.1.9) (2024-11-04)
 
 ### 🛠 Builds
