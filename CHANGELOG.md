@@ -1,3 +1,9 @@
+## [3.2.1](https://github.com/kelektiv/node-cron/compare/v3.2.0...v3.2.1) (2024-11-12)
+
+### 🛠 Builds
+
+* migrate eslint config to flat style ([#913](https://github.com/kelektiv/node-cron/issues/913)) ([38c1044](https://github.com/kelektiv/node-cron/commit/38c104492a229123bbbaf0dad943fee2122ece72)), closes [#899](https://github.com/kelektiv/node-cron/issues/899)
+
 ## [3.2.0](https://github.com/kelektiv/node-cron/compare/v3.1.9...v3.2.0) (2024-11-12)
 
 ### ✨ Features
