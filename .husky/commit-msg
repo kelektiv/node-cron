@@ -1,11 +1,4 @@
-#!/usr/bin/env sh
-
-# https://typicode.github.io/husky/guide.html#disable-husky-in-ci-docker-prod
-[ -n "$CI" ] && exit 0
-
 # only run commitlint on main (for admins pushing directly to branch)
 [ "$(git rev-parse --abbrev-ref HEAD)" != "main" ] && exit 0
-
-. "$(dirname -- "$0")/_/husky.sh"
 
 npx --no -- commitlint --edit ${1}
