@@ -194,7 +194,7 @@ day of week    0-7 (0 or 7 is Sunday, or use names)
 
 - `unrefTimeout`: [OPTIONAL] - Useful for controlling event loop behavior. More details [here](https://nodejs.org/api/timers.html#timers_timeout_unref).
 
-- `waitForCompletion`: [OPTIONAL] - If `true`, the job will wait for the `onTick` function to complete before stopping. Default is `false`.
+- `waitForCompletion`: [OPTIONAL] - If `true`, no additional instances of the `onTick` callback function will run until the current onTick callback has completed. Any new scheduled executions that occur while the current callback is running will be skipped entirely. Default is `false`.
 
 #### Methods
 
