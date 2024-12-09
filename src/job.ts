@@ -21,6 +21,7 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 	onComplete?: WithOnComplete<OC> extends true
 		? CronOnCompleteCallback
 		: undefined;
+	errorHandler?: CronJobParams<OC, C>['errorHandler'];
 
 	private _timeout?: NodeJS.Timeout;
 	private _callbacks: CronCallback<C, WithOnComplete<OC>>[] = [];
@@ -34,7 +35,8 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 		context?: CronJobParams<OC, C>['context'],
 		runOnInit?: CronJobParams<OC, C>['runOnInit'],
 		utcOffset?: null,
-		unrefTimeout?: CronJobParams<OC, C>['unrefTimeout']
+		unrefTimeout?: CronJobParams<OC, C>['unrefTimeout'],
+		errorHandler?: CronJobParams<OC, C>['errorHandler']
 	);
 	constructor(
 		cronTime: CronJobParams<OC, C>['cronTime'],
@@ -45,7 +47,8 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 		context?: CronJobParams<OC, C>['context'],
 		runOnInit?: CronJobParams<OC, C>['runOnInit'],
 		utcOffset?: CronJobParams<OC, C>['utcOffset'],
-		unrefTimeout?: CronJobParams<OC, C>['unrefTimeout']
+		unrefTimeout?: CronJobParams<OC, C>['unrefTimeout'],
+		errorHandler?: CronJobParams<OC, C>['errorHandler']
 	);
 	constructor(
 		cronTime: CronJobParams<OC, C>['cronTime'],
@@ -56,9 +59,12 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 		context?: CronJobParams<OC, C>['context'],
 		runOnInit?: CronJobParams<OC, C>['runOnInit'],
 		utcOffset?: CronJobParams<OC, C>['utcOffset'],
-		unrefTimeout?: CronJobParams<OC, C>['unrefTimeout']
+		unrefTimeout?: CronJobParams<OC, C>['unrefTimeout'],
+		errorHandler?: CronJobParams<OC, C>['errorHandler']
 	) {
 		this.context = (context ?? this) as CronContext<C>;
+
+		this.errorHandler = errorHandler;
 
 		// runtime check for JS users
 		if (timeZone != null && utcOffset != null) {
@@ -117,7 +123,8 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 				params.context,
 				params.runOnInit,
 				params.utcOffset,
-				params.unrefTimeout
+				params.unrefTimeout,
+				params.errorHandler
 			);
 		} else if (params.utcOffset != null) {
 			return new CronJob<OC, C>(
@@ -129,7 +136,8 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 				params.context,
 				params.runOnInit,
 				params.utcOffset,
-				params.unrefTimeout
+				params.unrefTimeout,
+				params.errorHandler
 			);
 		} else {
 			return new CronJob<OC, C>(
@@ -141,7 +149,8 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 				params.context,
 				params.runOnInit,
 				params.utcOffset,
-				params.unrefTimeout
+				params.unrefTimeout,
+				params.errorHandler
 			);
 		}
 	}
@@ -195,12 +204,17 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 
 	fireOnTick() {
 		for (const callback of this._callbacks) {
-			void callback.call(
-				this.context,
-				this.onComplete as WithOnComplete<OC> extends true
-					? CronOnCompleteCallback
-					: never
-			);
+			try {
+				void callback.call(
+					this.context,
+					this.onComplete as WithOnComplete<OC> extends true
+						? CronOnCompleteCallback
+						: never
+				);
+			} catch (error: unknown) {
+				if (this.errorHandler != null) this.errorHandler(error);
+				else throw error;
+			}
 		}
 	}
 
