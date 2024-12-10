@@ -1,7 +1,7 @@
 {
 	"name": "cron",
 	"description": "Cron jobs for your node",
-	"version": "3.2.1",
+	"version": "3.3.0",
 	"author": "Nick Campbell <nicholas.j.campbell@gmail.com> (https://github.com/ncb000gt)",
 	"bugs": {
 		"url": "https://github.com/kelektiv/node-cron/issues"
