@@ -1231,10 +1231,12 @@ describe('cron', () => {
 		it('should track multiple running jobs correctly', async () => {
 			const clock = sinon.useFakeTimers();
 			const executionOrder: number[] = [];
+			let started = 0;
 
 			const job = new CronJob(
 				'* * * * * *',
 				async () => {
+					started++;
 					await new Promise<void>(resolve => {
 						setTimeout(() => {
 							callback();
@@ -1256,7 +1258,8 @@ describe('cron', () => {
 
 			await clock.tickAsync(3500);
 
-			expect(executionOrder).toEqual([1, 2]);
+			expect(started).toBe(2);
+			expect(executionOrder).toEqual([1]);
 			job.stop();
 		});
 
