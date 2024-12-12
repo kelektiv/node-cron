@@ -1,3 +1,9 @@
+## [3.3.1](https://github.com/kelektiv/node-cron/compare/v3.3.0...v3.3.1) (2024-12-12)
+
+### 🐛 Bug Fixes
+
+* correct waitForCompletion behavior ([#924](https://github.com/kelektiv/node-cron/issues/924)) ([f6270f8](https://github.com/kelektiv/node-cron/commit/f6270f869d1d472c276f3e153d491f964ba6a4ec)), closes [#923](https://github.com/kelektiv/node-cron/issues/923) [#923](https://github.com/kelektiv/node-cron/issues/923) [#894](https://github.com/kelektiv/node-cron/issues/894)
+
 ## [3.3.0](https://github.com/kelektiv/node-cron/compare/v3.2.1...v3.3.0) (2024-12-10)
 
 ### ✨ Features
