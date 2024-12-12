@@ -207,7 +207,8 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 	}
 
 	async fireOnTick() {
-		if (!this.waitForCompletion && this._isCallbackRunning) return;
+		// skip job if previous callback is still running
+		if (this.waitForCompletion && this._isCallbackRunning) return;
 
 		this._isCallbackRunning = true;
 
