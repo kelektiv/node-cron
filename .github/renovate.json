@@ -7,7 +7,7 @@
 		":pinOnlyDevDependencies",
 		"npm:unpublishSafe",
 		"docker:pinDigests",
-		"helpers:pinGitHubActionDigests",
+		"helpers:pinGitHubActionDigestsToSemver",
 		"security:openssf-scorecard"
 	],
 	"ignorePresets": [
