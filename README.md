@@ -32,25 +32,31 @@ npm install cron
 
 ## Table of Contents
 
-1. [Features](#-features)
-2. [Installation](#-installation)
-3. [Migrating from v2 to v3](#-migrating-from-v2-to-v3)
-4. [Basic Usage](#-basic-usage)
-5. [Cron Patterns](#cron-patterns)
-   - [Cron Syntax Overview](#cron-patterns)
-   - [Supported Ranges](#supported-ranges)
-6. [Gotchas](#gotchas)
-7. [API](#api)
-   - [Standalone Functions](#standalone-functions)
-   - [CronJob Class](#cronjob-class)
-   - [CronTime Class](#crontime-class)
-8. [Community](#-community)
-   - [Join the Community](#-community)
-9. [Contributing](#-contributing)
-   - [General Contribution](#-contributing)
-   - [Submitting Bugs/Issues](#-submitting-bugsissues)
-10. [Acknowledgements](#-acknowledgements)
-11. [License](#license)
+- [Cron for Node.js](#cron-for-nodejs)
+  - [🌟 Features](#-features)
+  - [🚀 Installation](#-installation)
+  - [Table of Contents](#table-of-contents)
+  - [🔄 Migrating from v2 to v3](#-migrating-from-v2-to-v3)
+    - [Month \& day-of-week indexing changes](#month--day-of-week-indexing-changes)
+    - [Adjustments in `CronJob`](#adjustments-in-cronjob)
+    - [Removed methods](#removed-methods)
+  - [🛠 Basic Usage](#-basic-usage)
+  - [Cron Patterns](#cron-patterns)
+    - [Supported Ranges](#supported-ranges)
+  - [Gotchas](#gotchas)
+  - [API](#api)
+    - [Standalone Functions](#standalone-functions)
+    - [CronJob Class](#cronjob-class)
+      - [Constructor](#constructor)
+      - [Methods](#methods)
+      - [Properties](#properties)
+    - [CronTime Class](#crontime-class)
+      - [Constructor](#constructor-1)
+  - [🤝 Community](#-community)
+  - [🌍 Contributing](#-contributing)
+    - [🐛 Submitting Bugs/Issues](#-submitting-bugsissues)
+  - [🙏 Acknowledgements](#-acknowledgements)
+  - [License](#license)
 
 ## 🔄 Migrating from v2 to v3
 
@@ -194,6 +200,8 @@ day of week    0-7 (0 or 7 is Sunday, or use names)
 
 - `unrefTimeout`: [OPTIONAL] - Useful for controlling event loop behavior. More details [here](https://nodejs.org/api/timers.html#timers_timeout_unref).
 
+- `waitForCompletion`: [OPTIONAL] - If `true`, no additional instances of the `onTick` callback function will run until the current onTick callback has completed. Any new scheduled executions that occur while the current callback is running will be skipped entirely. Default is `false`.
+
 - `errorHandler`: [OPTIONAL] - Function to handle any exceptions that occur in the `onTick` method.
 
 #### Methods
@@ -215,6 +223,23 @@ day of week    0-7 (0 or 7 is Sunday, or use names)
 - `fireOnTick`: Allows modification of the `onTick` calling behavior.
 
 - `addCallback`: Permits addition of `onTick` callbacks.
+
+#### Properties
+
+- `isCallbackRunning`: [READ-ONLY] Indicates if a callback is currently executing.
+
+  ```javascript
+  const job = new CronJob('* * * * * *', async () => {
+  	console.log(job.isCallbackRunning); // true during callback execution
+  	await someAsyncTask();
+  	console.log(job.isCallbackRunning); // still true until callback completes
+  });
+
+  console.log(job.isCallbackRunning); // false
+  job.start();
+  console.log(job.running); // true (schedule is active)
+  console.log(job.isCallbackRunning); // false (no callback executing)
+  ```
 
 ### CronTime Class
 
