@@ -31,6 +31,7 @@ npm install cron
 ```
 
 ## Table of Contents
+
 1. [Features](#-features)
 2. [Installation](#-installation)
 3. [Migrating from v2 to v3](#-migrating-from-v2-to-v3)
