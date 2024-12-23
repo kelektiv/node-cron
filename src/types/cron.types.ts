@@ -16,6 +16,7 @@ interface BaseCronJobParams<
 	runOnInit?: boolean | null;
 	unrefTimeout?: boolean | null;
 	waitForCompletion?: boolean | null;
+	errorHandler?: ((error: unknown) => void) | null;
 }
 
 export type CronJobParams<
