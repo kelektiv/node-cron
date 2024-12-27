@@ -1,3 +1,24 @@
+## [3.3.2-beta.1](https://github.com/kelektiv/node-cron/compare/v3.3.1...v3.3.2-beta.1) (2024-12-27)
+
+### 🐛 Bug Fixes
+
+* attempt to fix [#805](https://github.com/kelektiv/node-cron/issues/805) ([187dbe5](https://github.com/kelektiv/node-cron/commit/187dbe57ada28217b810b231bf57afdfe3a3b394))
+
+### ⚙️ Continuous Integrations
+
+* **action:** update marocchino/sticky-pull-request-comment action to v2.9.0 ([#930](https://github.com/kelektiv/node-cron/issues/930)) ([1e7bce9](https://github.com/kelektiv/node-cron/commit/1e7bce9d12a774104f39c1d75b37bdb134e4b270))
+* **renovate:** pin GitHub action digests to semver ([#926](https://github.com/kelektiv/node-cron/issues/926)) ([6541167](https://github.com/kelektiv/node-cron/commit/654116766a299bc5ac5d21a99e2abd7ccc4f43fe))
+
+### ♻️ Chores
+
+* **deps:** lock file maintenance ([afad454](https://github.com/kelektiv/node-cron/commit/afad454e5e4f52e3da54965a0e10540e035c4f58))
+* **deps:** lock file maintenance ([b1dbf69](https://github.com/kelektiv/node-cron/commit/b1dbf69104a58022a638d5b68b59f85089fae7c6))
+* **deps:** pin dependencies ([#915](https://github.com/kelektiv/node-cron/issues/915)) ([dfcbd3c](https://github.com/kelektiv/node-cron/commit/dfcbd3cf7d901415bda5b4929566bd4ad527af62))
+* **deps:** update dependency [@commitlint](https://github.com/commitlint)/cli to v19.6.1 ([7999427](https://github.com/kelektiv/node-cron/commit/799942794b6cff0966fe4977260728c4f9721385))
+* **deps:** update dependency [@semantic-release](https://github.com/semantic-release)/release-notes-generator to v14.0.2 ([93c9373](https://github.com/kelektiv/node-cron/commit/93c9373ae020e535683d6c65bff9e1eeabe20d4a))
+* **deps:** update dependency [@types](https://github.com/types)/node to v20.17.10 ([9313ffd](https://github.com/kelektiv/node-cron/commit/9313ffd148e88d68251b13e3b7ec5028d372a9d2))
+* **deps:** update dependency lint-staged to v15.2.11 ([100c9ff](https://github.com/kelektiv/node-cron/commit/100c9ff2f67246b73e6cf053aa581e87a31aed0a))
+
 ## [3.3.1](https://github.com/kelektiv/node-cron/compare/v3.3.0...v3.3.1) (2024-12-12)
 
 ### 🐛 Bug Fixes
