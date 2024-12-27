@@ -6,6 +6,11 @@
   Perfect for tasks like data backups, notifications, and many more!
 </p>
 
+> **⚠️ WARNING**
+>
+> This is a WIP released as beta for testing purposes.
+> For more information, please refer to [issue #805](https://github.com/kelektiv/node-cron/issues/805).
+
 # Cron for Node.js
 
 [![Version](https://img.shields.io/npm/v/cron?label=version&logo=npm)](https://www.npmjs.com/package/cron)

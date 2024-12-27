@@ -188,7 +188,7 @@ export class CronTime {
 	 * Get the number of milliseconds in the future at which to fire our callbacks.
 	 */
 	getTimeout() {
-		return Math.max(-1, this.sendAt().toMillis() - DateTime.local().toMillis());
+		return this.sendAt().toMillis() - DateTime.local().toMillis();
 	}
 
 	/**

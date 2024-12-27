@@ -304,7 +304,33 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 
 			setCronTimeout(timeout);
 		} else {
-			this.stop();
+			// WARNING: this is a WIP released as beta for testing purposes
+			// for more info, please refer to https://github.com/kelektiv/node-cron/issues/805
+			// probable next steps:
+			// - throw an error when stopping the job
+			// - turn delayed execution into an opt-in option
+
+			// We have missed the correct point in time.
+			if (timeout <= 1000) {
+				console.warn(`[CRON DEBUG] Executing job with a delay: ${timeout}ms`);
+
+				this.lastExecution = new Date();
+
+				this.running = false;
+
+				// start before calling back so the callbacks have the ability to stop the cron job
+				if (!this.runOnce) this.start();
+
+				void this.fireOnTick();
+			} else {
+				console.error(
+					`[CRON DEBUG] Stopping job due to delay being higher than 1s: ${timeout}ms`
+				);
+				this.stop();
+			}
+
+			console.debug(`[CRON DEBUG] Current date: ${new Date().toISOString()}`);
+			console.debug(`[CRON DEBUG] Source: ${String(this.cronTime.source)}`);
 		}
 	}
 
