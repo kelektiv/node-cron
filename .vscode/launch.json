@@ -7,7 +7,7 @@
 			"name": "Jest Debug",
 			"env": { "NODE_ENV": "test" },
 			"program": "${workspaceFolder}/node_modules/.bin/jest",
-			"args": [],
+			"args": ["--runInBand"],
 			"console": "integratedTerminal",
 			"windows": {
 				"program": "${workspaceFolder}/node_modules/jest/bin/jest"
