@@ -18,9 +18,10 @@ All types of contributions are encouraged and valued. See the [Table of Contents
 - [I Want To Contribute](#i-want-to-contribute)
   - [Reporting Bugs](#reporting-bugs)
   - [Suggesting Enhancements](#suggesting-enhancements)
-  - [Your First Code Contribution](#your-first-code-contribution)
-  - [Improving The Documentation](#improving-the-documentation)
-- [Styleguides](#styleguides)
+  - [Submitting a Pull Request](#submitting-a-pull-request)
+  - [Working With The Code](#working-with-the-code)
+- [Coding Rules](#coding-rules)
+  - [Source Code](#source-code)
   - [Commit Messages](#commit-messages)
 - [Join The Project Team](#join-the-project-team)
 
@@ -67,8 +68,8 @@ We use GitHub issues to track bugs and errors. If you run into an issue with the
 Once it's filed:
 
 - The project team will label the issue accordingly.
-- A team member will try to reproduce the issue with your provided steps. If there are no reproduction steps or no obvious way to reproduce the issue, the team will ask you for those steps and mark the issue as `needs-repro`. Bugs with the `needs-repro` tag will not be addressed until they are reproduced.
-- If the team is able to reproduce the issue, it will be marked `needs-fix`, as well as possibly other tags (such as `critical`), and the issue will be left to be [implemented by someone](#your-first-code-contribution).
+- A team member will try to reproduce the issue with your provided steps. If there are no reproduction steps or no obvious way to reproduce the issue, the team will ask you for those steps and mark the issue as `cannot reproduce`. Bugs with the `cannot reproduce` tag will not be addressed until they are reproduced.
+- If the team is able to reproduce the issue, it will be marked `bug`, as well as possibly other tags, and the issue will be left to be [implemented by someone](#your-first-code-contribution).
 
 ### Suggesting Enhancements
 
@@ -91,24 +92,77 @@ Enhancement suggestions are tracked as [GitHub issues](https://github.com/kelekt
 - **Describe the current behavior** and **explain which behavior you expected to see instead** and why. At this point you can also tell which alternatives do not work for you.
 - **Explain why this enhancement would be useful** to most cron users. You may also want to point out the other projects that solved it better and which could serve as inspiration.
 
-## Working with the code
+### Submitting a Pull Request
 
-### Set up the workspace
+Good pull requests, whether patches, improvements, or new features, are a fantastic help.
+They should remain focused in scope and avoid containing unrelated commits.
+
+**Please ask first** before embarking on any significant pull requests (e.g. implementing features, refactoring code), otherwise you risk spending a lot of time working on something that the project's maintainers might not want to merge into the project.
+
+If you have never created a pull request before, welcome 🎉 😄.
+[Here is a great tutorial](https://opensource.guide/how-to-contribute/#opening-a-pull-request) on how to send one :)
+
+Here is a summary of the steps to follow:
+
+1. [Set up the workspace](#set-up-the-workspace)
+2. If you cloned a while ago, get the latest changes from upstream and update dependencies:
+
+```bash
+$ git checkout main
+$ git pull upstream main
+$ rm -rf node_modules
+$ nvm use
+$ npm install
+```
+
+3. Create a new topic branch (off the main project development branch) to contain your feature, change, or fix:
+
+```bash
+$ git checkout -b <topic-branch-name>
+```
+
+4. Make your code changes, following the [Coding Rules](#coding-rules)
+5. Push your topic branch up to your fork:
+
+```bash
+$ git push origin <topic-branch-name>
+```
+
+6. [Open a Pull Request](https://help.github.com/articles/creating-a-pull-request/#creating-the-pull-request) with a clear title and description.
+
+**Tips**:
+
+- For ambitious tasks, open a Pull Request as soon as possible with the `[WIP]` prefix in the title, in order to get feedback and help from the community.
+- [Allow maintainers to make changes to your Pull Request branch](https://help.github.com/articles/allowing-changes-to-a-pull-request-branch-created-from-a-fork).
+  This way, we can rebase it and make some minor changes if necessary.
+  All changes we make will be done in new commit, and we'll ask for your approval before merging them.
+
+### Working With The Code
+
+#### Set up the workspace
 
 [Fork](https://docs.github.com/en/get-started/quickstart/contributing-to-projects#forking-a-repository) the project, [clone](https://docs.github.com/en/get-started/quickstart/contributing-to-projects#cloning-a-fork) your fork, configure the remotes and install the dependencies:
 
 ```bash
 # Clone your fork of the repo into the current directory
 $ git clone git@github.com:<your-username>/node-cron.git # or https://github.com/<your-username>/node-cron.git for HTTPS
+
 # Navigate to the newly cloned directory
 $ cd node-cron
+
 # Assign the original repo to a remote called "upstream"
 $ git remote add upstream git@github.com:kelektiv/node-cron.git # or https://github.com/kelektiv/node-cron.git for HTTPS
+
+# Switch your node version to the version defined by the project as the development version
+# This step assumes you have already installed and configured https://github.com/nvm-sh/nvm
+# You may need to run `nvm install` if you have not already installed the development node version
+$ nvm use
+
 # Install the dependencies
 $ npm install
 ```
 
-### Lint
+#### Lint
 
 This repository uses [ESLint](https://eslint.org) and [Prettier](https://prettier.io) for linting and formatting.
 
@@ -119,7 +173,7 @@ Before pushing your code changes make sure there are no linting errors with `npm
 - Most linting errors can be automatically fixed with `npm run lint:fix`.
 - Install the [ESLint plugin](https://eslint.org/docs/latest/use/integrations) for your editor to see linting errors directly in your editor and automatically fix them on save.
 
-### Tests
+#### Tests
 
 This repository uses [Jest](https://jestjs.io) for writing and running tests.
 
@@ -129,12 +183,116 @@ Before pushing your code changes make sure all **tests pass** and the **coverage
 $ npm run test
 ```
 
-**Tips:** During development you can:
+**Tips:**
 
 - run a single test file with `npm run test -- <file path>`, for example `npm run test -- tests/crontime.test.ts`
 - run a subset of test files with `npm run test -- <glob>`, for example `npm run test -- tests/*.test.ts`
 - run a single test case with `npm run test -- -t '<test case name regex>'`, for example `npm run test -- -t 'should parse .*'`
 - run in watch mode with `npm run test:watch` to automatically run a test case when you modify it or the associated source code (above tips also work with this command)
+
+## Coding Rules
+
+### Source Code
+
+To ensure consistency and quality throughout the source code, all code modifications must have:
+
+- No [linting](#lint) errors
+- A [test](#tests) for every possible case introduced by your code change
+- [Valid commit message(s)](#commit-messages)
+- Documentation for new features
+- Updated documentation for modified features
+
+### Commit Messages
+
+#### Atomic commits
+
+If possible, make [atomic commits](https://en.wikipedia.org/wiki/Atomic_commit), which means:
+
+- a commit should contain exactly one self-contained functional change
+- a functional change should be contained in exactly one commit
+- a commit should not create an inconsistent state (such as test errors, linting errors, partial fix, feature without documentation, etc...)
+
+A complex feature can be broken down into multiple commits as long as each one maintains a consistent state and consists of a self-contained change.
+
+#### Commit message format
+
+Each commit message consists of a **header**, a **body** and a **footer**.
+The header has a special format that includes a **type**, a **scope** and a **subject**:
+
+```commit
+<type>(<scope>): <subject>
+<BLANK LINE>
+<body>
+<BLANK LINE>
+<footer>
+```
+
+The **header** is mandatory and the **scope** of the header is optional.
+
+The **footer** can contain a [closing reference to an issue](https://help.github.com/articles/closing-issues-via-commit-messages).
+
+#### Revert
+
+If the commit reverts a previous commit, it should begin with `revert: `, followed by the header of the reverted commit.
+In the body it should say: `This reverts commit <hash>.`, where the hash is the SHA of the commit being reverted.
+
+#### Type
+
+The type must be one of the following:
+
+|    Type    | Title                    | Description                                                                                                 |
+| :--------: | ------------------------ | ----------------------------------------------------------------------------------------------------------- |
+|   `feat`   | Features                 | A new feature                                                                                               |
+|   `fix`    | Bug Fixes                | A bug Fix                                                                                                   |
+|   `docs`   | Documentation            | Documentation only changes                                                                                  |
+|  `style`   | Styles                   | Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc)      |
+| `refactor` | Code Refactoring         | A code change that neither fixes a bug nor adds a feature                                                   |
+|   `perf`   | Performance Improvements | A code change that improves performance                                                                     |
+|   `test`   | Tests                    | Adding missing tests or correcting existing tests                                                           |
+|  `build`   | Builds                   | Changes that affect the build system or external dependencies (example scopes: gulp, broccoli, npm)         |
+|    `ci`    | Continuous Integrations  | Changes to our CI configuration files and scripts (example scopes: Travis, Circle, BrowserStack, SauceLabs) |
+|  `chore`   | Chores                   | Other changes that don't modify src or test files                                                           |
+|  `revert`  | Reverts                  | Reverts a previous commit                                                                                   |
+
+#### Subject
+
+The subject contains succinct description of the change:
+
+- use the imperative, present tense: "change" not "changed" nor "changes"
+- don't capitalize first letter
+- no dot (.) at the end
+
+#### Body
+
+Just as in the **subject**, use the imperative, present tense: "change" not "changed" nor "changes".
+The body should include the motivation for the change and contrast this with previous behavior.
+
+#### Footer
+
+The footer should contain any information about **Breaking Changes** and is also the place to reference GitHub issues that this commit **Closes**.
+
+**Breaking Changes** should start with the word `BREAKING CHANGE:` with a space or two newlines.
+The rest of the commit message is then used for this.
+
+#### Examples
+
+```commit
+fix(pencil): stop graphite breaking when too much pressure applied
+```
+
+```commit
+feat(pencil): add 'graphiteWidth' option
+
+Fix #42
+```
+
+```commit
+perf(pencil): remove graphiteWidth option
+
+BREAKING CHANGE: The graphiteWidth option has been removed.
+
+The default graphite width of 10mm is always used for performance reasons.
+```
 
 ## Join The Project Team
 
