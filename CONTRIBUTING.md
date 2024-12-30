@@ -6,14 +6,15 @@ All types of contributions are encouraged and valued. See the [Table of Contents
 
 > And if you like the project, but just don't have time to contribute, that's fine. There are other easy ways to support the project and show your appreciation, which we would also be very happy about:
 
-> - Join the [Discord community](https://discord.gg/yyKns29zch)
 > - Star the project
-> - Tweet about it
 > - Refer this project in your project's readme
 > - Mention the project at local meetups and tell your friends/colleagues
+> - Share the project on forums or social medias
+> - Join the [Discord community](https://discord.gg/yyKns29zch)
 
 ## Table of Contents <!-- omit in toc -->
 
+- [Code of conduct](#code-of-conduct)
 - [I Have a Question](#i-have-a-question)
 - [I Want To Contribute](#i-want-to-contribute)
   - [Reporting Bugs](#reporting-bugs)
@@ -24,6 +25,10 @@ All types of contributions are encouraged and valued. See the [Table of Contents
   - [Source Code](#source-code)
   - [Commit Messages](#commit-messages)
 - [Join The Project Team](#join-the-project-team)
+
+## Code of Conduct
+
+Help us keep `cron` open and inclusive. Please read and follow our [Code of conduct](CODE_OF_CONDUCT.md).
 
 ## I Have a Question
 
@@ -99,6 +104,8 @@ They should remain focused in scope and avoid containing unrelated commits.
 
 **Please ask first** before embarking on any significant pull requests (e.g. implementing features, refactoring code), otherwise you risk spending a lot of time working on something that the project's maintainers might not want to merge into the project.
 
+For ambitious tasks, open a [**draft** Pull Request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/changing-the-stage-of-a-pull-request#converting-a-pull-request-to-a-draft) as soon as possible, in order to get feedback and help from the maintainers and the community.
+
 If you have never created a pull request before, welcome 🎉 😄.
 [Here is a great tutorial](https://opensource.guide/how-to-contribute/#opening-a-pull-request) on how to send one :)
 
@@ -130,12 +137,54 @@ $ git push origin <topic-branch-name>
 
 6. [Open a Pull Request](https://help.github.com/articles/creating-a-pull-request/#creating-the-pull-request) with a clear title and description.
 
-**Tips**:
+#### Do not force push to your pull request branch
 
-- For ambitious tasks, open a Pull Request as soon as possible with the `[WIP]` prefix in the title, in order to get feedback and help from the community.
-- [Allow maintainers to make changes to your Pull Request branch](https://help.github.com/articles/allowing-changes-to-a-pull-request-branch-created-from-a-fork).
-  This way, we can rebase it and make some minor changes if necessary.
-  All changes we make will be done in new commit, and we'll ask for your approval before merging them.
+Please do not force push to your PR's branch after you have created your PR, as doing so forces us to review the whole PR again.
+This makes it harder for us to review your work because we don't know what has changed.
+PRs will always be squashed by us when we merge your work.
+Commit as many times as you need in your pull request branch, but please batch apply review suggestions.
+
+If you're updating your PR branch from within the GitHub PR interface, use the default "Update branch" button.
+This is the "Update with merge commit" option in the dropdown.
+
+Force pushing a PR, or using the "Update with rebase" button is OK when you:
+
+- make large changes on a PR which require a full review anyway
+- bring the branch up-to-date with the target branch and incorporating the changes is more work than to create a new PR
+
+#### Apply maintainer provided review suggestions
+
+Maintainers can suggest changes while reviewing your pull request.
+To apply these suggestions, please:
+
+1. Batch the suggestions into a logical group by selecting the **Add suggestion to batch** button
+1. Select the **Commit suggestions** button
+
+Read the [GitHub docs, Applying suggested changes](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/reviewing-changes-in-pull-requests/incorporating-feedback-in-your-pull-request#applying-suggested-changes) to learn more.
+
+#### Resolve review comments instead of commenting
+
+A maintainer can ask you to make changes, without giving you a _suggestion_ that you can apply.
+In this case you should make the necessary changes.
+
+Once you've done the work, resolve the conversation by selecting the **Resolve conversation** button in the PR overview.
+Avoid posting comments like "I've done the work", or "Done".
+
+Read the [GitHub Docs, resolving conversations](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/reviewing-changes-in-pull-requests/commenting-on-a-pull-request#resolving-conversations) to learn more.
+
+#### Re-requesting a review
+
+Please do not ping your reviewer(s) by mentioning them in a new comment.
+Instead, use the re-request review functionality.
+Read more about this in the [GitHub docs, Re-requesting a review](https://docs.github.com/en/free-pro-team@latest/github/collaborating-with-issues-and-pull-requests/incorporating-feedback-in-your-pull-request#re-requesting-a-review).
+
+#### Discord collaboration with maintainers
+
+The codebase can be difficult to navigate, especially for a first-time contributor.
+We don't want you spending an hour trying to work out something that would take us only a minute to explain.
+
+For that reason, you'll find a `#development` channel on our [Discord community](https://discord.gg/yyKns29zch),
+dedicated to helping anyone who's working on or considering Pull Requests for `cron`.
 
 ### Working With The Code
 
@@ -300,4 +349,4 @@ This project is looking for help! If you're interested in helping with the proje
 
 ## Attribution <!-- omit in toc -->
 
-This guide is based on the [**contributing-gen**](https://github.com/bttger/contributing-gen) and [**semantic-release**'s `CONTRIBUTING.md`](https://github.com/semantic-release/semantic-release/blob/master/CONTRIBUTING.md).
+This guide is based on the [**contributing-gen**](https://github.com/bttger/contributing-gen), [**semantic-release**'s `CONTRIBUTING.md`](https://github.com/semantic-release/semantic-release/blob/master/CONTRIBUTING.md) and [**renovate**'s `CONTRIBUTING.md`](https://github.com/renovatebot/renovate/blob/main/.github/contributing.md).
