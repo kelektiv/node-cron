@@ -1176,17 +1176,17 @@ describe('cron', () => {
 		clock.restore();
 	});
 
-	it('should throw errors if errorHandler is NOT provided', () => {
+	it('should log errors if errorHandler is NOT provided', () => {
 		const errorFunc = jest.fn().mockImplementation(() => {
 			throw Error('Exception');
 		});
-		expect(() => {
-			CronJob.from({
-				cronTime: '* * * * * *',
-				onTick: errorFunc,
-				runOnInit: true
-			});
-		}).toThrow('Exception');
+		console.error = jest.fn();
+		CronJob.from({
+			cronTime: '* * * * * *',
+			onTick: errorFunc,
+			runOnInit: true
+		});
+		expect(console.error).toHaveBeenCalled();
 	});
 
 	describe('waitForCompletion and job status tracking', () => {
