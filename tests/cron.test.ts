@@ -1296,4 +1296,53 @@ describe('cron', () => {
 			expect(job.running).toBe(false);
 		});
 	});
+
+	describe('Daylight Saving Time', () => {
+		// https://github.com/kelektiv/node-cron/issues/919
+		it('should not get into an infinite loop on Lisbon DST forward jump', () => {
+			const d = DateTime.fromISO('2024-03-30T00:59:59', {
+				zone: 'Europe/Lisbon'
+			}).toJSDate();
+			const clock = sinon.useFakeTimers(d.getTime());
+
+			console.debug({ d });
+
+			const job = new CronJob(
+				'0 1 30 3 *',
+				callback,
+				null,
+				true,
+				'Europe/Lisbon'
+			);
+
+			clock.tick(1000);
+			expect(callback).toHaveBeenCalledTimes(1);
+
+			clock.restore();
+			job.stop();
+		});
+
+		it('should not get into an infinite loop on Paris DST forward jump', () => {
+			const d = DateTime.fromISO('2024-03-31T01:59:59', {
+				zone: 'Europe/Paris'
+			}).toJSDate();
+			const clock = sinon.useFakeTimers(d.getTime());
+
+			console.debug({ d });
+
+			const job = new CronJob(
+				'0 2 31 3 *',
+				callback,
+				null,
+				true,
+				'Europe/Paris'
+			);
+
+			clock.tick(1000);
+			expect(callback).toHaveBeenCalledTimes(1);
+
+			clock.restore();
+			job.stop();
+		});
+	});
 });
