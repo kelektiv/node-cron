@@ -196,6 +196,8 @@ day of week    0-7 (0 or 7 is Sunday, or use names)
 
 - `waitForCompletion`: [OPTIONAL] - If `true`, no additional instances of the `onTick` callback function will run until the current onTick callback has completed. Any new scheduled executions that occur while the current callback is running will be skipped entirely. Default is `false`.
 
+- `errorHandler`: [OPTIONAL] - Function to handle any exceptions that occur in the `onTick` method.
+
 #### Methods
 
 - `from` (static): Create a new CronJob object providing arguments as an object. See argument names and descriptions above.
