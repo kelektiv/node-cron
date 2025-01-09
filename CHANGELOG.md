@@ -1,3 +1,21 @@
+## [3.4.0](https://github.com/kelektiv/node-cron/compare/v3.3.2...v3.4.0) (2025-01-09)
+
+### ✨ Features
+
+* error handling on ticks ([#861](https://github.com/kelektiv/node-cron/issues/861)) ([0d3161f](https://github.com/kelektiv/node-cron/commit/0d3161ff7831752edade0333e4ae9ce70e50ac0b)), closes [#426](https://github.com/kelektiv/node-cron/issues/426)
+
+### 📚 Documentation
+
+* **contributing:** add "Submitting a Pull Request" & "Coding Rules" sections ([#936](https://github.com/kelektiv/node-cron/issues/936)) ([ddd8988](https://github.com/kelektiv/node-cron/commit/ddd89881bcb2f3737e1ea50296fe25294d112bdd))
+
+### ♻️ Chores
+
+* **deps:** lock file maintenance ([494b4bf](https://github.com/kelektiv/node-cron/commit/494b4bf5d61ba2b4d57e7b46cd433bcb4577d525))
+* **deps:** update dependency [@types](https://github.com/types)/node to v20.17.11 ([2978e92](https://github.com/kelektiv/node-cron/commit/2978e92ba1a26dfe8de7eb6c1ee4b3847cf18279))
+* **deps:** update dependency lint-staged to v15.3.0 ([11f9bad](https://github.com/kelektiv/node-cron/commit/11f9badb761d06cd74a543116854094559acb813))
+* **deps:** update semantic-release related packages ([b830bdb](https://github.com/kelektiv/node-cron/commit/b830bdb41df2ebc48d3510ffd71f3d59255eaf11))
+* **deps:** update tests (major) ([#826](https://github.com/kelektiv/node-cron/issues/826)) ([e47fd5a](https://github.com/kelektiv/node-cron/commit/e47fd5aaefb5452fd06e4a76b847110a13832456))
+
 ## [3.3.2](https://github.com/kelektiv/node-cron/compare/v3.3.1...v3.3.2) (2024-12-30)
 
 ### 🐛 Bug Fixes
