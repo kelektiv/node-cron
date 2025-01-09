@@ -465,7 +465,7 @@ export class CronTime {
 		const beforeJumpingPoint = afterJumpingPoint.minus({ second: 1 });
 
 		if (
-			date.month + 1 in this.month &&
+			date.month in this.month &&
 			date.day in this.dayOfMonth &&
 			this._getWeekDay(date) in this.dayOfWeek
 		) {

@@ -1,3 +1,25 @@
+## [3.3.2](https://github.com/kelektiv/node-cron/compare/v3.3.1...v3.3.2) (2024-12-30)
+
+### 🐛 Bug Fixes
+
+* fix infinite loop on expressions resolving only inside a DST forward jump ([#938](https://github.com/kelektiv/node-cron/issues/938)) ([efb8df5](https://github.com/kelektiv/node-cron/commit/efb8df53405b4ce2ea2e70be9e4d90c124616a51)), closes [/github.com/kelektiv/node-cron/pull/667/files#diff-c14c2dca8456f15417b39cfbd9758009f8eb4f3a190a415768d6e4ae6ae9dceeL473-L477](https://github.com/kelektiv//github.com/kelektiv/node-cron/pull/667/files/issues/diff-c14c2dca8456f15417b39cfbd9758009f8eb4f3a190a415768d6e4ae6ae9dceeL473-L477) [#919](https://github.com/kelektiv/node-cron/issues/919) [#919](https://github.com/kelektiv/node-cron/issues/919)
+
+### ⚙️ Continuous Integrations
+
+* **action:** update marocchino/sticky-pull-request-comment action to v2.9.0 ([#930](https://github.com/kelektiv/node-cron/issues/930)) ([1e7bce9](https://github.com/kelektiv/node-cron/commit/1e7bce9d12a774104f39c1d75b37bdb134e4b270))
+* **renovate:** pin GitHub action digests to semver ([#926](https://github.com/kelektiv/node-cron/issues/926)) ([6541167](https://github.com/kelektiv/node-cron/commit/654116766a299bc5ac5d21a99e2abd7ccc4f43fe))
+
+### ♻️ Chores
+
+* **deps:** lock file maintenance ([70c3339](https://github.com/kelektiv/node-cron/commit/70c333955612d39b692ab9535b36fe33423eb593))
+* **deps:** lock file maintenance ([afad454](https://github.com/kelektiv/node-cron/commit/afad454e5e4f52e3da54965a0e10540e035c4f58))
+* **deps:** lock file maintenance ([b1dbf69](https://github.com/kelektiv/node-cron/commit/b1dbf69104a58022a638d5b68b59f85089fae7c6))
+* **deps:** pin dependencies ([#915](https://github.com/kelektiv/node-cron/issues/915)) ([dfcbd3c](https://github.com/kelektiv/node-cron/commit/dfcbd3cf7d901415bda5b4929566bd4ad527af62))
+* **deps:** update dependency [@commitlint](https://github.com/commitlint)/cli to v19.6.1 ([7999427](https://github.com/kelektiv/node-cron/commit/799942794b6cff0966fe4977260728c4f9721385))
+* **deps:** update dependency [@semantic-release](https://github.com/semantic-release)/release-notes-generator to v14.0.2 ([93c9373](https://github.com/kelektiv/node-cron/commit/93c9373ae020e535683d6c65bff9e1eeabe20d4a))
+* **deps:** update dependency [@types](https://github.com/types)/node to v20.17.10 ([9313ffd](https://github.com/kelektiv/node-cron/commit/9313ffd148e88d68251b13e3b7ec5028d372a9d2))
+* **deps:** update dependency lint-staged to v15.2.11 ([100c9ff](https://github.com/kelektiv/node-cron/commit/100c9ff2f67246b73e6cf053aa581e87a31aed0a))
+
 ## [3.3.1](https://github.com/kelektiv/node-cron/compare/v3.3.0...v3.3.1) (2024-12-12)
 
 ### 🐛 Bug Fixes
