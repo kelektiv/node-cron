@@ -616,26 +616,22 @@ describe('cron', () => {
 
 	it('should not get into an infinite loop on invalid times', () => {
 		expect(() => {
-			new CronJob(
-				'* 60 * * * *',
-				() => {
-					expect(true).toBe(true);
-				},
-				null,
-				true
-			);
+			new CronJob('* 60 * * * *', () => {}, null, true);
 		}).toThrow();
 
 		expect(() => {
-			new CronJob(
-				'* * 24 * * *',
-				() => {
-					expect(true).toBe(true);
-				},
-				null,
-				true
-			);
+			new CronJob('* * 24 * * *', () => {}, null, true);
 		}).toThrow();
+
+		expect(() => {
+			new CronJob('0 0 30 FEB *', callback, null, true);
+		}).toThrow();
+	});
+
+	it('should not throw if at least one time is valid', () => {
+		expect(() => {
+			new CronJob('0 0 30 JAN,FEB *', callback, null, true);
+		}).not.toThrow();
 	});
 
 	it('should test start of month', () => {
@@ -856,6 +852,7 @@ describe('cron', () => {
 
 		// tick by 1 day
 		clock.tick(24 * 60 * 60 * 1000);
+		clock.restore();
 		job.stop();
 		expect(callback).toHaveBeenCalledTimes(1);
 	});
