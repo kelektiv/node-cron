@@ -1,3 +1,18 @@
+## [3.5.0](https://github.com/kelektiv/node-cron/compare/v3.4.0...v3.5.0) (2025-01-10)
+
+### ✨ Features
+
+* throw instead of silently rewriting invalid cron expressions ([#937](https://github.com/kelektiv/node-cron/issues/937)) ([dcc5b93](https://github.com/kelektiv/node-cron/commit/dcc5b939fb08a806793799019c9f256bd137c33d))
+
+### ⚙️ Continuous Integrations
+
+* **action:** update step-security/harden-runner action to v2.10.3 ([#943](https://github.com/kelektiv/node-cron/issues/943)) ([cd7ee9f](https://github.com/kelektiv/node-cron/commit/cd7ee9f62fbdd16ec150e9e5aa69d8852f5b3dcb))
+
+### ♻️ Chores
+
+* **deps:** update dependency [@types](https://github.com/types)/node to v20.17.12 ([2a867f9](https://github.com/kelektiv/node-cron/commit/2a867f9c34c216ac04ce8bce34e0e16578f7dd0c))
+* **deps:** update dependency [@types](https://github.com/types)/node to v22 ([#900](https://github.com/kelektiv/node-cron/issues/900)) ([f7548bd](https://github.com/kelektiv/node-cron/commit/f7548bd3b6981514abd174341b39813d0d6f239a))
+
 ## [3.4.0](https://github.com/kelektiv/node-cron/compare/v3.3.2...v3.4.0) (2025-01-09)
 
 ### ✨ Features
