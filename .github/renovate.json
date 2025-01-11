@@ -25,8 +25,22 @@
 	"osvVulnerabilityAlerts": true,
 	"packageRules": [
 		{
+			"matchPackageNames": ["*"],
 			"semanticCommitType": "chore",
-			"matchPackageNames": ["*"]
+			"semanticCommitScope": "deps",
+			"schedule": "* * 10,25 * *"
+		},
+		{
+			"matchDepTypes": ["devDependencies"],
+			"matchUpdateTypes": ["minor", "patch", "pin", "pinDigest"],
+			"automerge": true,
+			"automergeType": "branch"
+		},
+		{
+			"matchDepTypes": ["dependencies"],
+			"semanticCommitType": "build",
+			"semanticCommitScope": "deps",
+			"schedule": "at any time"
 		},
 		{
 			"matchDepTypes": ["dependencies"],
@@ -36,14 +50,16 @@
 			"automergeType": "branch"
 		},
 		{
-			"matchDepTypes": ["dependencies"],
-			"matchUpdateTypes": ["major"],
-			"semanticCommitType": "build"
+			"matchManagers": ["github-actions"],
+			"semanticCommitType": "chore",
+			"semanticCommitScope": "action",
+			"schedule": "* * 10,25 * *"
 		},
 		{
-			"matchDepTypes": ["action"],
-			"semanticCommitType": "ci",
-			"semanticCommitScope": "action"
+			"matchManagers": ["github-actions"],
+			"matchUpdateTypes": ["minor", "patch", "pin", "pinDigest"],
+			"automerge": true,
+			"automergeType": "branch"
 		},
 		{
 			"extends": ["monorepo:semantic-release"],
