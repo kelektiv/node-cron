@@ -7,7 +7,7 @@
 		":pinOnlyDevDependencies",
 		"npm:unpublishSafe",
 		"docker:pinDigests",
-		"helpers:pinGitHubActionDigests",
+		"helpers:pinGitHubActionDigestsToSemver",
 		"security:openssf-scorecard"
 	],
 	"ignorePresets": [
@@ -25,19 +25,42 @@
 	"osvVulnerabilityAlerts": true,
 	"packageRules": [
 		{
-			"matchPackagePatterns": ["*"],
-			"semanticCommitType": "chore"
+			"matchPackageNames": ["*"],
+			"semanticCommitType": "chore",
+			"semanticCommitScope": "deps",
+			"schedule": "* * 10,25 * *"
+		},
+		{
+			"matchDepTypes": ["devDependencies"],
+			"matchUpdateTypes": ["minor", "patch", "pin", "pinDigest"],
+			"automerge": true,
+			"automergeType": "branch"
 		},
 		{
 			"matchDepTypes": ["dependencies"],
-			"semanticCommitType": "build"
+			"semanticCommitType": "build",
+			"semanticCommitScope": "deps",
+			"schedule": "at any time"
 		},
 		{
-			"matchDepTypes": ["action"],
-			"semanticCommitType": "ci",
-			"semanticCommitScope": "action"
+			"matchDepTypes": ["dependencies"],
+			"matchUpdateTypes": ["minor", "patch"],
+			"semanticCommitType": "build",
+			"automerge": true,
+			"automergeType": "branch"
 		},
-
+		{
+			"matchManagers": ["github-actions"],
+			"semanticCommitType": "chore",
+			"semanticCommitScope": "action",
+			"schedule": "* * 10,25 * *"
+		},
+		{
+			"matchManagers": ["github-actions"],
+			"matchUpdateTypes": ["minor", "patch", "pin", "pinDigest"],
+			"automerge": true,
+			"automergeType": "branch"
+		},
 		{
 			"extends": ["monorepo:semantic-release"],
 			"groupName": "semantic-release related packages",
@@ -49,14 +72,13 @@
 			"matchUpdateTypes": ["digest", "patch", "minor", "major"]
 		},
 		{
-			"matchPackagePatterns": [
-				"@insurgent/conventional-changelog-preset",
-				"@insurgent/commitlint-config"
-			],
 			"groupName": "semantic-release related packages",
-			"matchUpdateTypes": ["digest", "patch", "minor", "major"]
+			"matchUpdateTypes": ["digest", "patch", "minor", "major"],
+			"matchPackageNames": [
+				"/@insurgent/conventional-changelog-preset/",
+				"/@insurgent/commitlint-config/"
+			]
 		},
-
 		{
 			"extends": ["packages:linters"],
 			"groupName": "linters",
@@ -67,7 +89,6 @@
 			"groupName": "tests",
 			"addLabels": ["tests"]
 		},
-
 		{
 			"matchDepTypes": ["devDependencies"],
 			"matchUpdateTypes": ["minor", "patch"],

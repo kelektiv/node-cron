@@ -194,6 +194,10 @@ day of week    0-7 (0 or 7 is Sunday, or use names)
 
 - `unrefTimeout`: [OPTIONAL] - Useful for controlling event loop behavior. More details [here](https://nodejs.org/api/timers.html#timers_timeout_unref).
 
+- `waitForCompletion`: [OPTIONAL] - If `true`, no additional instances of the `onTick` callback function will run until the current onTick callback has completed. Any new scheduled executions that occur while the current callback is running will be skipped entirely. Default is `false`.
+
+- `errorHandler`: [OPTIONAL] - Function to handle any exceptions that occur in the `onTick` method.
+
 #### Methods
 
 - `from` (static): Create a new CronJob object providing arguments as an object. See argument names and descriptions above.
@@ -213,6 +217,23 @@ day of week    0-7 (0 or 7 is Sunday, or use names)
 - `fireOnTick`: Allows modification of the `onTick` calling behavior.
 
 - `addCallback`: Permits addition of `onTick` callbacks.
+
+#### Properties
+
+- `isCallbackRunning`: [READ-ONLY] Indicates if a callback is currently executing.
+
+  ```javascript
+  const job = new CronJob('* * * * * *', async () => {
+  	console.log(job.isCallbackRunning); // true during callback execution
+  	await someAsyncTask();
+  	console.log(job.isCallbackRunning); // still true until callback completes
+  });
+
+  console.log(job.isCallbackRunning); // false
+  job.start();
+  console.log(job.running); // true (schedule is active)
+  console.log(job.isCallbackRunning); // false (no callback executing)
+  ```
 
 ### CronTime Class
 
