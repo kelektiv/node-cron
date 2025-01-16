@@ -3,7 +3,6 @@ import { DateTime, Zone } from 'luxon';
 import {
 	ALIASES,
 	CONSTRAINTS,
-	MONTH_CONSTRAINTS,
 	PARSE_DEFAULTS,
 	PRESETS,
 	RE_L,
@@ -17,13 +16,10 @@ import {
 import { CronError, ExclusiveParametersError } from './errors';
 import {
 	CronJobParams,
-	DayOfMonthRange,
-	MonthRange,
 	Ranges,
 	TimeUnit,
 	TimeUnitField
 } from './types/cron.types';
-import { getRecordKeys } from './utils';
 
 export class CronTime {
 	source: string | DateTime;
@@ -78,57 +74,11 @@ export class CronTime {
 		} else {
 			this.source = source;
 			this._parse(this.source);
-			this._verifyParse();
 		}
 	}
 
 	private _getWeekDay(date: DateTime) {
 		return date.weekday === 7 ? 0 : date.weekday;
-	}
-
-	/**
-	 * Ensure that the syntax parsed correctly and correct the specified values if needed.
-	 */
-	private _verifyParse() {
-		const months = getRecordKeys(this.month);
-		const daysOfMonth = getRecordKeys(this.dayOfMonth);
-
-		let isOk = false;
-
-		/**
-		 * if a dayOfMonth is not found in all months, we only need to fix the last
-		 * wrong month to prevent infinite loop
-		 */
-		let lastWrongMonth: MonthRange | null = null;
-		for (const m of months) {
-			const con = MONTH_CONSTRAINTS[m];
-
-			for (const day of daysOfMonth) {
-				if (day <= con) {
-					isOk = true;
-				}
-			}
-
-			if (!isOk) {
-				// save the month in order to be fixed if all months fails (infinite loop)
-				lastWrongMonth = m;
-				console.warn(`Month '${m}' is limited to '${con}' days.`);
-			}
-		}
-
-		// infinite loop detected (dayOfMonth is not found in all months)
-		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-		if (!isOk && lastWrongMonth !== null) {
-			const notOkCon = MONTH_CONSTRAINTS[lastWrongMonth];
-			for (const notOkDay of daysOfMonth) {
-				if (notOkDay > notOkCon) {
-					// eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-					delete this.dayOfMonth[notOkDay];
-					const fixedDay = (notOkDay % notOkCon) as DayOfMonthRange;
-					this.dayOfMonth[fixedDay] = true;
-				}
-			}
-		}
 	}
 
 	/**
@@ -467,7 +417,7 @@ export class CronTime {
 		const beforeJumpingPoint = afterJumpingPoint.minus({ second: 1 });
 
 		if (
-			date.month + 1 in this.month &&
+			date.month in this.month &&
 			date.day in this.dayOfMonth &&
 			this._getWeekDay(date) in this.dayOfWeek
 		) {
