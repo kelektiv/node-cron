@@ -1,3 +1,21 @@
+## [3.5.1-beta.1](https://github.com/kelektiv/node-cron/compare/v3.5.0...v3.5.1-beta.1) (2025-02-18)
+
+### 🐛 Bug Fixes
+
+* attempt to fix [#805](https://github.com/kelektiv/node-cron/issues/805) ([187dbe5](https://github.com/kelektiv/node-cron/commit/187dbe57ada28217b810b231bf57afdfe3a3b394))
+
+### ♻️ Chores
+
+* **action:** update actions/checkout action to v4.2.2 ([#927](https://github.com/kelektiv/node-cron/issues/927)) ([ff1721e](https://github.com/kelektiv/node-cron/commit/ff1721e95f1a0d7291f3809dd89af8a0956b8f7f))
+* **action:** update actions/setup-node action to v4.1.0 ([#928](https://github.com/kelektiv/node-cron/issues/928)) ([3e27773](https://github.com/kelektiv/node-cron/commit/3e277738b4a5d096f5990602c3d7aaff02f5961c))
+* **action:** update actions/upload-artifact action to v4.6.0 ([#931](https://github.com/kelektiv/node-cron/issues/931)) ([8283000](https://github.com/kelektiv/node-cron/commit/82830003bcb375b55ae86b2038305af69f587d33))
+* **action:** update amannn/action-semantic-pull-request action to v5.5.3 ([#929](https://github.com/kelektiv/node-cron/issues/929)) ([f1851d7](https://github.com/kelektiv/node-cron/commit/f1851d7d3f4780ef7f6834f35999f93cae5961cf))
+* **action:** update github/codeql-action action to v3.28.1 ([#922](https://github.com/kelektiv/node-cron/issues/922)) ([eefd476](https://github.com/kelektiv/node-cron/commit/eefd47698bad8da9c9cad15fba9ecc0925b95f49))
+* **deps:** lock file maintenance ([c3af5fc](https://github.com/kelektiv/node-cron/commit/c3af5fc439b822683377abea4a7e957ee7743c5c))
+* **deps:** lock file maintenance ([d689a1c](https://github.com/kelektiv/node-cron/commit/d689a1c489f9576de49da8ee8489cbaf700be3c3))
+* **renovate:** improve schedules & automerging to reduce noise ([#942](https://github.com/kelektiv/node-cron/issues/942)) ([c253032](https://github.com/kelektiv/node-cron/commit/c253032d520edd09f29e111fa181f4977a7f9d53))
+* **runtime:** dirty Node 16 drop, don't cherry-pick ([d6815f3](https://github.com/kelektiv/node-cron/commit/d6815f3ff94799f8157b8ee8daae1897d3fa0cf2))
+
 ## [3.5.0](https://github.com/kelektiv/node-cron/compare/v3.4.0...v3.5.0) (2025-01-10)
 
 ### ✨ Features
