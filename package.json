@@ -85,6 +85,9 @@
 		"Masakazu Matsushita <matsukaz@gmail.com> (matsukaz)",
 		"Christopher Lunt <me@kirisu.co.uk> (https://github.com/kirisu)"
 	],
+	"engines": {
+		"node": ">=18.x"
+	},
 	"files": [
 		"dist/**/*.js",
 		"dist/**/*.d.ts",
