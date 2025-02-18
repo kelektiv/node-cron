@@ -1,3 +1,42 @@
+## [3.5.0](https://github.com/kelektiv/node-cron/compare/v3.4.0...v3.5.0) (2025-01-10)
+
+### ✨ Features
+
+* throw instead of silently rewriting invalid cron expressions ([#937](https://github.com/kelektiv/node-cron/issues/937)) ([dcc5b93](https://github.com/kelektiv/node-cron/commit/dcc5b939fb08a806793799019c9f256bd137c33d))
+
+### ⚙️ Continuous Integrations
+
+* **action:** update step-security/harden-runner action to v2.10.3 ([#943](https://github.com/kelektiv/node-cron/issues/943)) ([cd7ee9f](https://github.com/kelektiv/node-cron/commit/cd7ee9f62fbdd16ec150e9e5aa69d8852f5b3dcb))
+
+### ♻️ Chores
+
+* **deps:** update dependency [@types](https://github.com/types)/node to v20.17.12 ([2a867f9](https://github.com/kelektiv/node-cron/commit/2a867f9c34c216ac04ce8bce34e0e16578f7dd0c))
+* **deps:** update dependency [@types](https://github.com/types)/node to v22 ([#900](https://github.com/kelektiv/node-cron/issues/900)) ([f7548bd](https://github.com/kelektiv/node-cron/commit/f7548bd3b6981514abd174341b39813d0d6f239a))
+
+## [3.4.0](https://github.com/kelektiv/node-cron/compare/v3.3.2...v3.4.0) (2025-01-09)
+
+### ✨ Features
+
+* error handling on ticks ([#861](https://github.com/kelektiv/node-cron/issues/861)) ([0d3161f](https://github.com/kelektiv/node-cron/commit/0d3161ff7831752edade0333e4ae9ce70e50ac0b)), closes [#426](https://github.com/kelektiv/node-cron/issues/426)
+
+### 📚 Documentation
+
+* **contributing:** add "Submitting a Pull Request" & "Coding Rules" sections ([#936](https://github.com/kelektiv/node-cron/issues/936)) ([ddd8988](https://github.com/kelektiv/node-cron/commit/ddd89881bcb2f3737e1ea50296fe25294d112bdd))
+
+### ♻️ Chores
+
+* **deps:** lock file maintenance ([494b4bf](https://github.com/kelektiv/node-cron/commit/494b4bf5d61ba2b4d57e7b46cd433bcb4577d525))
+* **deps:** update dependency [@types](https://github.com/types)/node to v20.17.11 ([2978e92](https://github.com/kelektiv/node-cron/commit/2978e92ba1a26dfe8de7eb6c1ee4b3847cf18279))
+* **deps:** update dependency lint-staged to v15.3.0 ([11f9bad](https://github.com/kelektiv/node-cron/commit/11f9badb761d06cd74a543116854094559acb813))
+* **deps:** update semantic-release related packages ([b830bdb](https://github.com/kelektiv/node-cron/commit/b830bdb41df2ebc48d3510ffd71f3d59255eaf11))
+* **deps:** update tests (major) ([#826](https://github.com/kelektiv/node-cron/issues/826)) ([e47fd5a](https://github.com/kelektiv/node-cron/commit/e47fd5aaefb5452fd06e4a76b847110a13832456))
+
+## [3.3.2](https://github.com/kelektiv/node-cron/compare/v3.3.1...v3.3.2) (2024-12-30)
+
+### 🐛 Bug Fixes
+
+* fix infinite loop on expressions resolving only inside a DST forward jump ([#938](https://github.com/kelektiv/node-cron/issues/938)) ([efb8df5](https://github.com/kelektiv/node-cron/commit/efb8df53405b4ce2ea2e70be9e4d90c124616a51)), closes [/github.com/kelektiv/node-cron/pull/667/files#diff-c14c2dca8456f15417b39cfbd9758009f8eb4f3a190a415768d6e4ae6ae9dceeL473-L477](https://github.com/kelektiv//github.com/kelektiv/node-cron/pull/667/files/issues/diff-c14c2dca8456f15417b39cfbd9758009f8eb4f3a190a415768d6e4ae6ae9dceeL473-L477) [#919](https://github.com/kelektiv/node-cron/issues/919) [#919](https://github.com/kelektiv/node-cron/issues/919)
+
 ## [3.3.2-beta.1](https://github.com/kelektiv/node-cron/compare/v3.3.1...v3.3.2-beta.1) (2024-12-27)
 
 ### 🐛 Bug Fixes
@@ -11,6 +50,10 @@
 
 ### ♻️ Chores
 
+<<<<<<< HEAD
+=======
+* **deps:** lock file maintenance ([70c3339](https://github.com/kelektiv/node-cron/commit/70c333955612d39b692ab9535b36fe33423eb593))
+>>>>>>> main
 * **deps:** lock file maintenance ([afad454](https://github.com/kelektiv/node-cron/commit/afad454e5e4f52e3da54965a0e10540e035c4f58))
 * **deps:** lock file maintenance ([b1dbf69](https://github.com/kelektiv/node-cron/commit/b1dbf69104a58022a638d5b68b59f85089fae7c6))
 * **deps:** pin dependencies ([#915](https://github.com/kelektiv/node-cron/issues/915)) ([dfcbd3c](https://github.com/kelektiv/node-cron/commit/dfcbd3cf7d901415bda5b4929566bd4ad527af62))

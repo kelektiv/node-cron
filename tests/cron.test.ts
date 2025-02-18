@@ -616,26 +616,22 @@ describe('cron', () => {
 
 	it('should not get into an infinite loop on invalid times', () => {
 		expect(() => {
-			new CronJob(
-				'* 60 * * * *',
-				() => {
-					expect(true).toBe(true);
-				},
-				null,
-				true
-			);
+			new CronJob('* 60 * * * *', () => {}, null, true);
 		}).toThrow();
 
 		expect(() => {
-			new CronJob(
-				'* * 24 * * *',
-				() => {
-					expect(true).toBe(true);
-				},
-				null,
-				true
-			);
+			new CronJob('* * 24 * * *', () => {}, null, true);
 		}).toThrow();
+
+		expect(() => {
+			new CronJob('0 0 30 FEB *', callback, null, true);
+		}).toThrow();
+	});
+
+	it('should not throw if at least one time is valid', () => {
+		expect(() => {
+			new CronJob('0 0 30 JAN,FEB *', callback, null, true);
+		}).not.toThrow();
 	});
 
 	it('should test start of month', () => {
@@ -856,6 +852,7 @@ describe('cron', () => {
 
 		// tick by 1 day
 		clock.tick(24 * 60 * 60 * 1000);
+		clock.restore();
 		job.stop();
 		expect(callback).toHaveBeenCalledTimes(1);
 	});
@@ -1151,6 +1148,44 @@ describe('cron', () => {
 		expect(callback).toHaveBeenCalledTimes(1);
 	});
 
+	it('should catch errors every time, if errorHandler is provided', () => {
+		const clock = sinon.useFakeTimers();
+		const errorFunc = jest.fn().mockImplementation(() => {
+			throw Error('Exception');
+		});
+		const handlerFunc = jest.fn();
+		const job = CronJob.from({
+			cronTime: '* * * * * *',
+			onTick: errorFunc,
+			errorHandler: handlerFunc,
+			start: true
+		});
+		clock.tick(1000);
+		expect(errorFunc).toHaveBeenCalledTimes(1);
+		expect(handlerFunc).toHaveBeenCalledTimes(1);
+		expect(handlerFunc).toHaveBeenLastCalledWith(new Error('Exception'));
+		clock.tick(1000);
+		expect(errorFunc).toHaveBeenCalledTimes(2);
+		expect(handlerFunc).toHaveBeenCalledTimes(2);
+		expect(handlerFunc).toHaveBeenLastCalledWith(new Error('Exception'));
+
+		job.stop();
+		clock.restore();
+	});
+
+	it('should log errors if errorHandler is NOT provided', () => {
+		const errorFunc = jest.fn().mockImplementation(() => {
+			throw Error('Exception');
+		});
+		console.error = jest.fn();
+		CronJob.from({
+			cronTime: '* * * * * *',
+			onTick: errorFunc,
+			runOnInit: true
+		});
+		expect(console.error).toHaveBeenCalled();
+	});
+
 	describe('waitForCompletion and job status tracking', () => {
 		it('should wait for async job completion when waitForCompletion is true', async () => {
 			const clock = sinon.useFakeTimers();
@@ -1297,6 +1332,55 @@ describe('cron', () => {
 			expect(isJobCompleted).toBe(true);
 			expect(job.isCallbackRunning).toBe(false);
 			expect(job.running).toBe(false);
+		});
+	});
+
+	describe('Daylight Saving Time', () => {
+		// https://github.com/kelektiv/node-cron/issues/919
+		it('should not get into an infinite loop on Lisbon DST forward jump', () => {
+			const d = DateTime.fromISO('2024-03-30T00:59:59', {
+				zone: 'Europe/Lisbon'
+			}).toJSDate();
+			const clock = sinon.useFakeTimers(d.getTime());
+
+			console.debug({ d });
+
+			const job = new CronJob(
+				'0 1 30 3 *',
+				callback,
+				null,
+				true,
+				'Europe/Lisbon'
+			);
+
+			clock.tick(1000);
+			expect(callback).toHaveBeenCalledTimes(1);
+
+			clock.restore();
+			job.stop();
+		});
+
+		it('should not get into an infinite loop on Paris DST forward jump', () => {
+			const d = DateTime.fromISO('2024-03-31T01:59:59', {
+				zone: 'Europe/Paris'
+			}).toJSDate();
+			const clock = sinon.useFakeTimers(d.getTime());
+
+			console.debug({ d });
+
+			const job = new CronJob(
+				'0 2 31 3 *',
+				callback,
+				null,
+				true,
+				'Europe/Paris'
+			);
+
+			clock.tick(1000);
+			expect(callback).toHaveBeenCalledTimes(1);
+
+			clock.restore();
+			job.stop();
 		});
 	});
 });

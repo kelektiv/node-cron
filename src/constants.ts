@@ -6,20 +6,6 @@ export const CONSTRAINTS = Object.freeze({
 	month: [1, 12],
 	dayOfWeek: [0, 7]
 } as const);
-export const MONTH_CONSTRAINTS = Object.freeze({
-	1: 31,
-	2: 29, // support leap year...not perfect
-	3: 31,
-	4: 30,
-	5: 31,
-	6: 30,
-	7: 31,
-	8: 31,
-	9: 30,
-	10: 31,
-	11: 30,
-	12: 31
-} as const);
 export const PARSE_DEFAULTS = Object.freeze({
 	second: '0',
 	minute: '*',
