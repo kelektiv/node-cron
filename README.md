@@ -57,6 +57,19 @@ npm install cron
 With the introduction of TypeScript in version 3 and alignment with UNIX cron patterns, a few changes have been made:
 
 <details>
+  <summary>Migrating from v3 to v4</summary>
+
+### Dropped Node version
+
+Node v16 is no longer supported. Upgrade your Node installation to Node v18 (LTS) or above
+
+### Property renamed and now read-only
+
+You can no longer set the `running` property (now `isActive`). It is read-only. To start or stop a cron job, use `job.start()` and `job.stop()`.
+
+</details>
+
+<details>
   <summary>Migrating from v2 to v3</summary>
 
 ### Month & day-of-week indexing changes
@@ -220,6 +233,8 @@ day of week    0-7 (0 or 7 is Sunday, or use names)
 
 #### Properties
 
+- `isActive`: [READ-ONLY] Indicates if a job is active (checking to see if the callback needs to be called).
+
 - `isCallbackRunning`: [READ-ONLY] Indicates if a callback is currently executing.
 
   ```javascript
@@ -231,8 +246,8 @@ day of week    0-7 (0 or 7 is Sunday, or use names)
 
   console.log(job.isCallbackRunning); // false
   job.start();
-  console.log(job.running); // true (schedule is active)
-  console.log(job.isCallbackRunning); // false (no callback executing)
+  console.log(job.isActive); // true
+  console.log(job.isCallbackRunning); // false
   ```
 
 ### CronTime Class
