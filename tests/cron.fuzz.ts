@@ -48,9 +48,9 @@ function testCronJob(
 			unrefTimeout
 		);
 
-		expect(job.running).toBe(start);
+		expect(job.isActive).toBe(start);
 		job.stop();
-		expect(job.running).toBe(false);
+		expect(job.isActive).toBe(false);
 
 		expect(job.cronTime.source).toBe(cronTime);
 	} catch (error) {
