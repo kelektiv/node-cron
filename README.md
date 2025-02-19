@@ -37,7 +37,7 @@ npm install cron
 3. [Migrating](#-migrating)
 4. [Basic Usage](#-basic-usage)
 5. [Cron Patterns](#-cron-patterns)
-   - [Cron Syntax Overview](#cron-patterns)
+   - [Cron Syntax Overview](#-cron-patterns)
    - [Supported Ranges](#supported-ranges)
 6. [API](#-api)
    - [Standalone Functions](#standalone-functions)
