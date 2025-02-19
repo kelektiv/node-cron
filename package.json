@@ -40,7 +40,7 @@
 		"@semantic-release/npm": "12.0.1",
 		"@semantic-release/release-notes-generator": "14.0.3",
 		"@types/jest": "29.5.14",
-		"@types/node": "22.10.5",
+		"@types/node": "22.13.4",
 		"@types/sinon": "17.0.3",
 		"chai": "5.1.2",
 		"eslint": "8.57.1",
@@ -49,12 +49,12 @@
 		"eslint-plugin-prettier": "5.2.3",
 		"husky": "9.1.7",
 		"jest": "29.7.0",
-		"lint-staged": "15.3.0",
+		"lint-staged": "15.4.3",
 		"prettier": "3.5.1",
 		"semantic-release": "24.2.3",
 		"sinon": "19.0.2",
 		"ts-jest": "29.2.5",
-		"typescript": "5.7.2",
+		"typescript": "5.7.3",
 		"typescript-eslint": "7.18.0"
 	},
 	"keywords": [
