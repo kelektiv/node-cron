@@ -179,6 +179,15 @@ day of week    0-7 (0 or 7 is Sunday, or use names)
   console.log(`The job would run in ${timeout}ms`);
   ```
 
+- `isCronTimeValid`: Validates if a given cron expression is valid (returns a boolean).
+
+  ```javascript
+  import * as cron from 'cron';
+
+  const isValid = cron.isCronTimeValid('0 0 * * *');
+  console.log(`Is the cron expression valid? ${isValid}`);
+  ```
+
 ### CronJob Class
 
 #### Constructor
