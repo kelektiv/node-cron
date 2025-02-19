@@ -1,6 +1,6 @@
 import { DateTime } from 'luxon';
 import sinon from 'sinon';
-import { CronTime } from '../src';
+import { CronTime, isCronTimeValid } from '../src';
 
 describe('crontime', () => {
 	// eslint-disable-next-line jest/no-standalone-expect
@@ -776,5 +776,21 @@ describe('crontime', () => {
 			// @ts-expect-error testing runtime exception
 			new CronTime('* * * * *', 'Asia/Amman', 120);
 		}).toThrow();
+	});
+});
+
+describe('isCronTimeValid', () => {
+	it('should return true for valid cron expressions', () => {
+		expect(isCronTimeValid('* * * * *')).toBe(true);
+		expect(isCronTimeValid('0 0 * * *')).toBe(true);
+		expect(isCronTimeValid('0 0 1 1 *')).toBe(true);
+		expect(isCronTimeValid('*/5 * * * *')).toBe(true);
+	});
+
+	it('should return false for invalid cron expressions', () => {
+		expect(isCronTimeValid('* * * *')).toBe(false);
+		expect(isCronTimeValid('60 * * * *')).toBe(false);
+		expect(isCronTimeValid('* * * * * * *')).toBe(false);
+		expect(isCronTimeValid('invalid cron')).toBe(false);
 	});
 });

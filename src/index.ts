@@ -20,3 +20,14 @@ export const sendAt = (cronTime: string | Date | DateTime): DateTime =>
 
 export const timeout = (cronTime: string | Date | DateTime): number =>
 	new CronTime(cronTime).getTimeout();
+
+export const isCronTimeValid = (
+	cronTime: string | Date | DateTime
+): boolean => {
+	try {
+		new CronTime(cronTime);
+		return true;
+	} catch (_) {
+		return false;
+	}
+};

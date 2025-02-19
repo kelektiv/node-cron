@@ -1,9 +1,3 @@
-import { CronJob } from '../src';
+import { isCronTimeValid } from '../src';
 
-try {
-	new CronJob('NOT VALID', () => {
-		console.log("shouldn't get printed");
-	});
-} catch (e) {
-	console.log('omg err', e);
-}
+console.log('is valid? ', isCronTimeValid('NOT VALID'));
