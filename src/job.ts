@@ -13,7 +13,6 @@ import {
 
 export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 	cronTime: CronTime;
-	running = false;
 	unrefTimeout = false;
 	lastExecution: Date | null = null;
 	runOnce = false;
@@ -24,9 +23,14 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 	waitForCompletion = false;
 	errorHandler?: CronJobParams<OC, C>['errorHandler'];
 
+	private _isActive = false;
 	private _isCallbackRunning = false;
 	private _timeout?: NodeJS.Timeout;
 	private _callbacks: CronCallback<C, WithOnComplete<OC>>[] = [];
+
+	get isActive() {
+		return this._isActive;
+	}
 
 	get isCallbackRunning() {
 		return this._isCallbackRunning;
@@ -202,7 +206,7 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 			throw new CronError('time must be an instance of CronTime.');
 		}
 
-		const wasRunning = this.running;
+		const wasRunning = this._isActive;
 		this.stop();
 
 		this.cronTime = time;
@@ -245,7 +249,7 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 	}
 
 	start() {
-		if (this.running) return;
+		if (this._isActive) return;
 
 		const MAXDELAY = 2147483647; // The maximum number of milliseconds setTimeout will wait.
 		let timeout = this.cronTime.getTimeout();
@@ -293,7 +297,7 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 				// We have arrived at the correct point in time.
 				this.lastExecution = new Date();
 
-				this.running = false;
+				this._isActive = false;
 
 				// start before calling back so the callbacks have the ability to stop the cron job
 				if (!this.runOnce) this.start();
@@ -303,7 +307,7 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 		};
 
 		if (timeout >= 0) {
-			this.running = true;
+			this._isActive = true;
 
 			// Don't try to sleep more than MAXDELAY ms at a time.
 
@@ -343,7 +347,7 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 	 */
 	stop() {
 		if (this._timeout) clearTimeout(this._timeout);
-		this.running = false;
+		this._isActive = false;
 
 		if (!this.waitForCompletion) {
 			void this._executeOnComplete();

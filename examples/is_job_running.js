@@ -7,4 +7,4 @@ const job = new CronJob('* * * * * *', function () {
 });
 console.log('After job instantiation');
 job.start();
-console.log('is job running? ', job.running);
+console.log('is job active? ', job.isActive);

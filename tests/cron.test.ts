@@ -630,7 +630,8 @@ describe('cron', () => {
 
 	it('should not throw if at least one time is valid', () => {
 		expect(() => {
-			new CronJob('0 0 30 JAN,FEB *', callback, null, true);
+			const job = new CronJob('0 0 30 JAN,FEB *', callback, null, true);
+			job.stop();
 		}).not.toThrow();
 	});
 
@@ -1021,7 +1022,7 @@ describe('cron', () => {
 			clock.tick(60000);
 
 			expect(callback).toHaveBeenCalledTimes(1);
-			expect(job.running).toBe(false);
+			expect(job.isActive).toBe(false);
 		});
 	});
 
@@ -1331,7 +1332,7 @@ describe('cron', () => {
 
 			expect(isJobCompleted).toBe(true);
 			expect(job.isCallbackRunning).toBe(false);
-			expect(job.running).toBe(false);
+			expect(job.isActive).toBe(false);
 		});
 	});
 
