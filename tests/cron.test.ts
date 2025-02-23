@@ -19,6 +19,30 @@ describe('cron', () => {
 		sinon.restore();
 	});
 
+	it('should not stop job if sendAt takes time to complete (#962)', () => {
+		const EVERY = 5;
+		const TICK = EVERY * 1000;
+		const DELAY = 350;
+
+		const date = new Date('2025-02-23T14:00:00.000Z');
+		const clock = sinon.useFakeTimers(date.getTime());
+
+		sinon
+			.stub(Date, 'now')
+			.onCall(0)
+			.returns(date.getTime())
+			.onCall(1)
+			.returns(date.getTime() + TICK)
+			.onCall(2)
+			.returns(date.getTime() + TICK + DELAY);
+
+		const job = new CronJob(`*/${EVERY} * * * * *`, callback, null, true);
+		clock.tick(TICK);
+
+		expect(job.isActive).toBe(true);
+		expect(callback).toHaveBeenCalledTimes(1);
+	});
+
 	describe('with seconds', () => {
 		it('should run every second (* * * * * *)', () => {
 			const clock = sinon.useFakeTimers();
