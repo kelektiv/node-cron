@@ -305,9 +305,9 @@ export class CronTime {
 					date = newDate;
 					if (isDone) break;
 				}
-				// backwards jumps do not seem to have any problems (i.e. double activations),
-				// so they need not be handled in a similar way.
-
+				// When turning the time back, without this check a job would not execute until an hour after the time change
+				if (this._backwardDSTJump(expectedHour, expectedMinute, date)) {
+				}
 				continue;
 			}
 

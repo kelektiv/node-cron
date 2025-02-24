@@ -1398,7 +1398,16 @@ describe('cron', () => {
 				'Australia/Melbourne'
 			);
 
-			clock.tick(1000 * 60 * 60);
+			console.log(d);
+
+			console.log(job.nextDate().toUTC());
+
+			clock.tick(1000 * 60 * 30);
+
+			console.log(job.nextDate().toUTC());
+
+			clock.tick(1000 * 60 * 30);
+
 			expect(callback).toHaveBeenCalledTimes(2);
 
 			clock.restore();
