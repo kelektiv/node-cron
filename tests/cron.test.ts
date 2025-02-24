@@ -1383,5 +1383,26 @@ describe('cron', () => {
 			clock.restore();
 			job.stop();
 		});
+
+		it('should still execute when the time changes back one hour', () => {
+			const d = DateTime.fromISO('2024-04-07T02:00:00.000', {
+				zone: 'Australia/Melbourne'
+			}).toJSDate();
+			const clock = sinon.useFakeTimers(d.getTime());
+
+			const job = new CronJob(
+				'*/30 * * * *',
+				callback,
+				null,
+				true,
+				'Australia/Melbourne'
+			);
+
+			clock.tick(1000 * 60 * 60);
+			expect(callback).toHaveBeenCalledTimes(2);
+
+			clock.restore();
+			job.stop();
+		});
 	});
 });
