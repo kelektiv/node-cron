@@ -75,6 +75,23 @@ export class CronTime {
 		}
 	}
 
+	static validateCronExpression(cronExpression: string): {
+		valid: boolean;
+		error?: CronError;
+	} {
+		try {
+			new CronTime(cronExpression);
+			return {
+				valid: true
+			};
+		} catch (error: any) {
+			return {
+				valid: false,
+				error
+			};
+		}
+	}
+
 	private _getWeekDay(date: DateTime) {
 		return date.weekday === 7 ? 0 : date.weekday;
 	}

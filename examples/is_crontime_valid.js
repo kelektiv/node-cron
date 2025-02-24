@@ -1,3 +1,3 @@
-import { isCronTimeValid } from '../src';
+import { validateCronExpression } from '../src';
 
-console.log('is valid? ', isCronTimeValid('NOT VALID'));
+console.log('is valid? ', validateCronExpression('NOT VALID').valid);
