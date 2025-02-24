@@ -1,6 +1,7 @@
 import { DateTime } from 'luxon';
 import sinon from 'sinon';
 import { CronTime, validateCronExpression } from '../src';
+import { CronError } from '../src/errors';
 
 describe('crontime', () => {
 	// eslint-disable-next-line jest/no-standalone-expect
@@ -781,16 +782,32 @@ describe('crontime', () => {
 
 describe('validateCronExpression', () => {
 	it('should return true for valid cron expressions', () => {
-		expect(validateCronExpression('* * * * *').valid).toBe(true);
-		expect(validateCronExpression('0 0 * * *').valid).toBe(true);
-		expect(validateCronExpression('0 0 1 1 *').valid).toBe(true);
-		expect(validateCronExpression('*/5 * * * *').valid).toBe(true);
+		const validExpressions = [
+			'* * * * *',
+			'0 0 * * *',
+			'0 0 1 1 *',
+			'*/5 * * * *'
+		];
+
+		validExpressions.forEach(expression => {
+			const validation = validateCronExpression(expression);
+			expect(validation.valid).toBe(true);
+			expect(validation.error).toBeUndefined();
+		});
 	});
 
 	it('should return false for invalid cron expressions', () => {
-		expect(validateCronExpression('* * * *').valid).toBe(false);
-		expect(validateCronExpression('60 * * * *').valid).toBe(false);
-		expect(validateCronExpression('* * * * * * *').valid).toBe(false);
-		expect(validateCronExpression('invalid cron').valid).toBe(false);
+		const invalidExpressions = [
+			'* * * *',
+			'60 * * * *',
+			'* * * * * * *',
+			'invalid cron'
+		];
+
+		invalidExpressions.forEach(expression => {
+			const validation = validateCronExpression(expression);
+			expect(validation.valid).toBe(false);
+			expect(validation.error).toBeInstanceOf(CronError);
+		});
 	});
 });
