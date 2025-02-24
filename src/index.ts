@@ -20,3 +20,5 @@ export const sendAt = (cronTime: string | Date | DateTime): DateTime =>
 
 export const timeout = (cronTime: string | Date | DateTime): number =>
 	new CronTime(cronTime).getTimeout();
+
+export const validateCronExpression = CronTime.validateCronExpression;

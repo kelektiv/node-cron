@@ -1,6 +1,7 @@
 import { DateTime } from 'luxon';
 import sinon from 'sinon';
-import { CronTime } from '../src';
+import { CronTime, validateCronExpression } from '../src';
+import { CronError } from '../src/errors';
 
 describe('crontime', () => {
 	// eslint-disable-next-line jest/no-standalone-expect
@@ -776,5 +777,37 @@ describe('crontime', () => {
 			// @ts-expect-error testing runtime exception
 			new CronTime('* * * * *', 'Asia/Amman', 120);
 		}).toThrow();
+	});
+});
+
+describe('validateCronExpression', () => {
+	it('should return true for valid cron expressions', () => {
+		const validExpressions = [
+			'* * * * *',
+			'0 0 * * *',
+			'0 0 1 1 *',
+			'*/5 * * * *'
+		];
+
+		validExpressions.forEach(expression => {
+			const validation = validateCronExpression(expression);
+			expect(validation.valid).toBe(true);
+			expect(validation.error).toBeUndefined();
+		});
+	});
+
+	it('should return false for invalid cron expressions', () => {
+		const invalidExpressions = [
+			'* * * *',
+			'60 * * * *',
+			'* * * * * * *',
+			'invalid cron'
+		];
+
+		invalidExpressions.forEach(expression => {
+			const validation = validateCronExpression(expression);
+			expect(validation.valid).toBe(false);
+			expect(validation.error).toBeInstanceOf(CronError);
+		});
 	});
 });
