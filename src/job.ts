@@ -10,7 +10,6 @@ import {
 	CronOnCompleteCommand,
 	WithOnComplete
 } from './types/cron.types';
-import { DateTime } from 'luxon';
 
 export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 	cronTime: CronTime;
