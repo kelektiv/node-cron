@@ -636,21 +636,20 @@ describe('cron', () => {
 	});
 
 	it('should test start of month', () => {
-		const d = new Date('12/31/2014');
-		d.setSeconds(59);
-		d.setMinutes(59);
-		d.setHours(23);
+		const d = new Date(Date.UTC(2014, 12, 31, 23, 59, 59));
 		const clock = sinon.useFakeTimers(d.getTime());
 
 		const job = new CronJob('0 0 0 1 * *', callback, null, true);
 
+		// first millisecond of January
 		clock.tick(1001);
 		expect(callback).toHaveBeenCalledTimes(1);
-
-		clock.tick(2678399001);
+		// 2 ms less than 28 days; last millisecond of February
+		clock.tick(28 * 24 * 60 * 60 * 1000 - 2);
 		expect(callback).toHaveBeenCalledTimes(1);
 
-		clock.tick(2678400001); // jump over 2 firsts
+		// 1 ms more than 31 days; jump over 2 firsts
+		clock.tick(31 * 24 * 60 * 60 * 1000 + 1);
 		clock.restore();
 		job.stop();
 
@@ -837,7 +836,7 @@ describe('cron', () => {
 	 * source: https://github.com/cronie-crond/cronie/blob/0d669551680f733a4bdd6bab082a0b3d6d7f089c/src/cronnext.c#L401-L403
 	 */
 	it('should work correctly for max match interval', () => {
-		const d = new Date(2096, 2, 1);
+		const d = new Date(Date.UTC(2096, 2, 1));
 		const clock = sinon.useFakeTimers(d.getTime());
 
 		const job = CronJob.from({
@@ -1385,30 +1384,35 @@ describe('cron', () => {
 		});
 
 		it('should still execute when the time changes back one hour', () => {
-			const d = DateTime.fromISO('2024-04-07T02:00:00.000', {
+			// There are two instances of 2 am. Setting to an earlier time so it is not ambiguous
+			// See https://moment.github.io/luxon/#/zones?id=ambiguous-times
+			const d = DateTime.fromISO('2024-04-07T01:45:00.000', {
 				zone: 'Australia/Melbourne'
 			}).toJSDate();
 			const clock = sinon.useFakeTimers(d.getTime());
 
 			const job = new CronJob(
 				'*/30 * * * *',
-				callback,
+				() => {
+					console.log(`executing cron job at ${new Date().toISOString()}`);
+					callback();
+				},
 				null,
 				true,
 				'Australia/Melbourne'
 			);
 
-			console.log(d);
+			// console.log(d);
 
-			console.log(job.nextDate().toUTC());
+			// console.log(job.nextDate().toUTC());
 
-			clock.tick(1000 * 60 * 30);
+			clock.tick(1000 * 60 * 60 * 3);
 
-			console.log(job.nextDate().toUTC());
+			// console.log(job.nextDate().toUTC());
 
-			clock.tick(1000 * 60 * 30);
+			// clock.tick(1000 * 60 * 30);
 
-			expect(callback).toHaveBeenCalledTimes(2);
+			expect(callback).toHaveBeenCalledTimes(6);
 
 			clock.restore();
 			job.stop();

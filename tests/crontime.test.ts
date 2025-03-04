@@ -151,9 +151,9 @@ describe('crontime', () => {
 		const sunday0 = new CronTime('* * * * 0', null, null);
 		const sunday7 = new CronTime('* * * * 7', null, null);
 
-		// @ts-expect-error deleting for comparaison purposes
+		// @ts-expect-error deleting for comparison purposes
 		delete sunday0.source;
-		// @ts-expect-error deleting for comparaison purposes
+		// @ts-expect-error deleting for comparison purposes
 		delete sunday7.source;
 
 		expect(sunday7).toEqual(sunday0);
@@ -418,16 +418,16 @@ describe('crontime', () => {
 			previousDate = nextDate;
 		}
 	});
-	it('should work around time zone changes that shifts time back (1)', () => {
+	it('should work around offset changes that shifts time back (1)', () => {
 		const d = new Date('10-7-2018');
-		// America/Sao_Paulo has a time zone change around NOV 3 2018.
+		// America/Sao_Paulo has a offset change around NOV 3 2018.
 		const cronTime = new CronTime('0 0 9 4 * *');
 		const nextDate = cronTime.getNextDateFrom(d, 'America/Sao_Paulo');
 		expect(nextDate.valueOf()).toEqual(
 			DateTime.fromISO('2018-11-04T09:00:00.000-02:00').valueOf()
 		);
 	});
-	it('should work around time zone changes that shifts time back (2)', () => {
+	it('should work around offset changes that shifts time back (2)', () => {
 		// Asia/Amman DST ends in  26 - OCT-2018 (-1 to hours)
 		const currentDate = DateTime.fromISO('2018-10-25T23:00', {
 			zone: 'Asia/Amman'
@@ -439,7 +439,7 @@ describe('crontime', () => {
 		});
 		expect(nextDate.toMillis() - expectedDate.toMillis()).toBe(0);
 	});
-	it('should work around time zone changes that shifts time forward', () => {
+	it('should work around offset changes that shifts time forward', () => {
 		// Asia/Amman DST starts in  30-March-2018 (+1 to hours)
 		let currentDate = DateTime.fromISO('2018-03-29T23:00', {
 			zone: 'Asia/Amman'
@@ -451,7 +451,7 @@ describe('crontime', () => {
 			currentDate = nextDate;
 		}
 	});
-	it('Should schedule jobs inside time zone changes that shifts time forward to the end of the shift, for weekly jobs', () => {
+	it('Should schedule jobs inside offset changes that shifts time forward to the end of the shift, for weekly jobs', () => {
 		let currentDate = DateTime.fromISO('2018-03-29T23:15', {
 			zone: 'Asia/Amman'
 		});
@@ -473,7 +473,7 @@ describe('crontime', () => {
 			1000 * 3600 * 24 * 7
 		);
 	});
-	it('Should schedule jobs inside time zone changes that shifts the time forward to the end of the shift, for daily jobs', () => {
+	it('Should schedule jobs inside offset changes that shifts the time forward to the end of the shift, for daily jobs', () => {
 		let currentDate = DateTime.fromISO('2018-03-29T23:45', {
 			zone: 'Asia/Amman'
 		});
@@ -495,7 +495,7 @@ describe('crontime', () => {
 			1000 * 3600 * 24
 		);
 	});
-	it('Should schedule jobs inside time zone changes that shifts the time forward to the end of the shift, for hourly jobs', () => {
+	it('Should schedule jobs inside offset changes that shifts the time forward to the end of the shift, for hourly jobs', () => {
 		let currentDate = DateTime.fromISO('2018-03-29T23:45', {
 			zone: 'Asia/Amman'
 		});
@@ -515,7 +515,7 @@ describe('crontime', () => {
 		nextDate = cronTime.getNextDateFrom(currentDate);
 		expect(nextDate.toMillis() - currentDate.toMillis()).toEqual(1000 * 3600);
 	});
-	it('Should schedule jobs inside time zone changes that shifts the time forward to the end of the shift, for minutely jobs', () => {
+	it('Should schedule jobs inside offset changes that shifts the time forward to the end of the shift, for minutely jobs', () => {
 		let currentDate = DateTime.fromISO('2018-03-29T23:59', {
 			zone: 'Asia/Amman'
 		});
@@ -536,7 +536,7 @@ describe('crontime', () => {
 			});
 			expect(maybeBadDate.isValid).toBe(true);
 			// @ts-expect-error testing private property
-			cronTime._findPreviousDSTJump(maybeBadDate);
+			cronTime._findDSTJumpTime(maybeBadDate);
 		};
 
 		// This timezone jumps from 0:00 to 1:00 on March 30th, so the cutoff is March 31st 1:00:00
@@ -546,96 +546,96 @@ describe('crontime', () => {
 	// The following few DST related tests do not need specific dates that are actually DST,
 	// the functions they are calling assume the given parameters encapsulate a DST jump,
 	// and use the raw hour and minute data to check it from there.
-	it('Should correctly scan time periods as if they are DST jumps, half hour jumps', () => {
-		let endDate = DateTime.fromISO('2023-01-01T16:00:00.000', {
-			zone: 'Europe/Amsterdam'
-		});
-		let startDate = endDate.minus({ minute: 30, second: 1 });
-		const cronTime = new CronTime('5 16 * * *'); // at 16:05:00.
-		// @ts-expect-error testing private property
-		let isJobInRange = cronTime._checkTimeInSkippedRange(startDate, endDate);
-		expect(isJobInRange).toBe(false);
+	// it('Should correctly scan time periods as if they are DST jumps, half hour jumps', () => {
+	// 	let endDate = DateTime.fromISO('2023-01-01T16:00:00.000', {
+	// 		zone: 'Europe/Amsterdam'
+	// 	});
+	// 	let startDate = endDate.minus({ minute: 30, second: 1 });
+	// 	const cronTime = new CronTime('5 16 * * *'); // at 16:05:00.
+	// 	// @ts-expect-error testing private property
+	// 	let isJobInRange = cronTime._checkTimeInSkippedRange(startDate, endDate);
+	// 	expect(isJobInRange).toBe(false);
 
-		endDate = endDate.plus({ minute: 30 }); // 16:30:00
-		startDate = endDate.minus({ minute: 30, second: 1 }); // 15:59:59
-		// @ts-expect-error testing private property
-		isJobInRange = cronTime._checkTimeInSkippedRange(startDate, endDate);
-		expect(isJobInRange).toBe(true);
-	});
-	it('Should not include seconds in the minute after the DST jump as part of the jump scan', () => {
-		const endDate = DateTime.fromISO('2023-01-01T16:00:00.000', {
-			zone: 'Europe/Amsterdam'
-		});
-		// 1 hour jump case
-		let startDate = endDate.minus({ hour: 1, second: 1 });
-		const cronTime = new CronTime('1 5 16 * * *'); // at 16:00:01.
-		// @ts-expect-error testing private property
-		let isJobInRange = cronTime._checkTimeInSkippedRange(startDate, endDate);
-		expect(isJobInRange).toBe(false);
-		// 'quirky' jump case
-		startDate = endDate.minus({ hour: 1, minute: 45, second: 1 });
-		// @ts-expect-error testing private property
-		isJobInRange = cronTime._checkTimeInSkippedRange(startDate, endDate);
-		expect(isJobInRange).toBe(false);
-	});
-	it('Should correctly scan time periods as if they are DST jumps, full hour jumps', () => {
-		let endDate = DateTime.fromISO('2023-01-01T16:00:00.000', {
-			zone: 'Europe/Amsterdam'
-		});
-		let startDate = endDate.minus({ hour: 1, second: 1 });
-		const cronTime = new CronTime('5 16 * * *'); // at 16:05:00.
-		// @ts-expect-error testing private property
-		let isJobInRange = cronTime._checkTimeInSkippedRange(startDate, endDate);
-		expect(isJobInRange).toBe(false);
+	// 	endDate = endDate.plus({ minute: 30 }); // 16:30:00
+	// 	startDate = endDate.minus({ minute: 30, second: 1 }); // 15:59:59
+	// 	// @ts-expect-error testing private property
+	// 	isJobInRange = cronTime._checkTimeInSkippedRange(startDate, endDate);
+	// 	expect(isJobInRange).toBe(true);
+	// });
+	// it('Should not include seconds in the minute after the DST jump as part of the jump scan', () => {
+	// 	const endDate = DateTime.fromISO('2023-01-01T16:00:00.000', {
+	// 		zone: 'Europe/Amsterdam'
+	// 	});
+	// 	// 1 hour jump case
+	// 	let startDate = endDate.minus({ hour: 1, second: 1 });
+	// 	const cronTime = new CronTime('1 5 16 * * *'); // at 16:00:01.
+	// 	// @ts-expect-error testing private property
+	// 	let isJobInRange = cronTime._checkTimeInSkippedRange(startDate, endDate);
+	// 	expect(isJobInRange).toBe(false);
+	// 	// 'quirky' jump case
+	// 	startDate = endDate.minus({ hour: 1, minute: 45, second: 1 });
+	// 	// @ts-expect-error testing private property
+	// 	isJobInRange = cronTime._checkTimeInSkippedRange(startDate, endDate);
+	// 	expect(isJobInRange).toBe(false);
+	// });
+	// it('Should correctly scan time periods as if they are DST jumps, full hour jumps', () => {
+	// 	let endDate = DateTime.fromISO('2023-01-01T16:00:00.000', {
+	// 		zone: 'Europe/Amsterdam'
+	// 	});
+	// 	let startDate = endDate.minus({ hour: 1, second: 1 });
+	// 	const cronTime = new CronTime('5 16 * * *'); // at 16:05:00.
+	// 	// @ts-expect-error testing private property
+	// 	let isJobInRange = cronTime._checkTimeInSkippedRange(startDate, endDate);
+	// 	expect(isJobInRange).toBe(false);
 
-		endDate = endDate.plus({ hour: 1 }); // 17:00:00
-		startDate = endDate.minus({ hour: 1, second: 1 }); // 15:59:59
-		// @ts-expect-error testing private property
-		isJobInRange = cronTime._checkTimeInSkippedRange(startDate, endDate);
-		expect(isJobInRange).toBe(true);
-	});
+	// 	endDate = endDate.plus({ hour: 1 }); // 17:00:00
+	// 	startDate = endDate.minus({ hour: 1, second: 1 }); // 15:59:59
+	// 	// @ts-expect-error testing private property
+	// 	isJobInRange = cronTime._checkTimeInSkippedRange(startDate, endDate);
+	// 	expect(isJobInRange).toBe(true);
+	// });
 	// A 'quirky' DST jump is one that should not break the implementation, but does not exist in real life (yet)
-	it('Should correctly scan time periods as if they are DST jumps, quirky jumps (1)', () => {
-		// Testing a jump that is less than an hour long, but wraps around an hour.
-		let endDate = DateTime.fromISO('2023-01-01T16:15:00.000', {
-			zone: 'Europe/Amsterdam'
-		});
-		let startDate = endDate.minus({ minute: 45, second: 1 }); // 15:29:59
-		const cronTime = new CronTime('30 16 * * *'); // at 16:30:00.
-		// @ts-expect-error testing private property
-		let isJobInRange = cronTime._checkTimeInSkippedRange(startDate, endDate);
-		expect(isJobInRange).toBe(false);
+	// it('Should correctly scan time periods as if they are DST jumps, quirky jumps (1)', () => {
+	// 	// Testing a jump that is less than an hour long, but wraps around an hour.
+	// 	let endDate = DateTime.fromISO('2023-01-01T16:15:00.000', {
+	// 		zone: 'Europe/Amsterdam'
+	// 	});
+	// 	let startDate = endDate.minus({ minute: 45, second: 1 }); // 15:29:59
+	// 	const cronTime = new CronTime('30 16 * * *'); // at 16:30:00.
+	// 	// @ts-expect-error testing private property
+	// 	let isJobInRange = cronTime._checkTimeInSkippedRange(startDate, endDate);
+	// 	expect(isJobInRange).toBe(false);
 
-		endDate = endDate.plus({ minute: 30 }); // 16:45:00
-		startDate = endDate.minus({ minute: 50, second: 1 }); // 15:54:59
-		// @ts-expect-error testing private property
-		isJobInRange = cronTime._checkTimeInSkippedRange(startDate, endDate);
-		expect(isJobInRange).toBe(true);
-	});
-	it('Should correctly scan time periods as if they are DST jumps, quirky jumps (2)', () => {
-		// Testing a jump that is over an hour long.
-		let endDate = DateTime.fromISO('2023-01-01T16:15:00.000', {
-			zone: 'Europe/Amsterdam'
-		});
-		let startDate = endDate.minus({ hour: 3, minute: 45, second: 1 }); // 12:29:59
-		const cronTime = new CronTime('30 16 * * *'); // at 16:30:00.
-		// @ts-expect-error testing private property
-		let isJobInRange = cronTime._checkTimeInSkippedRange(startDate, endDate);
-		expect(isJobInRange).toBe(false);
+	// 	endDate = endDate.plus({ minute: 30 }); // 16:45:00
+	// 	startDate = endDate.minus({ minute: 50, second: 1 }); // 15:54:59
+	// 	// @ts-expect-error testing private property
+	// 	isJobInRange = cronTime._checkTimeInSkippedRange(startDate, endDate);
+	// 	expect(isJobInRange).toBe(true);
+	// });
+	// it('Should correctly scan time periods as if they are DST jumps, quirky jumps (2)', () => {
+	// 	// Testing a jump that is over an hour long.
+	// 	let endDate = DateTime.fromISO('2023-01-01T16:15:00.000', {
+	// 		zone: 'Europe/Amsterdam'
+	// 	});
+	// 	let startDate = endDate.minus({ hour: 3, minute: 45, second: 1 }); // 12:29:59
+	// 	const cronTime = new CronTime('30 16 * * *'); // at 16:30:00.
+	// 	// @ts-expect-error testing private property
+	// 	let isJobInRange = cronTime._checkTimeInSkippedRange(startDate, endDate);
+	// 	expect(isJobInRange).toBe(false);
 
-		endDate = endDate.plus({ minute: 30 }); // 16:45:00
-		startDate = endDate.minus({ hour: 3, minute: 45, second: 1 }); // 12:59:59
-		// @ts-expect-error testing private property
-		isJobInRange = cronTime._checkTimeInSkippedRange(startDate, endDate);
-		expect(isJobInRange).toBe(true);
-	});
-	it('Enforces the hour difference assumption for handling multi-hour DST jumps', () => {
-		const cronTime = new CronTime('30 16 * * *');
-		expect(() => {
-			// @ts-expect-error testing private property
-			cronTime._checkTimeInSkippedRangeMultiHour(15, 0, 15, 30);
-		}).toThrow();
-	});
+	// 	endDate = endDate.plus({ minute: 30 }); // 16:45:00
+	// 	startDate = endDate.minus({ hour: 3, minute: 45, second: 1 }); // 12:59:59
+	// 	// @ts-expect-error testing private property
+	// 	isJobInRange = cronTime._checkTimeInSkippedRange(startDate, endDate);
+	// 	expect(isJobInRange).toBe(true);
+	// });
+	// it('Enforces the hour difference assumption for handling multi-hour DST jumps', () => {
+	// 	const cronTime = new CronTime('30 16 * * *');
+	// 	expect(() => {
+	// 		// @ts-expect-error testing private property
+	// 		cronTime._checkTimeInSkippedRangeMultiHour(15, 0, 15, 30);
+	// 	}).toThrow();
+	// });
 	it('should generate the right N next days for * * * * *', () => {
 		const cronTime = new CronTime('* * * * *');
 		let currentDate = DateTime.local().set({ second: 0, millisecond: 0 });

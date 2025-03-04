@@ -10,6 +10,7 @@ import {
 	CronOnCompleteCommand,
 	WithOnComplete
 } from './types/cron.types';
+import { DateTime } from 'luxon';
 
 export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 	cronTime: CronTime;
@@ -224,6 +225,7 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 		if (this.waitForCompletion && this._isCallbackRunning) return;
 
 		this._isCallbackRunning = true;
+		console.log(`cron job executed at ${DateTime.now().toString()}`);
 
 		try {
 			for (const callback of this._callbacks) {
