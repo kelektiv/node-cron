@@ -138,7 +138,6 @@ export class CronTime {
 
 		if (i === undefined || isNaN(i) || i < 0) {
 			const nextDate = this.getNextDateFrom(date);
-			console.log(`sendAt about to return ${nextDate.toUTC().toISOTime()}`);
 			// just get the next scheduled time
 			return nextDate;
 		} else {
@@ -157,12 +156,7 @@ export class CronTime {
 	 * Get the number of milliseconds in the future at which to fire our callbacks.
 	 */
 	getTimeout() {
-		const timeOut = Math.max(
-			-1,
-			this.sendAt().toMillis() - DateTime.utc().toMillis()
-		);
-		console.log(`getTimeout about to return ${timeOut}`);
-		return timeOut;
+		return Math.max(-1, this.sendAt().toMillis() - DateTime.utc().toMillis());
 	}
 
 	/**
@@ -225,20 +219,9 @@ export class CronTime {
 		const maxMatch = DateTime.now().plus({ years: 8 });
 		let offset = date.offset;
 
-		const prettyPrintTime = (time: any) => {
-			// return '';
-			return JSON.stringify(Object.keys(time).map(key => parseInt(key)));
-		};
-		// console.log(`
-		// 	getNextDateFrom ${date.month} ${prettyPrintTime(this.month)} ${date.day} ${prettyPrintTime(this.dayOfMonth)} ${this._getWeekDay(date)} ${prettyPrintTime(this.dayOfWeek)} ${date.hour} ${prettyPrintTime(this.hour)} ${date.minute} ${prettyPrintTime(this.minute)} ${date.second} ${prettyPrintTime(this.second)}
-		// `);
-
 		// determine next date
 		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 		while (true) {
-			const diff = date.toMillis() - start.toMillis();
-			// console.log(date.toISOTime(), date.toUTC().toISOTime());
-
 			// hard stop if the current date is after the maximum match interval
 			if (date > maxMatch) {
 				throw new CronError(
@@ -259,12 +242,6 @@ export class CronTime {
 				date = date.plus({ months: 1 });
 				date = date.set({ day: 1, hour: 0, minute: 0, second: 0 });
 
-				// if (offset !== date.offset) {
-				// 	offset = date.offset;
-				// 	const DSTJumpTime = this._findDSTJumpTime(date);
-				// 	date = newDate;
-				// 	if (isDone) break;
-				// }
 				continue;
 			}
 
@@ -317,15 +294,10 @@ export class CronTime {
 				continue;
 			}
 
-			// Assume DST changes will always happen on the same day
-
 			if (!(date.hour in this.hour) && Object.keys(this.hour).length !== 24) {
 				// Only allow the hour to be 24 if a day hasn't passed yet since we started calculating the new time
 				// Otherwise we'll be changing the day here even though we already determined the correct day
-				// const expectedHour =
-				// 	date.hour === 23 && diff > 86400000 ? 0 : date.hour + 1;
 				const preHourChangeDate = date;
-				// date = date.set({ hour: expectedHour });
 				date = date.plus({ hour: 1 });
 				date = date.set({ minute: 0, second: 0 });
 
@@ -343,11 +315,7 @@ export class CronTime {
 						// We skipped past a valid execution time and must execute immediately
 						break;
 					}
-					// TODO: case where we go back an hour
 				}
-				// When turning the time back, without this check a job would not execute until an hour after the time change
-				// if (this._backwardDSTJump(expectedHour, expectedMinute, date)) {
-				// }
 				continue;
 			}
 
@@ -355,23 +323,13 @@ export class CronTime {
 				!(date.minute in this.minute) &&
 				Object.keys(this.minute).length !== 60
 			) {
-				// const expectedMinute =
-				// 	date.minute === 59 && diff > 3600000 ? 0 : date.minute + 1;
-				// const expectedHour = date.hour + (expectedMinute === 60 ? 1 : 0);
 				const preMinuteChangeDate = date;
-				// date = date.set({ minute: expectedMinute });
 				date = date.plus({ minute: 1 });
 				date = date.set({ second: 0 });
 
-				// console.log(
-				// 	`changing time forward one minute, pre-time: ${preMinuteChangeDate.hour}:${preMinuteChangeDate.minute}, post-time: ${date.hour}:${date.minute}`
-				// );
 				// Same case as with hours: DST forward jump.
 				// This must be accounted for if a minute increment pushed us to a jumping point.
 				if (offset !== date.offset) {
-					console.log(
-						`minute offset change detected, pre-time: ${preMinuteChangeDate.hour}:${preMinuteChangeDate.minute}, post-time: ${date.hour}:${date.minute}`
-					);
 					offset = date.offset;
 					if (
 						preMinuteChangeDate.minute - date.minute > 1 ||
@@ -381,26 +339,20 @@ export class CronTime {
 						// We skipped past a valid execution time and must execute immediately
 						break;
 					}
-					if (preMinuteChangeDate.hour === date.hour) {
-						// If we don't execute we will miss a valid execution
-						break;
-					}
 				}
 
 				continue;
 			}
 
+			// Respond to the previous date being checked by advancing a second
+			// Just like when we advance seconds normally
 			if (
-				!(date.second in this.second) &&
-				Object.keys(this.second).length !== 60
+				date.toMillis() === firstDate ||
+				(!(date.second in this.second) &&
+					Object.keys(this.second).length !== 60)
 			) {
-				const expectedSecond =
-					date.second === 59 && diff > 60000 ? 0 : date.second + 1;
-				const expectedMinute = date.minute + (expectedSecond === 60 ? 1 : 0);
-				const expectedHour = date.hour + (expectedMinute === 60 ? 1 : 0);
-
 				const preSecondChangeDate = date;
-				date = date.set({ second: expectedSecond });
+				date = date.plus({ second: 1 });
 
 				// Seconds can cause it too, imagine 21:59:59 -> 23:00:00.
 				if (offset !== date.offset) {
@@ -418,356 +370,11 @@ export class CronTime {
 				continue;
 			}
 
-			if (date.toMillis() === firstDate) {
-				const expectedSecond = date.second + 1;
-				const expectedMinute = date.minute + (expectedSecond === 60 ? 1 : 0);
-				const expectedHour = date.hour + (expectedMinute === 60 ? 1 : 0);
-
-				date = date.set({ second: expectedSecond });
-
-				// Same as always.
-				if (offset !== date.offset) {
-					const preSecondChangeDate = date;
-					offset = date.offset;
-					// const DSTJumpTime = this._findDSTJumpTime(date);
-					// if (DSTJumpTime.hour !== date.hour && DSTJumpTime.hour in this.hour) {
-					// 	// We skipped past a valid execution time and must execute immediately
-					// 	break;
-					// }
-				}
-
-				continue;
-			}
-
 			break;
 		}
-		console.log(`getNextDateFrom returning date ${date.toUTC().toISOTime()}`);
 
 		return date;
 	}
-
-	/**
-	 * Search backwards in time 1 minute at a time, to detect a DST forward jump.
-	 * When the jump is found, the range of the jump is investigated to check for acceptable cron times.
-	 *
-	 * A pair is returned, whose first is a boolean representing if an acceptable time was found inside the jump,
-	 * and whose second is a DateTime representing the first millisecond after the jump.
-	 *
-	 * The input date is expected to be decently close to a DST jump.
-	 * Up to a day in the past is checked before an error is thrown.
-	 * @param date
-	 * @return [boolean, DateTime]
-	 */
-	private _findDSTJumpTime(date: DateTime): DateTime {
-		console.log(`_findDSTJumpTime with ${date}`);
-		/** @type number */
-		// let expectedMinute, expectedHour, actualMinute, actualHour;
-		/** @type DateTime */
-		// let maybeJumpingPoint = date;
-
-		// Representing one day of forward or backward checking in minutes. If this is hit, the input must be wrong.
-		// Extra iteration is to account for off by one error
-		const iterationLimit = 60 * 24 + 1;
-		let iteration = 0;
-		let offset = date.offset;
-		// Check for a forward jump
-		// let forwardIterationLimitExceeded, backwardIterationLimitExceeded;
-		while (iteration < iterationLimit && offset === date.offset) {
-			date = date.minus({ minute: 1 });
-			iteration++;
-		}
-		if (iteration >= iterationLimit) {
-			throw new CronError(
-				`ERROR: This DST checking related function assumes the input DateTime (${
-					date.toISO() ?? date.toMillis()
-				}) is within 24 hours of a DST jump.`
-			);
-		}
-		return date;
-
-		// do {
-		// 	if (++iteration > iterationLimit) {
-		// 		forwardIterationLimitExceeded = true;
-		// 		break;
-		// 		// throw new CronError(errorMessage);
-		// 	}
-
-		// 	expectedMinute = maybeJumpingPoint.minute - 1;
-		// 	expectedHour = maybeJumpingPoint.hour;
-
-		// 	if (expectedMinute < 0) {
-		// 		expectedMinute += 60;
-		// 		expectedHour = (expectedHour + 24 - 1) % 24; // Subtract 1 hour, but we must account for the -1 case.
-		// 	}
-
-		// 	maybeJumpingPoint = maybeJumpingPoint.minus({ minute: 1 });
-
-		// 	actualMinute = maybeJumpingPoint.minute;
-		// 	actualHour = maybeJumpingPoint.hour;
-		// } while (expectedMinute === actualMinute && expectedHour === actualHour);
-
-		// // Setting the seconds and milliseconds to zero is necessary for two reasons:
-		// // Firstly, the range checking function needs the earliest moment after the jump.
-		// // Secondly, this DateTime may be used for scheduling jobs, if there existed a job in the skipped range.
-		// const forwardAfterJumpingPoint = maybeJumpingPoint
-		// 	.plus({ minute: 1 }) // back to the first minute _after_ the jump
-		// 	.set({ second: 0, millisecond: 0 });
-
-		// // Get the lower bound of the range to check as well. This only has to be accurate down to minutes.
-		// const forwardBeforeJumpingPoint = forwardAfterJumpingPoint.minus({
-		// 	second: 1
-		// });
-
-		// // Check for a backward jump
-		// maybeJumpingPoint = date;
-		// iteration = 0;
-		// do {
-		// 	if (++iteration > iterationLimit) {
-		// 		backwardIterationLimitExceeded = true;
-		// 		break;
-		// 		// throw new CronError(errorMessage);
-		// 	}
-
-		// 	expectedMinute = maybeJumpingPoint.minute + 1;
-		// 	expectedHour = maybeJumpingPoint.hour;
-
-		// 	if (expectedMinute > 59) {
-		// 		expectedMinute -= 60;
-		// 		expectedHour = (expectedHour + 1) % 24; // Add 1 hour, but we must account for the 25 case.
-		// 	}
-
-		// 	maybeJumpingPoint = maybeJumpingPoint.plus({ minute: 1 });
-
-		// 	actualMinute = maybeJumpingPoint.minute;
-		// 	actualHour = maybeJumpingPoint.hour;
-		// } while (expectedMinute === actualMinute && expectedHour === actualHour);
-
-		// // Setting the seconds and milliseconds to zero is necessary for two reasons:
-		// // Firstly, the range checking function needs the earliest moment after the jump.
-		// // Secondly, this DateTime may be used for scheduling jobs, if there existed a job in the skipped range.
-		// const backwardAfterJumpingPoint = maybeJumpingPoint
-		// 	.plus({ minute: 1 }) // back to the first minute _after_ the jump
-		// 	.set({ second: 0, millisecond: 0 });
-
-		// // Get the lower bound of the range to check as well. This only has to be accurate down to minutes.
-		// const backwardBeforeJumpingPoint = backwardAfterJumpingPoint.minus({
-		// 	second: 1
-		// });
-
-		// if (forwardIterationLimitExceeded || backwardIterationLimitExceeded) {
-		// 	throw new CronError(errorMessage);
-		// }
-
-		// if (
-		// 	date.month in this.month &&
-		// 	date.day in this.dayOfMonth &&
-		// 	this._getWeekDay(date) in this.dayOfWeek
-		// ) {
-		// 	return [
-		// 		this._checkTimeInSkippedRange(
-		// 			forwardBeforeJumpingPoint,
-		// 			forwardAfterJumpingPoint
-		// 		),
-		// 		forwardAfterJumpingPoint
-		// 	];
-		// }
-
-		// if (
-		// 	date.month in this.month &&
-		// 	date.day in this.dayOfMonth &&
-		// 	this._getWeekDay(date) in this.dayOfWeek
-		// ) {
-		// 	return [
-		// 		this._checkTimeInSkippedRange(
-		// 			backwardBeforeJumpingPoint,
-		// 			backwardAfterJumpingPoint
-		// 		),
-		// 		backwardAfterJumpingPoint
-		// 	];
-		// }
-
-		// // No valid time in the range for sure, units that didn't change from the skip mismatch.
-		// return [false, maybeJumpingPoint];
-	}
-
-	/**
-	 * Given 2 DateTimes, which represent 1 second before and immediately after a DST forward or backward jump,
-	 * checks if a time in the skipped range would have been a valid CronJob time.
-	 *
-	 * Could technically work with just one of these values, extracting the other by adding or subtracting seconds.
-	 * However, this couples the input DateTime to actually being tied to a DST jump,
-	 * which would make the function harder to test.
-	 * This way the logic just tests a range of minutes and hours, regardless if there are skipped time points underneath.
-	 *
-	 * Assumes the DST jump started no earlier than 0:00 and jumped forward by at least 1 minute, to at most 23:59.
-	 * i.e. The day is assumed constant, but the jump is not assumed to be an hour long.
-	 * Empirically, it is almost always one hour, but very, very rarely 30 minutes.
-	 *
-	 * Assumes dayOfWeek, dayOfMonth and month match all match, so only the hours, minutes and seconds are to be checked.
-	 * @param {DateTime} beforeJumpingPoint
-	 * @param {DateTime} afterJumpingPoint
-	 * @returns {boolean}
-	 */
-	private _checkTimeInSkippedRange(
-		beforeJumpingPoint: DateTime,
-		afterJumpingPoint: DateTime
-	) {
-		// start by getting the first minute & hour inside the skipped range.
-		const startingMinute = (beforeJumpingPoint.minute + 1) % 60;
-		const startingHour =
-			(beforeJumpingPoint.hour + (startingMinute === 0 ? 1 : 0)) % 24;
-
-		const hourRangeSize = afterJumpingPoint.hour - startingHour + 1;
-		const isHourJump = startingMinute === 0 && afterJumpingPoint.minute === 0;
-
-		// There exist DST jumps other than 1 hour long, and the function is built to deal with it.
-		// It may be overkill to assume some cases, but it shouldn't cost much at runtime.
-		// https://en.wikipedia.org/wiki/Daylight_saving_time_by_country
-		if (hourRangeSize === 2 && isHourJump) {
-			// Exact 1 hour jump, most common real-world case.
-			// There is no need to check minutes and seconds, as any value would suffice.
-			return startingHour in this.hour;
-		} else if (hourRangeSize === 1) {
-			// less than 1 hour jump, rare but does exist.
-			return (
-				startingHour in this.hour &&
-				this._checkTimeInSkippedRangeSingleHour(
-					startingMinute,
-					afterJumpingPoint.minute
-				)
-			);
-		} else {
-			// non-round or multi-hour jump. (does not exist in the real world at the time of writing)
-			return this._checkTimeInSkippedRangeMultiHour(
-				startingHour,
-				startingMinute,
-				afterJumpingPoint.hour,
-				afterJumpingPoint.minute
-			);
-		}
-	}
-
-	/**
-	 * Component of checking if a CronJob time existed in a DateTime range skipped by DST.
-	 * This subroutine makes a further assumption that the skipped range is fully contained in one hour,
-	 * and that all other larger units are valid for the job.
-	 *
-	 * for example a jump from 02:00:00 to 02:30:00, but not from 02:00:00 to 03:00:00.
-	 * @see _checkTimeInSkippedRange
-	 *
-	 * This is done by checking if any minute in startMinute - endMinute is valid, excluding endMinute.
-	 * For endMinute, there is only a match if the 0th second is a valid time.
-	 */
-	private _checkTimeInSkippedRangeSingleHour(
-		startMinute: number,
-		endMinute: number
-	) {
-		for (let minute = startMinute; minute < endMinute; ++minute) {
-			if (minute in this.minute) return true;
-		}
-
-		// If the very last second of the jump matched, there is no match.
-		return endMinute in this.minute && 0 in this.second;
-	}
-
-	/**
-	 * Component of checking if a CronJob time existed in a DateTime range skipped by DST.
-	 * This subroutine assumes the jump touches at least 2 hours, but the jump does not necessarily fully contain these hours.
-	 *
-	 * @see _checkTimeInSkippedRange
-	 *
-	 * This is done by defining the minutes to check for the first and last hour,
-	 * and checking all 60 minutes for any hours in between them.
-	 *
-	 * If any hour x minute combination is a valid time, true is returned.
-	 * The endMinute x endHour combination is only checked with the 0th second, since the rest would be out of the range.
-	 *
-	 * @param startHour {number}
-	 * @param startMinute {number}
-	 * @param endHour {number}
-	 * @param endMinute {number}
-	 */
-	private _checkTimeInSkippedRangeMultiHour(
-		startHour: number,
-		startMinute: number,
-		endHour: number,
-		endMinute: number
-	) {
-		if (startHour >= endHour) {
-			throw new CronError(
-				`ERROR: This DST checking related function assumes the forward jump starting hour (${startHour}) is less than the end hour (${endHour})`
-			);
-		}
-
-		/** @type number[] */
-		const firstHourMinuteRange = Array.from(
-			{ length: 60 - startMinute },
-			(_, k) => startMinute + k
-		);
-		/** @type {number[]} The final minute is not contained on purpose. Every minute in this range represents one for which any second is valid. */
-		const lastHourMinuteRange = Array.from({ length: endMinute }, (_, k) => k);
-		/** @type number[] */
-		const middleHourMinuteRange = Array.from({ length: 60 }, (_, k) => k);
-
-		/** @type (number) => number[] */
-		const selectRange = (forHour: number) => {
-			if (forHour === startHour) {
-				return firstHourMinuteRange;
-			} else if (forHour === endHour) {
-				return lastHourMinuteRange;
-			} else {
-				return middleHourMinuteRange;
-			}
-		};
-
-		// Include the endHour: Selecting the right range still ensures no values outside the skip are checked.
-		for (let hour = startHour; hour <= endHour; ++hour) {
-			if (!(hour in this.hour)) continue;
-
-			// The hour matches, so if the minute is in the range, we have a match!
-			const usingRange = selectRange(hour);
-
-			for (const minute of usingRange) {
-				// All minutes in any of the selected ranges represent minutes which are fully contained in the jump,
-				// So we need not check the seconds. If the minute is in there, it is a match.
-				if (minute in this.minute) return true;
-			}
-		}
-
-		// The endMinute of the endHour was not checked in the loop, because only the 0th second of it is in the range.
-		// Arriving here means no match was found yet, but this final check may turn up as a match.
-		return endHour in this.hour && endMinute in this.minute && 0 in this.second;
-	}
-
-	/**
-	 * Given expected and actual hours and minutes, report if a DST forward or backward jump occurred.
-	 *
-	 * This is the case when the expected time (algorithm) is smaller than the actual (Luxon).
-	 *
-	 * It is not sufficient to check only hours, because some parts of the world apply DST by shifting in minutes.
-	 * Better to account for it by checking minutes too, before an Australian of Lord Howe Island call us.
-	 * @param expectedHour
-	 * @param expectedMinute
-	 * @param {DateTime} actualDate
-	 */
-	// private _DSTJumpOccurred(
-	// 	expectedHour: number,
-	// 	expectedMinute: number,
-	// 	actualDate: DateTime,
-	// 	triggerType?: string,
-	// 	triggerValue?: number
-	// ) {
-	// 	const actualHour = actualDate.hour;
-	// 	const actualMinute = actualDate.minute;
-
-	// 	const didHoursJump = expectedHour % 24 < actualHour;
-	// 	const didMinutesJump = expectedMinute % 60 < actualMinute;
-	// 	console.log(
-	// 		`_DSTJumpOccurred with ${expectedHour} ${actualHour} ${expectedMinute} ${actualMinute} ${didHoursJump || didMinutesJump} ${triggerType} ${triggerValue}`
-	// 	);
-
-	// 	return didHoursJump || didMinutesJump;
-	// }
 
 	/**
 	 * wildcard, or all params in array (for to string)

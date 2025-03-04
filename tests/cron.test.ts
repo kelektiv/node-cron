@@ -1343,8 +1343,6 @@ describe('cron', () => {
 			}).toJSDate();
 			const clock = sinon.useFakeTimers(d.getTime());
 
-			console.debug({ d });
-
 			const job = new CronJob(
 				'0 1 30 3 *',
 				callback,
@@ -1365,8 +1363,6 @@ describe('cron', () => {
 				zone: 'Europe/Paris'
 			}).toJSDate();
 			const clock = sinon.useFakeTimers(d.getTime());
-
-			console.debug({ d });
 
 			const job = new CronJob(
 				'0 2 31 3 *',
@@ -1393,24 +1389,13 @@ describe('cron', () => {
 
 			const job = new CronJob(
 				'*/30 * * * *',
-				() => {
-					console.log(`executing cron job at ${new Date().toISOString()}`);
-					callback();
-				},
+				callback,
 				null,
 				true,
 				'Australia/Melbourne'
 			);
 
-			// console.log(d);
-
-			// console.log(job.nextDate().toUTC());
-
 			clock.tick(1000 * 60 * 60 * 3);
-
-			// console.log(job.nextDate().toUTC());
-
-			// clock.tick(1000 * 60 * 30);
 
 			expect(callback).toHaveBeenCalledTimes(6);
 
