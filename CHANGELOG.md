@@ -1,3 +1,24 @@
+## [4.1.0](https://github.com/kelektiv/node-cron/compare/v4.0.0...v4.1.0) (2025-02-24)
+
+### ✨ Features
+
+* add isCronTimeValid function to validate cron expressions ([#959](https://github.com/kelektiv/node-cron/issues/959)) ([cbd8106](https://github.com/kelektiv/node-cron/commit/cbd81063229036859fbb6969d4f628a0e7945e57))
+
+### ♻️ Chores
+
+* **action:** update actions/setup-node action to v4.2.0 ([#950](https://github.com/kelektiv/node-cron/issues/950)) ([3a4a701](https://github.com/kelektiv/node-cron/commit/3a4a7015b59c56434b462754728e4ed6483202ef))
+* **action:** update github/codeql-action action to v3.28.9 ([#946](https://github.com/kelektiv/node-cron/issues/946)) ([84ebb32](https://github.com/kelektiv/node-cron/commit/84ebb32e0db478e48e82203099ec0e301021cfc3))
+* **action:** update marocchino/sticky-pull-request-comment action to v2.9.1 ([#947](https://github.com/kelektiv/node-cron/issues/947)) ([7cdcbc2](https://github.com/kelektiv/node-cron/commit/7cdcbc21676fa48f78d58146590e9f59796b56b9))
+* **action:** update step-security/harden-runner action to v2.11.0 ([#948](https://github.com/kelektiv/node-cron/issues/948)) ([b7f9c79](https://github.com/kelektiv/node-cron/commit/b7f9c794f95a95d19a4bfa11d2778dc6a0a21666))
+* **deps:** lock file maintenance ([fa08aa3](https://github.com/kelektiv/node-cron/commit/fa08aa3e0edacdc324381cff33160d49b6db6af0))
+* **deps:** lock file maintenance ([#944](https://github.com/kelektiv/node-cron/issues/944)) ([374ac42](https://github.com/kelektiv/node-cron/commit/374ac429d4ff6f19440d4c18d6e366a69cfea233))
+* **deps:** update dependency [@types](https://github.com/types)/node to v22.13.4 ([#952](https://github.com/kelektiv/node-cron/issues/952)) ([05f1702](https://github.com/kelektiv/node-cron/commit/05f17020fe33ded1839c43132caa0b3dc2770f6e))
+* **deps:** update dependency lint-staged to v15.4.3 ([#953](https://github.com/kelektiv/node-cron/issues/953)) ([b99fc3b](https://github.com/kelektiv/node-cron/commit/b99fc3b82c613b3686930f2055a2b8e10134238b))
+* **deps:** update dependency typescript to v5.7.3 ([#949](https://github.com/kelektiv/node-cron/issues/949)) ([5313b71](https://github.com/kelektiv/node-cron/commit/5313b71e20bcd7a417fce03966cfa5c78062b05a))
+* **deps:** update linters ([#954](https://github.com/kelektiv/node-cron/issues/954)) ([9159759](https://github.com/kelektiv/node-cron/commit/91597592d05770b7e31bbd93eb0b4160da175154))
+* **deps:** update semantic-release related packages ([#951](https://github.com/kelektiv/node-cron/issues/951)) ([92d7ac3](https://github.com/kelektiv/node-cron/commit/92d7ac3f8fa6fcbf37ead72abc3f798fdc05370a))
+* remove bower.json, which is unused ([#955](https://github.com/kelektiv/node-cron/issues/955)) ([8e509f3](https://github.com/kelektiv/node-cron/commit/8e509f3ad7dcd5d250e75a41417830b9b01c2bdb))
+
 ## [4.0.0](https://github.com/kelektiv/node-cron/compare/v3.5.0...v4.0.0) (2025-02-19)
 
 ### ⚠ Breaking changes
