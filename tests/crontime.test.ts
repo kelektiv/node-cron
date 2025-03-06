@@ -451,6 +451,17 @@ describe('crontime', () => {
 			currentDate = nextDate;
 		}
 	});
+	it('should not execute immediately if conditions have not been met during forward DST jump', () => {
+		// Europe/Paris DST starts at 30 Mar 2025, 02:00 (+1 to hours)
+		let currentDate = DateTime.fromISO('2025-03-30T01:59', {
+			zone: 'Europe/Paris'
+		});
+		const cronTime = new CronTime('20 4 * * *');
+		const nextDate = cronTime.getNextDateFrom(currentDate, 'Europe/Paris');
+		expect(nextDate.toString()).toEqual(
+			DateTime.fromISO('2025-03-30T04:20', { zone: 'Europe/Paris' }).toString()
+		);
+	});
 	it('Should schedule jobs inside offset changes that shifts time forward to the end of the shift, for weekly jobs', () => {
 		let currentDate = DateTime.fromISO('2018-03-29T23:15', {
 			zone: 'Asia/Amman'
