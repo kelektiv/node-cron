@@ -1,6 +1,6 @@
 /* eslint-disable jest/no-standalone-expect */
 import { fc, test } from '@fast-check/jest';
-import { CronJob } from '../src';
+import { CronJob } from '../dist/index.js';
 import { CronError } from '../src/errors';
 
 /**

@@ -97,7 +97,7 @@ export class CronTime {
 	}
 
 	/**
-	 * Calculate the "next" scheduled time
+	 * calculate the "next" scheduled time
 	 */
 	sendAt(): DateTime;
 	sendAt(i: number): DateTime[];
@@ -153,7 +153,7 @@ export class CronTime {
 	}
 
 	/**
-	 * Get the number of milliseconds in the future at which to fire our callbacks.
+	 * get the number of milliseconds in the future at which to fire our callbacks.
 	 */
 	getTimeout() {
 		return Math.max(-1, this.sendAt().toMillis() - DateTime.utc().toMillis());
@@ -167,7 +167,7 @@ export class CronTime {
 	}
 
 	/**
-	 * Json representation of the parsed cron syntax.
+	 * json representation of the parsed cron syntax.
 	 */
 	toJSON() {
 		return TIME_UNITS.map(unit => {
@@ -176,7 +176,7 @@ export class CronTime {
 	}
 
 	/**
-	 * Get next date matching the specified cron time.
+	 * get next date matching the specified cron time.
 	 *
 	 * Algorithm:
 	 * - Start with a start date and a parsed CronTime.
@@ -191,15 +191,24 @@ export class CronTime {
 	 *   - Check that the chosen time does not equal the current execution.
 	 * - Return the selected date object.
 	 */
-	getNextDateFrom(start: Date | DateTime, timeZone?: string | Zone) {
+	getNextDateFrom(start: Date | DateTime, timeZone?: string | Zone): DateTime {
 		if (start instanceof Date) {
 			start = DateTime.fromJSDate(start);
 		}
-		let date = start;
-		const firstDate = start.toMillis();
 		if (timeZone) {
-			date = date.setZone(timeZone);
+			start = start.setZone(timeZone);
+		} else {
+			timeZone = start.zone.name;
 		}
+		// make a clone in UTC so we can manipulate it as if there were no time zones
+		let date = DateTime.fromFormat(
+			`${start.year}-${start.month}-${start.day} ${start.hour}:${start.minute}:${start.second}`,
+			'yyyy-M-d H:m:s',
+			{
+				zone: 'UTC'
+			}
+		);
+		const firstDate = date.toMillis();
 		if (!this.realDate) {
 			if (date.millisecond > 0) {
 				date = date.set({ millisecond: 0, second: date.second + 1 });
@@ -217,8 +226,6 @@ export class CronTime {
 		 * source: https://github.com/cronie-crond/cronie/blob/0d669551680f733a4bdd6bab082a0b3d6d7f089c/src/cronnext.c#L401-L403
 		 */
 		const maxMatch = DateTime.now().plus({ years: 8 });
-		let offset = date.offset;
-
 		// determine next date
 		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 		while (true) {
@@ -239,83 +246,39 @@ export class CronTime {
 				!(date.month in this.month) &&
 				Object.keys(this.month).length !== 12
 			) {
-				date = date.plus({ months: 1 });
+				date = date.plus({ month: 1 });
 				date = date.set({ day: 1, hour: 0, minute: 0, second: 0 });
 
 				continue;
 			}
 
 			if (
-				!(date.day in this.dayOfMonth) &&
-				Object.keys(this.dayOfMonth).length !== 31 &&
-				!(
-					this._getWeekDay(date) in this.dayOfWeek &&
-					Object.keys(this.dayOfWeek).length !== 7
-				)
+				(!(date.day in this.dayOfMonth) &&
+					Object.keys(this.dayOfMonth).length !== 31 &&
+					!(
+						this._getWeekDay(date) in this.dayOfWeek &&
+						Object.keys(this.dayOfWeek).length !== 7
+					)) ||
+				(!(this._getWeekDay(date) in this.dayOfWeek) &&
+					Object.keys(this.dayOfWeek).length !== 7 &&
+					!(
+						date.day in this.dayOfMonth &&
+						Object.keys(this.dayOfMonth).length !== 31
+					))
 			) {
-				const preDayChangeDate = date;
 				date = date.plus({ days: 1 });
 				date = date.set({ hour: 0, minute: 0, second: 0 });
 
-				if (offset !== date.offset) {
-					offset = date.offset;
-					if (
-						date.hour - preDayChangeDate.hour > 1 ||
-						(date.hour === 1 && preDayChangeDate.hour === 23)
-					) {
-						// We skipped past a valid execution time and must execute immediately
-						break;
-					}
-				}
-				continue;
-			}
-
-			if (
-				!(this._getWeekDay(date) in this.dayOfWeek) &&
-				Object.keys(this.dayOfWeek).length !== 7 &&
-				!(
-					date.day in this.dayOfMonth &&
-					Object.keys(this.dayOfMonth).length !== 31
-				)
-			) {
-				const preDayChangeDate = date;
-				date = date.plus({ days: 1 });
-				date = date.set({ hour: 0, minute: 0, second: 0 });
-				if (offset !== date.offset) {
-					offset = date.offset;
-					if (
-						date.hour - preDayChangeDate.hour > 1 ||
-						(date.hour === 1 && preDayChangeDate.hour === 23)
-					) {
-						// We skipped past a valid execution time and must execute immediately
-						break;
-					}
-				}
 				continue;
 			}
 
 			if (!(date.hour in this.hour) && Object.keys(this.hour).length !== 24) {
-				// Only allow the hour to be 24 if a day hasn't passed yet since we started calculating the new time
-				// Otherwise we'll be changing the day here even though we already determined the correct day
-				const preHourChangeDate = date;
+				// only allow the hour to be 24 if a day hasn't passed yet since we started calculating the new time
+				// otherwise we'll be changing the day here even though we already determined the correct day
+
 				date = date.plus({ hour: 1 });
 				date = date.set({ minute: 0, second: 0 });
 
-				// When this is the case, asking Luxon to go forward by 1 hour actually made us go forward by more hours...
-				// This indicates that somewhere between these two time points, a forward DST adjustment has happened.
-				// When this happens, the job should be scheduled to execute as though the time has come when the jump is made.
-				// Therefore, the job should be scheduled on the first tick after the forward jump.
-				if (offset !== date.offset) {
-					offset = date.offset;
-					if (
-						date.hour - preHourChangeDate.hour > 1 ||
-						// Need to check if the hour wrapped because an hour change could push us into a new day
-						(date.hour === 1 && preHourChangeDate.hour === 23)
-					) {
-						// We skipped past a valid execution time and must execute immediately
-						break;
-					}
-				}
 				continue;
 			}
 
@@ -323,54 +286,80 @@ export class CronTime {
 				!(date.minute in this.minute) &&
 				Object.keys(this.minute).length !== 60
 			) {
-				const preMinuteChangeDate = date;
 				date = date.plus({ minute: 1 });
 				date = date.set({ second: 0 });
-
-				// Same case as with hours: DST forward jump.
-				// This must be accounted for if a minute increment pushed us to a jumping point.
-				if (offset !== date.offset) {
-					offset = date.offset;
-					if (
-						preMinuteChangeDate.minute - date.minute > 1 ||
-						preMinuteChangeDate.hour - date.hour > 1 ||
-						(date.hour === 1 && preMinuteChangeDate.hour === 23)
-					) {
-						// We skipped past a valid execution time and must execute immediately
-						break;
-					}
-				}
 
 				continue;
 			}
 
-			// Respond to the previous date being checked by advancing a second
-			// Just like when we advance seconds normally
+			// respond to the previous date being checked by advancing a second
+			// just like when we advance seconds normally
 			if (
 				date.toMillis() === firstDate ||
 				(!(date.second in this.second) &&
 					Object.keys(this.second).length !== 60)
 			) {
-				const preSecondChangeDate = date;
 				date = date.plus({ second: 1 });
-
-				// Seconds can cause it too, imagine 21:59:59 -> 23:00:00.
-				if (offset !== date.offset) {
-					offset = date.offset;
-					if (
-						preSecondChangeDate.minute - date.minute > 1 ||
-						preSecondChangeDate.hour - date.hour > 1 ||
-						(date.hour === 1 && preSecondChangeDate.hour === 23)
-					) {
-						// We skipped past a valid execution time and must execute immediately
-						break;
-					}
-				}
 
 				continue;
 			}
 
 			break;
+		}
+
+		// handle cases where time jumps forward due to Daylight Savings
+
+		const expectedHour = date.hour;
+		const expectedMinute = date.minute;
+
+		date = DateTime.fromFormat(
+			`${date.year}-${date.month}-${date.day} ${date.hour}:${date.minute}:${date.second}`,
+			'yyyy-M-d H:m:s',
+			{
+				zone: timeZone
+			}
+		);
+		const nonDSTReferenceDate = DateTime.fromFormat(
+			`${date.year}-1-1 0:0:0`,
+			'yyyy-M-d H:m:s',
+			{ zone: timeZone }
+		);
+
+		// if the hour or minute is different from expected and
+		// if date we assume to not be under daylight savings has a different offset
+		// rewind until just after the offset
+		if (
+			(expectedHour !== date.hour || expectedMinute !== date.minute) &&
+			nonDSTReferenceDate.offset !== date.offset
+		) {
+			while (date.minus({ minute: 1 }).offset !== nonDSTReferenceDate.offset) {
+				date = date.minus({ minute: 1 });
+			}
+			return date;
+		}
+
+		// handle cases where time jumps back due to Daylight Savings (ambiguous times)
+
+		// daylight savings jumps are either 60 or 30 minutes
+		const hourTestDate = date.minus({ hour: 1 });
+		const twoHourTestDate = date.minus({ hour: 2 });
+		// if the previous hour is the same as this hour we are in an ambiguous time
+		// jump back to the earlier hour as long as it's not in the past
+		if (
+			(hourTestDate.hour === date.hour ||
+				twoHourTestDate.hour === hourTestDate.hour) &&
+			hourTestDate > start
+		) {
+			date = hourTestDate;
+		}
+		// similar for half hour jumps
+		const halfHourTestDate = date.minus({ minute: 30 });
+		if (
+			(halfHourTestDate.minute === date.minute ||
+				hourTestDate.minute === halfHourTestDate.minute) &&
+			halfHourTestDate > start
+		) {
+			date = halfHourTestDate;
 		}
 
 		return date;
@@ -408,7 +397,7 @@ export class CronTime {
 	}
 
 	/**
-	 * Parse the cron syntax into something useful for selecting the next execution time.
+	 * parse the cron syntax into something useful for selecting the next execution time.
 	 *
 	 * Algorithm:
 	 * - Replace preset
@@ -447,9 +436,9 @@ export class CronTime {
 		const unitsLen = units.length;
 		for (const unit of TIME_UNITS) {
 			const i = TIME_UNITS.indexOf(unit);
-			// If the split source string doesn't contain all digits,
+			// if the split source string doesn't contain all digits,
 			// assume defaults for first n missing digits.
-			// This adds support for 5-digit standard cron syntax
+			// this adds support for 5-digit standard cron syntax
 			const cur =
 				units[i - (TIME_UNITS_LEN - unitsLen)] ?? PARSE_DEFAULTS[unit];
 			this._parseField(cur, unit);
@@ -457,7 +446,7 @@ export class CronTime {
 	}
 
 	/**
-	 * Parse individual field from the cron syntax provided.
+	 * parse individual field from the cron syntax provided.
 	 *
 	 * Algorithm:
 	 * - Split field by commas and check for wildcards to ensure proper user.
@@ -517,18 +506,18 @@ export class CronTime {
 					throw new CronError(`Field value (${value}) is out of range`);
 				}
 
-				// Positive integer higher than constraints[0]
+				// positive integer higher than constraints[0]
 				lower = Math.min(Math.max(low, ~~Math.abs(lower)), high);
 
-				// Positive integer lower than constraints[1]
+				// positive integer lower than constraints[1]
 				if (upper !== undefined) {
 					upper = Math.min(high, ~~Math.abs(upper));
 				} else {
-					// If step is provided, the default upper range is the highest value
+					// if step is provided, the default upper range is the highest value
 					upper = wasStepDefined ? high : lower;
 				}
 
-				// Count from the lower barrier to the upper
+				// count from the lower barrier to the upper
 				// forcing type cast here since we checked above that
 				// we are between constraint bounds
 				pointer = lower as typeof pointer;

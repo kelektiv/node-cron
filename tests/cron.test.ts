@@ -437,23 +437,23 @@ describe('cron', () => {
 		it('should run a job using cron syntax with a timezone', () => {
 			const clock = sinon.useFakeTimers();
 			let zone = 'America/Chicago';
-			// New Orleans time
+			// new Orleans time
 			let t = DateTime.local().setZone(zone);
-			// Current time
+			// current time
 			const d = DateTime.local();
 
-			// If current time is New Orleans time, switch to Los Angeles..
+			// if current time is New Orleans time, switch to Los Angeles..
 			if (t.hour === d.hour) {
 				zone = 'America/Los_Angeles';
 				t = t.setZone(zone);
 			}
 			expect(d.hour).not.toBe(t.hour);
 
-			// If t = 59s12m then t.setSeconds(60)
+			// if t = 59s12m then t.setSeconds(60)
 			// becomes 00s13m so we're fine just doing
 			// this and no testRun callback.
 			t = t.plus({ seconds: 1 });
-			// Run a job designed to be executed at a given
+			// run a job designed to be executed at a given
 			// time in `zone`, making sure that it is a different
 			// hour than local time.
 			const job = new CronJob(
@@ -472,25 +472,25 @@ describe('cron', () => {
 		it('should run a job using cron syntax with a "UTC+HH:mm" offset as timezone', () => {
 			const clock = sinon.useFakeTimers();
 
-			// Current time
+			// current time
 			const d = DateTime.local();
 
-			// Current time with zone offset
+			// current time with zone offset
 			let zone = 'UTC+5:30';
 			let t = DateTime.local().setZone(zone);
 
-			// If current offset is UTC+5:30, switch to UTC+6:30..
+			// if current offset is UTC+5:30, switch to UTC+6:30..
 			if (t.hour === d.hour && t.minute === d.minute) {
 				zone = 'UTC+6:30';
 				t = t.setZone(zone);
 			}
 			expect(`${d.hour}:${d.minute}`).not.toBe(`${t.hour}:${t.minute}`);
 
-			// If t = 59s12m then t.setSeconds(60)
+			// if t = 59s12m then t.setSeconds(60)
 			// becomes 00s13m so we're fine just doing
 			// this and no testRun callback.
 			t = t.plus({ seconds: 1 });
-			// Run a job designed to be executed at a given
+			// run a job designed to be executed at a given
 			// time in `zone`, making sure that it is a different
 			// hour than local time.
 			const job = new CronJob(
@@ -508,12 +508,12 @@ describe('cron', () => {
 
 		it('should run a job using a date', () => {
 			let zone = 'America/Chicago';
-			// New Orleans time
+			// new Orleans time
 			let t = DateTime.local().setZone(zone);
-			// Current time
+			// current time
 			let d = DateTime.local();
 
-			// If current time is New Orleans time, switch to Los Angeles..
+			// if current time is New Orleans time, switch to Los Angeles..
 			if (t.hour === d.hour) {
 				zone = 'America/Los_Angeles';
 				t = t.setZone(zone);
@@ -669,7 +669,7 @@ describe('cron', () => {
 		job.stop();
 	});
 
-	it('should run every day', () => {
+	it('should run every day at 3:59:59', () => {
 		const d = new Date('12/31/2014');
 		d.setSeconds(59);
 		d.setMinutes(59);
@@ -860,9 +860,9 @@ describe('cron', () => {
 	describe('with utcOffset', () => {
 		it('should run a job using cron syntax with number format utcOffset', () => {
 			const clock = sinon.useFakeTimers();
-			// Current time
+			// current time
 			const t = DateTime.local();
-			// UTC Offset decreased by an hour
+			// uTC Offset decreased by an hour
 			const utcOffset = t.offset - 60;
 
 			const job = new CronJob(
@@ -887,10 +887,10 @@ describe('cron', () => {
 
 		it('should run a job using cron syntax with numeric format utcOffset with minute support', () => {
 			const clock = sinon.useFakeTimers();
-			// Current time
+			// current time
 			const t = DateTime.local();
 
-			// UTC Offset decreased by 45 minutes
+			// uTC Offset decreased by 45 minutes
 			const utcOffset = t.offset - 45;
 			const job = new CronJob(
 				`${t.second} ${t.minute} ${t.hour} * * *`,
@@ -1065,7 +1065,7 @@ describe('cron', () => {
 	it('should automatically setup a new timeout if we roll past the max timeout delay', () => {
 		const clock = sinon.useFakeTimers();
 		const d = new Date();
-		d.setMilliseconds(2147485647 * 2); // MAXDELAY in `job.js` + 2000.
+		d.setMilliseconds(2147485647 * 2); // mAXDELAY in `job.js` + 2000.
 		const job = new CronJob(d, callback);
 		job.start();
 		clock.tick(2147483648);
@@ -1088,7 +1088,7 @@ describe('cron', () => {
 	it('should give the correct last execution date for intervals greater than 25 days (#710)', () => {
 		const clock = sinon.useFakeTimers();
 
-		const job = new CronJob('0 0 0 1 * *', callback); // At 00:00 on day-of-month 1.
+		const job = new CronJob('0 0 0 1 * *', callback); // at 00:00 on day-of-month 1.
 		job.start();
 
 		// tick one tick before nextDate()
@@ -1215,11 +1215,11 @@ describe('cron', () => {
 
 			expect(job.isCallbackRunning).toBe(false);
 
-			// First execution
+			// first execution
 			await clock.tickAsync(2000);
 			expect(job.isCallbackRunning).toBe(true);
 
-			// Wait for job completion
+			// wait for job completion
 			await clock.tickAsync(500);
 			expect(isJobCompleted).toBe(false);
 			expect(job.isCallbackRunning).toBe(true);
@@ -1255,7 +1255,7 @@ describe('cron', () => {
 
 			expect(job.isCallbackRunning).toBe(false);
 
-			// First execution
+			// first execution
 			clock.tick(1000);
 			expect(isJobCompleted).toBe(false);
 			expect(job.isCallbackRunning).toBe(false);
@@ -1379,9 +1379,9 @@ describe('cron', () => {
 			job.stop();
 		});
 
-		it('should still execute when the time changes back one hour', () => {
-			// There are two instances of 2 am. Setting to an earlier time so it is not ambiguous
-			// See https://moment.github.io/luxon/#/zones?id=ambiguous-times
+		it('should still execute at the desired interval when the time changes back one hour', () => {
+			// there are two instances of 2 am. Setting to an earlier time so it is not ambiguous
+			// see https://moment.github.io/luxon/#/zones?id=ambiguous-times
 			const d = DateTime.fromISO('2024-04-07T01:45:00.000', {
 				zone: 'Australia/Melbourne'
 			}).toJSDate();
