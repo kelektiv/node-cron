@@ -22,6 +22,8 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 		: undefined;
 	waitForCompletion = false;
 	errorHandler?: CronJobParams<OC, C>['errorHandler'];
+	threshold = 250; // Default threshold in ms
+	name?: string; // Optional job name for identification
 
 	private _isActive = false;
 	private _isCallbackRunning = false;
@@ -47,7 +49,9 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 		utcOffset?: null,
 		unrefTimeout?: CronJobParams<OC, C>['unrefTimeout'],
 		waitForCompletion?: CronJobParams<OC, C>['waitForCompletion'],
-		errorHandler?: CronJobParams<OC, C>['errorHandler']
+		errorHandler?: CronJobParams<OC, C>['errorHandler'],
+		threshold?: CronJobParams<OC, C>['threshold'],
+		name?: CronJobParams<OC, C>['name']
 	);
 	constructor(
 		cronTime: CronJobParams<OC, C>['cronTime'],
@@ -60,7 +64,9 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 		utcOffset?: CronJobParams<OC, C>['utcOffset'],
 		unrefTimeout?: CronJobParams<OC, C>['unrefTimeout'],
 		waitForCompletion?: CronJobParams<OC, C>['waitForCompletion'],
-		errorHandler?: CronJobParams<OC, C>['errorHandler']
+		errorHandler?: CronJobParams<OC, C>['errorHandler'],
+		threshold?: CronJobParams<OC, C>['threshold'],
+		name?: CronJobParams<OC, C>['name']
 	);
 	constructor(
 		cronTime: CronJobParams<OC, C>['cronTime'],
@@ -73,7 +79,9 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 		utcOffset?: CronJobParams<OC, C>['utcOffset'],
 		unrefTimeout?: CronJobParams<OC, C>['unrefTimeout'],
 		waitForCompletion?: CronJobParams<OC, C>['waitForCompletion'],
-		errorHandler?: CronJobParams<OC, C>['errorHandler']
+		errorHandler?: CronJobParams<OC, C>['errorHandler'],
+		threshold?: CronJobParams<OC, C>['threshold'],
+		name?: CronJobParams<OC, C>['name']
 	) {
 		this.context = (context ?? this) as CronContext<C>;
 		this.waitForCompletion = Boolean(waitForCompletion);
@@ -102,6 +110,14 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 			this.onComplete = this._fnWrap(
 				onComplete
 			) as WithOnComplete<OC> extends true ? CronOnCompleteCallback : undefined;
+		}
+
+		if (threshold != null) {
+			this.threshold = threshold;
+		}
+
+		if (name != null) {
+			this.name = name;
 		}
 
 		if (this.cronTime.realDate) {
@@ -139,7 +155,9 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 				params.utcOffset,
 				params.unrefTimeout,
 				params.waitForCompletion,
-				params.errorHandler
+				params.errorHandler,
+				params.threshold,
+				params.name
 			);
 		} else if (params.utcOffset != null) {
 			return new CronJob<OC, C>(
@@ -153,7 +171,9 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 				params.utcOffset,
 				params.unrefTimeout,
 				params.waitForCompletion,
-				params.errorHandler
+				params.errorHandler,
+				params.threshold,
+				params.name
 			);
 		} else {
 			return new CronJob<OC, C>(
@@ -167,7 +187,9 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 				params.utcOffset,
 				params.unrefTimeout,
 				params.waitForCompletion,
-				params.errorHandler
+				params.errorHandler,
+				params.threshold,
+				params.name
 			);
 		}
 	}
