@@ -36,20 +36,21 @@ describe('cron', () => {
 		sinon
 			.stub(job.cronTime, 'getTimeout')
 			.onCall(0)
-			.returns(TICK)
-			.onCall(1)
 			.returns(-DELAY)
+			.onCall(1)
+			.returns(TICK)
 			.onCall(2)
-			.returns(1000);
-		sinon.stub(job.cronTime, 'source').value(`*/${EVERY} * * * * *`);
+			.returns(-DELAY);
 
 		clock.tick(TICK);
-
 		expect(job.isActive).toBe(true);
-		job.stop();
 		expect(callback).toHaveBeenCalledTimes(1);
 
-		clock.restore();
+		clock.tick(TICK);
+		expect(job.isActive).toBe(true);
+		expect(callback).toHaveBeenCalledTimes(2);
+
+		job.stop();
 	});
 
 	describe('with seconds', () => {
