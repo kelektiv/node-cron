@@ -24,23 +24,32 @@ describe('cron', () => {
 		const TICK = EVERY * 1000;
 		const DELAY = 350;
 
-		const date = new Date('2025-02-23T14:00:00.000Z');
-		const clock = sinon.useFakeTimers(date.getTime());
+		const clock = sinon.useFakeTimers();
+
+		const job = CronJob.from({
+			cronTime: `*/${EVERY} * * * * *`,
+			onTick: callback,
+			start: true,
+			threshold: 500
+		});
 
 		sinon
-			.stub(Date, 'now')
+			.stub(job.cronTime, 'getTimeout')
 			.onCall(0)
-			.returns(date.getTime())
+			.returns(TICK)
 			.onCall(1)
-			.returns(date.getTime() + TICK)
+			.returns(-DELAY)
 			.onCall(2)
-			.returns(date.getTime() + TICK + DELAY);
+			.returns(1000);
+		sinon.stub(job.cronTime, 'source').value(`*/${EVERY} * * * * *`);
 
-		const job = new CronJob(`*/${EVERY} * * * * *`, callback, null, true);
 		clock.tick(TICK);
 
 		expect(job.isActive).toBe(true);
+		job.stop();
 		expect(callback).toHaveBeenCalledTimes(1);
+
+		clock.restore();
 	});
 
 	describe('with seconds', () => {
@@ -1368,8 +1377,6 @@ describe('cron', () => {
 			}).toJSDate();
 			const clock = sinon.useFakeTimers(d.getTime());
 
-			console.debug({ d });
-
 			const job = new CronJob(
 				'0 1 30 3 *',
 				callback,
@@ -1390,8 +1397,6 @@ describe('cron', () => {
 				zone: 'Europe/Paris'
 			}).toJSDate();
 			const clock = sinon.useFakeTimers(d.getTime());
-
-			console.debug({ d });
 
 			const job = new CronJob(
 				'0 2 31 3 *',
