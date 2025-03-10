@@ -28,7 +28,7 @@
 		"luxon": "~3.5.0"
 	},
 	"devDependencies": {
-		"@commitlint/cli": "19.7.1",
+		"@commitlint/cli": "19.8.0",
 		"@eslint/js": "9.21.0",
 		"@fast-check/jest": "2.0.3",
 		"@insurgent/commitlint-config": "20.0.0",
