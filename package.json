@@ -54,7 +54,7 @@
 		"semantic-release": "24.2.3",
 		"sinon": "19.0.2",
 		"ts-jest": "29.2.6",
-		"typescript": "5.7.3",
+		"typescript": "5.8.2",
 		"typescript-eslint": "7.18.0"
 	},
 	"keywords": [
