@@ -19,6 +19,15 @@ import {
 	TimeUnitField
 } from './types/cron.types';
 
+type CustomZone = Zone & {
+	zoneName?: string;
+	fixed?: string;
+};
+
+type CustomDateTime = Omit<DateTime, 'zone'> & {
+	zone: CustomZone;
+};
+
 export class CronTime {
 	source: string | DateTime;
 	timeZone?: string;
@@ -191,14 +200,17 @@ export class CronTime {
 	 *   - Check that the chosen time does not equal the current execution.
 	 * - Return the selected date object.
 	 */
-	getNextDateFrom(start: Date | DateTime, timeZone?: string | Zone): DateTime {
+	getNextDateFrom(
+		start: Date | CustomDateTime,
+		timeZone?: string | CustomZone
+	): DateTime {
 		if (start instanceof Date) {
 			start = DateTime.fromJSDate(start);
 		}
 		if (timeZone) {
 			start = start.setZone(timeZone);
 		} else {
-			timeZone = start.zone.name;
+			timeZone = start.zone.zoneName ?? start.zone.fixed;
 		}
 		// make a clone in UTC so we can manipulate it as if there were no time zones
 		let date = DateTime.fromFormat(

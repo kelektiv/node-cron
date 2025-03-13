@@ -628,6 +628,21 @@ describe('cron', () => {
 		}).toThrow();
 	});
 
+	it('should not get into an infinite loop when using uncommon offsets', () => {
+		const job = new CronJob(
+			'* * * * * *',
+			function () {},
+			null,
+			true,
+			null,
+			null,
+			true,
+			-4
+		);
+		expect(job.isActive).toBe(true);
+		job.stop();
+	});
+
 	it('should not throw if at least one time is valid', () => {
 		expect(() => {
 			const job = new CronJob('0 0 30 JAN,FEB *', callback, null, true);

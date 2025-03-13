@@ -1,6 +1,6 @@
 /* eslint-disable jest/no-standalone-expect */
 import { fc, test } from '@fast-check/jest';
-import { CronJob } from '../dist/index.js';
+import { CronJob } from '../src/job';
 import { CronError } from '../src/errors';
 
 /**
@@ -30,7 +30,9 @@ function testCronJob(
 	},
 	checkError: (err: unknown) => boolean
 ) {
-	// console.debug(cronTime, '|', timeZone, '|', utcOffset);
+	// console.debug(
+	// 	`${cronTime} | ${start} | ${timeZone} | ${runOnInit} | ${utcOffset} | ${unrefTimeout} | ${tzOrOffset}`
+	// );
 	try {
 		const job = new CronJob(
 			cronTime,
