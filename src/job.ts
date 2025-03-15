@@ -251,7 +251,7 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 	start() {
 		if (this._isActive) return;
 
-		const MAXDELAY = 2147483647; // The maximum number of milliseconds setTimeout will wait.
+		const MAXDELAY = 2147483647; // the maximum number of milliseconds setTimeout will wait.
 		let timeout = this.cronTime.getTimeout();
 		let remaining = 0;
 		let startTime: number;
@@ -264,7 +264,7 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 			}
 		};
 
-		// The callback wrapper checks if it needs to sleep another period or not
+		// the callback wrapper checks if it needs to sleep another period or not
 		// and does the real callback logic when it's time.
 		const callbackWrapper = () => {
 			const diff = startTime + timeout - Date.now();
@@ -279,7 +279,7 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 				remaining += newTimeout;
 			}
 
-			// If there is sleep time remaining, calculate how long and go to sleep
+			// if there is sleep time remaining, calculate how long and go to sleep
 			// again. This processing might make us miss the deadline by a few ms
 			// times the number of sleep sessions. Given a MAXDELAY of almost a
 			// month, this should be no issue.
@@ -294,7 +294,7 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 
 				setCronTimeout(timeout);
 			} else {
-				// We have arrived at the correct point in time.
+				// we have arrived at the correct point in time.
 				this.lastExecution = new Date();
 
 				this._isActive = false;
@@ -309,7 +309,7 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 		if (timeout >= 0) {
 			this._isActive = true;
 
-			// Don't try to sleep more than MAXDELAY ms at a time.
+			// don't try to sleep more than MAXDELAY ms at a time.
 
 			if (timeout > MAXDELAY) {
 				remaining = timeout - MAXDELAY;
@@ -343,7 +343,7 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 	}
 
 	/**
-	 * Stop the cronjob.
+	 * stop the cronjob.
 	 */
 	stop() {
 		if (this._timeout) clearTimeout(this._timeout);
