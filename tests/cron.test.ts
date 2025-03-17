@@ -19,6 +19,40 @@ describe('cron', () => {
 		sinon.restore();
 	});
 
+	it('should not stop job if sendAt takes time to complete (#962)', () => {
+		const EVERY = 5;
+		const TICK = EVERY * 1000;
+		const DELAY = 350;
+
+		const clock = sinon.useFakeTimers();
+
+		const job = CronJob.from({
+			cronTime: `*/${EVERY} * * * * *`,
+			onTick: callback,
+			start: true,
+			threshold: 500
+		});
+
+		sinon
+			.stub(job.cronTime, 'getTimeout')
+			.onCall(0)
+			.returns(-DELAY)
+			.onCall(1)
+			.returns(TICK)
+			.onCall(2)
+			.returns(-DELAY);
+
+		clock.tick(TICK);
+		expect(job.isActive).toBe(true);
+		expect(callback).toHaveBeenCalledTimes(1);
+
+		clock.tick(TICK);
+		expect(job.isActive).toBe(true);
+		expect(callback).toHaveBeenCalledTimes(2);
+
+		job.stop();
+	});
+
 	describe('with seconds', () => {
 		it('should run every second (* * * * * *)', () => {
 			const clock = sinon.useFakeTimers();
@@ -1344,8 +1378,6 @@ describe('cron', () => {
 			}).toJSDate();
 			const clock = sinon.useFakeTimers(d.getTime());
 
-			console.debug({ d });
-
 			const job = new CronJob(
 				'0 1 30 3 *',
 				callback,
@@ -1366,8 +1398,6 @@ describe('cron', () => {
 				zone: 'Europe/Paris'
 			}).toJSDate();
 			const clock = sinon.useFakeTimers(d.getTime());
-
-			console.debug({ d });
 
 			const job = new CronJob(
 				'0 2 31 3 *',
