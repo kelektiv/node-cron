@@ -1,4 +1,4 @@
-import { CronJob } from '../src';
+import { CronJob } from '../dist/index.js';
 
 console.log('first');
 const job = new CronJob(
@@ -8,6 +8,9 @@ const job = new CronJob(
 	},
 	null,
 	true,
-	'America/Sao_Paulo'
+	null,
+	null,
+	null,
+	-360 // UTC-6, represented in minutes
 );
 console.log('second');
