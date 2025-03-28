@@ -1,3 +1,9 @@
+## [4.1.3](https://github.com/kelektiv/node-cron/compare/v4.1.2...v4.1.3) (2025-03-28)
+
+### 🛠 Builds
+
+* **deps:** update dependency luxon to ~3.6.0 ([5935617](https://github.com/kelektiv/node-cron/commit/5935617c3b51e2394b5f63a39bb28cad60d97ef1))
+
 ## [4.1.2](https://github.com/kelektiv/node-cron/compare/v4.1.1...v4.1.2) (2025-03-28)
 
 ### 🐛 Bug Fixes
