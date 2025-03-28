@@ -25,7 +25,7 @@
 	},
 	"dependencies": {
 		"@types/luxon": "~3.4.0",
-		"luxon": "~3.5.0"
+		"luxon": "~3.6.0"
 	},
 	"devDependencies": {
 		"@commitlint/cli": "19.8.0",
