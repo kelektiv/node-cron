@@ -528,6 +528,23 @@ describe('cron', () => {
 			expect(callback).toHaveBeenCalledTimes(1);
 		});
 
+		// this test requires setting the TZ env variable
+		// to Europe/Paris to run correctly on CI
+		it('should use system timezone by default (issue #971)', () => {
+			const d = DateTime.fromISO('2025-03-28T00:00:00', {
+				zone: 'Europe/Paris'
+			}).toJSDate();
+			const clock = sinon.useFakeTimers(d.getTime());
+			const job = CronJob.from({
+				cronTime: '1 0 * * *',
+				onTick: callback,
+				start: true
+			});
+			clock.tick(60 * 60 * 1000);
+			job.stop();
+			expect(callback).toHaveBeenCalledTimes(1);
+		});
+
 		it('should test if timezone is valid.', () => {
 			expect(() => {
 				CronJob.from({
