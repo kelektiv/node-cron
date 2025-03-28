@@ -1,3 +1,9 @@
+## [4.1.2](https://github.com/kelektiv/node-cron/compare/v4.1.1...v4.1.2) (2025-03-28)
+
+### 🐛 Bug Fixes
+
+* timezone should default to local ([#972](https://github.com/kelektiv/node-cron/issues/972)) ([d2b1aac](https://github.com/kelektiv/node-cron/commit/d2b1aac9c705e111a466daa85b95bed9f7725abd)), closes [#971](https://github.com/kelektiv/node-cron/issues/971) [#971](https://github.com/kelektiv/node-cron/issues/971)
+
 ## [4.1.1](https://github.com/kelektiv/node-cron/compare/v4.1.0...v4.1.1) (2025-03-26)
 
 ### 🐛 Bug Fixes
