@@ -14,7 +14,6 @@ describe('cron', () => {
 	});
 
 	afterEach(() => {
-		// eslint-disable-next-line jest/no-standalone-expect
 		expect.hasAssertions();
 		sinon.restore();
 	});
@@ -246,7 +245,6 @@ describe('cron', () => {
 			},
 			() => {
 				expect(callback).toHaveBeenCalledTimes(1);
-				clock.restore();
 				done();
 			},
 			true
@@ -265,7 +263,6 @@ describe('cron', () => {
 			},
 			() => {
 				expect(callback).toHaveBeenCalledTimes(1);
-				clock.restore();
 				done();
 			},
 			true
@@ -684,7 +681,6 @@ describe('cron', () => {
 
 		// 1 ms more than 31 days; jump over 2 firsts
 		clock.tick(31 * 24 * 60 * 60 * 1000 + 1);
-		clock.restore();
 		job.stop();
 
 		expect(callback).toHaveBeenCalledTimes(3);
@@ -889,7 +885,6 @@ describe('cron', () => {
 
 		// tick by 1 day
 		clock.tick(24 * 60 * 60 * 1000);
-		clock.restore();
 		job.stop();
 		expect(callback).toHaveBeenCalledTimes(1);
 	});
@@ -1064,17 +1059,15 @@ describe('cron', () => {
 
 	describe('nextDate(s)', () => {
 		it('should give the next date to run at', () => {
-			const clock = sinon.useFakeTimers();
+			sinon.useFakeTimers();
 			const job = new CronJob('* * * * * *', callback);
 			const d = Date.now();
 
 			expect(job.nextDate().toMillis()).toEqual(d + 1000);
-
-			clock.restore();
 		});
 
 		it('should give the next 5 dates to run at', () => {
-			const clock = sinon.useFakeTimers();
+			sinon.useFakeTimers();
 			const job = new CronJob('* * * * * *', callback);
 			const d = Date.now();
 
@@ -1085,17 +1078,11 @@ describe('cron', () => {
 				d + 4000,
 				d + 5000
 			]);
-
-			clock.restore();
 		});
 
 		it('should give an empty array when called without argument', () => {
-			const clock = sinon.useFakeTimers();
 			const job = new CronJob('* * * * * *', callback);
-
 			expect(job.nextDates()).toHaveLength(0);
-
-			clock.restore();
 		});
 	});
 
@@ -1207,7 +1194,6 @@ describe('cron', () => {
 		expect(handlerFunc).toHaveBeenLastCalledWith(new Error('Exception'));
 
 		job.stop();
-		clock.restore();
 	});
 
 	it('should log errors if errorHandler is NOT provided', () => {
@@ -1391,7 +1377,6 @@ describe('cron', () => {
 			clock.tick(1000);
 			expect(callback).toHaveBeenCalledTimes(1);
 
-			clock.restore();
 			job.stop();
 		});
 
@@ -1412,7 +1397,6 @@ describe('cron', () => {
 			clock.tick(1000);
 			expect(callback).toHaveBeenCalledTimes(1);
 
-			clock.restore();
 			job.stop();
 		});
 
@@ -1436,7 +1420,6 @@ describe('cron', () => {
 
 			expect(callback).toHaveBeenCalledTimes(6);
 
-			clock.restore();
 			job.stop();
 		});
 	});
