@@ -668,7 +668,9 @@ describe('cron', () => {
 	});
 
 	it('should test start of month', () => {
-		const d = new Date(Date.UTC(2014, 12, 31, 23, 59, 59));
+		const d = DateTime.fromISO('2024-12-31T23:59:59', {
+			zone: 'Europe/Paris'
+		}).toJSDate();
 		const clock = sinon.useFakeTimers(d.getTime());
 
 		const job = new CronJob('0 0 0 1 * *', callback, null, true);
@@ -868,7 +870,10 @@ describe('cron', () => {
 	 * source: https://github.com/cronie-crond/cronie/blob/0d669551680f733a4bdd6bab082a0b3d6d7f089c/src/cronnext.c#L401-L403
 	 */
 	it('should work correctly for max match interval', () => {
-		const d = new Date(Date.UTC(2096, 2, 1));
+		const d = DateTime.fromISO('2096-03-01T00:00:00', {
+			zone: 'Europe/Paris'
+		}).toJSDate();
+
 		const clock = sinon.useFakeTimers(d.getTime());
 
 		const job = CronJob.from({
