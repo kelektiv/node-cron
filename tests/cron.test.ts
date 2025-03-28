@@ -14,7 +14,6 @@ describe('cron', () => {
 	});
 
 	afterEach(() => {
-		// eslint-disable-next-line jest/no-standalone-expect
 		expect.hasAssertions();
 		sinon.restore();
 	});
@@ -246,7 +245,6 @@ describe('cron', () => {
 			},
 			() => {
 				expect(callback).toHaveBeenCalledTimes(1);
-				clock.restore();
 				done();
 			},
 			true
@@ -265,7 +263,6 @@ describe('cron', () => {
 			},
 			() => {
 				expect(callback).toHaveBeenCalledTimes(1);
-				clock.restore();
 				done();
 			},
 			true
@@ -528,6 +525,23 @@ describe('cron', () => {
 			expect(callback).toHaveBeenCalledTimes(1);
 		});
 
+		// this test requires setting the TZ env variable
+		// to Europe/Paris to run correctly on CI
+		it('should use system timezone by default (issue #971)', () => {
+			const d = DateTime.fromISO('2025-03-28T00:00:00', {
+				zone: 'Europe/Paris'
+			}).toJSDate();
+			const clock = sinon.useFakeTimers(d.getTime());
+			const job = CronJob.from({
+				cronTime: '1 0 * * *',
+				onTick: callback,
+				start: true
+			});
+			clock.tick(60 * 60 * 1000);
+			job.stop();
+			expect(callback).toHaveBeenCalledTimes(1);
+		});
+
 		it('should test if timezone is valid.', () => {
 			expect(() => {
 				CronJob.from({
@@ -651,7 +665,9 @@ describe('cron', () => {
 	});
 
 	it('should test start of month', () => {
-		const d = new Date(Date.UTC(2014, 12, 31, 23, 59, 59));
+		const d = DateTime.fromISO('2024-12-31T23:59:59', {
+			zone: 'Europe/Paris'
+		}).toJSDate();
 		const clock = sinon.useFakeTimers(d.getTime());
 
 		const job = new CronJob('0 0 0 1 * *', callback, null, true);
@@ -665,7 +681,6 @@ describe('cron', () => {
 
 		// 1 ms more than 31 days; jump over 2 firsts
 		clock.tick(31 * 24 * 60 * 60 * 1000 + 1);
-		clock.restore();
 		job.stop();
 
 		expect(callback).toHaveBeenCalledTimes(3);
@@ -851,7 +866,10 @@ describe('cron', () => {
 	 * source: https://github.com/cronie-crond/cronie/blob/0d669551680f733a4bdd6bab082a0b3d6d7f089c/src/cronnext.c#L401-L403
 	 */
 	it('should work correctly for max match interval', () => {
-		const d = new Date(Date.UTC(2096, 2, 1));
+		const d = DateTime.fromISO('2096-03-01T00:00:00', {
+			zone: 'Europe/Paris'
+		}).toJSDate();
+
 		const clock = sinon.useFakeTimers(d.getTime());
 
 		const job = CronJob.from({
@@ -867,7 +885,6 @@ describe('cron', () => {
 
 		// tick by 1 day
 		clock.tick(24 * 60 * 60 * 1000);
-		clock.restore();
 		job.stop();
 		expect(callback).toHaveBeenCalledTimes(1);
 	});
@@ -1042,17 +1059,15 @@ describe('cron', () => {
 
 	describe('nextDate(s)', () => {
 		it('should give the next date to run at', () => {
-			const clock = sinon.useFakeTimers();
+			sinon.useFakeTimers();
 			const job = new CronJob('* * * * * *', callback);
 			const d = Date.now();
 
 			expect(job.nextDate().toMillis()).toEqual(d + 1000);
-
-			clock.restore();
 		});
 
 		it('should give the next 5 dates to run at', () => {
-			const clock = sinon.useFakeTimers();
+			sinon.useFakeTimers();
 			const job = new CronJob('* * * * * *', callback);
 			const d = Date.now();
 
@@ -1063,17 +1078,11 @@ describe('cron', () => {
 				d + 4000,
 				d + 5000
 			]);
-
-			clock.restore();
 		});
 
 		it('should give an empty array when called without argument', () => {
-			const clock = sinon.useFakeTimers();
 			const job = new CronJob('* * * * * *', callback);
-
 			expect(job.nextDates()).toHaveLength(0);
-
-			clock.restore();
 		});
 	});
 
@@ -1185,7 +1194,6 @@ describe('cron', () => {
 		expect(handlerFunc).toHaveBeenLastCalledWith(new Error('Exception'));
 
 		job.stop();
-		clock.restore();
 	});
 
 	it('should log errors if errorHandler is NOT provided', () => {
@@ -1369,7 +1377,6 @@ describe('cron', () => {
 			clock.tick(1000);
 			expect(callback).toHaveBeenCalledTimes(1);
 
-			clock.restore();
 			job.stop();
 		});
 
@@ -1390,7 +1397,6 @@ describe('cron', () => {
 			clock.tick(1000);
 			expect(callback).toHaveBeenCalledTimes(1);
 
-			clock.restore();
 			job.stop();
 		});
 
@@ -1414,7 +1420,6 @@ describe('cron', () => {
 
 			expect(callback).toHaveBeenCalledTimes(6);
 
-			clock.restore();
 			job.stop();
 		});
 	});

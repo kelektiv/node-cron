@@ -74,6 +74,11 @@ export class CronTime {
 			this.utcOffset = utcOffset;
 		}
 
+		if (timeZone == null && utcOffset == null) {
+			const systemTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+			this.timeZone = systemTimezone;
+		}
+
 		if (source instanceof Date || source instanceof DateTime) {
 			this.source =
 				source instanceof Date ? DateTime.fromJSDate(source) : source;
@@ -115,6 +120,7 @@ export class CronTime {
 			this.realDate && this.source instanceof DateTime
 				? this.source
 				: DateTime.utc();
+
 		if (this.timeZone) {
 			date = date.setZone(this.timeZone);
 		}

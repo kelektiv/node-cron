@@ -4,9 +4,9 @@ import { CronTime, validateCronExpression } from '../src';
 import { CronError } from '../src/errors';
 
 describe('crontime', () => {
-	// eslint-disable-next-line jest/no-standalone-expect
 	afterEach(() => {
 		expect.hasAssertions();
+		sinon.restore();
 	});
 
 	it('should test stars (* * * * * *)', () => {
@@ -655,39 +655,29 @@ describe('crontime', () => {
 	});
 
 	it('should accept 0 as a valid UTC offset', () => {
-		const clock = sinon.useFakeTimers();
-
+		sinon.useFakeTimers();
 		const cronTime = new CronTime('0 11 * * *', null, 0);
 		const expected = DateTime.local().plus({ hours: 11 }).toSeconds();
 		const actual = cronTime.sendAt().toSeconds();
-
 		expect(actual).toEqual(expected);
-
-		clock.restore();
 	});
 
 	it('should accept -120 as a valid UTC offset', () => {
-		const clock = sinon.useFakeTimers();
-
+		sinon.useFakeTimers();
 		const cronTime = new CronTime('0 11 * * *', null, -120);
 		const expected = DateTime.local().plus({ hours: 13 }).toSeconds();
 		const actual = cronTime.sendAt().toSeconds();
-
 		expect(actual).toEqual(expected);
-
-		clock.restore();
 	});
 
 	it('should detect real date in the past', () => {
 		const clock = sinon.useFakeTimers();
-
 		const d = new Date();
 		clock.tick(1000);
 		const time = new CronTime(d);
 		expect(() => {
 			time.sendAt();
 		}).toThrow();
-		clock.restore();
 	});
 
 	it('should throw when providing both exclusive parameters timeZone and utcOffset', () => {

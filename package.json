@@ -18,9 +18,9 @@
 		"lint:prettier": "prettier ./**/*.{json,md,yml} --check",
 		"lint": "npm run lint:eslint && npm run lint:prettier",
 		"lint:fix": "npm run lint:eslint -- --fix && npm run lint:prettier -- --write",
-		"test": "jest --coverage",
-		"test:watch": "jest --watch --coverage",
-		"test:fuzz": "jest  --testMatch='**/*.fuzz.ts' --coverage=false --testTimeout=120000",
+		"test": "cross-env TZ='Europe/Paris' jest --coverage",
+		"test:watch": "cross-env TZ='Europe/Paris' jest --watch --coverage",
+		"test:fuzz": "cross-env TZ='Europe/Paris' jest --testMatch='**/*.fuzz.ts' --coverage=false --testTimeout=120000",
 		"prepare": "husky"
 	},
 	"dependencies": {
@@ -45,6 +45,7 @@
 		"@types/node": "22.13.11",
 		"@types/sinon": "17.0.4",
 		"chai": "5.2.0",
+		"cross-env": "7.0.3",
 		"eslint": "8.57.1",
 		"eslint-config-prettier": "9.1.0",
 		"eslint-plugin-jest": "27.9.0",
