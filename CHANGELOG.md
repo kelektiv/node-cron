@@ -1,3 +1,13 @@
+## [4.1.4-beta.1](https://github.com/kelektiv/node-cron/compare/v4.1.3...v4.1.4-beta.1) (2025-04-06)
+
+### 🛠 Builds
+
+* **deps:** update dependency [@types](https://github.com/types)/luxon to ~3.6.0 ([dccbfc7](https://github.com/kelektiv/node-cron/commit/dccbfc79911ee73ff7a3f4863229511ed3ff70cd))
+
+### ♻️ Chores
+
+* **deps:** lock file maintenance ([c3190bf](https://github.com/kelektiv/node-cron/commit/c3190bffd96621d400fb9ca8f0ecff14a08e487c))
+
 ## [4.1.3](https://github.com/kelektiv/node-cron/compare/v4.1.2...v4.1.3) (2025-03-28)
 
 ### 🛠 Builds
