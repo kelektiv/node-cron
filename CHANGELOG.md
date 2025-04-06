@@ -1,3 +1,9 @@
+## [4.1.5-beta.1](https://github.com/kelektiv/node-cron/compare/v4.1.4...v4.1.5-beta.1) (2025-04-06)
+
+### 🐛 Bug Fixes
+
+* prevent jobs from stopping unexpectedly ([#963](https://github.com/kelektiv/node-cron/issues/963)) ([69d2ef5](https://github.com/kelektiv/node-cron/commit/69d2ef5ce5235985ceba391e0e04379550572374))
+
 ## [4.1.4](https://github.com/kelektiv/node-cron/compare/v4.1.3...v4.1.4) (2025-04-06)
 
 ### 🛠 Builds
