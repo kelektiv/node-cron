@@ -92,9 +92,9 @@ describe('threshold behavior', () => {
 		clock.tick(1000);
 
 		expect(callback).toHaveBeenCalledTimes(1);
-		expect(warnSpy).toHaveBeenCalledWith(
-			expect.stringContaining('Executing job "test-job"')
-		);
+		const message = warnSpy.mock.calls[0][0];
+		expect(message).toContain('Missed execution deadline by 100ms');
+		expect(message).toContain('Executing immediately');
 
 		job.stop();
 	});
@@ -122,9 +122,9 @@ describe('threshold behavior', () => {
 
 		// 2 calls: 1 from the initial scheduled execution, 1 from the immediate execution
 		expect(callback).toHaveBeenCalledTimes(2);
-		expect(warnSpy).toHaveBeenCalledWith(
-			expect.stringContaining('Executing job "test-job"')
-		);
+		const message = warnSpy.mock.calls[0][0];
+		expect(message).toContain('Missed execution deadline by 50ms');
+		expect(message).toContain('Executing immediately');
 
 		job.stop();
 	});
@@ -152,14 +152,14 @@ describe('threshold behavior', () => {
 
 		// 1 call from the initial scheduled execution
 		expect(callback).toHaveBeenCalledTimes(1);
-		expect(warnSpy).toHaveBeenCalledWith(
-			expect.stringContaining('Skipping execution for job "test-job"')
-		);
+		const message = warnSpy.mock.calls[0][0];
+		expect(message).toContain('Missed execution deadline by 200ms');
+		expect(message).toContain('Skipping execution as it exceeds threshold');
 
 		job.stop();
 	});
 
-	it('should skip immediate execution by default unless threshold is set', () => {
+	it('should use 250ms as default threshold', () => {
 		const job = CronJob.from({
 			cronTime: '* * * * * *',
 			onTick: callback,
@@ -172,17 +172,17 @@ describe('threshold behavior', () => {
 			.onCall(0)
 			.returns(1000)
 			.onCall(1)
-			.returns(-1);
+			.returns(-250);
 		sinon.stub(job.cronTime, 'source').value('test-cron-expression');
 
 		const clock = sinon.useFakeTimers();
 		job.start();
 		clock.tick(1000);
 
-		expect(callback).toHaveBeenCalledTimes(1);
-		expect(warnSpy).toHaveBeenCalledWith(
-			expect.stringContaining('Skipping execution for job "test-job"')
-		);
+		expect(callback).toHaveBeenCalledTimes(2);
+		const message = warnSpy.mock.calls[0][0];
+		expect(message).toContain('Missed execution deadline by 250ms');
+		expect(message).toContain('Executing immediately');
 
 		job.stop();
 	});
@@ -193,15 +193,16 @@ describe('threshold behavior', () => {
 			cronTime: '* * * * * *',
 			onTick: callback,
 			start: false,
+			threshold: 250,
 			name: jobName
 		});
 
 		sinon
 			.stub(job.cronTime, 'getTimeout')
 			.onCall(0)
-			.returns(-75)
+			.returns(1000)
 			.onCall(1)
-			.returns(1000);
+			.returns(-500);
 		sinon.stub(job.cronTime, 'source').value('test-cron-expression');
 
 		const clock = sinon.useFakeTimers();
@@ -209,10 +210,10 @@ describe('threshold behavior', () => {
 		clock.tick(1000);
 
 		expect(callback).toHaveBeenCalledTimes(1);
-		const logMessage = warnSpy.mock.calls[0][0];
-		// For named jobs, the log should include the quoted job name
-		expect(logMessage).toContain(`job "${jobName}"`);
-		expect(logMessage).toContain('test-cron-expression');
+		const message = warnSpy.mock.calls[0][0];
+		expect(message).toContain('Missed execution deadline by 500ms');
+		expect(message).toContain(`job "${jobName}" with cron expression`);
+		expect(message).toContain('test-cron-expression');
 
 		job.stop();
 	});
@@ -221,15 +222,16 @@ describe('threshold behavior', () => {
 		const job = CronJob.from({
 			cronTime: '* * * * * *',
 			onTick: callback,
-			start: false
+			start: false,
+			threshold: 250
 		});
 
 		sinon
 			.stub(job.cronTime, 'getTimeout')
 			.onCall(0)
-			.returns(-75)
+			.returns(1000)
 			.onCall(1)
-			.returns(1000);
+			.returns(-500);
 		sinon.stub(job.cronTime, 'source').value('test-cron-expression');
 
 		const clock = sinon.useFakeTimers();
@@ -237,10 +239,10 @@ describe('threshold behavior', () => {
 		clock.tick(1000);
 
 		expect(callback).toHaveBeenCalledTimes(1);
-		const logMessage = warnSpy.mock.calls[0][0];
-		// For unnamed jobs, the log should not include a quoted job name
-		expect(logMessage).not.toMatch(/job\s+".+"/);
-		expect(logMessage).toContain('test-cron-expression');
+		const message = warnSpy.mock.calls[0][0];
+		expect(message).toContain('Missed execution deadline by 500ms');
+		expect(message).toContain('for job with cron expression');
+		expect(message).toContain('test-cron-expression');
 
 		job.stop();
 	});

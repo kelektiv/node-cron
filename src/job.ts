@@ -113,7 +113,7 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 		}
 
 		if (threshold != null) {
-			this.threshold = threshold;
+			this.threshold = Math.abs(threshold);
 		}
 
 		if (name != null) {
@@ -272,6 +272,7 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 
 	start() {
 		if (this._isActive) return;
+		this._isActive = true;
 
 		const MAXDELAY = 2147483647; // The maximum number of milliseconds setTimeout will wait.
 		let timeout = this.cronTime.getTimeout();
@@ -329,8 +330,6 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 		};
 
 		if (timeout >= 0) {
-			this._isActive = true;
-
 			// Don't try to sleep more than MAXDELAY ms at a time.
 
 			if (timeout > MAXDELAY) {
@@ -340,7 +339,26 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 
 			setCronTimeout(timeout);
 		} else {
-			this.stop();
+			// Handle negative timeout
+			const absoluteTimeout = Math.abs(timeout);
+
+			const message = `[Cron] Missed execution deadline by ${absoluteTimeout}ms for job${this.name ? ` "${this.name}"` : ''} with cron expression '${String(this.cronTime.source)}'`;
+
+			if (absoluteTimeout <= this.threshold) {
+				// Execute immediately if within threshold
+				console.warn(`${message}. Executing immediately.`);
+
+				this.lastExecution = new Date();
+				void this.fireOnTick();
+			} else {
+				// Skip job if beyond threshold
+				console.warn(
+					`${message}. Skipping execution as it exceeds threshold (${this.threshold}ms).`
+				);
+			}
+
+			timeout = this.cronTime.getTimeout();
+			setCronTimeout(timeout);
 		}
 	}
 

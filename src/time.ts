@@ -136,9 +136,18 @@ export class CronTime {
 
 	/**
 	 * Get the number of milliseconds in the future at which to fire our callbacks.
+	 *
+	 * Can return a negative value when `sendAt` took too long to execute.
+	 * This is then handled in `CronJob` to execute the job immediately or skip
+	 * this execution based on the `threshold` option.
+	 *
+	 * We could instead call DateTime.local before `sendAt` to get the current time, but
+	 * then the calculated timeout would be offset by the time it takes to execute `sendAt`.
+	 *
+	 * As such it is better to handle negative timeouts by executing the job immediately.
 	 */
 	getTimeout() {
-		return Math.max(-1, this.sendAt().toMillis() - DateTime.local().toMillis());
+		return this.sendAt().toMillis() - DateTime.local().toMillis();
 	}
 
 	/**
