@@ -22,8 +22,8 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 		: undefined;
 	waitForCompletion = false;
 	errorHandler?: CronJobParams<OC, C>['errorHandler'];
-	threshold = 250; // default threshold in ms
 	name?: string; // optional job name for identification
+	threshold = 250; // default threshold in ms
 
 	private _isActive = false;
 	private _isCallbackRunning = false;

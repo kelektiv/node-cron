@@ -221,7 +221,7 @@ day of week    0-7 (0 or 7 is Sunday, or use names)
 
 - `name`: [OPTIONAL] - Name of the job. Useful for identifying jobs in logs.
 
-- `threshold`: [OPTIONAL] - Threshold in ms to control whether to execute or skip missed execution deadlines. Execution delays within threshold will be executed immediately, and otherwise will be skipped. In both cases a warning will be printed to the console with the job name and cron expression. See [issue #962](https://github.com/kelektiv/node-cron/issues/962) for more information. Default is `250`.
+- `threshold`: [OPTIONAL] - Threshold in ms to control whether to execute or skip missed execution deadlines caused by slow or busy hardware. Execution delays within threshold will be executed immediately, and otherwise will be skipped. In both cases a warning will be printed to the console with the job name and cron expression. See [issue #962](https://github.com/kelektiv/node-cron/issues/962) for more information. Default is `250`.
 
 #### Methods
 
