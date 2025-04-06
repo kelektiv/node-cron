@@ -50,8 +50,8 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 		unrefTimeout?: CronJobParams<OC, C>['unrefTimeout'],
 		waitForCompletion?: CronJobParams<OC, C>['waitForCompletion'],
 		errorHandler?: CronJobParams<OC, C>['errorHandler'],
-		threshold?: CronJobParams<OC, C>['threshold'],
-		name?: CronJobParams<OC, C>['name']
+		name?: CronJobParams<OC, C>['name'],
+		threshold?: CronJobParams<OC, C>['threshold']
 	);
 	constructor(
 		cronTime: CronJobParams<OC, C>['cronTime'],
@@ -65,8 +65,8 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 		unrefTimeout?: CronJobParams<OC, C>['unrefTimeout'],
 		waitForCompletion?: CronJobParams<OC, C>['waitForCompletion'],
 		errorHandler?: CronJobParams<OC, C>['errorHandler'],
-		threshold?: CronJobParams<OC, C>['threshold'],
-		name?: CronJobParams<OC, C>['name']
+		name?: CronJobParams<OC, C>['name'],
+		threshold?: CronJobParams<OC, C>['threshold']
 	);
 	constructor(
 		cronTime: CronJobParams<OC, C>['cronTime'],
@@ -80,8 +80,8 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 		unrefTimeout?: CronJobParams<OC, C>['unrefTimeout'],
 		waitForCompletion?: CronJobParams<OC, C>['waitForCompletion'],
 		errorHandler?: CronJobParams<OC, C>['errorHandler'],
-		threshold?: CronJobParams<OC, C>['threshold'],
-		name?: CronJobParams<OC, C>['name']
+		name?: CronJobParams<OC, C>['name'],
+		threshold?: CronJobParams<OC, C>['threshold']
 	) {
 		this.context = (context ?? this) as CronContext<C>;
 		this.waitForCompletion = Boolean(waitForCompletion);
@@ -156,8 +156,8 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 				params.unrefTimeout,
 				params.waitForCompletion,
 				params.errorHandler,
-				params.threshold,
-				params.name
+				params.name,
+				params.threshold
 			);
 		} else if (params.utcOffset != null) {
 			return new CronJob<OC, C>(
@@ -172,8 +172,8 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 				params.unrefTimeout,
 				params.waitForCompletion,
 				params.errorHandler,
-				params.threshold,
-				params.name
+				params.name,
+				params.threshold
 			);
 		} else {
 			return new CronJob<OC, C>(
@@ -188,8 +188,8 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 				params.unrefTimeout,
 				params.waitForCompletion,
 				params.errorHandler,
-				params.threshold,
-				params.name
+				params.name,
+				params.threshold
 			);
 		}
 	}
