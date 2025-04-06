@@ -1,4 +1,4 @@
-import { CronJob } from '../src';
+import { CronJob } from '../dist/index.js';
 
 const job = new CronJob(
 	'0 * * * * *',

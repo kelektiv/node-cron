@@ -1,4 +1,4 @@
-import { CronJob } from '../src';
+import { CronJob } from '../dist/index.js';
 
 // XXX: SEE README GOTCHAS ABOUT WHY THIS COULD BE IN THE PAST!
 const d = new Date();

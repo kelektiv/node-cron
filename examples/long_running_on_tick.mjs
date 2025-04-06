@@ -1,4 +1,4 @@
-import { CronJob } from '../src';
+import { CronJob } from '../dist/index.js';
 
 let isRunning = false;
 console.log('Before job instantiation');

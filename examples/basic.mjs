@@ -1,4 +1,4 @@
-import { CronJob } from '../src';
+import { CronJob } from '../dist/index.js';
 
 console.log('Before job instantiation');
 const job = new CronJob('* * * * * *', function () {
@@ -7,4 +7,3 @@ const job = new CronJob('* * * * * *', function () {
 });
 console.log('After job instantiation');
 job.start();
-console.log('is job active? ', job.isActive);
