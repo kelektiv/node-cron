@@ -183,7 +183,7 @@ day of week    0-7 (0 or 7 is Sunday, or use names)
 
 #### Constructor
 
-`constructor(cronTime, onTick, onComplete, start, timeZone, context, runOnInit, utcOffset, unrefTimeout)`:
+`constructor(cronTime, onTick, onComplete, start, timeZone, context, runOnInit, utcOffset, unrefTimeout, waitForCompletion, errorHandler, name, threshold)`:
 
 - `cronTime`: [REQUIRED] - The time to fire off your job. Can be cron syntax, a JS [`Date`](https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Date) object or a Luxon [`DateTime`](https://moment.github.io/luxon/api-docs/index.html#datetime) object.
 
@@ -206,6 +206,10 @@ day of week    0-7 (0 or 7 is Sunday, or use names)
 - `waitForCompletion`: [OPTIONAL] - If `true`, no additional instances of the `onTick` callback function will run until the current onTick callback has completed. Any new scheduled executions that occur while the current callback is running will be skipped entirely. Default is `false`.
 
 - `errorHandler`: [OPTIONAL] - Function to handle any exceptions that occur in the `onTick` method.
+
+- `name`: [OPTIONAL] - Name of the job. Useful for identifying jobs in logs.
+
+- `threshold`: [OPTIONAL] - Threshold in ms to control whether to execute or skip missed execution deadlines. Execution delays within threshold will be executed immediately, and otherwise will be skipped. In both cases a warning will be printed to the console with the job name and cron expression. See [issue #962](https://github.com/kelektiv/node-cron/issues/962) for more information. Default is `250`.
 
 #### Methods
 
