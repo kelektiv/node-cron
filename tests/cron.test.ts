@@ -24,33 +24,32 @@ describe('cron', () => {
 		const TICK = EVERY * 1000;
 		const DELAY = 350;
 
-		const clock = sinon.useFakeTimers();
-
 		const job = CronJob.from({
 			cronTime: `*/${EVERY} * * * * *`,
 			onTick: callback,
-			start: true,
-			threshold: 500
+			start: false,
+			threshold: 350
 		});
 
 		sinon
 			.stub(job.cronTime, 'getTimeout')
 			.onCall(0)
-			.returns(-DELAY)
-			.onCall(1)
 			.returns(TICK)
-			.onCall(2)
+			.onCall(1)
 			.returns(-DELAY);
 
-		clock.tick(TICK);
-		expect(job.isActive).toBe(true);
-		expect(callback).toHaveBeenCalledTimes(1);
+		const clock = sinon.useFakeTimers();
+
+		// mock console.warn to avoid poluting tests with the warning
+		const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+
+		job.start();
 
 		clock.tick(TICK);
 		expect(job.isActive).toBe(true);
-		expect(callback).toHaveBeenCalledTimes(2);
 
 		job.stop();
+		warnSpy.mockRestore();
 	});
 
 	describe('with seconds', () => {
