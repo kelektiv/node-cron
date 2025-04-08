@@ -1,4 +1,3 @@
-import { SpawnOptions } from 'child_process';
 import { DateTime } from 'luxon';
 import { CONSTRAINTS, TIME_UNITS_MAP } from '../constants';
 import { CronJob } from '../job';
@@ -43,19 +42,12 @@ export type CronCallback<C, WithOnCompleteBool extends boolean = false> = (
 
 export type CronOnCompleteCallback = () => void | Promise<void>;
 
-export type CronSystemCommand =
-	| string
-	| {
-			command: string;
-			args?: readonly string[] | null;
-			options?: SpawnOptions | null;
-	  };
+export type CronCommand<
+	C,
+	WithOnCompleteBool extends boolean = false
+> = CronCallback<C, WithOnCompleteBool>;
 
-export type CronCommand<C, WithOnCompleteBool extends boolean = false> =
-	| CronCallback<C, WithOnCompleteBool>
-	| CronSystemCommand;
-
-export type CronOnCompleteCommand = CronOnCompleteCallback | CronSystemCommand;
+export type CronOnCompleteCommand = CronOnCompleteCallback;
 
 export type WithOnComplete<OC> = OC extends null ? false : true;
 
