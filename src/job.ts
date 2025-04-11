@@ -354,7 +354,7 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 			return;
 		}
 
-		void Promise.resolve().then(async () => {
+		return Promise.resolve().then(async () => {
 			await this._waitForJobCompletion();
 			await this._executeOnComplete();
 		});
