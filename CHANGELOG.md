@@ -1,3 +1,9 @@
+## [4.3.0](https://github.com/kelektiv/node-cron/compare/v4.2.0...v4.3.0) (2025-04-15)
+
+### ✨ Features
+
+* add options to handle cases where jobs could stop unexpectedly ([#980](https://github.com/kelektiv/node-cron/issues/980)) ([994b93a](https://github.com/kelektiv/node-cron/commit/994b93ab2f41af729c4928f5999e2487a67f611d)), closes [#963](https://github.com/kelektiv/node-cron/issues/963) [#962](https://github.com/kelektiv/node-cron/issues/962) [#962](https://github.com/kelektiv/node-cron/issues/962) [#963](https://github.com/kelektiv/node-cron/issues/963)
+
 ## [4.2.1-beta.1](https://github.com/kelektiv/node-cron/compare/v4.2.0...v4.2.1-beta.1) (2025-04-15)
 
 ### 🐛 Bug Fixes
