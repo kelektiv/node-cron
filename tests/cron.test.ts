@@ -18,6 +18,39 @@ describe('cron', () => {
 		sinon.restore();
 	});
 
+	it('should not stop job if sendAt takes time to complete (#962)', () => {
+		const EVERY = 5;
+		const TICK = EVERY * 1000;
+		const DELAY = 350;
+
+		const job = CronJob.from({
+			cronTime: `*/${EVERY} * * * * *`,
+			onTick: callback,
+			start: false,
+			threshold: 350
+		});
+
+		sinon
+			.stub(job.cronTime, 'getTimeout')
+			.onCall(0)
+			.returns(TICK)
+			.onCall(1)
+			.returns(-DELAY);
+
+		const clock = sinon.useFakeTimers();
+
+		// mock console.warn to avoid poluting tests with the warning
+		const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+
+		job.start();
+
+		clock.tick(TICK);
+		expect(job.isActive).toBe(true);
+
+		job.stop();
+		warnSpy.mockRestore();
+	});
+
 	describe('with seconds', () => {
 		it('should run every second (* * * * * *)', () => {
 			const clock = sinon.useFakeTimers();
