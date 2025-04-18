@@ -14,9 +14,41 @@ describe('cron', () => {
 	});
 
 	afterEach(() => {
-		// eslint-disable-next-line jest/no-standalone-expect
 		expect.hasAssertions();
 		sinon.restore();
+	});
+
+	it('should not stop job if sendAt takes time to complete (#962)', () => {
+		const EVERY = 5;
+		const TICK = EVERY * 1000;
+		const DELAY = 350;
+
+		const job = CronJob.from({
+			cronTime: `*/${EVERY} * * * * *`,
+			onTick: callback,
+			start: false,
+			threshold: 350
+		});
+
+		sinon
+			.stub(job.cronTime, 'getTimeout')
+			.onCall(0)
+			.returns(TICK)
+			.onCall(1)
+			.returns(-DELAY);
+
+		const clock = sinon.useFakeTimers();
+
+		// mock console.warn to avoid poluting tests with the warning
+		const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+
+		job.start();
+
+		clock.tick(TICK);
+		expect(job.isActive).toBe(true);
+
+		job.stop();
+		warnSpy.mockRestore();
 	});
 
 	describe('with seconds', () => {
@@ -246,7 +278,6 @@ describe('cron', () => {
 			},
 			() => {
 				expect(callback).toHaveBeenCalledTimes(1);
-				clock.restore();
 				done();
 			},
 			true
@@ -265,7 +296,6 @@ describe('cron', () => {
 			},
 			() => {
 				expect(callback).toHaveBeenCalledTimes(1);
-				clock.restore();
 				done();
 			},
 			true
@@ -437,23 +467,23 @@ describe('cron', () => {
 		it('should run a job using cron syntax with a timezone', () => {
 			const clock = sinon.useFakeTimers();
 			let zone = 'America/Chicago';
-			// New Orleans time
+			// new Orleans time
 			let t = DateTime.local().setZone(zone);
-			// Current time
+			// current time
 			const d = DateTime.local();
 
-			// If current time is New Orleans time, switch to Los Angeles..
+			// if current time is New Orleans time, switch to Los Angeles..
 			if (t.hour === d.hour) {
 				zone = 'America/Los_Angeles';
 				t = t.setZone(zone);
 			}
 			expect(d.hour).not.toBe(t.hour);
 
-			// If t = 59s12m then t.setSeconds(60)
+			// if t = 59s12m then t.setSeconds(60)
 			// becomes 00s13m so we're fine just doing
 			// this and no testRun callback.
 			t = t.plus({ seconds: 1 });
-			// Run a job designed to be executed at a given
+			// run a job designed to be executed at a given
 			// time in `zone`, making sure that it is a different
 			// hour than local time.
 			const job = new CronJob(
@@ -472,25 +502,25 @@ describe('cron', () => {
 		it('should run a job using cron syntax with a "UTC+HH:mm" offset as timezone', () => {
 			const clock = sinon.useFakeTimers();
 
-			// Current time
+			// current time
 			const d = DateTime.local();
 
-			// Current time with zone offset
+			// current time with zone offset
 			let zone = 'UTC+5:30';
 			let t = DateTime.local().setZone(zone);
 
-			// If current offset is UTC+5:30, switch to UTC+6:30..
+			// if current offset is UTC+5:30, switch to UTC+6:30..
 			if (t.hour === d.hour && t.minute === d.minute) {
 				zone = 'UTC+6:30';
 				t = t.setZone(zone);
 			}
 			expect(`${d.hour}:${d.minute}`).not.toBe(`${t.hour}:${t.minute}`);
 
-			// If t = 59s12m then t.setSeconds(60)
+			// if t = 59s12m then t.setSeconds(60)
 			// becomes 00s13m so we're fine just doing
 			// this and no testRun callback.
 			t = t.plus({ seconds: 1 });
-			// Run a job designed to be executed at a given
+			// run a job designed to be executed at a given
 			// time in `zone`, making sure that it is a different
 			// hour than local time.
 			const job = new CronJob(
@@ -508,12 +538,12 @@ describe('cron', () => {
 
 		it('should run a job using a date', () => {
 			let zone = 'America/Chicago';
-			// New Orleans time
+			// new Orleans time
 			let t = DateTime.local().setZone(zone);
-			// Current time
+			// current time
 			let d = DateTime.local();
 
-			// If current time is New Orleans time, switch to Los Angeles..
+			// if current time is New Orleans time, switch to Los Angeles..
 			if (t.hour === d.hour) {
 				zone = 'America/Los_Angeles';
 				t = t.setZone(zone);
@@ -524,6 +554,23 @@ describe('cron', () => {
 			const clock = sinon.useFakeTimers(d.valueOf());
 			const job = new CronJob(d.toJSDate(), callback, null, true, zone);
 			clock.tick(1000);
+			job.stop();
+			expect(callback).toHaveBeenCalledTimes(1);
+		});
+
+		// this test requires setting the TZ env variable
+		// to Europe/Paris to run correctly on CI
+		it('should use system timezone by default (issue #971)', () => {
+			const d = DateTime.fromISO('2025-03-28T00:00:00', {
+				zone: 'Europe/Paris'
+			}).toJSDate();
+			const clock = sinon.useFakeTimers(d.getTime());
+			const job = CronJob.from({
+				cronTime: '1 0 * * *',
+				onTick: callback,
+				start: true
+			});
+			clock.tick(60 * 60 * 1000);
 			job.stop();
 			expect(callback).toHaveBeenCalledTimes(1);
 		});
@@ -628,6 +675,21 @@ describe('cron', () => {
 		}).toThrow();
 	});
 
+	it('should not get into an infinite loop when using uncommon offsets', () => {
+		const job = new CronJob(
+			'* * * * * *',
+			function () {},
+			null,
+			true,
+			null,
+			null,
+			true,
+			-4
+		);
+		expect(job.isActive).toBe(true);
+		job.stop();
+	});
+
 	it('should not throw if at least one time is valid', () => {
 		expect(() => {
 			const job = new CronJob('0 0 30 JAN,FEB *', callback, null, true);
@@ -636,22 +698,22 @@ describe('cron', () => {
 	});
 
 	it('should test start of month', () => {
-		const d = new Date('12/31/2014');
-		d.setSeconds(59);
-		d.setMinutes(59);
-		d.setHours(23);
+		const d = DateTime.fromISO('2024-12-31T23:59:59', {
+			zone: 'Europe/Paris'
+		}).toJSDate();
 		const clock = sinon.useFakeTimers(d.getTime());
 
 		const job = new CronJob('0 0 0 1 * *', callback, null, true);
 
+		// first millisecond of January
 		clock.tick(1001);
 		expect(callback).toHaveBeenCalledTimes(1);
-
-		clock.tick(2678399001);
+		// 2 ms less than 28 days; last millisecond of February
+		clock.tick(28 * 24 * 60 * 60 * 1000 - 2);
 		expect(callback).toHaveBeenCalledTimes(1);
 
-		clock.tick(2678400001); // jump over 2 firsts
-		clock.restore();
+		// 1 ms more than 31 days; jump over 2 firsts
+		clock.tick(31 * 24 * 60 * 60 * 1000 + 1);
 		job.stop();
 
 		expect(callback).toHaveBeenCalledTimes(3);
@@ -670,7 +732,7 @@ describe('cron', () => {
 		job.stop();
 	});
 
-	it('should run every day', () => {
+	it('should run every day at 3:59:59', () => {
 		const d = new Date('12/31/2014');
 		d.setSeconds(59);
 		d.setMinutes(59);
@@ -837,7 +899,10 @@ describe('cron', () => {
 	 * source: https://github.com/cronie-crond/cronie/blob/0d669551680f733a4bdd6bab082a0b3d6d7f089c/src/cronnext.c#L401-L403
 	 */
 	it('should work correctly for max match interval', () => {
-		const d = new Date(2096, 2, 1);
+		const d = DateTime.fromISO('2096-03-01T00:00:00', {
+			zone: 'Europe/Paris'
+		}).toJSDate();
+
 		const clock = sinon.useFakeTimers(d.getTime());
 
 		const job = CronJob.from({
@@ -853,7 +918,6 @@ describe('cron', () => {
 
 		// tick by 1 day
 		clock.tick(24 * 60 * 60 * 1000);
-		clock.restore();
 		job.stop();
 		expect(callback).toHaveBeenCalledTimes(1);
 	});
@@ -861,9 +925,9 @@ describe('cron', () => {
 	describe('with utcOffset', () => {
 		it('should run a job using cron syntax with number format utcOffset', () => {
 			const clock = sinon.useFakeTimers();
-			// Current time
+			// current time
 			const t = DateTime.local();
-			// UTC Offset decreased by an hour
+			// uTC Offset decreased by an hour
 			const utcOffset = t.offset - 60;
 
 			const job = new CronJob(
@@ -888,10 +952,10 @@ describe('cron', () => {
 
 		it('should run a job using cron syntax with numeric format utcOffset with minute support', () => {
 			const clock = sinon.useFakeTimers();
-			// Current time
+			// current time
 			const t = DateTime.local();
 
-			// UTC Offset decreased by 45 minutes
+			// uTC Offset decreased by 45 minutes
 			const utcOffset = t.offset - 45;
 			const job = new CronJob(
 				`${t.second} ${t.minute} ${t.hour} * * *`,
@@ -1028,17 +1092,15 @@ describe('cron', () => {
 
 	describe('nextDate(s)', () => {
 		it('should give the next date to run at', () => {
-			const clock = sinon.useFakeTimers();
+			sinon.useFakeTimers();
 			const job = new CronJob('* * * * * *', callback);
 			const d = Date.now();
 
 			expect(job.nextDate().toMillis()).toEqual(d + 1000);
-
-			clock.restore();
 		});
 
 		it('should give the next 5 dates to run at', () => {
-			const clock = sinon.useFakeTimers();
+			sinon.useFakeTimers();
 			const job = new CronJob('* * * * * *', callback);
 			const d = Date.now();
 
@@ -1049,24 +1111,18 @@ describe('cron', () => {
 				d + 4000,
 				d + 5000
 			]);
-
-			clock.restore();
 		});
 
 		it('should give an empty array when called without argument', () => {
-			const clock = sinon.useFakeTimers();
 			const job = new CronJob('* * * * * *', callback);
-
 			expect(job.nextDates()).toHaveLength(0);
-
-			clock.restore();
 		});
 	});
 
 	it('should automatically setup a new timeout if we roll past the max timeout delay', () => {
 		const clock = sinon.useFakeTimers();
 		const d = new Date();
-		d.setMilliseconds(2147485647 * 2); // MAXDELAY in `job.js` + 2000.
+		d.setMilliseconds(2147485647 * 2); // mAXDELAY in `job.js` + 2000.
 		const job = new CronJob(d, callback);
 		job.start();
 		clock.tick(2147483648);
@@ -1089,7 +1145,7 @@ describe('cron', () => {
 	it('should give the correct last execution date for intervals greater than 25 days (#710)', () => {
 		const clock = sinon.useFakeTimers();
 
-		const job = new CronJob('0 0 0 1 * *', callback); // At 00:00 on day-of-month 1.
+		const job = new CronJob('0 0 0 1 * *', callback); // at 00:00 on day-of-month 1.
 		job.start();
 
 		// tick one tick before nextDate()
@@ -1171,7 +1227,6 @@ describe('cron', () => {
 		expect(handlerFunc).toHaveBeenLastCalledWith(new Error('Exception'));
 
 		job.stop();
-		clock.restore();
 	});
 
 	it('should log errors if errorHandler is NOT provided', () => {
@@ -1216,11 +1271,11 @@ describe('cron', () => {
 
 			expect(job.isCallbackRunning).toBe(false);
 
-			// First execution
+			// first execution
 			await clock.tickAsync(2000);
 			expect(job.isCallbackRunning).toBe(true);
 
-			// Wait for job completion
+			// wait for job completion
 			await clock.tickAsync(500);
 			expect(isJobCompleted).toBe(false);
 			expect(job.isCallbackRunning).toBe(true);
@@ -1256,7 +1311,7 @@ describe('cron', () => {
 
 			expect(job.isCallbackRunning).toBe(false);
 
-			// First execution
+			// first execution
 			clock.tick(1000);
 			expect(isJobCompleted).toBe(false);
 			expect(job.isCallbackRunning).toBe(false);
@@ -1344,8 +1399,6 @@ describe('cron', () => {
 			}).toJSDate();
 			const clock = sinon.useFakeTimers(d.getTime());
 
-			console.debug({ d });
-
 			const job = new CronJob(
 				'0 1 30 3 *',
 				callback,
@@ -1357,7 +1410,6 @@ describe('cron', () => {
 			clock.tick(1000);
 			expect(callback).toHaveBeenCalledTimes(1);
 
-			clock.restore();
 			job.stop();
 		});
 
@@ -1366,8 +1418,6 @@ describe('cron', () => {
 				zone: 'Europe/Paris'
 			}).toJSDate();
 			const clock = sinon.useFakeTimers(d.getTime());
-
-			console.debug({ d });
 
 			const job = new CronJob(
 				'0 2 31 3 *',
@@ -1380,7 +1430,29 @@ describe('cron', () => {
 			clock.tick(1000);
 			expect(callback).toHaveBeenCalledTimes(1);
 
-			clock.restore();
+			job.stop();
+		});
+
+		it('should still execute at the desired interval when the time changes back one hour', () => {
+			// there are two instances of 2 am. Setting to an earlier time so it is not ambiguous
+			// see https://moment.github.io/luxon/#/zones?id=ambiguous-times
+			const d = DateTime.fromISO('2024-04-07T01:45:00.000', {
+				zone: 'Australia/Melbourne'
+			}).toJSDate();
+			const clock = sinon.useFakeTimers(d.getTime());
+
+			const job = new CronJob(
+				'*/30 * * * *',
+				callback,
+				null,
+				true,
+				'Australia/Melbourne'
+			);
+
+			clock.tick(1000 * 60 * 60 * 3);
+
+			expect(callback).toHaveBeenCalledTimes(6);
+
 			job.stop();
 		});
 	});

@@ -76,7 +76,8 @@ export default [
 				}
 			],
 			// this is set to warn because it wasn't caught before the eslint migration in 11/2024
-			'@typescript-eslint/restrict-template-expressions': 'warn'
+			'@typescript-eslint/restrict-template-expressions': 'warn',
+			'capitalized-comments': ['error', 'never']
 		}
 	},
 

@@ -1,3 +1,95 @@
+## [4.3.0](https://github.com/kelektiv/node-cron/compare/v4.2.0...v4.3.0) (2025-04-15)
+
+### ✨ Features
+
+* add options to handle cases where jobs could stop unexpectedly ([#980](https://github.com/kelektiv/node-cron/issues/980)) ([994b93a](https://github.com/kelektiv/node-cron/commit/994b93ab2f41af729c4928f5999e2487a67f611d)), closes [#963](https://github.com/kelektiv/node-cron/issues/963) [#962](https://github.com/kelektiv/node-cron/issues/962) [#962](https://github.com/kelektiv/node-cron/issues/962) [#963](https://github.com/kelektiv/node-cron/issues/963)
+
+## [4.2.1-beta.1](https://github.com/kelektiv/node-cron/compare/v4.2.0...v4.2.1-beta.1) (2025-04-15)
+
+### 🐛 Bug Fixes
+
+* prevent jobs from stopping unexpectedly ([#963](https://github.com/kelektiv/node-cron/issues/963)) ([69d2ef5](https://github.com/kelektiv/node-cron/commit/69d2ef5ce5235985ceba391e0e04379550572374))
+
+## [4.2.0](https://github.com/kelektiv/node-cron/compare/v4.1.4...v4.2.0) (2025-04-14)
+
+### ✨ Features
+
+* Allow awaiting job.stop() ([#977](https://github.com/kelektiv/node-cron/issues/977)) ([e296b76](https://github.com/kelektiv/node-cron/commit/e296b76f55783925644ea7d9d10fdfce4172209c)), closes [#976](https://github.com/kelektiv/node-cron/issues/976)
+
+### ♻️ Chores
+
+* **action:** update github/codeql-action action to v3.28.15 ([baf9c7e](https://github.com/kelektiv/node-cron/commit/baf9c7ef2d0edcbe7ab68c86c42febfc7c662383))
+* **action:** update marocchino/sticky-pull-request-comment action to v2.9.2 ([#975](https://github.com/kelektiv/node-cron/issues/975)) ([df57bef](https://github.com/kelektiv/node-cron/commit/df57befb81f7ea66045663add5919bb169b00b0b))
+* **action:** update step-security/harden-runner action to v2.11.1 ([da1764d](https://github.com/kelektiv/node-cron/commit/da1764d8ff959058f263446de8cc388fe1ef86f6))
+* **deps:** lock file maintenance ([c37a3ec](https://github.com/kelektiv/node-cron/commit/c37a3ec62c96c108146da8affafa733503c2d77c))
+* **deps:** lock file maintenance ([#979](https://github.com/kelektiv/node-cron/issues/979)) ([6a355a3](https://github.com/kelektiv/node-cron/commit/6a355a348f8659494da563cc01ff17fff0e429f0))
+* **deps:** pin dependencies ([6ddc31e](https://github.com/kelektiv/node-cron/commit/6ddc31e6e366fd79bbe9cc49034112414b2dbae3))
+* **deps:** update dependency [@fast-check](https://github.com/fast-check)/jest to v2.1.1 ([3fa6836](https://github.com/kelektiv/node-cron/commit/3fa68364269855f91d0d5b19c99d03df8615c67c))
+* **deps:** update dependency [@swc](https://github.com/swc)/core to v1.11.18 ([00d0685](https://github.com/kelektiv/node-cron/commit/00d06855966939040c66e696327e62e195db516f))
+* **deps:** update dependency [@types](https://github.com/types)/node to v22.14.0 ([7dedc90](https://github.com/kelektiv/node-cron/commit/7dedc9044b23715a2d92ac6cac9552bcbf969641))
+* **deps:** update dependency sinon to v19.0.5 ([448934c](https://github.com/kelektiv/node-cron/commit/448934c42d6592ba5620e65395be7aa153fec099))
+* **deps:** update dependency sinon to v20 ([#974](https://github.com/kelektiv/node-cron/issues/974)) ([ac25eff](https://github.com/kelektiv/node-cron/commit/ac25efff3c4cfae8ca4e4c845812359fcac92d8d))
+* **deps:** update dependency typescript to v5.8.3 ([7b583a4](https://github.com/kelektiv/node-cron/commit/7b583a466f3a8cbb01870a0d1bcd40f5de2af01a))
+* **deps:** update linters ([#978](https://github.com/kelektiv/node-cron/issues/978)) ([cdb638a](https://github.com/kelektiv/node-cron/commit/cdb638a342478573d8276f280236eb3f4902f1ce))
+* **deps:** update node.js to v23.11.0 ([#973](https://github.com/kelektiv/node-cron/issues/973)) ([7d457cf](https://github.com/kelektiv/node-cron/commit/7d457cf34cb2f57c9eec28e46ae35cc8a512e94a))
+
+## [4.1.4](https://github.com/kelektiv/node-cron/compare/v4.1.3...v4.1.4) (2025-04-06)
+
+### 🛠 Builds
+
+* **deps:** update dependency [@types](https://github.com/types)/luxon to ~3.6.0 ([dccbfc7](https://github.com/kelektiv/node-cron/commit/dccbfc79911ee73ff7a3f4863229511ed3ff70cd))
+
+### ♻️ Chores
+
+* **deps:** lock file maintenance ([c3190bf](https://github.com/kelektiv/node-cron/commit/c3190bffd96621d400fb9ca8f0ecff14a08e487c))
+
+## [4.1.3](https://github.com/kelektiv/node-cron/compare/v4.1.2...v4.1.3) (2025-03-28)
+
+### 🛠 Builds
+
+* **deps:** update dependency luxon to ~3.6.0 ([5935617](https://github.com/kelektiv/node-cron/commit/5935617c3b51e2394b5f63a39bb28cad60d97ef1))
+
+## [4.1.2](https://github.com/kelektiv/node-cron/compare/v4.1.1...v4.1.2) (2025-03-28)
+
+### 🐛 Bug Fixes
+
+* timezone should default to local ([#972](https://github.com/kelektiv/node-cron/issues/972)) ([d2b1aac](https://github.com/kelektiv/node-cron/commit/d2b1aac9c705e111a466daa85b95bed9f7725abd)), closes [#971](https://github.com/kelektiv/node-cron/issues/971) [#971](https://github.com/kelektiv/node-cron/issues/971)
+
+## [4.1.1](https://github.com/kelektiv/node-cron/compare/v4.1.0...v4.1.1) (2025-03-26)
+
+### 🐛 Bug Fixes
+
+* cron should still execute after changing the time back during daylight savings ([#966](https://github.com/kelektiv/node-cron/issues/966)) ([8cf0712](https://github.com/kelektiv/node-cron/commit/8cf07121290beb1b9e1a33bd393503fa031c691a)), closes [#881](https://github.com/kelektiv/node-cron/issues/881) [#881](https://github.com/kelektiv/node-cron/issues/881)
+
+### ♻️ Chores
+
+* **action:** update actions/setup-node action to v4.3.0 ([e70709f](https://github.com/kelektiv/node-cron/commit/e70709f3b004f8ccdddbebf308e85aeabf76ffb5))
+* **action:** update actions/upload-artifact action to v4.6.1 ([06ed76c](https://github.com/kelektiv/node-cron/commit/06ed76c0f0947132eb951b13503f7cb0db797880))
+* **action:** update actions/upload-artifact action to v4.6.2 ([69ea222](https://github.com/kelektiv/node-cron/commit/69ea2223febff26b5dd0074bde002f218ba93c4c))
+* **action:** update github/codeql-action action to v3.28.10 ([1d14a08](https://github.com/kelektiv/node-cron/commit/1d14a0896732686dbc1020fb3ba9d0bf890acec4))
+* **action:** update github/codeql-action action to v3.28.11 ([cd28d4f](https://github.com/kelektiv/node-cron/commit/cd28d4ffb7000c35d766b564f33d2988be5b4601))
+* **action:** update github/codeql-action action to v3.28.13 ([154f885](https://github.com/kelektiv/node-cron/commit/154f885d2da0c203395daa746a9fd3c378d35ab8))
+* **action:** update ossf/scorecard-action action to v2.4.1 ([6a4ec39](https://github.com/kelektiv/node-cron/commit/6a4ec391836848fa4fa0949cc03acb0da1d1cf6b))
+* **deps:** lock file maintenance ([6742c01](https://github.com/kelektiv/node-cron/commit/6742c01a10ec1651de29897d826b0fa21e5f44fc))
+* **deps:** lock file maintenance ([a97cdb1](https://github.com/kelektiv/node-cron/commit/a97cdb19b2c179c1e7fcb07c8f5357299e252a13))
+* **deps:** lock file maintenance ([c585973](https://github.com/kelektiv/node-cron/commit/c585973bf822713a8c0c9006074827732130f345))
+* **deps:** lock file maintenance ([e156aa7](https://github.com/kelektiv/node-cron/commit/e156aa768821ca644c61ddd1387764aa817c85ca))
+* **deps:** update dependency [@commitlint](https://github.com/commitlint)/cli to v19.8.0 ([3984884](https://github.com/kelektiv/node-cron/commit/3984884b29315d73c7323f52d238480e31da1ba3))
+* **deps:** update dependency [@eslint](https://github.com/eslint)/js to v9.22.0 ([7415480](https://github.com/kelektiv/node-cron/commit/7415480ccafddad023f62df6cd9ca975930c8315))
+* **deps:** update dependency [@eslint](https://github.com/eslint)/js to v9.23.0 ([00fc7ed](https://github.com/kelektiv/node-cron/commit/00fc7ed1e679f31eeef1a057cbb791bd415c76e7))
+* **deps:** update dependency [@fast-check](https://github.com/fast-check)/jest to v2.1.0 ([a9a8608](https://github.com/kelektiv/node-cron/commit/a9a860807f01fe8526e0d8983b6371ceb27c68dd))
+* **deps:** update dependency [@types](https://github.com/types)/node to v22.13.11 ([38cf6a6](https://github.com/kelektiv/node-cron/commit/38cf6a6ce15d17d888b6103457c4a0c8cb4a1019))
+* **deps:** update dependency [@types](https://github.com/types)/node to v22.13.5 ([a746320](https://github.com/kelektiv/node-cron/commit/a746320f3efe92e47423cf949f42ed1eef945a45))
+* **deps:** update dependency [@types](https://github.com/types)/node to v22.13.9 ([4ac339f](https://github.com/kelektiv/node-cron/commit/4ac339fe4848e20caad97844a283df5a4344bedd))
+* **deps:** update dependency lint-staged to v15.5.0 ([5efb27f](https://github.com/kelektiv/node-cron/commit/5efb27f1e1657fc439781ba3ea1fdb2e571ea03e))
+* **deps:** update dependency prettier to v3.5.3 ([d8f2456](https://github.com/kelektiv/node-cron/commit/d8f245616d1415fa08569ac571af4db77ed7f4ab))
+* **deps:** update dependency sinon to v19.0.4 ([5144f4d](https://github.com/kelektiv/node-cron/commit/5144f4dfd90d0755591200cf957b3aff76f52afb))
+* **deps:** update dependency ts-jest to v29.2.6 ([3625528](https://github.com/kelektiv/node-cron/commit/3625528fbcd2fd0e3da63a03e80271541fe92086))
+* **deps:** update dependency typescript to v5.8.2 ([4ef66e8](https://github.com/kelektiv/node-cron/commit/4ef66e84985b5b2259ae67aded6391f5cbd3a5ec))
+* **deps:** update linters ([ecbe916](https://github.com/kelektiv/node-cron/commit/ecbe916c825663839038e94a23aefe5c91744fe5))
+* **deps:** update node.js to v23.10.0 ([#970](https://github.com/kelektiv/node-cron/issues/970)) ([6775fff](https://github.com/kelektiv/node-cron/commit/6775fff2d06798954d60cc66964e2b671a8be1e7))
+* **deps:** update tests ([5d5e555](https://github.com/kelektiv/node-cron/commit/5d5e55527a5dc108f814f5ab8825e405b91a467d))
+
 ## [4.1.0](https://github.com/kelektiv/node-cron/compare/v4.0.0...v4.1.0) (2025-02-24)
 
 ### ✨ Features
