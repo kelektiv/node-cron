@@ -1,9 +1,7 @@
-import { spawn } from 'child_process';
 import { CronError, ExclusiveParametersError } from './errors';
 import { CronTime } from './time';
 import {
 	CronCallback,
-	CronCommand,
 	CronContext,
 	CronJobParams,
 	CronOnCompleteCallback,
@@ -105,11 +103,8 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 			this.unrefTimeout = unrefTimeout;
 		}
 
-		if (onComplete != null) {
-			// casting to the correct type since we just made sure that WithOnComplete<OC> = true
-			this.onComplete = this._fnWrap(
-				onComplete
-			) as WithOnComplete<OC> extends true ? CronOnCompleteCallback : undefined;
+		if (this.isCronOnCompleteCallback<OC>(onComplete)) {
+			this.onComplete = onComplete;
 		}
 
 		if (threshold != null) {
@@ -124,7 +119,7 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 			this.runOnce = true;
 		}
 
-		this.addCallback(this._fnWrap(onTick));
+		this.addCallback(onTick);
 
 		if (runOnInit) {
 			this.lastExecution = new Date();
@@ -194,27 +189,12 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 		}
 	}
 
-	private _fnWrap(cmd: CronCommand<C, boolean>): CronCallback<C, boolean> {
-		switch (typeof cmd) {
-			case 'function': {
-				return cmd;
-			}
-
-			case 'string': {
-				const [command, ...args] = cmd.split(' ');
-
-				return spawn.bind(undefined, command ?? cmd, args, {}) as () => void;
-			}
-
-			case 'object': {
-				return spawn.bind(
-					undefined,
-					cmd.command,
-					cmd.args ?? [],
-					cmd.options ?? {}
-				) as () => void;
-			}
-		}
+	private isCronOnCompleteCallback<OC>(
+		fn: unknown
+	): fn is WithOnComplete<OC> extends true
+		? CronOnCompleteCallback
+		: undefined {
+		return typeof fn === 'function';
 	}
 
 	addCallback(callback: CronCallback<C, WithOnComplete<OC>>) {
