@@ -1,7 +1,7 @@
 <p align="center">
   <img src="logo.svg" alt="cron for Node.js logo" height="150">
   <br />
-  <b>cron</b> is a robust tool for running jobs (functions or commands) on schedules defined using the cron syntax.
+  <b>cron</b> is a robust tool for running jobs (functions) on schedules defined using the cron syntax.
   <br />
   Perfect for tasks like data backups, notifications, and many more!
 </p>
@@ -20,7 +20,6 @@
 ## 🌟 Features
 
 - execute a function whenever your scheduled job triggers
-- execute a job external to the javascript process (like a system command) using `child_process`
 - use a Date or Luxon DateTime object instead of cron syntax as the trigger for your callback
 - use an additional slot for seconds (leaving it off will default to 0 and match the Unix behavior)
 
