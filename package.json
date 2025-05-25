@@ -29,7 +29,7 @@
 	},
 	"devDependencies": {
 		"@commitlint/cli": "19.8.1",
-		"@eslint/js": "9.26.0",
+		"@eslint/js": "9.27.0",
 		"@fast-check/jest": "2.1.1",
 		"@insurgent/commitlint-config": "20.0.0",
 		"@insurgent/conventional-changelog-preset": "10.0.0",
