@@ -1,7 +1,7 @@
 {
 	"name": "cron",
 	"description": "Cron jobs for your node",
-	"version": "4.3.0",
+	"version": "4.3.1",
 	"author": "Nick Campbell <nicholas.j.campbell@gmail.com> (https://github.com/ncb000gt)",
 	"bugs": {
 		"url": "https://github.com/kelektiv/node-cron/issues"
@@ -28,8 +28,8 @@
 		"luxon": "~3.6.0"
 	},
 	"devDependencies": {
-		"@commitlint/cli": "19.8.0",
-		"@eslint/js": "9.26.0",
+		"@commitlint/cli": "19.8.1",
+		"@eslint/js": "9.27.0",
 		"@fast-check/jest": "2.1.1",
 		"@insurgent/commitlint-config": "20.0.0",
 		"@insurgent/conventional-changelog-preset": "10.0.0",
@@ -39,10 +39,10 @@
 		"@semantic-release/github": "11.0.2",
 		"@semantic-release/npm": "12.0.1",
 		"@semantic-release/release-notes-generator": "14.0.3",
-		"@swc/core": "1.11.24",
+		"@swc/core": "1.11.29",
 		"@swc/jest": "0.2.38",
 		"@types/jest": "29.5.14",
-		"@types/node": "22.15.15",
+		"@types/node": "22.15.21",
 		"@types/sinon": "17.0.4",
 		"chai": "5.2.0",
 		"cross-env": "7.0.3",
@@ -54,7 +54,7 @@
 		"jest": "29.7.0",
 		"lint-staged": "15.5.2",
 		"prettier": "3.5.3",
-		"semantic-release": "24.2.3",
+		"semantic-release": "24.2.4",
 		"sinon": "20.0.0",
 		"typescript": "5.8.3",
 		"typescript-eslint": "7.18.0"
