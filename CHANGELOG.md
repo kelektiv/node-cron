@@ -1,3 +1,25 @@
+## [5.0.0-beta.1](https://github.com/kelektiv/node-cron/compare/v4.3.0...v5.0.0-beta.1) (2025-04-19)
+
+### ⚠ Breaking changes
+
+* Removed the ability to execute system commands using
+string-based inputs. This eliminates the dependency on `child_process`,
+improving browser compatibility. Users relying on this functionality
+should migrate to executing commands manually within their own
+implementations.
+## Related Issue
+
+<!--- This project only accepts pull requests related to open issues -->
+<!--- If suggesting a new feature or change, please discuss it in an
+issue first -->
+<!--- If fixing a bug, there should be an issue describing it with steps
+to reproduce -->
+<!--- Please link to the issue here: -->
+
+### ✨ Features
+
+* remove `child_process` dependency for browser compatibility (#… ([#982](https://github.com/kelektiv/node-cron/issues/982)) ([69cb9e6](https://github.com/kelektiv/node-cron/commit/69cb9e6fec5b1f901084e44c6068c4e5ae4ba980)), closes [#967](https://github.com/kelektiv/node-cron/issues/967)
+
 ## [4.3.1](https://github.com/kelektiv/node-cron/compare/v4.3.0...v4.3.1) (2025-05-29)
 
 ### 🐛 Bug Fixes
