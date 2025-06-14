@@ -15,6 +15,10 @@ interface BaseCronJobParams<
 	context?: C;
 	runOnInit?: boolean | null;
 	unrefTimeout?: boolean | null;
+	waitForCompletion?: boolean | null;
+	errorHandler?: ((error: unknown) => void) | null;
+	threshold?: number | null;
+	name?: string | null;
 }
 
 export type CronJobParams<

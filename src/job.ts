@@ -13,7 +13,6 @@ import {
 
 export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 	cronTime: CronTime;
-	running = false;
 	unrefTimeout = false;
 	lastExecution: Date | null = null;
 	runOnce = false;
@@ -21,9 +20,23 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 	onComplete?: WithOnComplete<OC> extends true
 		? CronOnCompleteCallback
 		: undefined;
+	waitForCompletion = false;
+	errorHandler?: CronJobParams<OC, C>['errorHandler'];
+	name?: string; // optional job name for identification
+	threshold = 250; // default threshold in ms
 
+	private _isActive = false;
+	private _isCallbackRunning = false;
 	private _timeout?: NodeJS.Timeout;
 	private _callbacks: CronCallback<C, WithOnComplete<OC>>[] = [];
+
+	get isActive() {
+		return this._isActive;
+	}
+
+	get isCallbackRunning() {
+		return this._isCallbackRunning;
+	}
 
 	constructor(
 		cronTime: CronJobParams<OC, C>['cronTime'],
@@ -34,7 +47,11 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 		context?: CronJobParams<OC, C>['context'],
 		runOnInit?: CronJobParams<OC, C>['runOnInit'],
 		utcOffset?: null,
-		unrefTimeout?: CronJobParams<OC, C>['unrefTimeout']
+		unrefTimeout?: CronJobParams<OC, C>['unrefTimeout'],
+		waitForCompletion?: CronJobParams<OC, C>['waitForCompletion'],
+		errorHandler?: CronJobParams<OC, C>['errorHandler'],
+		name?: CronJobParams<OC, C>['name'],
+		threshold?: CronJobParams<OC, C>['threshold']
 	);
 	constructor(
 		cronTime: CronJobParams<OC, C>['cronTime'],
@@ -45,7 +62,11 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 		context?: CronJobParams<OC, C>['context'],
 		runOnInit?: CronJobParams<OC, C>['runOnInit'],
 		utcOffset?: CronJobParams<OC, C>['utcOffset'],
-		unrefTimeout?: CronJobParams<OC, C>['unrefTimeout']
+		unrefTimeout?: CronJobParams<OC, C>['unrefTimeout'],
+		waitForCompletion?: CronJobParams<OC, C>['waitForCompletion'],
+		errorHandler?: CronJobParams<OC, C>['errorHandler'],
+		name?: CronJobParams<OC, C>['name'],
+		threshold?: CronJobParams<OC, C>['threshold']
 	);
 	constructor(
 		cronTime: CronJobParams<OC, C>['cronTime'],
@@ -56,9 +77,16 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 		context?: CronJobParams<OC, C>['context'],
 		runOnInit?: CronJobParams<OC, C>['runOnInit'],
 		utcOffset?: CronJobParams<OC, C>['utcOffset'],
-		unrefTimeout?: CronJobParams<OC, C>['unrefTimeout']
+		unrefTimeout?: CronJobParams<OC, C>['unrefTimeout'],
+		waitForCompletion?: CronJobParams<OC, C>['waitForCompletion'],
+		errorHandler?: CronJobParams<OC, C>['errorHandler'],
+		name?: CronJobParams<OC, C>['name'],
+		threshold?: CronJobParams<OC, C>['threshold']
 	) {
 		this.context = (context ?? this) as CronContext<C>;
+		this.waitForCompletion = Boolean(waitForCompletion);
+
+		this.errorHandler = errorHandler;
 
 		// runtime check for JS users
 		if (timeZone != null && utcOffset != null) {
@@ -84,6 +112,14 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 			) as WithOnComplete<OC> extends true ? CronOnCompleteCallback : undefined;
 		}
 
+		if (threshold != null) {
+			this.threshold = Math.abs(threshold);
+		}
+
+		if (name != null) {
+			this.name = name;
+		}
+
 		if (this.cronTime.realDate) {
 			this.runOnce = true;
 		}
@@ -92,7 +128,7 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 
 		if (runOnInit) {
 			this.lastExecution = new Date();
-			this.fireOnTick();
+			void this.fireOnTick();
 		}
 
 		if (start) this.start();
@@ -117,7 +153,11 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 				params.context,
 				params.runOnInit,
 				params.utcOffset,
-				params.unrefTimeout
+				params.unrefTimeout,
+				params.waitForCompletion,
+				params.errorHandler,
+				params.name,
+				params.threshold
 			);
 		} else if (params.utcOffset != null) {
 			return new CronJob<OC, C>(
@@ -129,7 +169,11 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 				params.context,
 				params.runOnInit,
 				params.utcOffset,
-				params.unrefTimeout
+				params.unrefTimeout,
+				params.waitForCompletion,
+				params.errorHandler,
+				params.name,
+				params.threshold
 			);
 		} else {
 			return new CronJob<OC, C>(
@@ -141,7 +185,11 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 				params.context,
 				params.runOnInit,
 				params.utcOffset,
-				params.unrefTimeout
+				params.unrefTimeout,
+				params.waitForCompletion,
+				params.errorHandler,
+				params.name,
+				params.threshold
 			);
 		}
 	}
@@ -180,7 +228,7 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 			throw new CronError('time must be an instance of CronTime.');
 		}
 
-		const wasRunning = this.running;
+		const wasRunning = this._isActive;
 		this.stop();
 
 		this.cronTime = time;
@@ -193,14 +241,28 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 		return this.cronTime.sendAt();
 	}
 
-	fireOnTick() {
-		for (const callback of this._callbacks) {
-			void callback.call(
-				this.context,
-				this.onComplete as WithOnComplete<OC> extends true
-					? CronOnCompleteCallback
-					: never
-			);
+	async fireOnTick() {
+		// skip job if previous callback is still running
+		if (this.waitForCompletion && this._isCallbackRunning) return;
+
+		this._isCallbackRunning = true;
+
+		try {
+			for (const callback of this._callbacks) {
+				const result = callback.call(
+					this.context,
+					this.onComplete as WithOnComplete<OC> extends true
+						? CronOnCompleteCallback
+						: never
+				);
+
+				if (this.waitForCompletion) await result;
+			}
+		} catch (error) {
+			if (this.errorHandler != null) this.errorHandler(error);
+			else console.error('[Cron] error in callback', error);
+		} finally {
+			this._isCallbackRunning = false;
 		}
 	}
 
@@ -209,11 +271,10 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 	}
 
 	start() {
-		if (this.running) {
-			return;
-		}
+		if (this._isActive) return;
+		this._isActive = true;
 
-		const MAXDELAY = 2147483647; // The maximum number of milliseconds setTimeout will wait.
+		const MAXDELAY = 2147483647; // the maximum number of milliseconds setTimeout will wait.
 		let timeout = this.cronTime.getTimeout();
 		let remaining = 0;
 		let startTime: number;
@@ -226,7 +287,7 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 			}
 		};
 
-		// The callback wrapper checks if it needs to sleep another period or not
+		// the callback wrapper checks if it needs to sleep another period or not
 		// and does the real callback logic when it's time.
 		const callbackWrapper = () => {
 			const diff = startTime + timeout - Date.now();
@@ -241,7 +302,7 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 				remaining += newTimeout;
 			}
 
-			// If there is sleep time remaining, calculate how long and go to sleep
+			// if there is sleep time remaining, calculate how long and go to sleep
 			// again. This processing might make us miss the deadline by a few ms
 			// times the number of sleep sessions. Given a MAXDELAY of almost a
 			// month, this should be no issue.
@@ -256,24 +317,20 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 
 				setCronTimeout(timeout);
 			} else {
-				// We have arrived at the correct point in time.
+				// we have arrived at the correct point in time.
 				this.lastExecution = new Date();
 
-				this.running = false;
+				this._isActive = false;
 
 				// start before calling back so the callbacks have the ability to stop the cron job
-				if (!this.runOnce) {
-					this.start();
-				}
+				if (!this.runOnce) this.start();
 
-				this.fireOnTick();
+				void this.fireOnTick();
 			}
 		};
 
 		if (timeout >= 0) {
-			this.running = true;
-
-			// Don't try to sleep more than MAXDELAY ms at a time.
+			// don't try to sleep more than MAXDELAY ms at a time.
 
 			if (timeout > MAXDELAY) {
 				remaining = timeout - MAXDELAY;
@@ -282,7 +339,26 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 
 			setCronTimeout(timeout);
 		} else {
-			this.stop();
+			// handle negative timeout
+			const absoluteTimeout = Math.abs(timeout);
+
+			const message = `[Cron] Missed execution deadline by ${absoluteTimeout}ms for job${this.name ? ` "${this.name}"` : ''} with cron expression '${String(this.cronTime.source)}'`;
+
+			if (absoluteTimeout <= this.threshold) {
+				// execute immediately if within threshold
+				console.warn(`${message}. Executing immediately.`);
+
+				this.lastExecution = new Date();
+				void this.fireOnTick();
+			} else {
+				// skip job if beyond threshold
+				console.warn(
+					`${message}. Skipping execution as it exceeds threshold (${this.threshold}ms).`
+				);
+			}
+
+			timeout = this.cronTime.getTimeout();
+			setCronTimeout(timeout);
 		}
 	}
 
@@ -290,14 +366,37 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 		return this.lastExecution;
 	}
 
+	private async _executeOnComplete() {
+		if (typeof this.onComplete !== 'function') return;
+
+		try {
+			await this.onComplete.call(this.context);
+		} catch (error) {
+			console.error('[Cron] error in onComplete callback:', error);
+		}
+	}
+
+	private async _waitForJobCompletion() {
+		while (this._isCallbackRunning) {
+			await new Promise(resolve => setTimeout(resolve, 100));
+		}
+	}
+
 	/**
-	 * Stop the cronjob.
+	 * stop the cronjob.
 	 */
 	stop() {
 		if (this._timeout) clearTimeout(this._timeout);
-		this.running = false;
-		if (typeof this.onComplete === 'function') {
-			void this.onComplete.call(this.context);
+		this._isActive = false;
+
+		if (!this.waitForCompletion) {
+			void this._executeOnComplete();
+			return;
 		}
+
+		return Promise.resolve().then(async () => {
+			await this._waitForJobCompletion();
+			await this._executeOnComplete();
+		});
 	}
 }

@@ -1,4 +1,4 @@
-import { CronJob } from '../src';
+import { CronJob } from '../dist/index.js';
 
 console.log('Before job instantiation');
 const job = new CronJob('*/5 * * * * *', function () {

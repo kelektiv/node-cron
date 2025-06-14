@@ -1,6 +1,6 @@
 /* eslint-disable jest/no-standalone-expect */
 import { fc, test } from '@fast-check/jest';
-import { CronJob } from '../src';
+import { CronJob } from '../src/job';
 import { CronError } from '../src/errors';
 
 /**
@@ -30,7 +30,9 @@ function testCronJob(
 	},
 	checkError: (err: unknown) => boolean
 ) {
-	// console.debug(cronTime, '|', timeZone, '|', utcOffset);
+	// console.debug(
+	// 	`${cronTime} | ${start} | ${timeZone} | ${runOnInit} | ${utcOffset} | ${unrefTimeout} | ${tzOrOffset}`
+	// );
 	try {
 		const job = new CronJob(
 			cronTime,
@@ -48,9 +50,9 @@ function testCronJob(
 			unrefTimeout
 		);
 
-		expect(job.running).toBe(start);
+		expect(job.isActive).toBe(start);
 		job.stop();
-		expect(job.running).toBe(false);
+		expect(job.isActive).toBe(false);
 
 		expect(job.cronTime.source).toBe(cronTime);
 	} catch (error) {
@@ -80,7 +82,9 @@ test.prop(
 	{ numRuns: 100_000 }
 )(
 	'CronJob should behave as expected and not error unexpectedly (with matching inputs)',
-	params => testCronJob(params, err => err instanceof CronError)
+	params => {
+		testCronJob(params, err => err instanceof CronError);
+	}
 );
 
 test.prop(
@@ -96,7 +100,9 @@ test.prop(
 	{ numRuns: 100_000 }
 )(
 	'CronJob should behave as expected and not error unexpectedly (with random inputs)',
-	params => testCronJob(params, err => err instanceof CronError)
+	params => {
+		testCronJob(params, err => err instanceof CronError);
+	}
 );
 
 test.prop(
@@ -112,10 +118,11 @@ test.prop(
 	{ numRuns: 100_000 }
 )(
 	'CronJob should behave as expected and not error unexpectedly (with anything inputs)',
-	params =>
+	params => {
 		testCronJob(
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-argument
 			params as any,
 			err => err instanceof CronError || err instanceof TypeError
-		)
+		);
+	}
 );

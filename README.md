@@ -34,27 +34,42 @@ npm install cron
 
 1. [Features](#-features)
 2. [Installation](#-installation)
-3. [Migrating from v2 to v3](#-migrating-from-v2-to-v3)
+3. [Migrating](#-migrating)
 4. [Basic Usage](#-basic-usage)
-5. [Cron Patterns](#cron-patterns)
-   - [Cron Syntax Overview](#cron-patterns)
+5. [Cron Patterns](#-cron-patterns)
+   - [Cron Syntax Overview](#-cron-patterns)
    - [Supported Ranges](#supported-ranges)
-6. [Gotchas](#gotchas)
-7. [API](#api)
+6. [API](#-api)
    - [Standalone Functions](#standalone-functions)
    - [CronJob Class](#cronjob-class)
    - [CronTime Class](#crontime-class)
+7. [Gotchas](#-gotchas)
 8. [Community](#-community)
    - [Join the Community](#-community)
 9. [Contributing](#-contributing)
    - [General Contribution](#-contributing)
    - [Submitting Bugs/Issues](#-submitting-bugsissues)
 10. [Acknowledgements](#-acknowledgements)
-11. [License](#license)
+11. [License](#-license)
 
-## 🔄 Migrating from v2 to v3
+## ⬆ Migrating
 
-With the introduction of TypeScript in version 3 and alignment with UNIX cron patterns, a few changes have been made:
+v4 dropped Node v16 and renamed the `job.running` property:
+
+<details>
+  <summary>Migrating from v3 to v4</summary>
+
+### Dropped Node version
+
+Node v16 is no longer supported. Upgrade your Node installation to Node v18 or above
+
+### Property renamed and now read-only
+
+You can no longer set the `running` property (now `isActive`). It is read-only. To start or stop a cron job, use `job.start()` and `job.stop()`.
+
+</details>
+
+v3 introduced TypeScript and tighter Unix cron pattern alignment:
 
 <details>
   <summary>Migrating from v2 to v3</summary>
@@ -112,7 +127,7 @@ const job = CronJob.from({
 
 For more advanced examples, check the [examples directory](https://github.com/kelektiv/node-cron/tree/main/examples).
 
-## Cron Patterns
+## ⏰ Cron Patterns
 
 Cron patterns are the backbone of this library. Familiarize yourself with the syntax:
 
@@ -142,13 +157,7 @@ day of week    0-7 (0 or 7 is Sunday, or use names)
 > Names can also be used for the 'month' and 'day of week' fields. Use the first three letters of the particular day or month (case does not matter). Ranges and lists of names are allowed.  
 > Examples: "mon,wed,fri", "jan-mar".
 
-## Gotchas
-
-- Both JS `Date` and Luxon `DateTime` objects don't guarantee millisecond precision due to computation delays. This module excludes millisecond precision for standard cron syntax but allows execution date specification through JS `Date` or Luxon `DateTime` objects. However, specifying a precise future execution time, such as adding a millisecond to the current time, may not always work due to these computation delays. It's observed that delays less than 4-5 ms might lead to inconsistencies. While we could limit all date granularity to seconds, we've chosen to allow greater precision but advise users of potential issues.
-
-- Using arrow functions for `onTick` binds them to the parent's `this` context. As a result, they won't have access to the cronjob's `this` context. You can read a little more in issue [#47 (comment)](https://github.com/kelektiv/node-cron/issues/47#issuecomment-459762775).
-
-## API
+## 📖 API
 
 ### Standalone Functions
 
@@ -170,11 +179,23 @@ day of week    0-7 (0 or 7 is Sunday, or use names)
   console.log(`The job would run in ${timeout}ms`);
   ```
 
+- `validateCronExpression`: Validates if a given cron expression is valid (returns an object with `valid` and `error` properties).
+
+  ```javascript
+  import * as cron from 'cron';
+
+  const validation = cron.validateCronExpression('0 0 * * *');
+  console.log(`Is the cron expression valid? ${validation.valid}`);
+  if (!validation.valid) {
+  	console.error(`Validation error: ${validation.error}`);
+  }
+  ```
+
 ### CronJob Class
 
 #### Constructor
 
-`constructor(cronTime, onTick, onComplete, start, timeZone, context, runOnInit, utcOffset, unrefTimeout)`:
+`constructor(cronTime, onTick, onComplete, start, timeZone, context, runOnInit, utcOffset, unrefTimeout, waitForCompletion, errorHandler, name, threshold)`:
 
 - `cronTime`: [REQUIRED] - The time to fire off your job. Can be cron syntax, a JS [`Date`](https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Date) object or a Luxon [`DateTime`](https://moment.github.io/luxon/api-docs/index.html#datetime) object.
 
@@ -193,6 +214,14 @@ day of week    0-7 (0 or 7 is Sunday, or use names)
 - `utcOffset`: [OPTIONAL] - Specifies time zone offset in minutes. Cannot co-exist with `timeZone`.
 
 - `unrefTimeout`: [OPTIONAL] - Useful for controlling event loop behavior. More details [here](https://nodejs.org/api/timers.html#timers_timeout_unref).
+
+- `waitForCompletion`: [OPTIONAL] - If `true`, no additional instances of the `onTick` callback function will run until the current onTick callback has completed. Any new scheduled executions that occur while the current callback is running will be skipped entirely. Default is `false`.
+
+- `errorHandler`: [OPTIONAL] - Function to handle any exceptions that occur in the `onTick` method.
+
+- `name`: [OPTIONAL] - Name of the job. Useful for identifying jobs in logs.
+
+- `threshold`: [OPTIONAL] - Threshold in ms to control whether to execute or skip missed execution deadlines caused by slow or busy hardware. Execution delays within threshold will be executed immediately, and otherwise will be skipped. In both cases a warning will be printed to the console with the job name and cron expression. See [issue #962](https://github.com/kelektiv/node-cron/issues/962) for more information. Default is `250`.
 
 #### Methods
 
@@ -214,6 +243,25 @@ day of week    0-7 (0 or 7 is Sunday, or use names)
 
 - `addCallback`: Permits addition of `onTick` callbacks.
 
+#### Properties
+
+- `isActive`: [READ-ONLY] Indicates if a job is active (checking to see if the callback needs to be called).
+
+- `isCallbackRunning`: [READ-ONLY] Indicates if a callback is currently executing.
+
+  ```javascript
+  const job = new CronJob('* * * * * *', async () => {
+  	console.log(job.isCallbackRunning); // true during callback execution
+  	await someAsyncTask();
+  	console.log(job.isCallbackRunning); // still true until callback completes
+  });
+
+  console.log(job.isCallbackRunning); // false
+  job.start();
+  console.log(job.isActive); // true
+  console.log(job.isCallbackRunning); // false
+  ```
+
 ### CronTime Class
 
 #### Constructor
@@ -225,6 +273,12 @@ day of week    0-7 (0 or 7 is Sunday, or use names)
 - `zone`: [OPTIONAL] - Equivalent to `timeZone` from `CronJob` parameters.
 
 - `utcOffset`: [OPTIONAL] - Analogous to `utcOffset` from `CronJob` parameters.
+
+## 💢 Gotchas
+
+- Both JS `Date` and Luxon `DateTime` objects don't guarantee millisecond precision due to computation delays. This module excludes millisecond precision for standard cron syntax but allows execution date specification through JS `Date` or Luxon `DateTime` objects. However, specifying a precise future execution time, such as adding a millisecond to the current time, may not always work due to these computation delays. It's observed that delays less than 4-5 ms might lead to inconsistencies. While we could limit all date granularity to seconds, we've chosen to allow greater precision but advise users of potential issues.
+
+- Using arrow functions for `onTick` binds them to the parent's `this` context. As a result, they won't have access to the cronjob's `this` context. You can read a little more in issue [#47 (comment)](https://github.com/kelektiv/node-cron/issues/47#issuecomment-459762775).
 
 ## 🤝 Community
 
@@ -244,7 +298,7 @@ This is a community effort project. In the truest sense, this project started as
 
 Special thanks to [Hiroki Horiuchi](https://github.com/horiuchi), [Lundarl Gholoi](https://github.com/winup) and [koooge](https://github.com/koooge) for their work on the [DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped) typings before they were imported in v2.4.0.
 
-## License
+## ⚖ License
 
 MIT
 
