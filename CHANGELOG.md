@@ -1,3 +1,30 @@
+## [4.3.2](https://github.com/kelektiv/node-cron/compare/v4.3.1...v4.3.2) (2025-07-13)
+
+### 🛠 Builds
+
+* **deps:** update dependency luxon to ~3.7.0 ([db69c74](https://github.com/kelektiv/node-cron/commit/db69c745016fb1b968aa42376c88da41678dc467))
+
+### ♻️ Chores
+
+* **action:** update github/codeql-action action to v3.29.0 ([#990](https://github.com/kelektiv/node-cron/issues/990)) ([a3fbb3c](https://github.com/kelektiv/node-cron/commit/a3fbb3cc4d98d3ddc485691092ea9a4bec208740))
+* **action:** update github/codeql-action action to v3.29.2 ([0403c53](https://github.com/kelektiv/node-cron/commit/0403c53320e1b403b11ae5f8da031e93c52ba766))
+* **action:** update marocchino/sticky-pull-request-comment action to v2.9.3 ([eda0c4d](https://github.com/kelektiv/node-cron/commit/eda0c4df35e15f3e2d2fff111ea4326b64d6e462))
+* **action:** update ossf/scorecard-action action to v2.4.2 ([#991](https://github.com/kelektiv/node-cron/issues/991)) ([29a3a60](https://github.com/kelektiv/node-cron/commit/29a3a604ef78772f08cbf7f04dd7da001a58e8ba))
+* **action:** update step-security/harden-runner action to v2.12.1 ([ba49a56](https://github.com/kelektiv/node-cron/commit/ba49a5656c163bce2ad70b09be8f7247ec3f9414))
+* **action:** update step-security/harden-runner action to v2.12.2 ([845202e](https://github.com/kelektiv/node-cron/commit/845202ee974b43d366ab1183a7993b8ba6ead7fc))
+* **deps:** lock file maintenance ([#989](https://github.com/kelektiv/node-cron/issues/989)) ([bc1bf72](https://github.com/kelektiv/node-cron/commit/bc1bf72ff7a7595504d936f028a3267d9d823384))
+* **deps:** lock file maintenance ([#999](https://github.com/kelektiv/node-cron/issues/999)) ([e78d986](https://github.com/kelektiv/node-cron/commit/e78d9869d6cd59eaa808ecbb9366399b80e3ba99))
+* **deps:** update dependency [@swc](https://github.com/swc)/core to v1.12.1 ([#992](https://github.com/kelektiv/node-cron/issues/992)) ([b5d3bd3](https://github.com/kelektiv/node-cron/commit/b5d3bd332856dc46aa2742d1992b79ba44e3e48f))
+* **deps:** update dependency [@swc](https://github.com/swc)/core to v1.12.5 ([d374494](https://github.com/kelektiv/node-cron/commit/d374494609e698edcd35a4e5ece78c09851eba00))
+* **deps:** update dependency [@swc](https://github.com/swc)/core to v1.12.9 ([8060c41](https://github.com/kelektiv/node-cron/commit/8060c41685446f4b2c4ea1e0355ad388faa04ad2))
+* **deps:** update dependency [@types](https://github.com/types)/node to v22.15.32 ([#993](https://github.com/kelektiv/node-cron/issues/993)) ([ce9743b](https://github.com/kelektiv/node-cron/commit/ce9743ba05275982215c6fa8d2ca8d82013e4705))
+* **deps:** update dependency [@types](https://github.com/types)/node to v22.16.0 ([7bae5b1](https://github.com/kelektiv/node-cron/commit/7bae5b1ef895a843f0c3df176f15b50d964c895a))
+* **deps:** update linters ([24eb53f](https://github.com/kelektiv/node-cron/commit/24eb53ff67d5d8f4093278d4efa1109c61b9f7f6))
+* **deps:** update linters ([#995](https://github.com/kelektiv/node-cron/issues/995)) ([9395484](https://github.com/kelektiv/node-cron/commit/939548475833953c9d98d68bd9cc1b9ef1a0e738))
+* **deps:** update node.js to v23.11.1 ([#985](https://github.com/kelektiv/node-cron/issues/985)) ([674a344](https://github.com/kelektiv/node-cron/commit/674a3448b5c286120174bd49ad5d1d99a156fc92))
+* **deps:** update semantic-release related packages ([cc2676a](https://github.com/kelektiv/node-cron/commit/cc2676aa88e6d0c68802bd5937e148ac2284f9b2))
+* **deps:** update semantic-release related packages ([#994](https://github.com/kelektiv/node-cron/issues/994)) ([4d738df](https://github.com/kelektiv/node-cron/commit/4d738df05f794f4edb13fbe0cc02ad163b694f85))
+
 ## [4.3.1](https://github.com/kelektiv/node-cron/compare/v4.3.0...v4.3.1) (2025-05-29)
 
 ### 🐛 Bug Fixes
