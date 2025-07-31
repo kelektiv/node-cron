@@ -24,7 +24,7 @@
 		"prepare": "husky"
 	},
 	"dependencies": {
-		"@types/luxon": "~3.6.0",
+		"@types/luxon": "~3.7.0",
 		"luxon": "~3.7.0"
 	},
 	"devDependencies": {
