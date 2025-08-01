@@ -1,3 +1,23 @@
+## [4.3.3](https://github.com/kelektiv/node-cron/compare/v4.3.2...v4.3.3) (2025-08-01)
+
+### 🛠 Builds
+
+* **deps:** update dependency [@types](https://github.com/types)/luxon to ~3.7.0 ([9bd0c4e](https://github.com/kelektiv/node-cron/commit/9bd0c4e1c079388e1bbd3d88a153a343c61e396d))
+
+### ♻️ Chores
+
+* **action:** update github/codeql-action action to v3.29.4 ([f28ea6a](https://github.com/kelektiv/node-cron/commit/f28ea6a66071155c4dbed2819040bfd7da37b8d3))
+* **action:** update marocchino/sticky-pull-request-comment action to v2.9.4 ([ceb7a0c](https://github.com/kelektiv/node-cron/commit/ceb7a0c1b37caab545aeebb721561f20d4736306))
+* **action:** update step-security/harden-runner action to v2.13.0 ([91e2402](https://github.com/kelektiv/node-cron/commit/91e2402038284730d38109b6ad0bb76eeb3f8aab))
+* **deps:** lock file maintenance ([34130fc](https://github.com/kelektiv/node-cron/commit/34130fc0d74d7765d4c1b2b21010f4009b821567))
+* **deps:** lock file maintenance ([b79e0c2](https://github.com/kelektiv/node-cron/commit/b79e0c27ebe93373fdcca3a84186ee43e2042deb))
+* **deps:** lock file maintenance ([281e1aa](https://github.com/kelektiv/node-cron/commit/281e1aa5875f2a7f871dde127074afb7ccd179aa))
+* **deps:** update dependency [@types](https://github.com/types)/node to v22.16.5 ([16cdbab](https://github.com/kelektiv/node-cron/commit/16cdbab1309e040fbcf316d4915456fb549f5ff2))
+* **deps:** update dependency chai to v5.2.1 ([08b58ce](https://github.com/kelektiv/node-cron/commit/08b58ceb389f52a82a4965817312a1b428661dda))
+* **deps:** update dependency semantic-release to v24.2.7 ([bc3fab6](https://github.com/kelektiv/node-cron/commit/bc3fab6bb8b79aa346f0e5b5c312d0334d3a082d))
+* **deps:** update linters ([b692865](https://github.com/kelektiv/node-cron/commit/b6928658787c921650f6f084362b4e3108899ae7))
+* **deps:** update swc monorepo ([4f3d063](https://github.com/kelektiv/node-cron/commit/4f3d063bd3617ea410ff7b965e44e3d18efbb00d))
+
 ## [4.3.2](https://github.com/kelektiv/node-cron/compare/v4.3.1...v4.3.2) (2025-07-13)
 
 ### 🛠 Builds
