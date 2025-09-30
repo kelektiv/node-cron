@@ -44,7 +44,6 @@
 		"@types/jest": "30.0.0",
 		"@types/node": "22.18.6",
 		"@types/sinon": "17.0.4",
-		"chai": "6.0.1",
 		"cross-env": "7.0.3",
 		"eslint": "8.57.1",
 		"eslint-config-prettier": "9.1.2",
