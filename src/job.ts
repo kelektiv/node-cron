@@ -256,9 +256,22 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 						: never
 				);
 
-				if (this.waitForCompletion) await result;
+				// handle errors in asynchronous callbacks
+				if (
+					result &&
+					typeof result === 'object' &&
+					typeof result.then === 'function'
+				) {
+					result.catch(error => {
+						if (this.errorHandler != null) this.errorHandler(error);
+						else console.error('[Cron] error in callback', error);
+					});
+
+					if (this.waitForCompletion) await result;
+				}
 			}
 		} catch (error) {
+			// handle errors in synchronous callbacks
 			if (this.errorHandler != null) this.errorHandler(error);
 			else console.error('[Cron] error in callback', error);
 		} finally {

@@ -1229,6 +1229,30 @@ describe('cron', () => {
 		job.stop();
 	});
 
+	it('should catch errors in async onTick, if errorHandler is provided', async () => {
+		const clock = sinon.useFakeTimers();
+		const errorFunc = jest.fn().mockImplementation(async () => {
+			throw Error('Exception');
+		});
+		const handlerFunc = jest.fn();
+		const job = CronJob.from({
+			cronTime: '* * * * * *',
+			onTick: errorFunc,
+			errorHandler: handlerFunc,
+			start: true
+		});
+		await clock.tickAsync(1000);
+		expect(errorFunc).toHaveBeenCalledTimes(1);
+		expect(handlerFunc).toHaveBeenCalledTimes(1);
+		expect(handlerFunc).toHaveBeenLastCalledWith(new Error('Exception'));
+		await clock.tickAsync(1000);
+		expect(errorFunc).toHaveBeenCalledTimes(2);
+		expect(handlerFunc).toHaveBeenCalledTimes(2);
+		expect(handlerFunc).toHaveBeenLastCalledWith(new Error('Exception'));
+
+		job.stop();
+	});
+
 	it('should log errors if errorHandler is NOT provided', () => {
 		const errorFunc = jest.fn().mockImplementation(() => {
 			throw Error('Exception');
