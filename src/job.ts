@@ -247,6 +247,7 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 
 		this._isCallbackRunning = true;
 
+		// handle errors in synchronous and asynchronous callbacks
 		try {
 			for (const callback of this._callbacks) {
 				const result = callback.call(
@@ -256,7 +257,6 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 						: never
 				);
 
-				// handle errors in asynchronous callbacks
 				if (
 					result &&
 					typeof result === 'object' &&
@@ -273,7 +273,6 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 				}
 			}
 		} catch (error) {
-			// handle errors in synchronous callbacks
 			if (this.errorHandler != null) this.errorHandler(error);
 			else console.error('[Cron] error in callback', error);
 		} finally {
