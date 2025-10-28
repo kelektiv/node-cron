@@ -1229,17 +1229,64 @@ describe('cron', () => {
 		job.stop();
 	});
 
+	it('should catch errors in async onTick, if errorHandler is provided', async () => {
+		const clock = sinon.useFakeTimers();
+		const errorFunc = jest.fn().mockImplementation(async () => {
+			throw Error('Exception');
+		});
+		const handlerFunc = jest.fn();
+		const job = CronJob.from({
+			cronTime: '* * * * * *',
+			onTick: errorFunc,
+			errorHandler: handlerFunc,
+			start: true
+		});
+		await clock.tickAsync(1000);
+		expect(errorFunc).toHaveBeenCalledTimes(1);
+		expect(handlerFunc).toHaveBeenCalledTimes(1);
+		expect(handlerFunc).toHaveBeenLastCalledWith(new Error('Exception'));
+		await clock.tickAsync(1000);
+		expect(errorFunc).toHaveBeenCalledTimes(2);
+		expect(handlerFunc).toHaveBeenCalledTimes(2);
+		expect(handlerFunc).toHaveBeenLastCalledWith(new Error('Exception'));
+
+		job.stop();
+
+		const errorFunc2 = jest.fn().mockImplementation(async () => {
+			throw Error('Exception');
+		});
+		const handlerFunc2 = jest.fn();
+		const job2 = CronJob.from({
+			cronTime: '* * * * * *',
+			onTick: errorFunc2,
+			errorHandler: handlerFunc2,
+			start: true,
+			waitForCompletion: true
+		});
+		await clock.tickAsync(1000);
+		expect(errorFunc2).toHaveBeenCalledTimes(1);
+		expect(handlerFunc2).toHaveBeenCalledTimes(1);
+		expect(handlerFunc2).toHaveBeenLastCalledWith(new Error('Exception'));
+		await clock.tickAsync(1000);
+		expect(errorFunc2).toHaveBeenCalledTimes(2);
+		expect(handlerFunc2).toHaveBeenCalledTimes(2);
+		expect(handlerFunc2).toHaveBeenLastCalledWith(new Error('Exception'));
+
+		job2.stop();
+	});
+
 	it('should log errors if errorHandler is NOT provided', () => {
 		const errorFunc = jest.fn().mockImplementation(() => {
 			throw Error('Exception');
 		});
-		console.error = jest.fn();
+		const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
 		CronJob.from({
 			cronTime: '* * * * * *',
 			onTick: errorFunc,
 			runOnInit: true
 		});
-		expect(console.error).toHaveBeenCalled();
+		expect(errorSpy).toHaveBeenCalled();
+		errorSpy.mockRestore();
 	});
 
 	describe('waitForCompletion and job status tracking', () => {
