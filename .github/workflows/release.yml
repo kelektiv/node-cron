@@ -16,6 +16,11 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    # using trusted publishing. see https://docs.npmjs.com/trusted-publishers
+    permissions:
+      id-token: write
+      contents: write
+
     steps:
       - name: Harden Runner
         uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a # v2.13.1
@@ -46,5 +51,4 @@ jobs:
         run: npx semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.CI_GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           HUSKY: 0
