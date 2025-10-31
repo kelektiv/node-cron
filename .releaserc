@@ -23,7 +23,13 @@
 				"config": "@insurgent/conventional-changelog-preset"
 			}
 		],
-		"@semantic-release/npm",
+        [
+            "@semantic-release/npm",
+            {
+                "npmPublish": true,
+                "provenance": true
+            }
+        ],
 		[
 			"@semantic-release/changelog",
 			{
