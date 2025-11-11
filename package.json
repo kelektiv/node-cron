@@ -42,7 +42,7 @@
 		"@swc/core": "1.15.0",
 		"@swc/jest": "0.2.39",
 		"@types/jest": "30.0.0",
-		"@types/node": "22.18.12",
+		"@types/node": "22.19.0",
 		"@types/sinon": "17.0.4",
 		"cross-env": "7.0.3",
 		"eslint": "8.57.1",
