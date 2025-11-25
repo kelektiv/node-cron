@@ -39,7 +39,7 @@
 		"@semantic-release/github": "12.0.1",
 		"@semantic-release/npm": "13.1.1",
 		"@semantic-release/release-notes-generator": "14.1.0",
-		"@swc/core": "1.15.0",
+		"@swc/core": "1.15.3",
 		"@swc/jest": "0.2.39",
 		"@types/jest": "30.0.0",
 		"@types/node": "22.19.0",
