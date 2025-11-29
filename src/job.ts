@@ -295,7 +295,7 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 
 		const setCronTimeout = (t: number) => {
 			startTime = Date.now();
-			this._timeout = setTimeout(callbackWrapper, t);
+			this._timeout = setTimeout(callbackWrapper, Math.max(t, 1));
 			if (this.unrefTimeout && typeof this._timeout.unref === 'function') {
 				this._timeout.unref();
 			}
