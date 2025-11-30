@@ -295,7 +295,9 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 
 		const setCronTimeout = (t: number) => {
 			startTime = Date.now();
-			this._timeout = setTimeout(callbackWrapper, t);
+			// using Math.max to avoid Node warnings with negative timeouts
+			// see https://github.com/kelektiv/node-cron/issues/1000
+			this._timeout = setTimeout(callbackWrapper, Math.max(t, 1));
 			if (this.unrefTimeout && typeof this._timeout.unref === 'function') {
 				this._timeout.unref();
 			}

@@ -39,7 +39,7 @@ describe('cron', () => {
 
 		const clock = sinon.useFakeTimers();
 
-		// mock console.warn to avoid poluting tests with the warning
+		// mock console.warn to avoid polluting tests with the warning
 		const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
 
 		job.start();
