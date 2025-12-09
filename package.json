@@ -1,7 +1,7 @@
 {
 	"name": "cron",
 	"description": "Cron jobs for your node",
-	"version": "4.3.5",
+	"version": "4.4.0",
 	"author": "Brandon der Blätter <https://intcreator.com/> (https://github.com/intcreator)",
 	"funding": {
 		"type": "ko-fi",

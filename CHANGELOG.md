@@ -1,3 +1,14 @@
+## [4.4.0](https://github.com/kelektiv/node-cron/compare/v4.3.5...v4.4.0) (2025-12-09)
+
+### ✨ Features
+
+* update node versions to include 24 and 25 ([#1031](https://github.com/kelektiv/node-cron/issues/1031)) ([b228e7c](https://github.com/kelektiv/node-cron/commit/b228e7cdf92106fe1af614768b2492e1cefbc20f)), closes [#1000](https://github.com/kelektiv/node-cron/issues/1000)
+
+### ♻️ Chores
+
+* **deps:** lock file maintenance ([570f9bc](https://github.com/kelektiv/node-cron/commit/570f9bc69bf729890c2a409a99a1eec1b287bc0a))
+* **deps:** lock file maintenance ([#1026](https://github.com/kelektiv/node-cron/issues/1026)) ([ac05b84](https://github.com/kelektiv/node-cron/commit/ac05b84a238a4564a890760bdac802d591296872))
+
 ## [4.3.5](https://github.com/kelektiv/node-cron/compare/v4.3.4...v4.3.5) (2025-11-30)
 
 ### 🐛 Bug Fixes
