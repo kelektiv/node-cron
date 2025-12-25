@@ -58,7 +58,7 @@
 		"lint-staged": "15.5.2",
 		"prettier": "3.7.4",
 		"semantic-release": "25.0.2",
-		"sinon": "21.0.0",
+		"sinon": "21.0.1",
 		"typescript": "5.9.3",
 		"typescript-eslint": "7.18.0"
 	},
