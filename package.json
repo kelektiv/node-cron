@@ -48,7 +48,7 @@
 		"@types/jest": "30.0.0",
 		"@types/node": "24.10.4",
 		"@types/sinon": "21.0.0",
-		"cross-env": "7.0.3",
+		"cross-env": "10.1.0",
 		"eslint": "8.57.1",
 		"eslint-config-prettier": "9.1.2",
 		"eslint-plugin-jest": "27.9.0",
