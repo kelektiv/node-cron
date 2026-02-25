@@ -32,7 +32,7 @@
 		"luxon": "~3.7.0"
 	},
 	"devDependencies": {
-		"@commitlint/cli": "20.4.1",
+		"@commitlint/cli": "20.4.2",
 		"@eslint/js": "9.39.3",
 		"@fast-check/jest": "2.1.1",
 		"@insurgent/commitlint-config": "20.0.0",
@@ -40,7 +40,7 @@
 		"@semantic-release/changelog": "6.0.3",
 		"@semantic-release/commit-analyzer": "13.0.1",
 		"@semantic-release/git": "10.0.1",
-		"@semantic-release/github": "12.0.5",
+		"@semantic-release/github": "12.0.6",
 		"@semantic-release/npm": "13.1.4",
 		"@semantic-release/release-notes-generator": "14.1.0",
 		"@swc/core": "1.15.11",
