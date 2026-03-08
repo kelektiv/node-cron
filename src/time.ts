@@ -144,10 +144,6 @@ export class CronTime {
 		}
 
 		if (this.realDate) {
-			if (DateTime.local() > date) {
-				throw new CronError('WARNING: Date in past. Will never be fired.');
-			}
-
 			return date;
 		}
 

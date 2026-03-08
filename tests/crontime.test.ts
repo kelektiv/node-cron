@@ -670,14 +670,33 @@ describe('crontime', () => {
 		expect(actual).toEqual(expected);
 	});
 
-	it('should detect real date in the past', () => {
-		const clock = sinon.useFakeTimers();
-		const d = new Date();
-		clock.tick(1000);
-		const time = new CronTime(d);
-		expect(() => {
-			time.sendAt();
-		}).toThrow();
+	describe('with real date in the past', () => {
+		it('should not throw from sendAt()', () => {
+			const clock = sinon.useFakeTimers();
+			const d = new Date();
+			clock.tick(1000);
+			const ct = new CronTime(d);
+			expect(() => {
+				ct.sendAt();
+			}).not.toThrow();
+		});
+
+		it('should return the original date from sendAt()', () => {
+			const clock = sinon.useFakeTimers();
+			const d = new Date();
+			clock.tick(1000);
+			const ct = new CronTime(d);
+			const result = ct.sendAt();
+			expect(result.toMillis()).toEqual(d.getTime());
+		});
+
+		it('should return a negative value from getTimeout()', () => {
+			const clock = sinon.useFakeTimers();
+			const d = new Date();
+			clock.tick(1000);
+			const ct = new CronTime(d);
+			expect(ct.getTimeout()).toBeLessThan(0);
+		});
 	});
 
 	it('should throw when providing both exclusive parameters timeZone and utcOffset', () => {
