@@ -461,6 +461,97 @@ describe('cron', () => {
 			job.stop();
 			expect(callback).toHaveBeenCalledTimes(4);
 		});
+
+		describe('with past date', () => {
+			let warnSpy: jest.SpyInstance;
+
+			beforeEach(() => {
+				warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+			});
+
+			afterEach(() => {
+				warnSpy.mockRestore();
+			});
+
+			it('should not throw when date is 10ms in the past', () => {
+				const d = new Date();
+				const clock = sinon.useFakeTimers(d.getTime());
+				const pastDate = new Date(d.getTime() - 10);
+
+				expect(() => {
+					const job = new CronJob(pastDate, callback, null, true);
+					clock.tick(1000);
+					job.stop();
+				}).not.toThrow();
+
+				expect(callback).toHaveBeenCalledTimes(1);
+			});
+
+			it('should execute immediately when past date is within threshold', () => {
+				const d = new Date();
+				const clock = sinon.useFakeTimers(d.getTime());
+				const pastDate = new Date(d.getTime() - 100);
+
+				const job = new CronJob(pastDate, callback, null, true);
+				clock.tick(1000);
+
+				// 100ms is within default 250ms threshold — should fire
+				expect(callback).toHaveBeenCalledTimes(1);
+				expect(job.isActive).toBe(false);
+
+				const message = warnSpy.mock.calls[0][0];
+				expect(message).toContain('Executing immediately');
+			});
+
+			it('should skip execution when past date exceeds threshold', () => {
+				const d = new Date();
+				const clock = sinon.useFakeTimers(d.getTime());
+				const pastDate = new Date(d.getTime() - 1000);
+
+				const job = new CronJob(pastDate, callback, null, true);
+				clock.tick(1000);
+
+				// 1000ms exceeds default 250ms threshold — should skip
+				expect(callback).toHaveBeenCalledTimes(0);
+				expect(job.isActive).toBe(false);
+
+				const message = warnSpy.mock.calls[0][0];
+				expect(message).toContain('Skipping execution');
+			});
+
+			it('should deactivate after handling past date (no infinite loop)', () => {
+				const d = new Date();
+				const clock = sinon.useFakeTimers(d.getTime());
+				const pastDate = new Date(d.getTime() - 50);
+
+				const job = new CronJob(pastDate, callback, null, true);
+
+				// tick well beyond the original date — must not reschedule
+				clock.tick(5000);
+
+				// should only fire once (within threshold), not repeatedly
+				expect(callback).toHaveBeenCalledTimes(1);
+				expect(job.isActive).toBe(false);
+			});
+
+			it('should handle past date using CronJob.from()', () => {
+				const d = new Date();
+				const clock = sinon.useFakeTimers(d.getTime());
+				const pastDate = new Date(d.getTime() - 100);
+
+				const job = CronJob.from({
+					cronTime: pastDate,
+					onTick: callback,
+					start: true
+				});
+
+				clock.tick(1000);
+
+				// within default threshold — fires and deactivates
+				expect(callback).toHaveBeenCalledTimes(1);
+				expect(job.isActive).toBe(false);
+			});
+		});
 	});
 
 	describe('with timezone', () => {

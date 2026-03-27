@@ -373,6 +373,12 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 				);
 			}
 
+			// one-shot jobs (realDate) have no "next" execution — stop instead of rescheduling
+			if (this.runOnce) {
+				this._isActive = false;
+				return;
+			}
+
 			timeout = this.cronTime.getTimeout();
 			setCronTimeout(timeout);
 		}
