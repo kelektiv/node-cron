@@ -43,40 +43,10 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 		onTick: CronJobParams<OC, C>['onTick'],
 		onComplete?: CronJobParams<OC, C>['onComplete'],
 		start?: CronJobParams<OC, C>['start'],
-		timeZone?: CronJobParams<OC, C>['timeZone'],
+		timeZone?: string | null,
 		context?: CronJobParams<OC, C>['context'],
 		runOnInit?: CronJobParams<OC, C>['runOnInit'],
-		utcOffset?: null,
-		unrefTimeout?: CronJobParams<OC, C>['unrefTimeout'],
-		waitForCompletion?: CronJobParams<OC, C>['waitForCompletion'],
-		errorHandler?: CronJobParams<OC, C>['errorHandler'],
-		name?: CronJobParams<OC, C>['name'],
-		threshold?: CronJobParams<OC, C>['threshold']
-	);
-	constructor(
-		cronTime: CronJobParams<OC, C>['cronTime'],
-		onTick: CronJobParams<OC, C>['onTick'],
-		onComplete?: CronJobParams<OC, C>['onComplete'],
-		start?: CronJobParams<OC, C>['start'],
-		timeZone?: null,
-		context?: CronJobParams<OC, C>['context'],
-		runOnInit?: CronJobParams<OC, C>['runOnInit'],
-		utcOffset?: CronJobParams<OC, C>['utcOffset'],
-		unrefTimeout?: CronJobParams<OC, C>['unrefTimeout'],
-		waitForCompletion?: CronJobParams<OC, C>['waitForCompletion'],
-		errorHandler?: CronJobParams<OC, C>['errorHandler'],
-		name?: CronJobParams<OC, C>['name'],
-		threshold?: CronJobParams<OC, C>['threshold']
-	);
-	constructor(
-		cronTime: CronJobParams<OC, C>['cronTime'],
-		onTick: CronJobParams<OC, C>['onTick'],
-		onComplete?: CronJobParams<OC, C>['onComplete'],
-		start?: CronJobParams<OC, C>['start'],
-		timeZone?: CronJobParams<OC, C>['timeZone'],
-		context?: CronJobParams<OC, C>['context'],
-		runOnInit?: CronJobParams<OC, C>['runOnInit'],
-		utcOffset?: CronJobParams<OC, C>['utcOffset'],
+		utcOffset?: number | null,
 		unrefTimeout?: CronJobParams<OC, C>['unrefTimeout'],
 		waitForCompletion?: CronJobParams<OC, C>['waitForCompletion'],
 		errorHandler?: CronJobParams<OC, C>['errorHandler'],
@@ -93,13 +63,7 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 			throw new ExclusiveParametersError('timeZone', 'utcOffset');
 		}
 
-		if (timeZone != null) {
-			this.cronTime = new CronTime(cronTime, timeZone, null);
-		} else if (utcOffset != null) {
-			this.cronTime = new CronTime(cronTime, null, utcOffset);
-		} else {
-			this.cronTime = new CronTime(cronTime, timeZone, utcOffset);
-		}
+		this.cronTime = new CronTime(cronTime, timeZone ?? null, utcOffset ?? null);
 
 		if (unrefTimeout != null) {
 			this.unrefTimeout = unrefTimeout;
@@ -137,61 +101,23 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 	static from<OC extends CronOnCompleteCommand | null = null, C = null>(
 		params: CronJobParams<OC, C>
 	) {
-		// runtime check for JS users
-		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-		if (params.timeZone != null && params.utcOffset != null) {
-			throw new ExclusiveParametersError('timeZone', 'utcOffset');
-		}
-
-		if (params.timeZone != null) {
-			return new CronJob<OC, C>(
-				params.cronTime,
-				params.onTick,
-				params.onComplete,
-				params.start,
-				params.timeZone,
-				params.context,
-				params.runOnInit,
-				params.utcOffset,
-				params.unrefTimeout,
-				params.waitForCompletion,
-				params.errorHandler,
-				params.name,
-				params.threshold
-			);
-		} else if (params.utcOffset != null) {
-			return new CronJob<OC, C>(
-				params.cronTime,
-				params.onTick,
-				params.onComplete,
-				params.start,
-				null,
-				params.context,
-				params.runOnInit,
-				params.utcOffset,
-				params.unrefTimeout,
-				params.waitForCompletion,
-				params.errorHandler,
-				params.name,
-				params.threshold
-			);
-		} else {
-			return new CronJob<OC, C>(
-				params.cronTime,
-				params.onTick,
-				params.onComplete,
-				params.start,
-				params.timeZone,
-				params.context,
-				params.runOnInit,
-				params.utcOffset,
-				params.unrefTimeout,
-				params.waitForCompletion,
-				params.errorHandler,
-				params.name,
-				params.threshold
-			);
-		}
+		// The constructor's runtime check handles the exclusivity validation for JS users.
+		// The CronJobParams type enforces it at compile time for TS users.
+		return new CronJob<OC, C>(
+			params.cronTime,
+			params.onTick,
+			params.onComplete,
+			params.start,
+			('timeZone' in params ? params.timeZone : null) as string | null,
+			params.context,
+			params.runOnInit,
+			('utcOffset' in params ? params.utcOffset : null) as number | null,
+			params.unrefTimeout,
+			params.waitForCompletion,
+			params.errorHandler,
+			params.name,
+			params.threshold
+		);
 	}
 
 	private _fnWrap(cmd: CronCommand<C, boolean>): CronCallback<C, boolean> {
