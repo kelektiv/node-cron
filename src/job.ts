@@ -11,6 +11,36 @@ import {
 	WithOnComplete
 } from './types/cron.types';
 
+type ResolvedTimeParams =
+	| { timeZone: string; utcOffset: null }
+	| { timeZone: null; utcOffset: number }
+	| { timeZone: null; utcOffset: null };
+
+/**
+ * validates that timeZone and utcOffset are not both specified,
+ * and returns them as mutually exclusive values.
+ *
+ * @throws {ExclusiveParametersError} if both timeZone and utcOffset are defined
+ */
+function resolveTimeParams(
+	timeZone?: string | null,
+	utcOffset?: number | null
+): ResolvedTimeParams {
+	if (timeZone != null && utcOffset != null) {
+		throw new ExclusiveParametersError('timeZone', 'utcOffset');
+	}
+
+	if (timeZone != null) {
+		return { timeZone, utcOffset: null };
+	}
+
+	if (utcOffset != null) {
+		return { timeZone: null, utcOffset };
+	}
+
+	return { timeZone: null, utcOffset: null };
+}
+
 export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 	cronTime: CronTime;
 	unrefTimeout = false;
@@ -88,17 +118,12 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 
 		this.errorHandler = errorHandler;
 
-		// runtime check for JS users
-		if (timeZone != null && utcOffset != null) {
-			throw new ExclusiveParametersError('timeZone', 'utcOffset');
-		}
+		const resolved = resolveTimeParams(timeZone, utcOffset);
 
-		if (timeZone != null) {
-			this.cronTime = new CronTime(cronTime, timeZone, null);
-		} else if (utcOffset != null) {
-			this.cronTime = new CronTime(cronTime, null, utcOffset);
+		if (resolved.timeZone != null) {
+			this.cronTime = new CronTime(cronTime, resolved.timeZone, null);
 		} else {
-			this.cronTime = new CronTime(cronTime, timeZone, utcOffset);
+			this.cronTime = new CronTime(cronTime, null, resolved.utcOffset);
 		}
 
 		if (unrefTimeout != null) {
@@ -137,38 +162,22 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 	static from<OC extends CronOnCompleteCommand | null = null, C = null>(
 		params: CronJobParams<OC, C>
 	) {
-		// runtime check for JS users
-		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-		if (params.timeZone != null && params.utcOffset != null) {
-			throw new ExclusiveParametersError('timeZone', 'utcOffset');
-		}
+		// resolveTimeParams handles the runtime check for JS users
+		const resolved = resolveTimeParams(
+			params.timeZone as string | null | undefined,
+			params.utcOffset as number | null | undefined
+		);
 
-		if (params.timeZone != null) {
+		if (resolved.timeZone != null) {
 			return new CronJob<OC, C>(
 				params.cronTime,
 				params.onTick,
 				params.onComplete,
 				params.start,
-				params.timeZone,
+				resolved.timeZone,
 				params.context,
 				params.runOnInit,
-				params.utcOffset,
-				params.unrefTimeout,
-				params.waitForCompletion,
-				params.errorHandler,
-				params.name,
-				params.threshold
-			);
-		} else if (params.utcOffset != null) {
-			return new CronJob<OC, C>(
-				params.cronTime,
-				params.onTick,
-				params.onComplete,
-				params.start,
 				null,
-				params.context,
-				params.runOnInit,
-				params.utcOffset,
 				params.unrefTimeout,
 				params.waitForCompletion,
 				params.errorHandler,
@@ -181,10 +190,10 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 				params.onTick,
 				params.onComplete,
 				params.start,
-				params.timeZone,
+				null,
 				params.context,
 				params.runOnInit,
-				params.utcOffset,
+				resolved.utcOffset,
 				params.unrefTimeout,
 				params.waitForCompletion,
 				params.errorHandler,
