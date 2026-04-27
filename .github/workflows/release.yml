@@ -29,7 +29,7 @@ jobs:
 
       - name: Generate token
         id: get_workflow_token
-        uses: actions/create-github-app-token@fee1f7d63c2ff003460e3d139729b119787bc349 # v2.2.2
+        uses: actions/create-github-app-token@1b10c78c7865c340bc4f6099eb2f838309f1e8c3 # v3.1.1
         with:
           app-id: ${{ secrets.NODE_CRON_RELEASE_APP_ID }}
           private-key: ${{ secrets.NODE_CRON_RELEASE_APP_PRIVATE_KEY }}
