@@ -54,7 +54,7 @@
 		"eslint-plugin-jest": "27.9.0",
 		"eslint-plugin-prettier": "5.5.5",
 		"husky": "9.1.7",
-		"jest": "30.3.0",
+		"jest": "30.4.0",
 		"lint-staged": "15.5.2",
 		"prettier": "3.8.3",
 		"semantic-release": "25.0.3",
