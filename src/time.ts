@@ -44,16 +44,6 @@ export class CronTime {
 	constructor(
 		source: CronJobParams['cronTime'],
 		timeZone?: CronJobParams['timeZone'],
-		utcOffset?: null
-	);
-	constructor(
-		source: CronJobParams['cronTime'],
-		timeZone?: null,
-		utcOffset?: CronJobParams['utcOffset']
-	);
-	constructor(
-		source: CronJobParams['cronTime'],
-		timeZone?: CronJobParams['timeZone'],
 		utcOffset?: CronJobParams['utcOffset']
 	) {
 		// runtime check for JS users
