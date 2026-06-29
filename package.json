@@ -32,7 +32,7 @@
 		"luxon": "~3.7.0"
 	},
 	"devDependencies": {
-		"@commitlint/cli": "20.5.3",
+		"@commitlint/cli": "21.1.0",
 		"@eslint/js": "9.39.4",
 		"@fast-check/jest": "2.2.0",
 		"@insurgent/commitlint-config": "20.0.0",
