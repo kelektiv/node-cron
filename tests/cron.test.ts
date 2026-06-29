@@ -1436,6 +1436,45 @@ describe('cron', () => {
 			expect(job.isCallbackRunning).toBe(false);
 			expect(job.isActive).toBe(false);
 		});
+
+		it('should not advance lastDate() for ticks skipped due to waitForCompletion (#1048)', async () => {
+			const clock = sinon.useFakeTimers();
+
+			const job = new CronJob(
+				'* * * * * *',
+				async () => {
+					await new Promise<void>(resolve => {
+						setTimeout(resolve, 1500);
+					});
+				},
+				null,
+				true,
+				null,
+				null,
+				false,
+				null,
+				false,
+				true // waitForCompletion: true
+			);
+
+			// first execution starts at 1000ms
+			await clock.tickAsync(1000);
+			expect(job.isCallbackRunning).toBe(true);
+			expect(job.lastDate()?.getTime()).toBe(1000);
+
+			// the tick at 2000ms is skipped because the callback is still
+			// running, so lastDate() must still reflect the 1000ms execution.
+			await clock.tickAsync(1000);
+			expect(job.isCallbackRunning).toBe(true);
+			expect(job.lastDate()?.getTime()).toBe(1000);
+
+			// first callback completes at 2500ms, next execution starts at 3000ms
+			await clock.tickAsync(1000);
+			expect(job.isCallbackRunning).toBe(true);
+			expect(job.lastDate()?.getTime()).toBe(3000);
+
+			job.stop();
+		});
 	});
 
 	describe('Daylight Saving Time', () => {
