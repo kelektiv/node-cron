@@ -41,6 +41,13 @@ export class CronTime {
 	private month: TimeUnitField<'month'> = {};
 	private dayOfWeek: TimeUnitField<'dayOfWeek'> = {};
 
+	// whether the raw day-of-month / day-of-week field was a literal "*".
+	// crontab(5) ORs the two day fields only when neither contains "*", so we
+	// must track the literal wildcard rather than infer it from cardinality (a
+	// full-coverage range like "1-31" has full cardinality yet is not "*").
+	private dayOfMonthWildcard = false;
+	private dayOfWeekWildcard = false;
+
 	constructor(
 		source: CronJobParams['cronTime'],
 		timeZone?: CronJobParams['timeZone'],
@@ -279,19 +286,19 @@ export class CronTime {
 				continue;
 			}
 
+			// crontab(5): when both day fields are restricted (neither is a
+			// literal "*"), the command runs when EITHER matches (OR). A field
+			// is restricted by the wildcard token, not by its cardinality, so a
+			// full-coverage range like "1-31" still counts as restricted.
 			if (
 				(!(date.day in this.dayOfMonth) &&
-					Object.keys(this.dayOfMonth).length !== 31 &&
+					!this.dayOfMonthWildcard &&
 					!(
-						this._getWeekDay(date) in this.dayOfWeek &&
-						Object.keys(this.dayOfWeek).length !== 7
+						this._getWeekDay(date) in this.dayOfWeek && !this.dayOfWeekWildcard
 					)) ||
 				(!(this._getWeekDay(date) in this.dayOfWeek) &&
-					Object.keys(this.dayOfWeek).length !== 7 &&
-					!(
-						date.day in this.dayOfMonth &&
-						Object.keys(this.dayOfMonth).length !== 31
-					))
+					!this.dayOfWeekWildcard &&
+					!(date.day in this.dayOfMonth && !this.dayOfMonthWildcard))
 			) {
 				date = date.plus({ days: 1 });
 				date = date.set({ hour: 0, minute: 0, second: 0 });
@@ -500,6 +507,15 @@ export class CronTime {
 				);
 			}
 		});
+
+		// record whether this day field was a literal "*" before we expand it,
+		// so the OR-semantics in getNextDateFrom can key off the wildcard token
+		// rather than the resulting cardinality
+		if (unit === 'dayOfMonth') {
+			this.dayOfMonthWildcard = value.includes('*');
+		} else if (unit === 'dayOfWeek') {
+			this.dayOfWeekWildcard = value.includes('*');
+		}
 
 		// "*" is a shortcut to [low-high] range for the field
 		value = value.replace(RE_WILDCARDS, `${low}-${high}`);
