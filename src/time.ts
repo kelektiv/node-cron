@@ -76,7 +76,16 @@ export class CronTime {
 
 		if (timeZone == null && utcOffset == null) {
 			const systemTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-			this.timeZone = systemTimezone;
+			const dt = DateTime.fromObject({}, { zone: systemTimezone });
+
+			if (dt.isValid) {
+				this.timeZone = systemTimezone;
+			} else {
+				// some environments (e.g. certain Chromium builds on Linux) can resolve an invalid IANA zone such as "Etc/Unknown"; fall back to UTC rather than passing an unusable zone through to luxon
+				console.warn(
+					`[Cron] Detected an invalid system timezone "${systemTimezone}". Falling back to UTC.`
+				);
+			}
 		}
 
 		if (source instanceof Date || source instanceof DateTime) {
