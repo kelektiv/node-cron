@@ -686,6 +686,25 @@ describe('crontime', () => {
 			new CronTime('* * * * *', 'Asia/Amman', 120);
 		}).toThrow();
 	});
+
+	it('should fall back to UTC when the resolved system timezone is invalid', () => {
+		const resolvedOptionsStub = sinon
+			.stub()
+			.returns({ timeZone: 'Etc/Unknown' });
+		sinon.stub(Intl, 'DateTimeFormat').returns({
+			resolvedOptions: resolvedOptionsStub
+		} as unknown as Intl.DateTimeFormat);
+		const warnStub = sinon.stub(console, 'warn');
+
+		const cronTime = new CronTime('* * * * * *');
+
+		expect(cronTime.timeZone).toBeUndefined();
+		expect(warnStub.calledOnce).toBe(true);
+		expect(() => {
+			cronTime.getNextDateFrom(new Date());
+			cronTime.sendAt();
+		}).not.toThrow();
+	});
 });
 
 describe('validateCronExpression', () => {
