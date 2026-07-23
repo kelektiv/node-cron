@@ -127,7 +127,6 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 		this.addCallback(this._fnWrap(onTick));
 
 		if (runOnInit) {
-			this.lastExecution = new Date();
 			void this.fireOnTick();
 		}
 
@@ -245,6 +244,10 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 		// skip job if previous callback is still running
 		if (this.waitForCompletion && this._isCallbackRunning) return;
 
+		// record the moment the callback actually executes, so that lastDate()
+		// reflects the last real execution rather than the last tick check
+		// (ticks skipped above must not advance it). See #1048.
+		this.lastExecution = new Date();
 		this._isCallbackRunning = true;
 
 		// handle errors in synchronous and asynchronous callbacks
@@ -334,8 +337,6 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 				setCronTimeout(timeout);
 			} else {
 				// we have arrived at the correct point in time.
-				this.lastExecution = new Date();
-
 				this._isActive = false;
 
 				// start before calling back so the callbacks have the ability to stop the cron job
@@ -364,7 +365,6 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 				// execute immediately if within threshold
 				console.warn(`${message}. Executing immediately.`);
 
-				this.lastExecution = new Date();
 				void this.fireOnTick();
 			} else {
 				// skip job if beyond threshold
