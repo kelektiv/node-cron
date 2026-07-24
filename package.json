@@ -33,7 +33,7 @@
 	},
 	"devDependencies": {
 		"@commitlint/cli": "20.5.3",
-		"@eslint/js": "9.39.4",
+		"@eslint/js": "9.39.5",
 		"@fast-check/jest": "2.2.0",
 		"@insurgent/commitlint-config": "20.0.0",
 		"@insurgent/conventional-changelog-preset": "10.0.0",
@@ -56,7 +56,7 @@
 		"husky": "9.1.7",
 		"jest": "30.4.0",
 		"lint-staged": "15.5.2",
-		"prettier": "3.8.4",
+		"prettier": "3.9.6",
 		"semantic-release": "25.0.5",
 		"sinon": "21.1.2",
 		"typescript": "5.9.3",
