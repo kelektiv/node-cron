@@ -688,18 +688,31 @@ describe('crontime', () => {
 	});
 
 	it('should fall back to UTC when the resolved system timezone is invalid', () => {
-		const resolvedOptionsStub = sinon
-			.stub()
-			.returns({ timeZone: 'Etc/Unknown' });
-		sinon.stub(Intl, 'DateTimeFormat').returns({
-			resolvedOptions: resolvedOptionsStub
-		} as unknown as Intl.DateTimeFormat);
+		const realDateTimeFormat = Intl.DateTimeFormat;
+		const realResolvedOptions = realDateTimeFormat().resolvedOptions();
+
+		// only the no-argument call resolves the system default zone, so that is all
+		// this replaces. luxon builds its own formatters with explicit arguments and
+		// reads the system locale the same way, so both have to keep working.
+		sinon.stub(Intl, 'DateTimeFormat').callsFake((...args: unknown[]) =>
+			args.length === 0
+				? ({
+						resolvedOptions: () => ({
+							...realResolvedOptions,
+							timeZone: 'Etc/Unknown'
+						})
+					} as unknown as Intl.DateTimeFormat)
+				: (realDateTimeFormat(
+						...(args as Parameters<typeof realDateTimeFormat>)
+					) as Intl.DateTimeFormat)
+		);
 		const warnStub = sinon.stub(console, 'warn');
 
 		const cronTime = new CronTime('* * * * * *');
 
 		expect(cronTime.timeZone).toBeUndefined();
 		expect(warnStub.calledOnce).toBe(true);
+		// sendAt applies this.timeZone, so it is what would throw on an unusable zone
 		expect(() => {
 			cronTime.getNextDateFrom(new Date());
 			cronTime.sendAt();

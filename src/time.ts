@@ -1,4 +1,4 @@
-import { DateTime, Zone } from 'luxon';
+import { DateTime, IANAZone, Zone } from 'luxon';
 
 import {
 	ALIASES,
@@ -76,9 +76,8 @@ export class CronTime {
 
 		if (timeZone == null && utcOffset == null) {
 			const systemTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-			const dt = DateTime.fromObject({}, { zone: systemTimezone });
 
-			if (dt.isValid) {
+			if (IANAZone.isValidZone(systemTimezone)) {
 				this.timeZone = systemTimezone;
 			} else {
 				// some environments (e.g. certain Chromium builds on Linux) can resolve an invalid IANA zone such as "Etc/Unknown"; fall back to UTC rather than passing an unusable zone through to luxon
