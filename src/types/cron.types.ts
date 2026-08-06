@@ -19,6 +19,7 @@ interface BaseCronJobParams<
 	errorHandler?: ((error: unknown) => void) | null;
 	threshold?: number | null;
 	name?: string | null;
+	randomizedDelaySec?: number | null;
 }
 
 export type CronJobParams<
