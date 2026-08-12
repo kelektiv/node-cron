@@ -195,7 +195,7 @@ day of week    0-7 (0 or 7 is Sunday, or use names)
 
 #### Constructor
 
-`constructor(cronTime, onTick, onComplete, start, timeZone, context, runOnInit, utcOffset, unrefTimeout, waitForCompletion, errorHandler, name, threshold)`:
+`constructor(cronTime, onTick, onComplete, start, timeZone, context, runOnInit, utcOffset, unrefTimeout, waitForCompletion, errorHandler, name, threshold, randomizedDelaySec)`:
 
 - `cronTime`: [REQUIRED] - The time to fire off your job. Can be cron syntax, a JS [`Date`](https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Date) object or a Luxon [`DateTime`](https://moment.github.io/luxon/api-docs/index.html#datetime) object.
 
@@ -222,6 +222,8 @@ day of week    0-7 (0 or 7 is Sunday, or use names)
 - `name`: [OPTIONAL] - Name of the job. Useful for identifying jobs in logs.
 
 - `threshold`: [OPTIONAL] - Threshold in ms to control whether to execute or skip missed execution deadlines caused by slow or busy hardware. Execution delays within threshold will be executed immediately, and otherwise will be skipped. In both cases a warning will be printed to the console with the job name and cron expression. See [issue #962](https://github.com/kelektiv/node-cron/issues/962) for more information. Default is `250`.
+
+- `randomizedDelaySec`: [OPTIONAL] - Maximum number of seconds to randomly delay each execution by, similar to systemd's [`RandomizedDelaySec`](https://www.freedesktop.org/software/systemd/man/latest/systemd.timer.html#RandomizedDelaySec=). Useful for spreading out the execution of jobs running the same schedule across multiple instances or containers, avoiding simultaneous spikes (e.g. hitting rate limits on a shared API). A new random delay between `0` and `randomizedDelaySec` seconds is applied on every execution cycle. Default is `0` (no delay).
 
 #### Methods
 

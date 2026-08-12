@@ -24,6 +24,7 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 	errorHandler?: CronJobParams<OC, C>['errorHandler'];
 	name?: string; // optional job name for identification
 	threshold = 250; // default threshold in ms
+	randomizedDelaySec = 0; // max random delay (in seconds) added to each execution
 
 	private _isActive = false;
 	private _isCallbackRunning = false;
@@ -51,7 +52,8 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 		waitForCompletion?: CronJobParams<OC, C>['waitForCompletion'],
 		errorHandler?: CronJobParams<OC, C>['errorHandler'],
 		name?: CronJobParams<OC, C>['name'],
-		threshold?: CronJobParams<OC, C>['threshold']
+		threshold?: CronJobParams<OC, C>['threshold'],
+		randomizedDelaySec?: CronJobParams<OC, C>['randomizedDelaySec']
 	);
 	constructor(
 		cronTime: CronJobParams<OC, C>['cronTime'],
@@ -66,7 +68,8 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 		waitForCompletion?: CronJobParams<OC, C>['waitForCompletion'],
 		errorHandler?: CronJobParams<OC, C>['errorHandler'],
 		name?: CronJobParams<OC, C>['name'],
-		threshold?: CronJobParams<OC, C>['threshold']
+		threshold?: CronJobParams<OC, C>['threshold'],
+		randomizedDelaySec?: CronJobParams<OC, C>['randomizedDelaySec']
 	);
 	constructor(
 		cronTime: CronJobParams<OC, C>['cronTime'],
@@ -81,7 +84,8 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 		waitForCompletion?: CronJobParams<OC, C>['waitForCompletion'],
 		errorHandler?: CronJobParams<OC, C>['errorHandler'],
 		name?: CronJobParams<OC, C>['name'],
-		threshold?: CronJobParams<OC, C>['threshold']
+		threshold?: CronJobParams<OC, C>['threshold'],
+		randomizedDelaySec?: CronJobParams<OC, C>['randomizedDelaySec']
 	) {
 		this.context = (context ?? this) as CronContext<C>;
 		this.waitForCompletion = Boolean(waitForCompletion);
@@ -114,6 +118,10 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 
 		if (threshold != null) {
 			this.threshold = Math.abs(threshold);
+		}
+
+		if (randomizedDelaySec != null) {
+			this.randomizedDelaySec = Math.abs(randomizedDelaySec);
 		}
 
 		if (name != null) {
@@ -157,7 +165,8 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 				params.waitForCompletion,
 				params.errorHandler,
 				params.name,
-				params.threshold
+				params.threshold,
+				params.randomizedDelaySec
 			);
 		} else if (params.utcOffset != null) {
 			return new CronJob<OC, C>(
@@ -173,7 +182,8 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 				params.waitForCompletion,
 				params.errorHandler,
 				params.name,
-				params.threshold
+				params.threshold,
+				params.randomizedDelaySec
 			);
 		} else {
 			return new CronJob<OC, C>(
@@ -189,7 +199,8 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 				params.waitForCompletion,
 				params.errorHandler,
 				params.name,
-				params.threshold
+				params.threshold,
+				params.randomizedDelaySec
 			);
 		}
 	}
@@ -290,6 +301,12 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 
 		const MAXDELAY = 2147483647; // the maximum number of milliseconds setTimeout will wait.
 		let timeout = this.cronTime.getTimeout();
+
+		// add a one-time random delay for this execution cycle (systemd RandomizedDelaySec-style jitter)
+		if (this.randomizedDelaySec) {
+			timeout += Math.floor(Math.random() * this.randomizedDelaySec * 1000);
+		}
+
 		let remaining = 0;
 		let startTime: number;
 
