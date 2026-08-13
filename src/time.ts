@@ -460,6 +460,26 @@ export class CronTime {
 			throw new CronError('Too many fields');
 		}
 
+		let questionMarkDate: DateTime<true> | DateTime<false> = DateTime.local();
+		if (this.timeZone) {
+			questionMarkDate = questionMarkDate.setZone(this.timeZone);
+		} else if (this.utcOffset !== undefined) {
+			const sign = this.utcOffset < 0 ? '-' : '+';
+			const offsetHours = Math.trunc(this.utcOffset / 60);
+			const offsetHoursStr = String(Math.abs(offsetHours)).padStart(2, '0');
+			const offsetMins = Math.abs(this.utcOffset - offsetHours * 60);
+			const offsetMinsStr = String(offsetMins).padStart(2, '0');
+
+			questionMarkDate = questionMarkDate.setZone(
+				`UTC${sign}${offsetHoursStr}:${offsetMinsStr}`
+			);
+		}
+
+		if (!questionMarkDate.isValid) {
+			throw new CronError('Invalid timezone or UTC offset for ? substitution');
+		}
+		const validQuestionMarkDate: DateTime<true> = questionMarkDate;
+
 		const unitsLen = units.length;
 		for (const unit of TIME_UNITS) {
 			const i = TIME_UNITS.indexOf(unit);
@@ -468,7 +488,31 @@ export class CronTime {
 			// this adds support for 5-digit standard cron syntax
 			const cur =
 				units[i - (TIME_UNITS_LEN - unitsLen)] ?? PARSE_DEFAULTS[unit];
-			this._parseField(cur, unit);
+			let value = cur;
+			if (value === '?') {
+				switch (unit) {
+					case 'second':
+						value = validQuestionMarkDate.second.toString();
+						break;
+					case 'minute':
+						value = validQuestionMarkDate.minute.toString();
+						break;
+					case 'hour':
+						value = validQuestionMarkDate.hour.toString();
+						break;
+					case 'dayOfMonth':
+						value = validQuestionMarkDate.day.toString();
+						break;
+					case 'month':
+						value = validQuestionMarkDate.month.toString();
+						break;
+					case 'dayOfWeek':
+						value = this._getWeekDay(validQuestionMarkDate).toString();
+						break;
+				}
+			}
+
+			this._parseField(value, unit);
 		}
 	}
 
