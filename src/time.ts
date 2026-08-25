@@ -11,7 +11,7 @@ import {
 	TIME_UNITS_LEN,
 	TIME_UNITS_MAP
 } from './constants';
-import { CronError, ExclusiveParametersError } from './errors';
+import { assertExclusiveTimeZoneAndUtcOffset, CronError } from './errors';
 import {
 	CronJobParams,
 	Ranges,
@@ -57,9 +57,7 @@ export class CronTime {
 		utcOffset?: CronJobParams['utcOffset']
 	) {
 		// runtime check for JS users
-		if (timeZone != null && utcOffset != null) {
-			throw new ExclusiveParametersError('timeZone', 'utcOffset');
-		}
+		assertExclusiveTimeZoneAndUtcOffset(timeZone, utcOffset);
 
 		if (timeZone) {
 			const dt = DateTime.fromObject({}, { zone: timeZone });
