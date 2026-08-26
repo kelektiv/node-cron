@@ -93,7 +93,7 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 			throw new ExclusiveParametersError('timeZone', 'utcOffset');
 		}
 
-		// After the exclusive check above, at most one of timeZone or utcOffset
+		// after the exclusive check above, at most one of timeZone or utcOffset
 		// is non-null — pass the active one and null for the other.
 		this.cronTime =
 			timeZone != null
