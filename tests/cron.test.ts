@@ -51,6 +51,38 @@ describe('cron', () => {
 		warnSpy.mockRestore();
 	});
 
+	it('should not stop job if manually set date is within the threshold', () => {
+		const clock = sinon.useFakeTimers();
+
+		const errorFunc = jest.fn().mockImplementation(async () => {
+			throw Error('Exception');
+		});
+
+		let scheduledTs = DateTime.now().minus({ seconds: 1 });
+		console.log(scheduledTs);
+		const job = CronJob.from({
+			cronTime: scheduledTs.set({ millisecond: 0 }),
+			onTick: () => {
+				console.log('done');
+			},
+			start: true,
+			timeZone: 'Europe/Berlin',
+			errorHandler: err => {
+				console.log('err', err);
+			},
+			runOnInit: false,
+			name: `event test`,
+			threshold: 3000 // 3 seconds tolerance - the job with 1 sec in past should be fired immediately
+		});
+
+		job.start();
+
+		clock.tick(5000);
+		expect(errorFunc).toHaveBeenCalledTimes(0);
+
+		job.stop();
+	});
+
 	describe('with seconds', () => {
 		it('should run every second (* * * * * *)', () => {
 			const clock = sinon.useFakeTimers();
