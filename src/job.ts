@@ -46,36 +46,6 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 		timeZone?: CronJobParams<OC, C>['timeZone'],
 		context?: CronJobParams<OC, C>['context'],
 		runOnInit?: CronJobParams<OC, C>['runOnInit'],
-		utcOffset?: null,
-		unrefTimeout?: CronJobParams<OC, C>['unrefTimeout'],
-		waitForCompletion?: CronJobParams<OC, C>['waitForCompletion'],
-		errorHandler?: CronJobParams<OC, C>['errorHandler'],
-		name?: CronJobParams<OC, C>['name'],
-		threshold?: CronJobParams<OC, C>['threshold']
-	);
-	constructor(
-		cronTime: CronJobParams<OC, C>['cronTime'],
-		onTick: CronJobParams<OC, C>['onTick'],
-		onComplete?: CronJobParams<OC, C>['onComplete'],
-		start?: CronJobParams<OC, C>['start'],
-		timeZone?: null,
-		context?: CronJobParams<OC, C>['context'],
-		runOnInit?: CronJobParams<OC, C>['runOnInit'],
-		utcOffset?: CronJobParams<OC, C>['utcOffset'],
-		unrefTimeout?: CronJobParams<OC, C>['unrefTimeout'],
-		waitForCompletion?: CronJobParams<OC, C>['waitForCompletion'],
-		errorHandler?: CronJobParams<OC, C>['errorHandler'],
-		name?: CronJobParams<OC, C>['name'],
-		threshold?: CronJobParams<OC, C>['threshold']
-	);
-	constructor(
-		cronTime: CronJobParams<OC, C>['cronTime'],
-		onTick: CronJobParams<OC, C>['onTick'],
-		onComplete?: CronJobParams<OC, C>['onComplete'],
-		start?: CronJobParams<OC, C>['start'],
-		timeZone?: CronJobParams<OC, C>['timeZone'],
-		context?: CronJobParams<OC, C>['context'],
-		runOnInit?: CronJobParams<OC, C>['runOnInit'],
 		utcOffset?: CronJobParams<OC, C>['utcOffset'],
 		unrefTimeout?: CronJobParams<OC, C>['unrefTimeout'],
 		waitForCompletion?: CronJobParams<OC, C>['waitForCompletion'],
