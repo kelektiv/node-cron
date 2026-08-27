@@ -1,5 +1,5 @@
 import { spawn } from 'child_process';
-import { CronError, ExclusiveParametersError } from './errors';
+import { assertExclusiveTimeZoneAndUtcOffset, CronError } from './errors';
 import { CronTime } from './time';
 import {
 	CronCallback,
@@ -89,9 +89,7 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 		this.errorHandler = errorHandler;
 
 		// runtime check for JS users
-		if (timeZone != null && utcOffset != null) {
-			throw new ExclusiveParametersError('timeZone', 'utcOffset');
-		}
+		assertExclusiveTimeZoneAndUtcOffset(timeZone, utcOffset);
 
 		// after the exclusive check above, at most one of timeZone or utcOffset
 		// is non-null — pass the active one and null for the other.
@@ -138,9 +136,7 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 	) {
 		// runtime check for JS users
 		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-		if (params.timeZone != null && params.utcOffset != null) {
-			throw new ExclusiveParametersError('timeZone', 'utcOffset');
-		}
+		assertExclusiveTimeZoneAndUtcOffset(params.timeZone, params.utcOffset);
 
 		if (params.timeZone != null) {
 			return new CronJob<OC, C>(
