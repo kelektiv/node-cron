@@ -1,9 +1,7 @@
-import { spawn } from 'child_process';
 import { assertExclusiveTimeZoneAndUtcOffset, CronError } from './errors';
 import { CronTime } from './time';
 import {
 	CronCallback,
-	CronCommand,
 	CronContext,
 	CronJobParams,
 	CronOnCompleteCallback,
@@ -46,13 +44,54 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 		timeZone?: CronJobParams<OC, C>['timeZone'],
 		context?: CronJobParams<OC, C>['context'],
 		runOnInit?: CronJobParams<OC, C>['runOnInit'],
+		utcOffset?: null,
+		unrefTimeout?: CronJobParams<OC, C>['unrefTimeout'],
+		waitForCompletion?: CronJobParams<OC, C>['waitForCompletion'],
+		errorHandler?: CronJobParams<OC, C>['errorHandler'],
+		name?: CronJobParams<OC, C>['name'],
+		threshold?: CronJobParams<OC, C>['threshold'],
+		usedFrom?: CronJobParams<OC, C>['usedFrom']
+	);
+	constructor(
+		cronTime: CronJobParams<OC, C>['cronTime'],
+		onTick: CronJobParams<OC, C>['onTick'],
+		onComplete?: CronJobParams<OC, C>['onComplete'],
+		start?: CronJobParams<OC, C>['start'],
+		timeZone?: null,
+		context?: CronJobParams<OC, C>['context'],
+		runOnInit?: CronJobParams<OC, C>['runOnInit'],
 		utcOffset?: CronJobParams<OC, C>['utcOffset'],
 		unrefTimeout?: CronJobParams<OC, C>['unrefTimeout'],
 		waitForCompletion?: CronJobParams<OC, C>['waitForCompletion'],
 		errorHandler?: CronJobParams<OC, C>['errorHandler'],
 		name?: CronJobParams<OC, C>['name'],
-		threshold?: CronJobParams<OC, C>['threshold']
+		threshold?: CronJobParams<OC, C>['threshold'],
+		usedFrom?: CronJobParams<OC, C>['usedFrom']
+	);
+	constructor(
+		cronTime: CronJobParams<OC, C>['cronTime'],
+		onTick: CronJobParams<OC, C>['onTick'],
+		onComplete?: CronJobParams<OC, C>['onComplete'],
+		start?: CronJobParams<OC, C>['start'],
+		timeZone?: CronJobParams<OC, C>['timeZone'],
+		context?: CronJobParams<OC, C>['context'],
+		runOnInit?: CronJobParams<OC, C>['runOnInit'],
+		utcOffset?: CronJobParams<OC, C>['utcOffset'],
+		unrefTimeout?: CronJobParams<OC, C>['unrefTimeout'],
+		waitForCompletion?: CronJobParams<OC, C>['waitForCompletion'],
+		errorHandler?: CronJobParams<OC, C>['errorHandler'],
+		name?: CronJobParams<OC, C>['name'],
+		threshold?: CronJobParams<OC, C>['threshold'],
+		usedFrom?: CronJobParams<OC, C>['usedFrom']
 	) {
+		if (!usedFrom) {
+			console.warn(
+				`[Cron] Warning: The parameterized constructor is deprecated and will be removed in the next major version of Cron (v6).
+				\n    Consider updating the instantiation of your CronJob object to use the static 'from' method.
+				\n    See https://github.com/kelektiv/node-cron#deprecated-the-parameterized-constructor`
+			);
+		}
+
 		this.context = (context ?? this) as CronContext<C>;
 		this.waitForCompletion = Boolean(waitForCompletion);
 
@@ -72,11 +111,8 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 			this.unrefTimeout = unrefTimeout;
 		}
 
-		if (onComplete != null) {
-			// casting to the correct type since we just made sure that WithOnComplete<OC> = true
-			this.onComplete = this._fnWrap(
-				onComplete
-			) as WithOnComplete<OC> extends true ? CronOnCompleteCallback : undefined;
+		if (this.isCronOnCompleteCallback<OC>(onComplete)) {
+			this.onComplete = onComplete;
 		}
 
 		if (threshold != null) {
@@ -91,7 +127,7 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 			this.runOnce = true;
 		}
 
-		this.addCallback(this._fnWrap(onTick));
+		this.addCallback(onTick);
 
 		if (runOnInit) {
 			this.lastExecution = new Date();
@@ -122,7 +158,8 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 				params.waitForCompletion,
 				params.errorHandler,
 				params.name,
-				params.threshold
+				params.threshold,
+				true
 			);
 		} else if (params.utcOffset != null) {
 			return new CronJob<OC, C>(
@@ -138,7 +175,8 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 				params.waitForCompletion,
 				params.errorHandler,
 				params.name,
-				params.threshold
+				params.threshold,
+				true
 			);
 		} else {
 			return new CronJob<OC, C>(
@@ -154,32 +192,18 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 				params.waitForCompletion,
 				params.errorHandler,
 				params.name,
-				params.threshold
+				params.threshold,
+				true
 			);
 		}
 	}
 
-	private _fnWrap(cmd: CronCommand<C, boolean>): CronCallback<C, boolean> {
-		switch (typeof cmd) {
-			case 'function': {
-				return cmd;
-			}
-
-			case 'string': {
-				const [command, ...args] = cmd.split(' ');
-
-				return spawn.bind(undefined, command ?? cmd, args, {}) as () => void;
-			}
-
-			case 'object': {
-				return spawn.bind(
-					undefined,
-					cmd.command,
-					cmd.args ?? [],
-					cmd.options ?? {}
-				) as () => void;
-			}
-		}
+	private isCronOnCompleteCallback<OC>(
+		fn: unknown
+	): fn is WithOnComplete<OC> extends true
+		? CronOnCompleteCallback
+		: undefined {
+		return typeof fn === 'function';
 	}
 
 	addCallback(callback: CronCallback<C, WithOnComplete<OC>>) {

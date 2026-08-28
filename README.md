@@ -1,7 +1,7 @@
 <p align="center">
   <img src="logo.svg" alt="cron for Node.js logo" height="150">
   <br />
-  <b>cron</b> is a robust tool for running jobs (functions or commands) on schedules defined using the cron syntax.
+  <b>cron</b> is a robust tool for running jobs (functions) on schedules defined using the cron syntax.
   <br />
   Perfect for tasks like data backups, notifications, and many more!
 </p>
@@ -20,7 +20,6 @@
 ## 🌟 Features
 
 - execute a function whenever your scheduled job triggers
-- execute a job external to the javascript process (like a system command) using `child_process`
 - use a Date or Luxon DateTime object instead of cron syntax as the trigger for your callback
 - use an additional slot for seconds (leaving it off will default to 0 and match the Unix behavior)
 
@@ -53,6 +52,44 @@ npm install cron
 11. [License](#-license)
 
 ## ⬆ Migrating
+
+v5 dropped Node v18, v20, and v23; deprecated the parameterized constructor, and removed `child_process`
+
+<details>
+  <summary>Migrating from v4 to v5</summary>
+
+### Dropped Node versions
+
+Node v18, v20, and v23 are no longer supported. Upgrade your Node installation to v22, v24, or v26.
+
+### Deprecated the parameterized constructor
+
+Previously this was the recommended way to create new `CronJob` objects:
+
+```js
+const job = new CronJob('* * * * * *', function () {
+	console.log('You will see this message every second');
+});
+```
+
+While this method is still officially supported (any bugs or security issues will be fixed) it is deprecated and no longer recommended. You will get a warning that support will be dropped in the next major version of Cron.
+
+Instead, create `CronJob` objects like this:
+
+```js
+const job = CronJob.from({
+	cronTime: '* * * * * *',
+	onTick: function () {
+		console.log('You will see this message every second');
+	}
+});
+```
+
+### Removed `child_process` dependency and native system command support
+
+In anticipation of one day offering browser support, the ability to execute system commands natively with `child_process` has been removed. There are other ways to execute system commands in Node, so this functionality is still possible by other means if you need it, it may just require some refactoring.
+
+</details>
 
 v4 dropped Node v16 and renamed the `job.running` property:
 
@@ -96,36 +133,22 @@ v3 introduced TypeScript and tighter Unix cron pattern alignment:
 
 ## 🛠 Basic Usage
 
-```javascript
+```js
 import { CronJob } from 'cron';
 
-const job = new CronJob(
-	'* * * * * *', // cronTime
-	function () {
-		console.log('You will see this message every second');
-	}, // onTick
-	null, // onComplete
-	true, // start
-	'America/Los_Angeles' // timeZone
-);
-// job.start() is optional here because of the fourth parameter set to true.
-```
-
-```javascript
-// equivalent job using the "from" static method, providing parameters as an object
 const job = CronJob.from({
 	cronTime: '* * * * * *',
 	onTick: function () {
 		console.log('You will see this message every second');
 	},
-	start: true,
-	timeZone: 'America/Los_Angeles'
+	start: true, // optional
+	timeZone: 'America/Los_Angeles' // optional
 });
 ```
 
-> **Note:** In the first example above, the fourth parameter to `CronJob()` starts the job automatically. If not provided or set to falsy, you must explicitly start the job using `job.start()`.
+> **Note:** In the example above, the `start` property set to `true` starts the job automatically. If not provided or set to `false`, you must explicitly start the job using `job.start()`.
 
-For more advanced examples, check the [examples directory](https://github.com/kelektiv/node-cron/tree/main/examples).
+See the [API below](#api) for all properties. For more advanced examples, check the [examples directory](https://github.com/kelektiv/node-cron/tree/main/examples).
 
 ## ⏰ Cron Patterns
 
@@ -141,7 +164,7 @@ Detailed patterns and explanations are available at [crontab.org](http://crontab
 
 ### Supported Ranges
 
-Here's a quick reference to the UNIX Cron format this library uses, plus an added second field:
+Here's a quick reference to the UNIX Cron format this library uses, plus an additional `second` field:
 
 ```
 field          allowed values
@@ -159,43 +182,11 @@ day of week    0-7 (0 or 7 is Sunday, or use names)
 
 ## 📖 API
 
-### Standalone Functions
-
-- `sendAt`: Indicates when a `CronTime` will execute (returns a Luxon `DateTime` object).
-
-  ```javascript
-  import * as cron from 'cron';
-
-  const dt = cron.sendAt('0 0 * * *');
-  console.log(`The job would run at: ${dt.toISO()}`);
-  ```
-
-- `timeout`: Indicates the number of milliseconds in the future at which a `CronTime` will execute (returns a number).
-
-  ```javascript
-  import * as cron from 'cron';
-
-  const timeout = cron.timeout('0 0 * * *');
-  console.log(`The job would run in ${timeout}ms`);
-  ```
-
-- `validateCronExpression`: Validates if a given cron expression is valid (returns an object with `valid` and `error` properties).
-
-  ```javascript
-  import * as cron from 'cron';
-
-  const validation = cron.validateCronExpression('0 0 * * *');
-  console.log(`Is the cron expression valid? ${validation.valid}`);
-  if (!validation.valid) {
-  	console.error(`Validation error: ${validation.error}`);
-  }
-  ```
-
 ### CronJob Class
 
 #### Constructor
 
-`constructor(cronTime, onTick, onComplete, start, timeZone, context, runOnInit, utcOffset, unrefTimeout, waitForCompletion, errorHandler, name, threshold)`:
+`CronJob.from({ ... })`:
 
 - `cronTime`: [REQUIRED] - The time to fire off your job. Can be cron syntax, a JS [`Date`](https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Date) object or a Luxon [`DateTime`](https://moment.github.io/luxon/api-docs/index.html#datetime) object.
 
@@ -250,10 +241,13 @@ day of week    0-7 (0 or 7 is Sunday, or use names)
 - `isCallbackRunning`: [READ-ONLY] Indicates if a callback is currently executing.
 
   ```javascript
-  const job = new CronJob('* * * * * *', async () => {
-  	console.log(job.isCallbackRunning); // true during callback execution
-  	await someAsyncTask();
-  	console.log(job.isCallbackRunning); // still true until callback completes
+  const job = new CronJob.from({
+  	cronTime: '* * * * * *',
+  	onTick: async () => {
+  		console.log(job.isCallbackRunning); // true during callback execution
+  		await someAsyncTask();
+  		console.log(job.isCallbackRunning); // still true until callback completes
+  	}
   });
 
   console.log(job.isCallbackRunning); // false
@@ -273,6 +267,38 @@ day of week    0-7 (0 or 7 is Sunday, or use names)
 - `zone`: [OPTIONAL] - Equivalent to `timeZone` from `CronJob` parameters.
 
 - `utcOffset`: [OPTIONAL] - Analogous to `utcOffset` from `CronJob` parameters.
+
+### Standalone Functions
+
+- `sendAt`: Indicates when a `CronTime` will execute (returns a Luxon `DateTime` object).
+
+  ```javascript
+  import * as cron from 'cron';
+
+  const dt = cron.sendAt('0 0 * * *');
+  console.log(`The job would run at: ${dt.toISO()}`);
+  ```
+
+- `timeout`: Indicates the number of milliseconds in the future at which a `CronTime` will execute (returns a number).
+
+  ```javascript
+  import * as cron from 'cron';
+
+  const timeout = cron.timeout('0 0 * * *');
+  console.log(`The job would run in ${timeout}ms`);
+  ```
+
+- `validateCronExpression`: Validates if a given cron expression is valid (returns an object with `valid` and `error` properties).
+
+  ```javascript
+  import * as cron from 'cron';
+
+  const validation = cron.validateCronExpression('0 0 * * *');
+  console.log(`Is the cron expression valid? ${validation.valid}`);
+  if (!validation.valid) {
+  	console.error(`Validation error: ${validation.error}`);
+  }
+  ```
 
 ## 💢 Gotchas
 

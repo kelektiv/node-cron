@@ -34,20 +34,18 @@ function testCronJob(
 	// 	`${cronTime} | ${start} | ${timeZone} | ${runOnInit} | ${utcOffset} | ${unrefTimeout} | ${tzOrOffset}`
 	// );
 	try {
-		const job = new CronJob(
+		const baseParams = {
 			cronTime,
-			function () {},
-			null,
+			onTick: function () {},
+			onComplete: null,
 			start,
-			(tzOrOffset ? timeZone : null) as typeof tzOrOffset extends true
-				? string
-				: null,
-			null,
+			context: null,
 			runOnInit,
-			(tzOrOffset ? null : utcOffset) as typeof tzOrOffset extends true
-				? null
-				: number,
 			unrefTimeout
+		};
+
+		const job = CronJob.from(
+			tzOrOffset ? { ...baseParams, timeZone } : { ...baseParams, utcOffset }
 		);
 
 		expect(job.isActive).toBe(start);
