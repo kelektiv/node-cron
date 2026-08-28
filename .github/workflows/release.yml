@@ -37,7 +37,27 @@ jobs:
       - name: Checkout project
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          fetch-depth: 0
+          fetch-tags: true
           token: ${{ steps.get_workflow_token.outputs.token }}
+
+      - name: Remove stale pre-release tags
+        run: |
+          # Remove pre-release tags that don't point to a semantic-release commit.
+          # This can happen when a previous run tagged a non-release commit and failed
+          # before completing, leaving the tag in an inconsistent state.
+          for tag in $(git tag | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+-'); do
+            commit=$(git rev-parse "${tag}^{}" 2>/dev/null) || continue
+            # Only process tags whose commit is an ancestor of the current HEAD
+            git merge-base --is-ancestor "$commit" HEAD 2>/dev/null || continue
+            commit_msg=$(git log -1 --format='%s' "$commit")
+            # A proper semantic-release commit includes "[skip ci]" in the subject
+            if ! echo "$commit_msg" | grep -q '\[skip ci\]'; then
+              echo "Removing stale pre-release tag: $tag (tagged commit: $commit_msg)"
+              git push origin --delete "$tag" || echo "Warning: failed to delete remote tag $tag"
+              git tag -d "$tag" || true
+            fi
+          done
 
       - name: Use Node.js LTS
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
