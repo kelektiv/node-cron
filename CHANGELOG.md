@@ -1,3 +1,13 @@
+## [5.0.0-beta.2](https://github.com/kelektiv/node-cron/compare/v5.0.0-beta.1...v5.0.0-beta.2) (2026-08-28)
+
+### ⚠ Breaking changes
+
+* drop Node v18, v20, and v23; deprecate the parameterized constructor, and remove child_process
+
+### ✨ Features
+
+* drop Node v18, v20, and v23; deprecate the parameterized constructor, and remove child_process ([d15f8bf](https://github.com/kelektiv/node-cron/commit/d15f8bf1144b6b5050d0d0e532e5135150aafeb9))
+
 ## [5.0.0-beta.1](https://github.com/kelektiv/node-cron/compare/v4.4.0...v5.0.0-beta.1) (2026-08-28)
 
 ### ⚠ Breaking changes
