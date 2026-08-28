@@ -41,21 +41,29 @@ jobs:
           fetch-tags: true
           token: ${{ steps.get_workflow_token.outputs.token }}
 
-      - name: Remove stale pre-release tags
+      - name: Fix stale pre-release tags
         run: |
-          # Remove pre-release tags that don't point to a semantic-release commit.
-          # This can happen when a previous run tagged a non-release commit and failed
-          # before completing, leaving the tag in an inconsistent state.
+          # If a pre-release tag points to a non-release commit (i.e. a previous
+          # semantic-release run created the release commit and CHANGELOG/package.json
+          # but failed before tagging it), force-move the tag to the most recent
+          # matching "Release vX.Y.Z [skip ci]" commit already on this branch.
+          # This lets semantic-release treat that version as released and produce the
+          # next pre-release number (e.g. beta.2) on subsequent runs.
           for tag in $(git tag | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+-'); do
             commit=$(git rev-parse "${tag}^{}" 2>/dev/null) || continue
-            # Only process tags whose commit is an ancestor of the current HEAD
-            git merge-base --is-ancestor "$commit" HEAD 2>/dev/null || continue
             commit_msg=$(git log -1 --format='%s' "$commit")
             # A proper semantic-release commit includes "[skip ci]" in the subject
             if ! echo "$commit_msg" | grep -q '\[skip ci\]'; then
-              echo "Removing stale pre-release tag: $tag (tagged commit: $commit_msg)"
-              git push origin --delete "$tag" || echo "Warning: failed to delete remote tag $tag"
-              git tag -d "$tag" || true
+              version="${tag#v}"
+              # Find the most recent "Release vVERSION [skip ci]" commit reachable from HEAD
+              release_commit=$(git log --format='%H %s' HEAD | grep -m1 -E "^[0-9a-f]{40} Release v${version} \[skip ci\]" | awk '{print $1}')
+              if [ -n "$release_commit" ]; then
+                echo "Moving stale tag $tag from $commit to release commit $release_commit"
+                git tag -f "$tag" "$release_commit"
+                git push origin -f "$tag"
+              else
+                echo "No release commit found for $tag; leaving tag in place"
+              fi
             fi
           done
 
