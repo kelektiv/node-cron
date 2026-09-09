@@ -353,20 +353,6 @@ describe('crontime', () => {
 		});
 	});
 
-	describe('should throw an exception because `L` not supported', () => {
-		it('(* * * L * *)', () => {
-			expect(() => {
-				new CronTime('* * * L * *');
-			}).toThrow();
-		});
-
-		it('(* * * * * L)', () => {
-			expect(() => {
-				new CronTime('* * * * * L');
-			}).toThrow();
-		});
-	});
-
 	it('should strip off millisecond', () => {
 		const cronTime = new CronTime('0 */10 * * * *');
 		const x = cronTime.getNextDateFrom(new Date('2018-08-10T02:20:00.999Z'));
@@ -685,6 +671,97 @@ describe('crontime', () => {
 			// @ts-expect-error testing runtime exception
 			new CronTime('* * * * *', 'Asia/Amman', 120);
 		}).toThrow();
+	});
+
+	describe('should support question mark', () => {
+		it('should substitute minute', () => {
+			const clock = sinon.useFakeTimers();
+
+			const now = DateTime.local();
+			const ct = new CronTime('? * * * *');
+			const minutes = ct.sendAt().get('minute');
+			expect(minutes).toBe(now.get('minute'));
+
+			clock.restore();
+		});
+
+		it('should substitute seconds', () => {
+			const clock = sinon.useFakeTimers();
+
+			const now = DateTime.local();
+			const ct = new CronTime('? * * * * *');
+			const second = ct.sendAt().get('second');
+			expect(second).toBe(now.get('second'));
+
+			clock.restore();
+		});
+
+		it('should substitute hours', () => {
+			const clock = sinon.useFakeTimers();
+
+			const now = DateTime.local();
+			const ct = new CronTime('* ? * * *');
+			const hour = ct.sendAt().get('hour');
+			expect(hour).toBe(now.get('hour'));
+
+			clock.restore();
+		});
+
+		it('should substitute day', () => {
+			const clock = sinon.useFakeTimers();
+
+			const now = DateTime.local();
+			const ct = new CronTime('* * ? * *');
+			const day = ct.sendAt().get('day');
+			expect(day).toBe(now.get('day'));
+
+			clock.restore();
+		});
+
+		it('should substitute month', () => {
+			const clock = sinon.useFakeTimers();
+
+			const now = DateTime.local();
+			const ct = new CronTime('* * * ? *');
+			const month = ct.sendAt().get('month');
+			expect(month).toBe(now.get('month'));
+
+			clock.restore();
+		});
+
+		it('should substitute dayOfWeek', () => {
+			const clock = sinon.useFakeTimers();
+
+			const now = DateTime.local();
+			const ct = new CronTime('* * * * ?');
+			const month = ct.sendAt().get('weekday');
+			expect(month).toBe(now.get('weekday'));
+
+			clock.restore();
+		});
+	});
+
+	describe("should support 'L' for last day of the month", () => {
+		it('should substitute last day of the month for "* * L * *"', () => {
+			const clock = sinon.useFakeTimers();
+
+			const now = DateTime.local();
+			const ct = new CronTime('* * L * *');
+			const day = ct.sendAt().get('day');
+			expect(day).toBe(now.endOf('month').get('day'));
+
+			clock.restore();
+		});
+
+		it('should substitute last day of the week for "* * * * * L', () => {
+			const clock = sinon.useFakeTimers();
+
+			const ct = new CronTime('* * * * L');
+			const day = ct.sendAt().get('weekday');
+			expect(day).toBe(7);
+
+			clock.restore();
+		});
 	});
 });
 
