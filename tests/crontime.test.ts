@@ -718,4 +718,26 @@ describe('validateCronExpression', () => {
 			expect(validation.error).toBeInstanceOf(CronError);
 		});
 	});
+
+	it('should OR day-of-month and day-of-week when one field is a full-coverage range', () => {
+		// crontab(5): the union (OR) of the day fields applies only when both
+		// fields are restricted, i.e. neither field contains a literal "*".
+		// here "1-31" covers every day-of-month but is not "*", so dom and dow
+		// (monday) are both restricted and must be OR'd, firing every day.
+		const ct = new CronTime('0 0 12 1-31 * 1');
+		const start = DateTime.fromISO('2026-06-01T00:00:00.000Z', {
+			zone: 'utc'
+		});
+
+		const fired: number[] = [];
+		let cursor = start;
+		for (let i = 0; i < 4; i++) {
+			const next = ct.getNextDateFrom(cursor, 'utc');
+			fired.push(next.day);
+			cursor = next;
+		}
+
+		// verified against cron-parser 5.6.1 and croniter 6.2.2: jun 1, 2, 3, 4.
+		expect(fired).toEqual([1, 2, 3, 4]);
+	});
 });
