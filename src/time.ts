@@ -377,6 +377,22 @@ export class CronTime {
 			date = halfHourTestDate;
 		}
 
+		// the ambiguous-time resolution can land on the earlier of two identical
+		// wall times even when start already sits in the later one, which would
+		// return a date in the past; take the later occurrence instead
+		if (date <= start) {
+			for (const minutes of [30, 60, 120]) {
+				const later = date.plus({ minutes });
+				if (
+					later.hour === date.hour &&
+					later.minute === date.minute &&
+					later > start
+				) {
+					return later;
+				}
+			}
+		}
+
 		return date;
 	}
 
