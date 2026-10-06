@@ -462,6 +462,55 @@ describe('crontime', () => {
 			DateTime.fromISO('2025-03-30T04:20', { zone: 'Europe/Paris' }).toString()
 		);
 	});
+	it('should not run in the repeated hour a job scheduled after it', () => {
+		// europe/Berlin DST ends on 26 Oct 2025, 03:00 (-1 to hours)
+		const currentDate = DateTime.fromISO('2025-10-25T12:00', {
+			zone: 'Europe/Berlin'
+		});
+		const cronTime = new CronTime('0 3 * * *');
+		const nextDate = cronTime.getNextDateFrom(currentDate, 'Europe/Berlin');
+		expect(nextDate.toISO()).toEqual('2025-10-26T03:00:00.000+01:00');
+		expect(cronTime.getNextDateFrom(nextDate).toISO()).toEqual(
+			'2025-10-27T03:00:00.000+01:00'
+		);
+	});
+	it('should not run in the repeated half hour a job scheduled after it', () => {
+		// australia/Lord_Howe DST ends on 6 Apr 2025, 02:00 (-30 to minutes)
+		const currentDate = DateTime.fromISO('2025-04-05T12:00', {
+			zone: 'Australia/Lord_Howe'
+		});
+		const cronTime = new CronTime('0 2 * * *');
+		const nextDate = cronTime.getNextDateFrom(
+			currentDate,
+			'Australia/Lord_Howe'
+		);
+		expect(nextDate.toISO()).toEqual('2025-04-06T02:00:00.000+10:30');
+	});
+	it('should not run on the previous day when the repeated hour crosses midnight', () => {
+		// america/Santiago DST ends on 6 Apr 2025, 00:00 (-1 to hours), a Sunday
+		const currentDate = DateTime.fromISO('2025-04-05T12:00', {
+			zone: 'America/Santiago'
+		});
+		const cronTime = new CronTime('0 0 * * 0');
+		const nextDate = cronTime.getNextDateFrom(currentDate, 'America/Santiago');
+		expect(nextDate.toISO()).toEqual('2025-04-06T00:00:00.000-04:00');
+	});
+	it('should resume in the repeated hour at the first time that matches the job', () => {
+		// pacific/Chatham DST ends on 6 Apr 2025, 03:45 (-1 to hours)
+		// 13:55 UTC is the first 03:40, the next run is the second 03:00, not 02:50
+		const currentDate = DateTime.fromISO('2025-04-05T13:55:00.000Z');
+		const cronTime = new CronTime('*/10 3 * * *');
+		const nextDate = cronTime.getNextDateFrom(currentDate, 'Pacific/Chatham');
+		expect(nextDate.toISO()).toEqual('2025-04-06T03:00:00.000+12:45');
+	});
+	it('should still run in the repeated hour a job that matches it', () => {
+		// europe/Berlin DST ends on 26 Oct 2025, 03:00 (-1 to hours)
+		// 00:30 UTC is the first 02:30, the next run is the second 02:00
+		const currentDate = DateTime.fromISO('2025-10-26T00:30:00.000Z');
+		const cronTime = new CronTime('*/30 * * * *');
+		const nextDate = cronTime.getNextDateFrom(currentDate, 'Europe/Berlin');
+		expect(nextDate.toISO()).toEqual('2025-10-26T02:00:00.000+01:00');
+	});
 	it('Should schedule jobs inside offset changes when started exactly one month before, for monthly jobs', () => {
 		// there is a DST jump on March 9 at midnight
 		let currentDate = DateTime.fromISO('2025-02-09T00:30:00', {

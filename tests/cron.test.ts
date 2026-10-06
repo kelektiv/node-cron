@@ -1502,5 +1502,27 @@ describe('cron', () => {
 
 			job.stop();
 		});
+
+		it('should execute a daily job once when the time changes back one hour', () => {
+			// europe/Berlin DST ends on 26 Oct 2025, 03:00 (-1 to hours)
+			const d = DateTime.fromISO('2025-10-25T23:00:00.000', {
+				zone: 'Europe/Berlin'
+			}).toJSDate();
+			const clock = sinon.useFakeTimers(d.getTime());
+
+			const job = new CronJob(
+				'0 3 * * *',
+				callback,
+				null,
+				true,
+				'Europe/Berlin'
+			);
+
+			clock.tick(1000 * 60 * 60 * 8);
+
+			expect(callback).toHaveBeenCalledTimes(1);
+
+			job.stop();
+		});
 	});
 });
