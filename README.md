@@ -274,6 +274,51 @@ day of week    0-7 (0 or 7 is Sunday, or use names)
 
 - `utcOffset`: [OPTIONAL] - Analogous to `utcOffset` from `CronJob` parameters.
 
+### Scheduler Class
+
+The `Scheduler` provides centralized management of multiple named `CronJob` instances. Registration is opt-in via `schedule()` or `register()` — passing `name` to `CronJob` alone does not register the job.
+
+A default singleton is exported as `scheduler`. Use `new Scheduler()` when you need an isolated registry (e.g. tests or workers).
+
+#### schedule
+
+`schedule(params)`: Creates a `CronJob`, registers it under `params.name`, then applies `runOnInit` and `start`. Accepts `ScheduleParams`, which extends `CronJobParams` with a required `name`.
+
+```javascript
+import { scheduler } from 'cron';
+
+scheduler.schedule({
+	name: 'backup',
+	cronTime: '0 2 * * *',
+	onTick: () => console.log('backup running'),
+	start: true,
+	timeZone: 'America/Sao_Paulo'
+});
+```
+
+#### register
+
+`register(name, job)`: Registers an existing `CronJob`. Sets `job.name` when unset. Throws if the job name mismatches or the name is already registered.
+
+#### Lifecycle Methods
+
+- `start(name)` / `stop(name)`: Start or stop a registered job.
+- `startAll()` / `stopAll()`: Start or stop all registered jobs.
+- `remove(name)`: Stop the job and remove it from the registry.
+- `unregister(name)`: Remove the job from the registry without stopping it.
+- `clear()`: Stop all jobs and empty the registry.
+
+#### Query Methods
+
+- `getJobNames()`: Returns all registered job names.
+- `getJob(name)`: Returns the `CronJob` instance, if registered.
+- `getJobInfo(name)`: Returns `{ name, executions, lastExecution, isActive, nextExecution, createdAt }`.
+- `getActiveJobs()` / `getInactiveJobs()`: Returns names of running or stopped jobs.
+- `getPending()`: Returns names of jobs that have never executed.
+- `nextJobs(count?)`: Returns a `Map` of upcoming execution dates per job.
+
+See the [examples/scheduler](examples/scheduler/) directory for runnable validation scripts.
+
 ## 💢 Gotchas
 
 - Both JS `Date` and Luxon `DateTime` objects don't guarantee millisecond precision due to computation delays. This module excludes millisecond precision for standard cron syntax but allows execution date specification through JS `Date` or Luxon `DateTime` objects. However, specifying a precise future execution time, such as adding a millisecond to the current time, may not always work due to these computation delays. It's observed that delays less than 4-5 ms might lead to inconsistencies. While we could limit all date granularity to seconds, we've chosen to allow greater precision but advise users of potential issues.
