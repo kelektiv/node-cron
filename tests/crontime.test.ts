@@ -439,6 +439,23 @@ describe('crontime', () => {
 		});
 		expect(nextDate.toMillis() - expectedDate.toMillis()).toBe(0);
 	});
+	it('should not return a date before the start inside the repeated hour of a backward DST jump', () => {
+		// america/New_York DST ends 2026-11-01 at 02:00 EDT, so 01:00-02:00 happens twice;
+		// the ambiguous 01:30 must resolve to the second occurrence when start is already in it.
+		// luxon seeds ambiguous times with the current offset, so pin the clock before the jump
+		sinon.useFakeTimers(new Date('2026-10-01T12:00:00Z'));
+		const cronTime = new CronTime('30 1 * * *');
+		for (const iso of [
+			'2026-11-01T06:00:00Z',
+			'2026-11-01T06:15:00Z',
+			'2026-11-01T06:29:00Z'
+		]) {
+			const start = DateTime.fromISO(iso, { zone: 'America/New_York' });
+			const nextDate = cronTime.getNextDateFrom(start, 'America/New_York');
+			expect(nextDate > start).toBe(true);
+			expect(nextDate.toUTC().toISO()).toEqual('2026-11-01T06:30:00.000Z');
+		}
+	});
 	it('should work around offset changes that shifts time forward', () => {
 		// asia/Amman DST starts in  30-March-2018 (+1 to hours)
 		let currentDate = DateTime.fromISO('2018-03-29T23:00', {
