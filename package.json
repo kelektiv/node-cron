@@ -25,6 +25,7 @@
 		"test": "cross-env TZ='Europe/Paris' jest --coverage",
 		"test:watch": "cross-env TZ='Europe/Paris' jest --watch --coverage",
 		"test:fuzz": "cross-env TZ='Europe/Paris' jest --testMatch='**/*.fuzz.ts' --coverage=false --testTimeout=120000",
+		"test:types": "tsc --noEmit --incremental false -p tsconfig.types.json",
 		"prepare": "husky"
 	},
 	"dependencies": {
