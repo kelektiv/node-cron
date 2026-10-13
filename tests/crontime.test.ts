@@ -353,6 +353,50 @@ describe('crontime', () => {
 		});
 	});
 
+	describe('question mark syntax', () => {
+		it('should substitute ? with the initialization time', () => {
+			sinon.useFakeTimers(new Date('2024-04-08T10:15:30.000Z'));
+
+			const withQuestion = new CronTime('? ? ? ? ? ?');
+			const explicit = new CronTime('30 15 12 8 4 1');
+
+			// @ts-expect-error deleting for comparison purposes
+			delete withQuestion.source;
+			// @ts-expect-error deleting for comparison purposes
+			delete explicit.source;
+
+			expect(withQuestion).toEqual(explicit);
+		});
+
+		it('should support ? in standard 5-field cron syntax', () => {
+			sinon.useFakeTimers(new Date('2024-04-08T10:15:30.000Z'));
+
+			const withQuestion = new CronTime('? ? ? ? ?');
+			const explicit = new CronTime('0 15 12 8 4 1');
+
+			// @ts-expect-error deleting for comparison purposes
+			delete withQuestion.source;
+			// @ts-expect-error deleting for comparison purposes
+			delete explicit.source;
+
+			expect(withQuestion).toEqual(explicit);
+		});
+
+		it('should substitute ? using the cron timezone', () => {
+			sinon.useFakeTimers(new Date('2024-04-08T10:15:30.000Z'));
+
+			const cronTime = new CronTime('? ? ? ? ? ?', 'America/New_York');
+			expect(cronTime.toString()).toBe('30 15 6 8 4 1');
+		});
+
+		it('should substitute ? using utcOffset', () => {
+			sinon.useFakeTimers(new Date('2024-04-08T10:15:30.000Z'));
+
+			const cronTime = new CronTime('? ? ? ? ? ?', null, 330);
+			expect(cronTime.toString()).toBe('30 45 15 8 4 1');
+		});
+	});
+
 	describe('should throw an exception because `L` not supported', () => {
 		it('(* * * L * *)', () => {
 			expect(() => {
@@ -694,7 +738,8 @@ describe('validateCronExpression', () => {
 			'* * * * *',
 			'0 0 * * *',
 			'0 0 1 1 *',
-			'*/5 * * * *'
+			'*/5 * * * *',
+			'? ? * * * *'
 		];
 
 		validExpressions.forEach(expression => {
