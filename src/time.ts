@@ -99,6 +99,14 @@ export class CronTime {
 	}
 
 	/**
+	 * whether the hour and minute of a candidate date are part of the schedule;
+	 * rewinding into a repeated hour is only valid when the schedule has that hour
+	 */
+	private _matchesTime(date: DateTime): boolean {
+		return date.hour in this.hour && date.minute in this.minute;
+	}
+
+	/**
 	 * calculate the "next" scheduled time
 	 */
 	sendAt(): DateTime;
@@ -363,7 +371,8 @@ export class CronTime {
 		if (
 			(hourTestDate.hour === date.hour ||
 				twoHourTestDate.hour === hourTestDate.hour) &&
-			hourTestDate > start
+			hourTestDate > start &&
+			this._matchesTime(hourTestDate)
 		) {
 			date = hourTestDate;
 		}
@@ -372,9 +381,26 @@ export class CronTime {
 		if (
 			(halfHourTestDate.minute === date.minute ||
 				hourTestDate.minute === halfHourTestDate.minute) &&
-			halfHourTestDate > start
+			halfHourTestDate > start &&
+			this._matchesTime(halfHourTestDate)
 		) {
 			date = halfHourTestDate;
+		}
+
+		// the ambiguous-time resolution can land on the earlier of two identical
+		// wall times even when start already sits in the later one, which would
+		// return a date in the past; take the later occurrence instead
+		if (date <= start) {
+			for (const minutes of [30, 60, 120]) {
+				const later = date.plus({ minutes });
+				if (
+					later.hour === date.hour &&
+					later.minute === date.minute &&
+					later > start
+				) {
+					return later;
+				}
+			}
 		}
 
 		return date;
