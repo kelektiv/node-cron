@@ -456,6 +456,29 @@ describe('crontime', () => {
 			expect(nextDate.toUTC().toISO()).toEqual('2026-11-01T06:30:00.000Z');
 		}
 	});
+	it('should not move into the repeated hour of a backward DST jump when that hour is not scheduled', () => {
+		// europe/Berlin goes from 03:00 CEST back to 02:00 CET on 2026-10-25 and
+		// america/New_York from 02:00 EDT back to 01:00 EST on 2026-11-01
+		sinon.useFakeTimers(new Date('2026-10-01T12:00:00Z'));
+		for (const [expr, zone, iso, want] of [
+			[
+				'0 3 * * *',
+				'Europe/Berlin',
+				'2026-10-24T12:00:00Z',
+				'2026-10-25T02:00:00.000Z'
+			],
+			[
+				'30 2 * * *',
+				'America/New_York',
+				'2026-10-31T12:00:00Z',
+				'2026-11-01T07:30:00.000Z'
+			]
+		]) {
+			const start = DateTime.fromISO(iso, { zone });
+			const nextDate = new CronTime(expr).getNextDateFrom(start, zone);
+			expect(nextDate.toUTC().toISO()).toEqual(want);
+		}
+	});
 	it('should work around offset changes that shifts time forward', () => {
 		// asia/Amman DST starts in  30-March-2018 (+1 to hours)
 		let currentDate = DateTime.fromISO('2018-03-29T23:00', {

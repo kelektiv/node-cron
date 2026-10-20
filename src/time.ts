@@ -99,6 +99,14 @@ export class CronTime {
 	}
 
 	/**
+	 * whether the hour and minute of a candidate date are part of the schedule;
+	 * rewinding into a repeated hour is only valid when the schedule has that hour
+	 */
+	private _matchesTime(date: DateTime): boolean {
+		return date.hour in this.hour && date.minute in this.minute;
+	}
+
+	/**
 	 * calculate the "next" scheduled time
 	 */
 	sendAt(): DateTime;
@@ -363,7 +371,8 @@ export class CronTime {
 		if (
 			(hourTestDate.hour === date.hour ||
 				twoHourTestDate.hour === hourTestDate.hour) &&
-			hourTestDate > start
+			hourTestDate > start &&
+			this._matchesTime(hourTestDate)
 		) {
 			date = hourTestDate;
 		}
@@ -372,7 +381,8 @@ export class CronTime {
 		if (
 			(halfHourTestDate.minute === date.minute ||
 				hourTestDate.minute === halfHourTestDate.minute) &&
-			halfHourTestDate > start
+			halfHourTestDate > start &&
+			this._matchesTime(halfHourTestDate)
 		) {
 			date = halfHourTestDate;
 		}
