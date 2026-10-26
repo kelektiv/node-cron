@@ -99,6 +99,64 @@ export class CronTime {
 	}
 
 	/**
+	 * day of month and day of week are combined with OR when both are restricted
+	 */
+	private _matchesDay(date: DateTime) {
+		return !(
+			(!(date.day in this.dayOfMonth) &&
+				Object.keys(this.dayOfMonth).length !== 31 &&
+				!(
+					this._getWeekDay(date) in this.dayOfWeek &&
+					Object.keys(this.dayOfWeek).length !== 7
+				)) ||
+			(!(this._getWeekDay(date) in this.dayOfWeek) &&
+				Object.keys(this.dayOfWeek).length !== 7 &&
+				!(
+					date.day in this.dayOfMonth &&
+					Object.keys(this.dayOfMonth).length !== 31
+				))
+		);
+	}
+
+	/**
+	 * whether the wall-clock fields of a date satisfy the cron expression
+	 */
+	private _matches(date: DateTime) {
+		return this._matchesMinute(date) && date.second in this.second;
+	}
+
+	/**
+	 * same as _matches, ignoring seconds
+	 */
+	private _matchesMinute(date: DateTime) {
+		return (
+			date.month in this.month &&
+			this._matchesDay(date) &&
+			date.hour in this.hour &&
+			date.minute in this.minute
+		);
+	}
+
+	/**
+	 * first date in [from, to) whose wall-clock fields satisfy the cron expression
+	 */
+	private _firstMatchBetween<T extends DateTime>(from: T, to: DateTime) {
+		let date = from;
+		while (date < to) {
+			if (this._matches(date)) {
+				return date;
+			}
+
+			// a minute that does not match has no matching second either
+			date = this._matchesMinute(date)
+				? date.plus({ second: 1 })
+				: date.plus({ minute: 1 }).startOf('minute');
+		}
+
+		return null;
+	}
+
+	/**
 	 * calculate the "next" scheduled time
 	 */
 	sendAt(): DateTime;
@@ -267,20 +325,7 @@ export class CronTime {
 				continue;
 			}
 
-			if (
-				(!(date.day in this.dayOfMonth) &&
-					Object.keys(this.dayOfMonth).length !== 31 &&
-					!(
-						this._getWeekDay(date) in this.dayOfWeek &&
-						Object.keys(this.dayOfWeek).length !== 7
-					)) ||
-				(!(this._getWeekDay(date) in this.dayOfWeek) &&
-					Object.keys(this.dayOfWeek).length !== 7 &&
-					!(
-						date.day in this.dayOfMonth &&
-						Object.keys(this.dayOfMonth).length !== 31
-					))
-			) {
+			if (!this._matchesDay(date)) {
 				date = date.plus({ days: 1 });
 				date = date.set({ hour: 0, minute: 0, second: 0 });
 
@@ -365,7 +410,7 @@ export class CronTime {
 				twoHourTestDate.hour === hourTestDate.hour) &&
 			hourTestDate > start
 		) {
-			date = hourTestDate;
+			date = this._firstMatchBetween(hourTestDate, date) ?? date;
 		}
 		// similar for half hour jumps
 		const halfHourTestDate = date.minus({ minute: 30 });
@@ -374,7 +419,7 @@ export class CronTime {
 				hourTestDate.minute === halfHourTestDate.minute) &&
 			halfHourTestDate > start
 		) {
-			date = halfHourTestDate;
+			date = this._firstMatchBetween(halfHourTestDate, date) ?? date;
 		}
 
 		return date;
