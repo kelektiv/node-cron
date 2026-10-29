@@ -280,6 +280,16 @@ day of week    0-7 (0 or 7 is Sunday, or use names)
 
 - Using arrow functions for `onTick` binds them to the parent's `this` context. As a result, they won't have access to the cronjob's `this` context. You can read a little more in issue [#47 (comment)](https://github.com/kelektiv/node-cron/issues/47#issuecomment-459762775).
 
+- When both `day of month` and `day of week` are specified with specific values (not `*`), they create an **OR condition**, not AND. This follows the standard POSIX cron behavior. For example:
+  - `0 0 1-7 * 1` means "run at midnight on days 1-7 **OR** on any Monday", not "run on Mondays that fall within days 1-7".
+  - `0 0 15 * 5` means "run on the 15th of any month **OR** on any Friday".
+
+  If either field is set to `*` (unrestricted), only the other field's constraint applies:
+  - `0 0 15 * *` means "run on the 15th of any month" (day of week is unrestricted).
+  - `0 0 * * 1` means "run on any Monday" (day of month is unrestricted).
+
+  **Note:** Patterns like "first Monday of the month" cannot be directly expressed with standard cron syntax. A `#` character syntax (e.g., `0 0 * * 1#1` for "first Monday") is being considered in [#877](https://github.com/kelektiv/node-cron/pull/877). See [#890](https://github.com/kelektiv/node-cron/issues/890) for more details.
+
 ## 🤝 Community
 
 Join the [Discord server](https://discord.gg/yyKns29zch)! Here you can discuss issues and get help in a more casual forum than GitHub.
