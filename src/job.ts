@@ -254,9 +254,24 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 		this._isActive = true;
 
 		const MAXDELAY = 2147483647; // the maximum number of milliseconds setTimeout will wait.
+		// the maximum number of milliseconds to sleep in a single chunk.
+		// setTimeout timers are paused while the host is suspended, so
+		// sleeping a whole long wait in a single call fires the job late
+		// by the entire suspend duration (#671). Sleeping in chunks of
+		// at most a minute and recomputing the remaining wait from the
+		// wall clock on every wake-up bounds the error to a single chunk.
+		// for very long waits the chunk grows (a single wait is split
+		// into at most MAXCHUNKS chunks) so that distant schedules do
+		// not need millions of wake-ups.
+		const MAXCHUNK = 60000;
+		const MAXCHUNKS = 10000;
 		let timeout = this.cronTime.getTimeout();
 		let remaining = 0;
 		let startTime: number;
+		// the wall-clock time at which the pending execution is due, and
+		// whether the currently armed timeout is an intermediate chunk
+		let deadline = 0;
+		let isChunked = false;
 
 		const setCronTimeout = (t: number) => {
 			startTime = Date.now();
@@ -268,9 +283,40 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 			}
 		};
 
+		// arm a timeout for a wait of `t` milliseconds until the deadline,
+		// chunking it when it is longer than MAXCHUNK (which also keeps
+		// every single sleep below MAXDELAY, as MAXCHUNK < MAXDELAY)
+		const setChunkedTimeout = (t: number) => {
+			deadline = Date.now() + t;
+			isChunked = t > MAXCHUNK;
+			timeout = isChunked ? Math.max(MAXCHUNK, Math.floor(t / MAXCHUNKS)) : t;
+			setCronTimeout(timeout);
+		};
+
 		// the callback wrapper checks if it needs to sleep another period or not
 		// and does the real callback logic when it's time.
 		const callbackWrapper = () => {
+			if (isChunked) {
+				// an intermediate chunk elapsed. The wall clock may have
+				// jumped while the timer was paused (e.g. the host was
+				// suspended), so recompute the remaining wait from the
+				// deadline instead of trusting the elapsed timer.
+				const wait = deadline - Date.now();
+
+				if (wait > 0) {
+					isChunked = wait > MAXCHUNK;
+					timeout = isChunked
+						? Math.max(MAXCHUNK, Math.floor(wait / MAXCHUNKS))
+						: wait;
+					setCronTimeout(timeout);
+					return;
+				}
+
+				// the deadline has been reached: fall through to the
+				// regular arrival handling below.
+				isChunked = false;
+			}
+
 			const diff = startTime + timeout - Date.now();
 
 			if (diff > 0) {
@@ -311,14 +357,7 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 		};
 
 		if (timeout >= 0) {
-			// don't try to sleep more than MAXDELAY ms at a time.
-
-			if (timeout > MAXDELAY) {
-				remaining = timeout - MAXDELAY;
-				timeout = MAXDELAY;
-			}
-
-			setCronTimeout(timeout);
+			setChunkedTimeout(timeout);
 		} else {
 			// handle negative timeout
 			const absoluteTimeout = Math.abs(timeout);
@@ -339,7 +378,7 @@ export class CronJob<OC extends CronOnCompleteCommand | null = null, C = null> {
 			}
 
 			timeout = this.cronTime.getTimeout();
-			setCronTimeout(timeout);
+			setChunkedTimeout(timeout);
 		}
 	}
 
