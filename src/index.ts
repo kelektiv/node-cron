@@ -15,6 +15,10 @@ export {
 	TimeUnit
 } from './types/cron.types';
 
+export { Scheduler, scheduler } from './scheduler';
+export type { ScheduleParams } from './scheduler';
+export type { RegistryEntry } from './registry';
+
 export const sendAt = (cronTime: string | Date | DateTime): DateTime =>
 	new CronTime(cronTime).sendAt();
 
