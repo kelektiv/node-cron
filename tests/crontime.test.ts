@@ -462,6 +462,69 @@ describe('crontime', () => {
 			DateTime.fromISO('2025-03-30T04:20', { zone: 'Europe/Paris' }).toString()
 		);
 	});
+	it('should rewind skipped spring-forward times to the transition instant in the southern hemisphere', () => {
+		// australia/Sydney DST starts on 5 Oct 2025, 02:00 (+10:00 -> +11:00);
+		// january is inside daylight saving time there
+		const cronTime = new CronTime('30 2 * * *', 'Australia/Sydney');
+		const nextDate = cronTime.getNextDateFrom(
+			DateTime.fromISO('2025-10-05T00:00', { zone: 'Australia/Sydney' }),
+			'Australia/Sydney'
+		);
+		expect(nextDate.toISO()).toEqual('2025-10-05T03:00:00.000+11:00');
+
+		// america/New_York behaves the same way in the northern hemisphere
+		const northern = new CronTime('30 2 * * *', 'America/New_York');
+		const northernNext = northern.getNextDateFrom(
+			DateTime.fromISO('2025-03-09T00:00', { zone: 'America/New_York' }),
+			'America/New_York'
+		);
+		expect(northernNext.toISO()).toEqual('2025-03-09T03:00:00.000-04:00');
+	});
+	it('should return each wall time once at a 30 minute spring-forward jump', () => {
+		// australia/Lord_Howe DST starts on 5 Oct 2025, 02:00 +10:30 -> 02:30 +11:00
+		const start = DateTime.fromISO('2025-10-04T23:00', {
+			zone: 'Australia/Lord_Howe'
+		});
+		// skipped wall times rewind to the transition instant, then run daily
+		const skipped = new CronTime('15 2 * * *', 'Australia/Lord_Howe');
+		const firstSkipped = skipped.getNextDateFrom(start, 'Australia/Lord_Howe');
+		expect(firstSkipped.toISO()).toEqual('2025-10-05T02:30:00.000+11:00');
+		expect(
+			skipped.getNextDateFrom(firstSkipped, 'Australia/Lord_Howe').toISO()
+		).toEqual('2025-10-06T02:15:00.000+11:00');
+		// valid wall times run at the scheduled time, not 30 minutes early
+		const valid = new CronTime('0 3 * * *', 'Australia/Lord_Howe');
+		const firstValid = valid.getNextDateFrom(start, 'Australia/Lord_Howe');
+		expect(firstValid.toISO()).toEqual('2025-10-05T03:00:00.000+11:00');
+		expect(
+			valid.getNextDateFrom(firstValid, 'Australia/Lord_Howe').toISO()
+		).toEqual('2025-10-06T03:00:00.000+11:00');
+	});
+	it('should run every 30 minutes through a 30 minute fall-back jump', () => {
+		// australia/Lord_Howe DST ends on 6 Apr 2025, 02:00 +11:00 -> 01:30 +10:30,
+		// so 01:30 happens twice and both occurrences must run
+		let currentDate = DateTime.fromISO('2025-04-05T23:00', {
+			zone: 'Australia/Lord_Howe'
+		});
+		const cronTime = new CronTime('*/30 * * * *', 'Australia/Lord_Howe');
+		const expected = [
+			'2025-04-05T23:30:00.000+11:00',
+			'2025-04-06T00:00:00.000+11:00',
+			'2025-04-06T00:30:00.000+11:00',
+			'2025-04-06T01:00:00.000+11:00',
+			'2025-04-06T01:30:00.000+11:00',
+			'2025-04-06T01:30:00.000+10:30',
+			'2025-04-06T02:00:00.000+10:30',
+			'2025-04-06T02:30:00.000+10:30'
+		];
+		for (const iso of expected) {
+			currentDate = cronTime.getNextDateFrom(
+				currentDate,
+				'Australia/Lord_Howe'
+			);
+			expect(currentDate.toISO()).toEqual(iso);
+		}
+	});
 	it('Should schedule jobs inside offset changes when started exactly one month before, for monthly jobs', () => {
 		// there is a DST jump on March 9 at midnight
 		let currentDate = DateTime.fromISO('2025-02-09T00:30:00', {
