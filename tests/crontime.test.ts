@@ -451,6 +451,22 @@ describe('crontime', () => {
 			currentDate = nextDate;
 		}
 	});
+	it('should return the same-day date for wall times shortly before a fall-back transition', () => {
+		// america/Scoresbysund clocks go back on 29 Oct 2017 (01:00 +00:00 -> 00:00 -01:00)
+		const cronTime = new CronTime('59 23 * * *', 'America/Scoresbysund');
+		const start = DateTime.fromISO('2017-10-28T01:00:00Z', {
+			zone: 'America/Scoresbysund'
+		});
+		const nextDate = cronTime.getNextDateFrom(start, 'America/Scoresbysund');
+		expect(nextDate.toISO()).toEqual('2017-10-28T23:59:00.000+00:00');
+
+		const onTheHour = new CronTime('0 23 * * *', 'America/Scoresbysund');
+		const nextOnTheHour = onTheHour.getNextDateFrom(
+			start,
+			'America/Scoresbysund'
+		);
+		expect(nextOnTheHour.toISO()).toEqual('2017-10-28T23:00:00.000+00:00');
+	});
 	it('should not execute immediately if conditions have not been met during forward DST jump', () => {
 		// europe/Paris DST starts at 30 Mar 2025, 02:00 (+1 to hours)
 		let currentDate = DateTime.fromISO('2025-03-30T01:59', {
