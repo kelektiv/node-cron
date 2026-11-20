@@ -422,6 +422,16 @@ export class CronTime {
 			date = this._firstMatchBetween(halfHourTestDate, date) ?? date;
 		}
 
+		if (date <= start) {
+			const hourLaterDate = date.plus({ hour: 1 });
+			const halfHourLaterDate = date.plus({ minute: 30 });
+			if (hourLaterDate.hour === date.hour) {
+				date = hourLaterDate;
+			} else if (halfHourLaterDate.minute === date.minute) {
+				date = halfHourLaterDate;
+			}
+		}
+
 		return date;
 	}
 
