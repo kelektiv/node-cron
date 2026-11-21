@@ -422,6 +422,21 @@ export class CronTime {
 			date = this._firstMatchBetween(halfHourTestDate, date) ?? date;
 		}
 
+		// luxon resolves an ambiguous wall time using the offset at the current
+		// clock, which may give an instant not after start; take the later one
+		if (date <= start) {
+			for (const later of [date.plus({ minute: 30 }), date.plus({ hour: 1 })]) {
+				if (
+					later > start &&
+					later.hour === date.hour &&
+					later.minute === date.minute &&
+					later.second === date.second
+				) {
+					return later;
+				}
+			}
+		}
+
 		return date;
 	}
 
