@@ -1,3 +1,9 @@
+## [4.4.2](https://github.com/kelektiv/node-cron/compare/v4.4.1...v4.4.2) (2026-11-23)
+
+### 🐛 Bug Fixes
+
+* **time:** stop daily jobs firing twice at southern spring-forward jumps ([#1105](https://github.com/kelektiv/node-cron/issues/1105)) ([2edbb11](https://github.com/kelektiv/node-cron/commit/2edbb118070c0e48540769449e3573942d0c9002)), closes [#1092](https://github.com/kelektiv/node-cron/issues/1092) [#1092](https://github.com/kelektiv/node-cron/issues/1092) [#1099](https://github.com/kelektiv/node-cron/issues/1099) [#1087](https://github.com/kelektiv/node-cron/issues/1087) [#1102](https://github.com/kelektiv/node-cron/issues/1102) [#1103](https://github.com/kelektiv/node-cron/issues/1103)
+
 ## [4.4.1](https://github.com/kelektiv/node-cron/compare/v4.4.0...v4.4.1) (2026-11-20)
 
 ### 🐛 Bug Fixes
