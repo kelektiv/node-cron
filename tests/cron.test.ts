@@ -1480,6 +1480,32 @@ describe('cron', () => {
 			job.stop();
 		});
 
+		it('should fire a daily job once at the Lord Howe spring-forward jump', () => {
+			// australia/Lord_Howe DST starts on 5 Oct 2025, 02:00 +10:30 -> 02:30 +11:00
+			const d = DateTime.fromISO('2025-10-04T23:00:00.000', {
+				zone: 'Australia/Lord_Howe'
+			}).toJSDate();
+			const clock = sinon.useFakeTimers(d.getTime());
+			const fireTimes: number[] = [];
+			const job = new CronJob(
+				'15 2 * * *',
+				() => {
+					fireTimes.push(Date.now());
+				},
+				null,
+				true,
+				'Australia/Lord_Howe'
+			);
+
+			clock.tick(1000 * 60 * 60 * 48);
+			expect(fireTimes).toEqual([
+				Date.parse('2025-10-04T15:30:00.000Z'),
+				Date.parse('2025-10-05T15:15:00.000Z')
+			]);
+
+			job.stop();
+		});
+
 		it('should still execute at the desired interval when the time changes back one hour', () => {
 			// there are two instances of 2 am. Setting to an earlier time so it is not ambiguous
 			// see https://moment.github.io/luxon/#/zones?id=ambiguous-times
