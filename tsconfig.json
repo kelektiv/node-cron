@@ -1,6 +1,6 @@
 {
 	"compilerOptions": {
-		"target": "ES2015",
+		"target": "es2022",
 		"module": "commonjs",
 		"outDir": "./dist",
 		"incremental": true,
@@ -11,7 +11,7 @@
 		"sourceMap": false,
 		"noErrorTruncation": true,
 		"resolveJsonModule": true,
-		"types": ["jest"],
+		"types": ["jest", "node"],
 
 		/**
 		 * strictest Typescript possible
