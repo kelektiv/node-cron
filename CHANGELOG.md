@@ -1,3 +1,17 @@
+## [5.0.0-beta.4](https://github.com/kelektiv/node-cron/compare/v5.0.0-beta.3...v5.0.0-beta.4) (2026-11-24)
+
+### 🛠 Builds
+
+* fix tsconfig issues ([e53ffa9](https://github.com/kelektiv/node-cron/commit/e53ffa9aad7d8ccd72b7af446dc29ed9c5eccec3))
+
+### 📦 Code Refactoring
+
+* tests should use the .from method to create CronJob objects ([#1107](https://github.com/kelektiv/node-cron/issues/1107)) ([880c473](https://github.com/kelektiv/node-cron/commit/880c473bcdc2b67baee40f405be188527e8ca0fa))
+
+### ♻️ Chores
+
+* **deps:** bump luxon version ([5a6b262](https://github.com/kelektiv/node-cron/commit/5a6b2627a33b71af0f6c3a221db1b0d399738857))
+
 ## [5.0.0-beta.3](https://github.com/kelektiv/node-cron/compare/v5.0.0-beta.2...v5.0.0-beta.3) (2026-11-24)
 
 ### 🐛 Bug Fixes
