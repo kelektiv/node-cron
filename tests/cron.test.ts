@@ -54,7 +54,11 @@ describe('cron', () => {
 	describe('with seconds', () => {
 		it('should run every second (* * * * * *)', () => {
 			const clock = sinon.useFakeTimers();
-			const job = new CronJob('* * * * * *', callback, null, true);
+			const job = CronJob.from({
+				cronTime: '* * * * * *',
+				onTick: callback,
+				start: true
+			});
 
 			expect(callback).not.toHaveBeenCalled();
 			clock.tick(1000);
@@ -65,15 +69,15 @@ describe('cron', () => {
 		it('should run second with onComplete (* * * * * *)', done => {
 			const clock = sinon.useFakeTimers();
 
-			const job = new CronJob(
-				'* * * * * *',
-				callback,
-				() => {
+			const job = CronJob.from({
+				cronTime: '* * * * * *',
+				onTick: callback,
+				onComplete: () => {
 					expect(callback).toHaveBeenCalledTimes(1);
 					done();
 				},
-				true
-			);
+				start: true
+			});
 
 			clock.tick(1000);
 			job.stop();
@@ -81,7 +85,11 @@ describe('cron', () => {
 
 		it('should use standard cron no-seconds syntax (* * * * *)', () => {
 			const clock = sinon.useFakeTimers();
-			const job = new CronJob('* * * * *', callback, null, true);
+			const job = CronJob.from({
+				cronTime: '* * * * *',
+				onTick: callback,
+				start: true
+			});
 
 			clock.tick(1000); // tick second
 
@@ -93,7 +101,11 @@ describe('cron', () => {
 
 		it('should run every second for 5 seconds (* * * * * *)', () => {
 			const clock = sinon.useFakeTimers();
-			const job = new CronJob('* * * * * *', callback, null, true);
+			const job = CronJob.from({
+				cronTime: '* * * * * *',
+				onTick: callback,
+				start: true
+			});
 			for (let i = 0; i < 5; i++) {
 				clock.tick(1000);
 			}
@@ -104,15 +116,15 @@ describe('cron', () => {
 		it('should run every second for 5 seconds with onComplete (* * * * * *)', done => {
 			const clock = sinon.useFakeTimers();
 
-			const job = new CronJob(
-				'* * * * * *',
-				callback,
-				() => {
+			const job = CronJob.from({
+				cronTime: '* * * * * *',
+				onTick: callback,
+				onComplete: () => {
 					expect(callback).toHaveBeenCalledTimes(5);
 					done();
 				},
-				true
-			);
+				start: true
+			});
 
 			for (let i = 0; i < 5; i++) clock.tick(1000);
 			job.stop();
@@ -120,7 +132,11 @@ describe('cron', () => {
 
 		it('should run every second for 5 seconds (*/1 * * * * *)', () => {
 			const clock = sinon.useFakeTimers();
-			const job = new CronJob('*/1 * * * * *', callback, null, true);
+			const job = CronJob.from({
+				cronTime: '*/1 * * * * *',
+				onTick: callback,
+				start: true
+			});
 			for (let i = 0; i < 5; i++) clock.tick(1000);
 			job.stop();
 			expect(callback).toHaveBeenCalledTimes(5);
@@ -128,7 +144,11 @@ describe('cron', () => {
 
 		it('should run every 2 seconds for 1 seconds (*/2 * * * * *)', () => {
 			const clock = sinon.useFakeTimers();
-			const job = new CronJob('*/2 * * * * *', callback, null, true);
+			const job = CronJob.from({
+				cronTime: '*/2 * * * * *',
+				onTick: callback,
+				start: true
+			});
 			clock.tick(1000);
 			job.stop();
 			expect(callback).toHaveBeenCalledTimes(0);
@@ -136,7 +156,11 @@ describe('cron', () => {
 
 		it('should run every 2 seconds for 5 seconds (*/2 * * * * *)', () => {
 			const clock = sinon.useFakeTimers();
-			const job = new CronJob('*/2 * * * * *', callback, null, true);
+			const job = CronJob.from({
+				cronTime: '*/2 * * * * *',
+				onTick: callback,
+				start: true
+			});
 			for (let i = 0; i < 5; i++) clock.tick(1000);
 			job.stop();
 			expect(callback).toHaveBeenCalledTimes(2);
@@ -144,22 +168,27 @@ describe('cron', () => {
 
 		it('should run every second for 5 seconds with onComplete (*/1 * * * * *)', done => {
 			const clock = sinon.useFakeTimers();
-			const job = new CronJob(
-				'*/1 * * * * *',
-				callback,
-				() => {
+			const job = CronJob.from({
+				cronTime: '*/1 * * * * *',
+				onTick: callback,
+				onComplete: () => {
 					expect(callback).toHaveBeenCalledTimes(5);
 					done();
 				},
-				true
-			);
+				start: true
+			});
 			for (let i = 0; i < 5; i++) clock.tick(1000);
 			job.stop();
 		});
 
 		it('should run every second for a range ([start]-[end] * * * * *)', () => {
 			const clock = sinon.useFakeTimers();
-			const job = new CronJob('0-8 * * * * *', callback, null, true);
+			const job = CronJob.from({
+				cronTime: '0-8 * * * * *',
+				onTick: callback,
+				onComplete: null,
+				start: true
+			});
 			clock.tick(10000);
 			job.stop();
 			expect(callback).toHaveBeenCalledTimes(8);
@@ -167,30 +196,30 @@ describe('cron', () => {
 
 		it('should run every second for a range ([start]-[end] * * * * *) with onComplete', done => {
 			const clock = sinon.useFakeTimers();
-			const job = new CronJob(
-				'0-8 * * * * *',
-				callback,
-				() => {
+			const job = CronJob.from({
+				cronTime: '0-8 * * * * *',
+				onTick: callback,
+				onComplete: () => {
 					expect(callback).toHaveBeenCalledTimes(8);
 					done();
 				},
-				true
-			);
+				start: true
+			});
 			clock.tick(10000);
 			job.stop();
 		});
 
 		it('should default to full range when upper range not provided (1/2 * * * * *)', done => {
 			const clock = sinon.useFakeTimers();
-			const job = new CronJob(
-				'1/2 * * * * *',
-				callback,
-				() => {
+			const job = CronJob.from({
+				cronTime: '1/2 * * * * *',
+				onTick: callback,
+				onComplete: () => {
 					expect(callback).toHaveBeenCalledTimes(30);
 					done();
 				},
-				true
-			);
+				start: true
+			});
 			clock.tick(1000 * 60);
 			job.stop();
 		});
@@ -228,14 +257,13 @@ describe('cron', () => {
 			const clock = sinon.useFakeTimers();
 			const m60 = 60 * 60 * 1000;
 			const l: number[] = [];
-			const job = new CronJob(
-				'00 30 * * * *',
-				() => {
+			const job = CronJob.from({
+				cronTime: '00 30 * * * *',
+				onTick: () => {
 					l.push(Math.floor(Date.now() / 60000));
 				},
-				null,
-				true
-			);
+				start: true
+			});
 
 			clock.tick(m60 * 10);
 
@@ -247,7 +275,11 @@ describe('cron', () => {
 
 		it('should run every 45 minutes for 2 hours (0 */45 * * * *)', () => {
 			const clock = sinon.useFakeTimers();
-			const job = new CronJob('0 */45 * * * *', callback, null, true);
+			const job = CronJob.from({
+				cronTime: '0 */45 * * * *',
+				onTick: callback,
+				start: true
+			});
 			for (let i = 0; i < 2; i++) clock.tick(60 * 60 * 1000);
 			job.stop();
 			expect(callback).toHaveBeenCalledTimes(4);
@@ -255,15 +287,15 @@ describe('cron', () => {
 
 		it('should run every 45 minutes for 2 hours (0 */45 * * * *) with onComplete', done => {
 			const clock = sinon.useFakeTimers();
-			const job = new CronJob(
-				'0 */45 * * * *',
-				callback,
-				() => {
+			const job = CronJob.from({
+				cronTime: '0 */45 * * * *',
+				onTick: callback,
+				onComplete: () => {
 					expect(callback).toHaveBeenCalledTimes(4);
 					done();
 				},
-				true
-			);
+				start: true
+			});
 			for (let i = 0; i < 2; i++) clock.tick(60 * 60 * 1000);
 			job.stop();
 		});
@@ -271,35 +303,35 @@ describe('cron', () => {
 
 	it('should start and stop job from outside', done => {
 		const clock = sinon.useFakeTimers();
-		const job = new CronJob(
-			'* * * * * *',
-			function () {
+		const job = CronJob.from({
+			cronTime: '* * * * * *',
+			onTick: function () {
 				callback();
 			},
-			() => {
+			onComplete: () => {
 				expect(callback).toHaveBeenCalledTimes(1);
 				done();
 			},
-			true
-		);
+			start: true
+		});
 		clock.tick(1000);
 		job.stop();
 	});
 
 	it('should start and stop job from inside (default context)', done => {
 		const clock = sinon.useFakeTimers();
-		new CronJob(
-			'* * * * * *',
-			function () {
+		CronJob.from({
+			cronTime: '* * * * * *',
+			onTick: function () {
 				callback();
 				this.stop();
 			},
-			() => {
+			onComplete: () => {
 				expect(callback).toHaveBeenCalledTimes(1);
 				done();
 			},
-			true
-		);
+			start: true
+		});
 		clock.tick(1000);
 	});
 
@@ -309,16 +341,15 @@ describe('cron', () => {
 			const clock = sinon.useFakeTimers(d.getTime());
 			const s = d.getSeconds() + 1;
 			d.setSeconds(s);
-			const job = new CronJob(
-				d,
-				() => {
+			const job = CronJob.from({
+				cronTime: d,
+				onTick: () => {
 					const t = new Date();
 					expect(t.getSeconds()).toBe(d.getSeconds());
 					callback();
 				},
-				null,
-				true
-			);
+				start: true
+			});
 			clock.tick(1000);
 			job.stop();
 			expect(callback).toHaveBeenCalledTimes(1);
@@ -330,19 +361,19 @@ describe('cron', () => {
 			d.setSeconds(d.getSeconds() + 1);
 
 			await new Promise<void>(resolve => {
-				const job = new CronJob(
-					d,
-					onComplete => {
+				const job = CronJob.from({
+					cronTime: d,
+					onTick: onComplete => {
 						const t = new Date();
 						expect(t.getSeconds()).toBe(d.getSeconds());
 						void onComplete();
 					},
-					() => {
+					onComplete: () => {
 						callback();
 						resolve();
 					},
-					true
-				);
+					start: true
+				});
 				clock.tick(1000);
 				job.stop();
 			});
@@ -378,15 +409,15 @@ describe('cron', () => {
 			expect(callback).toHaveBeenCalledTimes(2);
 		});
 
-		it("should not be able to call onComplete from onTick if if wasn't provided", () => {
+		it("should not be able to call onComplete from onTick if it wasn't provided", () => {
 			expect.assertions(4);
 			const d = new Date();
 			const clock = sinon.useFakeTimers(d.getTime());
 			d.setSeconds(d.getSeconds() + 1);
 
-			const job = new CronJob(
-				d,
-				onComplete => {
+			const job = CronJob.from({
+				cronTime: d,
+				onTick: onComplete => {
 					const t = new Date();
 					expect(onComplete).toBeUndefined();
 					try {
@@ -401,9 +432,8 @@ describe('cron', () => {
 					expect(onComplete).toBeUndefined();
 					expect(t.getSeconds()).toBe(d.getSeconds());
 				},
-				null,
-				true
-			);
+				start: true
+			});
 			clock.tick(1000);
 			job.stop();
 		});
@@ -413,7 +443,10 @@ describe('cron', () => {
 
 			const d = new Date().getTime() + 31 * 86400 * 1000;
 
-			const job = new CronJob(new Date(d), callback);
+			const job = CronJob.from({
+				cronTime: new Date(d),
+				onTick: callback
+			});
 			job.start();
 
 			clock.tick(1000);
@@ -486,13 +519,12 @@ describe('cron', () => {
 			// run a job designed to be executed at a given
 			// time in `zone`, making sure that it is a different
 			// hour than local time.
-			const job = new CronJob(
-				`${t.second} ${t.minute} ${t.hour} * * *`,
-				callback,
-				null,
-				true,
-				zone
-			);
+			const job = CronJob.from({
+				cronTime: `${t.second} ${t.minute} ${t.hour} * * *`,
+				onTick: callback,
+				start: true,
+				timeZone: zone
+			});
 
 			clock.tick(1000);
 			job.stop();
@@ -523,13 +555,12 @@ describe('cron', () => {
 			// run a job designed to be executed at a given
 			// time in `zone`, making sure that it is a different
 			// hour than local time.
-			const job = new CronJob(
-				`${t.second} ${t.minute} ${t.hour} * * *`,
-				callback,
-				null,
-				true,
-				zone
-			);
+			const job = CronJob.from({
+				cronTime: `${t.second} ${t.minute} ${t.hour} * * *`,
+				onTick: callback,
+				start: true,
+				timeZone: zone
+			});
 
 			clock.tick(1000);
 			job.stop();
@@ -552,7 +583,12 @@ describe('cron', () => {
 			expect(d.hour).not.toBe(t.hour);
 			d = d.plus({ seconds: 1 });
 			const clock = sinon.useFakeTimers(d.valueOf());
-			const job = new CronJob(d.toJSDate(), callback, null, true, zone);
+			const job = CronJob.from({
+				cronTime: d.toJSDate(),
+				onTick: callback,
+				start: true,
+				timeZone: zone
+			});
 			clock.tick(1000);
 			job.stop();
 			expect(callback).toHaveBeenCalledTimes(1);
@@ -590,15 +626,14 @@ describe('cron', () => {
 		it('should scope onTick to running job', () => {
 			const clock = sinon.useFakeTimers();
 
-			const job = new CronJob(
-				'* * * * * *',
-				function () {
+			const job = CronJob.from({
+				cronTime: '* * * * * *',
+				onTick: function () {
 					expect(job).toBeInstanceOf(CronJob);
 					expect(job).toEqual(this);
 				},
-				null,
-				true
-			);
+				start: true
+			});
 
 			clock.tick(1000);
 
@@ -625,17 +660,15 @@ describe('cron', () => {
 		it('should scope onTick to object', () => {
 			const clock = sinon.useFakeTimers();
 
-			const job = new CronJob(
-				'* * * * * *',
-				function () {
+			const job = CronJob.from({
+				cronTime: '* * * * * *',
+				onTick: function () {
 					expect(this.hello).toBe('world');
 					expect(job).not.toEqual(this);
 				},
-				null,
-				true,
-				null,
-				{ hello: 'world' }
-			);
+				start: true,
+				context: { hello: 'world' }
+			});
 
 			clock.tick(1000);
 
@@ -663,47 +696,63 @@ describe('cron', () => {
 
 	it('should not get into an infinite loop on invalid times', () => {
 		expect(() => {
-			new CronJob('* 60 * * * *', () => {}, null, true);
+			CronJob.from({
+				cronTime: '* 60 * * * *',
+				onTick: () => {},
+				start: true
+			});
 		}).toThrow();
 
 		expect(() => {
-			new CronJob('* * 24 * * *', () => {}, null, true);
+			CronJob.from({
+				cronTime: '* * 24 * * *',
+				onTick: () => {},
+				start: true
+			});
 		}).toThrow();
 
 		expect(() => {
-			new CronJob('0 0 30 FEB *', callback, null, true);
+			CronJob.from({
+				cronTime: '0 0 30 FEB *',
+				onTick: callback,
+				start: true
+			});
 		}).toThrow();
 	});
 
 	it('should not get into an infinite loop when using uncommon offsets', () => {
-		const job = new CronJob(
-			'* * * * * *',
-			function () {},
-			null,
-			true,
-			null,
-			null,
-			true,
-			-4
-		);
+		const job = CronJob.from({
+			cronTime: '* * * * * *',
+			onTick: function () {},
+			start: true,
+			utcOffset: -4
+		});
 		expect(job.isActive).toBe(true);
 		job.stop();
 	});
 
 	it('should not throw if at least one time is valid', () => {
 		expect(() => {
-			const job = new CronJob('0 0 30 JAN,FEB *', callback, null, true);
+			const job = CronJob.from({
+				cronTime: '0 0 30 JAN,FEB *',
+				onTick: callback,
+				start: true
+			});
 			job.stop();
 		}).not.toThrow();
 	});
 
-	it('should test start of month', () => {
+	it('should execute at start of month', () => {
 		const d = DateTime.fromISO('2024-12-31T23:59:59', {
 			zone: 'Europe/Paris'
 		}).toJSDate();
 		const clock = sinon.useFakeTimers(d.getTime());
 
-		const job = new CronJob('0 0 0 1 * *', callback, null, true);
+		const job = CronJob.from({
+			cronTime: '0 0 0 1 * *',
+			onTick: callback,
+			start: true
+		});
 
 		// first millisecond of January
 		clock.tick(1001);
@@ -724,7 +773,11 @@ describe('cron', () => {
 			toFake: ['setTimeout']
 		});
 
-		const job = new CronJob('0 * * * * *', callback, null, true);
+		const job = CronJob.from({
+			cronTime: '0 * * * * *',
+			onTick: callback,
+			start: true
+		});
 
 		clock.tick(60000);
 		expect(callback).toHaveBeenCalledTimes(0);
@@ -930,16 +983,12 @@ describe('cron', () => {
 			// uTC Offset decreased by an hour
 			const utcOffset = t.offset - 60;
 
-			const job = new CronJob(
-				`${t.second} ${t.minute} ${t.hour} * * *`,
-				callback,
-				null,
-				true,
-				null,
-				null,
-				null,
-				utcOffset
-			);
+			const job = CronJob.from({
+				cronTime: `${t.second} ${t.minute} ${t.hour} * * *`,
+				onTick: callback,
+				start: true,
+				utcOffset: utcOffset
+			});
 
 			// tick 1 sec before an hour
 			clock.tick(1000 * 60 * 60 - 1);
@@ -957,16 +1006,12 @@ describe('cron', () => {
 
 			// uTC Offset decreased by 45 minutes
 			const utcOffset = t.offset - 45;
-			const job = new CronJob(
-				`${t.second} ${t.minute} ${t.hour} * * *`,
-				callback,
-				null,
-				true,
-				null,
-				null,
-				null,
-				utcOffset
-			);
+			const job = CronJob.from({
+				cronTime: `${t.second} ${t.minute} ${t.hour} * * *`,
+				onTick: callback,
+				start: true,
+				utcOffset: utcOffset
+			});
 
 			// tick 1 sec before 45 minutes
 			clock.tick(1000 * 45 * 60 - 1);
@@ -980,16 +1025,12 @@ describe('cron', () => {
 		it('should run a job using cron syntax with number format utcOffset that is 0', () => {
 			const clock = sinon.useFakeTimers();
 
-			const job = new CronJob(
-				'* * * * * *',
-				callback,
-				null,
-				true,
-				null,
-				null,
-				null,
-				0
-			);
+			const job = CronJob.from({
+				cronTime: '* * * * * *',
+				onTick: callback,
+				start: true,
+				utcOffset: 0
+			});
 
 			clock.tick(999);
 			expect(callback).toHaveBeenCalledTimes(0);
@@ -1010,7 +1051,10 @@ describe('cron', () => {
 		it('should start, change time, start again', () => {
 			const clock = sinon.useFakeTimers();
 
-			const job = new CronJob('* * * * * *', callback);
+			const job = CronJob.from({
+				cronTime: '* * * * * *',
+				onTick: callback
+			});
 
 			job.start();
 			clock.tick(1000);
@@ -1023,11 +1067,13 @@ describe('cron', () => {
 			job.stop();
 			expect(callback).toHaveBeenCalledTimes(3);
 		});
-
 		it('should start, stop, change time, not start again', () => {
 			const clock = sinon.useFakeTimers();
 
-			const job = new CronJob('* * * * * *', callback);
+			const job = CronJob.from({
+				cronTime: '* * * * * *',
+				onTick: callback
+			});
 
 			job.start();
 			clock.tick(1000);
@@ -1043,7 +1089,10 @@ describe('cron', () => {
 		});
 
 		it('should setTime with invalid object', () => {
-			const job = new CronJob('* * * * * *', callback);
+			const job = CronJob.from({
+				cronTime: '* * * * * *',
+				onTick: callback
+			});
 			expect(() => {
 				// @ts-expect-error time parameter cannot be undefined
 				job.setTime(undefined);
@@ -1053,7 +1102,10 @@ describe('cron', () => {
 		it('should start, change time, exception', () => {
 			const clock = sinon.useFakeTimers();
 
-			const job = new CronJob('* * * * * *', callback);
+			const job = CronJob.from({
+				cronTime: '* * * * * *',
+				onTick: callback
+			});
 
 			const time = new Date();
 			job.start();
@@ -1072,7 +1124,10 @@ describe('cron', () => {
 		it('should create recurring job, setTime with actual date, start and run once (#739)', () => {
 			const clock = sinon.useFakeTimers();
 
-			const job = new CronJob('0 0 20 * * *', callback);
+			const job = CronJob.from({
+				cronTime: '0 0 20 * * *',
+				onTick: callback
+			});
 
 			const startDate = new Date(Date.now() + 5000);
 			job.setTime(new CronTime(startDate));
@@ -1093,7 +1148,10 @@ describe('cron', () => {
 	describe('nextDate(s)', () => {
 		it('should give the next date to run at', () => {
 			sinon.useFakeTimers();
-			const job = new CronJob('* * * * * *', callback);
+			const job = CronJob.from({
+				cronTime: '* * * * * *',
+				onTick: callback
+			});
 			const d = Date.now();
 
 			expect(job.nextDate().toMillis()).toEqual(d + 1000);
@@ -1101,7 +1159,10 @@ describe('cron', () => {
 
 		it('should give the next 5 dates to run at', () => {
 			sinon.useFakeTimers();
-			const job = new CronJob('* * * * * *', callback);
+			const job = CronJob.from({
+				cronTime: '* * * * * *',
+				onTick: callback
+			});
 			const d = Date.now();
 
 			expect(job.nextDates(5).map(d => d.toMillis())).toEqual([
@@ -1114,7 +1175,10 @@ describe('cron', () => {
 		});
 
 		it('should give an empty array when called without argument', () => {
-			const job = new CronJob('* * * * * *', callback);
+			const job = CronJob.from({
+				cronTime: '* * * * * *',
+				onTick: callback
+			});
 			expect(job.nextDates()).toHaveLength(0);
 		});
 	});
@@ -1122,8 +1186,11 @@ describe('cron', () => {
 	it('should automatically setup a new timeout if we roll past the max timeout delay', () => {
 		const clock = sinon.useFakeTimers();
 		const d = new Date();
-		d.setMilliseconds(2147485647 * 2); // mAXDELAY in `job.js` + 2000.
-		const job = new CronJob(d, callback);
+		d.setMilliseconds(2147485647 * 2); // see MAXDELAY in `job.ts` + 2000.
+		const job = CronJob.from({
+			cronTime: d,
+			onTick: callback
+		});
 		job.start();
 		clock.tick(2147483648);
 		expect(callback).toHaveBeenCalledTimes(0);
@@ -1134,7 +1201,10 @@ describe('cron', () => {
 
 	it('should give the correct last execution date', () => {
 		const clock = sinon.useFakeTimers();
-		const job = new CronJob('* * * * * *', callback);
+		const job = CronJob.from({
+			cronTime: '* * * * * *',
+			onTick: callback
+		});
 		job.start();
 		clock.tick(1000);
 		expect(callback).toHaveBeenCalledTimes(1);
@@ -1145,7 +1215,10 @@ describe('cron', () => {
 	it('should give the correct last execution date for intervals greater than 25 days (#710)', () => {
 		const clock = sinon.useFakeTimers();
 
-		const job = new CronJob('0 0 0 1 * *', callback); // at 00:00 on day-of-month 1.
+		const job = CronJob.from({
+			cronTime: '0 0 0 1 * *',
+			onTick: callback
+		}); // at 00:00 on day-of-month 1.
 		job.start();
 
 		// tick one tick before nextDate()
@@ -1155,22 +1228,6 @@ describe('cron', () => {
 		expect(job.lastDate()?.getTime()).toBeUndefined();
 
 		job.stop();
-	});
-
-	it('should throw when providing both exclusive parameters timeZone and utcOffset', () => {
-		expect(() => {
-			// @ts-expect-error testing runtime exception
-			new CronJob(
-				`* * * * *`,
-				function () {},
-				null,
-				true,
-				'America/Chicago',
-				null,
-				null,
-				120
-			);
-		}).toThrow();
 	});
 
 	it('should throw when providing both exclusive parameters timeZone and utcOffset using the object constructor', () => {
@@ -1187,9 +1244,9 @@ describe('cron', () => {
 
 	it('should support async callback', () => {
 		const clock = sinon.useFakeTimers();
-		const job = new CronJob(
-			'* * * * * *',
-			async function () {
+		const job = CronJob.from({
+			cronTime: '* * * * * *',
+			onTick: async function () {
 				await new Promise<void>(resolve => {
 					setTimeout(() => {
 						callback();
@@ -1197,9 +1254,8 @@ describe('cron', () => {
 					}, 500);
 				});
 			},
-			null,
-			true
-		);
+			start: true
+		});
 		clock.tick(1500);
 		job.stop();
 		expect(callback).toHaveBeenCalledTimes(1);
@@ -1294,9 +1350,9 @@ describe('cron', () => {
 			const clock = sinon.useFakeTimers();
 			let isJobCompleted = false;
 
-			const job = new CronJob(
-				'*/2 * * * * *',
-				async () => {
+			const job = CronJob.from({
+				cronTime: '*/2 * * * * *',
+				onTick: async () => {
 					expect(job.isCallbackRunning).toBe(true);
 					await new Promise<void>(resolve => {
 						setTimeout(() => {
@@ -1306,15 +1362,9 @@ describe('cron', () => {
 						}, 1000);
 					});
 				},
-				null,
-				true,
-				null,
-				null,
-				false,
-				null,
-				false,
-				true // waitForCompletion: true
-			);
+				start: true,
+				waitForCompletion: true
+			});
 
 			expect(job.isCallbackRunning).toBe(false);
 
@@ -1338,23 +1388,17 @@ describe('cron', () => {
 			const clock = sinon.useFakeTimers();
 			let isJobCompleted = false;
 
-			const job = new CronJob(
-				'* * * * * *',
-				() => {
+			const job = CronJob.from({
+				cronTime: '* * * * * *',
+				onTick: () => {
 					setTimeout(() => {
 						callback();
 						isJobCompleted = true;
 					}, 500);
 				},
-				null,
-				true,
-				null,
-				null,
-				false,
-				null,
-				false,
-				false // waitForCompletion: false
-			);
+				start: true,
+				waitForCompletion: false
+			});
 
 			expect(job.isCallbackRunning).toBe(false);
 
@@ -1371,9 +1415,9 @@ describe('cron', () => {
 			const executionOrder: number[] = [];
 			let started = 0;
 
-			const job = new CronJob(
-				'* * * * * *',
-				async () => {
+			const job = CronJob.from({
+				cronTime: '* * * * * *',
+				onTick: async () => {
 					started++;
 					await new Promise<void>(resolve => {
 						setTimeout(() => {
@@ -1384,15 +1428,9 @@ describe('cron', () => {
 					const jobNumber = executionOrder.length + 1;
 					executionOrder.push(jobNumber);
 				},
-				null,
-				true,
-				null,
-				null,
-				false,
-				null,
-				false,
-				true // waitForCompletion: true
-			);
+				start: true,
+				waitForCompletion: true
+			});
 
 			await clock.tickAsync(3500);
 
@@ -1405,9 +1443,9 @@ describe('cron', () => {
 			const clock = sinon.useFakeTimers();
 			let isJobCompleted = false;
 
-			const job = new CronJob(
-				'* * * * * *',
-				async () => {
+			const job = CronJob.from({
+				cronTime: '* * * * * *',
+				onTick: async () => {
 					await new Promise<void>(resolve => {
 						setTimeout(() => {
 							callback();
@@ -1416,15 +1454,9 @@ describe('cron', () => {
 						}, 500);
 					});
 				},
-				null,
-				true,
-				null,
-				null,
-				false,
-				null,
-				false,
-				true // waitForCompletion: true
-			);
+				start: true,
+				waitForCompletion: true
+			});
 
 			await clock.tickAsync(1000);
 			expect(job.isCallbackRunning).toBe(true);
@@ -1446,13 +1478,12 @@ describe('cron', () => {
 			}).toJSDate();
 			const clock = sinon.useFakeTimers(d.getTime());
 
-			const job = new CronJob(
-				'0 1 30 3 *',
-				callback,
-				null,
-				true,
-				'Europe/Lisbon'
-			);
+			const job = CronJob.from({
+				cronTime: '0 1 30 3 *',
+				onTick: callback,
+				start: true,
+				timeZone: 'Europe/Lisbon'
+			});
 
 			clock.tick(1000);
 			expect(callback).toHaveBeenCalledTimes(1);
@@ -1466,13 +1497,12 @@ describe('cron', () => {
 			}).toJSDate();
 			const clock = sinon.useFakeTimers(d.getTime());
 
-			const job = new CronJob(
-				'0 2 31 3 *',
-				callback,
-				null,
-				true,
-				'Europe/Paris'
-			);
+			const job = CronJob.from({
+				cronTime: '0 2 31 3 *',
+				onTick: callback,
+				start: true,
+				timeZone: 'Europe/Paris'
+			});
 
 			clock.tick(1000);
 			expect(callback).toHaveBeenCalledTimes(1);
@@ -1487,15 +1517,14 @@ describe('cron', () => {
 			}).toJSDate();
 			const clock = sinon.useFakeTimers(d.getTime());
 			const fireTimes: number[] = [];
-			const job = new CronJob(
-				'15 2 * * *',
-				() => {
+			const job = CronJob.from({
+				cronTime: '15 2 * * *',
+				onTick: () => {
 					fireTimes.push(Date.now());
 				},
-				null,
-				true,
-				'Australia/Lord_Howe'
-			);
+				start: true,
+				timeZone: 'Australia/Lord_Howe'
+			});
 
 			clock.tick(1000 * 60 * 60 * 48);
 			expect(fireTimes).toEqual([
@@ -1514,13 +1543,12 @@ describe('cron', () => {
 			}).toJSDate();
 			const clock = sinon.useFakeTimers(d.getTime());
 
-			const job = new CronJob(
-				'*/30 * * * *',
-				callback,
-				null,
-				true,
-				'Australia/Melbourne'
-			);
+			const job = CronJob.from({
+				cronTime: '*/30 * * * *',
+				onTick: callback,
+				start: true,
+				timeZone: 'Australia/Melbourne'
+			});
 
 			clock.tick(1000 * 60 * 60 * 3);
 
@@ -1536,13 +1564,12 @@ describe('cron', () => {
 			}).toJSDate();
 			const clock = sinon.useFakeTimers(d.getTime());
 
-			const job = new CronJob(
-				'0 3 * * *',
-				callback,
-				null,
-				true,
-				'Europe/Berlin'
-			);
+			const job = CronJob.from({
+				cronTime: '0 3 * * *',
+				onTick: callback,
+				start: true,
+				timeZone: 'Europe/Berlin'
+			});
 
 			clock.tick(1000 * 60 * 60 * 8);
 

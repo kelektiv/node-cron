@@ -11,6 +11,7 @@
 		"sourceMap": false,
 		"noErrorTruncation": true,
 		"resolveJsonModule": true,
+		"types": ["jest"],
 
 		/**
 		 * strictest Typescript possible
