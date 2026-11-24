@@ -72,7 +72,7 @@ const job = new CronJob('* * * * * *', function () {
 });
 ```
 
-While this method is still officially supported (any bugs or security issues will be fixed) it is deprecated and no longer recommended. You will get a warning that support will be dropped in the next major version of Cron.
+While this method is still officially supported (any bugs or security issues with it will be fixed) it is deprecated and no longer recommended. You will get a warning that support will be dropped in the next major version of Cron.
 
 Instead, create `CronJob` objects like this:
 
