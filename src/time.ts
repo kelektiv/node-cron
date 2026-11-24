@@ -99,6 +99,64 @@ export class CronTime {
 	}
 
 	/**
+	 * day of month and day of week are combined with OR when both are restricted
+	 */
+	private _matchesDay(date: DateTime) {
+		return !(
+			(!(date.day in this.dayOfMonth) &&
+				Object.keys(this.dayOfMonth).length !== 31 &&
+				!(
+					this._getWeekDay(date) in this.dayOfWeek &&
+					Object.keys(this.dayOfWeek).length !== 7
+				)) ||
+			(!(this._getWeekDay(date) in this.dayOfWeek) &&
+				Object.keys(this.dayOfWeek).length !== 7 &&
+				!(
+					date.day in this.dayOfMonth &&
+					Object.keys(this.dayOfMonth).length !== 31
+				))
+		);
+	}
+
+	/**
+	 * whether the wall-clock fields of a date satisfy the cron expression
+	 */
+	private _matches(date: DateTime) {
+		return this._matchesMinute(date) && date.second in this.second;
+	}
+
+	/**
+	 * same as _matches, ignoring seconds
+	 */
+	private _matchesMinute(date: DateTime) {
+		return (
+			date.month in this.month &&
+			this._matchesDay(date) &&
+			date.hour in this.hour &&
+			date.minute in this.minute
+		);
+	}
+
+	/**
+	 * first date in [from, to) whose wall-clock fields satisfy the cron expression
+	 */
+	private _firstMatchBetween<T extends DateTime>(from: T, to: DateTime) {
+		let date = from;
+		while (date < to) {
+			if (this._matches(date)) {
+				return date;
+			}
+
+			// a minute that does not match has no matching second either
+			date = this._matchesMinute(date)
+				? date.plus({ second: 1 })
+				: date.plus({ minute: 1 }).startOf('minute');
+		}
+
+		return null;
+	}
+
+	/**
 	 * calculate the "next" scheduled time
 	 */
 	sendAt(): DateTime;
@@ -267,20 +325,7 @@ export class CronTime {
 				continue;
 			}
 
-			if (
-				(!(date.day in this.dayOfMonth) &&
-					Object.keys(this.dayOfMonth).length !== 31 &&
-					!(
-						this._getWeekDay(date) in this.dayOfWeek &&
-						Object.keys(this.dayOfWeek).length !== 7
-					)) ||
-				(!(this._getWeekDay(date) in this.dayOfWeek) &&
-					Object.keys(this.dayOfWeek).length !== 7 &&
-					!(
-						date.day in this.dayOfMonth &&
-						Object.keys(this.dayOfMonth).length !== 31
-					))
-			) {
+			if (!this._matchesDay(date)) {
 				date = date.plus({ days: 1 });
 				date = date.set({ hour: 0, minute: 0, second: 0 });
 
@@ -334,11 +379,23 @@ export class CronTime {
 				zone: timeZone
 			}
 		);
-		const nonDSTReferenceDate = DateTime.fromFormat(
+		// january falls inside daylight saving time in the southern hemisphere,
+		// so the offset outside daylight saving time is the smaller of the
+		// january and july offsets
+		const januaryReferenceDate = DateTime.fromFormat(
 			`${date.year}-1-1 0:0:0`,
 			'yyyy-M-d H:m:s',
 			{ zone: timeZone }
 		);
+		const julyReferenceDate = DateTime.fromFormat(
+			`${date.year}-7-1 0:0:0`,
+			'yyyy-M-d H:m:s',
+			{ zone: timeZone }
+		);
+		const nonDSTReferenceDate =
+			januaryReferenceDate.offset <= julyReferenceDate.offset
+				? januaryReferenceDate
+				: julyReferenceDate;
 
 		// if the hour or minute is different from expected and
 		// if date we assume to not be under daylight savings has a different offset
@@ -355,6 +412,9 @@ export class CronTime {
 
 		// handle cases where time jumps back due to Daylight Savings (ambiguous times)
 
+		// equal wall-clock fields can also coincide across a forward jump,
+		// where no time repeats, so a jump back additionally requires an
+		// offset decrease in the preceding hours
 		// daylight savings jumps are either 60 or 30 minutes
 		const hourTestDate = date.minus({ hour: 1 });
 		const twoHourTestDate = date.minus({ hour: 2 });
@@ -363,18 +423,22 @@ export class CronTime {
 		if (
 			(hourTestDate.hour === date.hour ||
 				twoHourTestDate.hour === hourTestDate.hour) &&
+			(hourTestDate.offset > date.offset ||
+				twoHourTestDate.offset > hourTestDate.offset) &&
 			hourTestDate > start
 		) {
-			date = hourTestDate;
+			date = this._firstMatchBetween(hourTestDate, date) ?? date;
 		}
 		// similar for half hour jumps
 		const halfHourTestDate = date.minus({ minute: 30 });
 		if (
 			(halfHourTestDate.minute === date.minute ||
 				hourTestDate.minute === halfHourTestDate.minute) &&
+			(halfHourTestDate.offset > date.offset ||
+				hourTestDate.offset > halfHourTestDate.offset) &&
 			halfHourTestDate > start
 		) {
-			date = halfHourTestDate;
+			date = this._firstMatchBetween(halfHourTestDate, date) ?? date;
 		}
 
 		return date;
