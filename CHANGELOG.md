@@ -1,3 +1,40 @@
+## [5.0.0-beta.3](https://github.com/kelektiv/node-cron/compare/v5.0.0-beta.2...v5.0.0-beta.3) (2026-11-24)
+
+### 🐛 Bug Fixes
+
+* stop jobs scheduled after a repeated DST hour from also running in it ([#1092](https://github.com/kelektiv/node-cron/issues/1092)) ([cba5b52](https://github.com/kelektiv/node-cron/commit/cba5b5276cc324035296f7fac45717aefc7d9c66)), closes [#966](https://github.com/kelektiv/node-cron/issues/966) [#881](https://github.com/kelektiv/node-cron/issues/881) [#1087](https://github.com/kelektiv/node-cron/issues/1087) [#1088](https://github.com/kelektiv/node-cron/issues/1088) [#881](https://github.com/kelektiv/node-cron/issues/881) [#1088](https://github.com/kelektiv/node-cron/issues/1088)
+* **time:** stop daily jobs firing twice at southern spring-forward jumps ([#1105](https://github.com/kelektiv/node-cron/issues/1105)) ([2edbb11](https://github.com/kelektiv/node-cron/commit/2edbb118070c0e48540769449e3573942d0c9002)), closes [#1092](https://github.com/kelektiv/node-cron/issues/1092) [#1092](https://github.com/kelektiv/node-cron/issues/1092) [#1099](https://github.com/kelektiv/node-cron/issues/1099) [#1087](https://github.com/kelektiv/node-cron/issues/1087) [#1102](https://github.com/kelektiv/node-cron/issues/1102) [#1103](https://github.com/kelektiv/node-cron/issues/1103)
+
+### ♻️ Chores
+
+* **action:** update actions/setup-node action to v7.1.0 ([d3a1871](https://github.com/kelektiv/node-cron/commit/d3a187105a5309d67bf486b960039aa27f9c9531))
+* **action:** update amannn/action-semantic-pull-request action to v6.1.2 ([412a1c6](https://github.com/kelektiv/node-cron/commit/412a1c61aac19084031f66e79874dff6c5a13241))
+* **action:** update github/codeql-action action to v4.38.0 ([b75fae8](https://github.com/kelektiv/node-cron/commit/b75fae860baa9ae6178d78aaf900247893f14ded))
+* **action:** update github/codeql-action action to v4.38.2 ([5e6e413](https://github.com/kelektiv/node-cron/commit/5e6e4135668ec377b6281ff235156e9be5046fad))
+* **action:** update github/codeql-action action to v4.38.3 ([6722374](https://github.com/kelektiv/node-cron/commit/672237448ea4bd119fd4380edff38b5cab5cc784))
+* **action:** update github/codeql-action action to v4.39.1 ([#1097](https://github.com/kelektiv/node-cron/issues/1097)) ([82e8dca](https://github.com/kelektiv/node-cron/commit/82e8dcac2ccd92b5be0aa5a87c0c98e36c1fc33e))
+* **action:** update github/codeql-action action to v4.39.3 ([cb85ce0](https://github.com/kelektiv/node-cron/commit/cb85ce0a958523a2e1487b6491a38e0b98560717))
+* **action:** update ossf/scorecard-action action to v2.5.0 ([#1098](https://github.com/kelektiv/node-cron/issues/1098)) ([4d729cf](https://github.com/kelektiv/node-cron/commit/4d729cf1f322ecb05edb6aeb33ecf69e3001d6ed))
+* **action:** update step-security/harden-runner action to v2.21.1 ([80f52ec](https://github.com/kelektiv/node-cron/commit/80f52ece23bdea66941f905ac56079bc46ae5f2f))
+* **action:** update step-security/harden-runner action to v2.22.1 ([74876a6](https://github.com/kelektiv/node-cron/commit/74876a6e27ecb4679c995d699f75ece10f0d306f))
+* **action:** update step-security/harden-runner action to v2.22.2 ([#1094](https://github.com/kelektiv/node-cron/issues/1094)) ([cf2688c](https://github.com/kelektiv/node-cron/commit/cf2688c26c5e585ca1b049ed6f957bf87e73ba71))
+* **action:** update step-security/harden-runner action to v2.22.4 ([92cc93b](https://github.com/kelektiv/node-cron/commit/92cc93b40f962543be17d663f8bae3ac3d078a05))
+* **deps:** lock file maintenance ([56af005](https://github.com/kelektiv/node-cron/commit/56af005cc577556c487524f82175437ddf148ac1))
+* **deps:** lock file maintenance ([a69bc0d](https://github.com/kelektiv/node-cron/commit/a69bc0d2661754be36b4293de72e934684c9592b))
+* **deps:** lock file maintenance ([6dae922](https://github.com/kelektiv/node-cron/commit/6dae922cb569bb952395a461c91d3eb57ecad32e))
+* **deps:** lock file maintenance ([c53af48](https://github.com/kelektiv/node-cron/commit/c53af484c7d9097b50ccc26df129017bfd8e9cf7))
+* **deps:** lock file maintenance ([#1091](https://github.com/kelektiv/node-cron/issues/1091)) ([37a257b](https://github.com/kelektiv/node-cron/commit/37a257b1fa3adf4a54f0e2452d7639861b5d6932))
+* **deps:** update dependency [@fast-check](https://github.com/fast-check)/jest to v2.3.0 ([#1090](https://github.com/kelektiv/node-cron/issues/1090)) ([01c9e99](https://github.com/kelektiv/node-cron/commit/01c9e99058e977ffc4d68dc163472ea0f9db946a))
+* **deps:** update dependency [@swc](https://github.com/swc)/core to v1.16.13 ([bce2235](https://github.com/kelektiv/node-cron/commit/bce2235ed30eaacc0473a300880ae3defcd3a0e8))
+* **deps:** update dependency [@swc](https://github.com/swc)/core to v1.16.2 ([8880046](https://github.com/kelektiv/node-cron/commit/88800462c98fa4d4aadf34d3fa925f20afcffd63))
+* **deps:** update dependency [@swc](https://github.com/swc)/core to v1.16.20 ([#1095](https://github.com/kelektiv/node-cron/issues/1095)) ([2665caa](https://github.com/kelektiv/node-cron/commit/2665caad82606217ff44921aab55b15e7288c9f2))
+* **deps:** update dependency [@swc](https://github.com/swc)/core to v1.16.22 ([1b7a228](https://github.com/kelektiv/node-cron/commit/1b7a228e212f744f350f70612ee108f3d09ac688))
+* **deps:** update dependency [@types](https://github.com/types)/sinon to v22.0.1 ([#1096](https://github.com/kelektiv/node-cron/issues/1096)) ([a6c3956](https://github.com/kelektiv/node-cron/commit/a6c39566f38b80d70ba2c7fb849930e0da5c474d))
+* **deps:** update dependency [@types](https://github.com/types)/sinon to v22.0.2 ([d78efd3](https://github.com/kelektiv/node-cron/commit/d78efd34af3c3efa8edeb74856ef29e31057e8da))
+* **deps:** update dependency jest to v30.5.1 ([440fd01](https://github.com/kelektiv/node-cron/commit/440fd0194921ff1f1cfad6891c32998a98c521d2))
+* **deps:** update dependency jest to v30.5.2 ([1d80980](https://github.com/kelektiv/node-cron/commit/1d809808ca43289171674b6dc2ec703b2d18a5e4))
+* **deps:** update semantic-release related packages ([3b9391e](https://github.com/kelektiv/node-cron/commit/3b9391e283831672eac149a0f660aeb8dac705a7))
+
 ## [5.0.0-beta.2](https://github.com/kelektiv/node-cron/compare/v5.0.0-beta.1...v5.0.0-beta.2) (2026-08-28)
 
 ### ⚠ Breaking changes
