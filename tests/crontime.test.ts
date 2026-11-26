@@ -439,6 +439,38 @@ describe('crontime', () => {
 		});
 		expect(nextDate.toMillis() - expectedDate.toMillis()).toBe(0);
 	});
+	it('should return the later occurrence when asked from the repeated hour of a fall-back DST transition', () => {
+		const clock = sinon.useFakeTimers(
+			new Date('2026-10-01T00:00:00Z').getTime()
+		);
+
+		const cronTime = new CronTime('30 1 * * *', 'America/New_York');
+		for (const iso of [
+			'2026-11-01T06:00:00Z',
+			'2026-11-01T06:15:00Z',
+			'2026-11-01T06:29:00Z'
+		]) {
+			const start = new Date(iso);
+			const next = cronTime
+				.getNextDateFrom(start, 'America/New_York')
+				.toJSDate();
+			expect(next.getTime()).toBeGreaterThan(start.getTime());
+			expect(next.toISOString()).toEqual('2026-11-01T06:30:00.000Z');
+		}
+
+		// 30-minute DST fall-back transition (e.g. Australia/Lord_Howe)
+		// pin the clock while Lord Howe is under DST (+11:00)
+		clock.setSystemTime(new Date('2026-02-01T00:00:00Z').getTime());
+		const lordHoweCron = new CronTime('45 1 * * *', 'Australia/Lord_Howe');
+		for (const iso of ['2026-04-04T15:00:00Z', '2026-04-04T15:10:00Z']) {
+			const start = new Date(iso);
+			const next = lordHoweCron
+				.getNextDateFrom(start, 'Australia/Lord_Howe')
+				.toJSDate();
+			expect(next.getTime()).toBeGreaterThan(start.getTime());
+			expect(next.toISOString()).toEqual('2026-04-04T15:15:00.000Z');
+		}
+	});
 	it('should work around offset changes that shifts time forward', () => {
 		// asia/Amman DST starts in  30-March-2018 (+1 to hours)
 		let currentDate = DateTime.fromISO('2018-03-29T23:00', {
