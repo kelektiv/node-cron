@@ -371,6 +371,9 @@ export class CronTime {
 
 		const expectedHour = date.hour;
 		const expectedMinute = date.minute;
+		// the search above works on wall-clock fields; keep them so a wall
+		// time that resolves to the wrong instant can be recognised below
+		const expectedDate = date;
 
 		date = DateTime.fromFormat(
 			`${date.year}-${date.month}-${date.day} ${date.hour}:${date.minute}:${date.second}`,
@@ -396,6 +399,33 @@ export class CronTime {
 			januaryReferenceDate.offset <= julyReferenceDate.offset
 				? januaryReferenceDate
 				: julyReferenceDate;
+
+		// a wall time shortly before a fall-back transition can resolve to an
+		// instant whose wall-clock fields differ, even though the wall time
+		// exists; shifting the instant back by that error recovers it. a wall
+		// time inside a forward jump never verifies here, so it still falls
+		// through to the rewind below
+		if (expectedHour !== date.hour || expectedMinute !== date.minute) {
+			const resolvedDate = DateTime.fromFormat(
+				`${date.year}-${date.month}-${date.day} ${date.hour}:${date.minute}:${date.second}`,
+				'yyyy-M-d H:m:s',
+				{
+					zone: 'UTC'
+				}
+			);
+			const shift = resolvedDate.toMillis() - expectedDate.toMillis();
+			const correctedDate = date.minus({ milliseconds: shift });
+			if (
+				correctedDate.year === expectedDate.year &&
+				correctedDate.month === expectedDate.month &&
+				correctedDate.day === expectedDate.day &&
+				correctedDate.hour === expectedDate.hour &&
+				correctedDate.minute === expectedDate.minute &&
+				correctedDate.second === expectedDate.second
+			) {
+				date = correctedDate;
+			}
+		}
 
 		// if the hour or minute is different from expected and
 		// if date we assume to not be under daylight savings has a different offset
